@@ -523,6 +523,12 @@ Spegni il PC di casa fino al weekend successivo.
 
 ## Cheatsheet comandi <a id="cheatsheet"></a>
 
+### Setup attuale (2026-05-06)
+
+- **VPS Hetzner CX22**: `204.168.249.76` (Helsinki), utente `matteo`, €3.79/mese.
+- **GitHub repo privato**: `matteoteo2507-stack/trad`.
+- **systemd service**: `confluence.service`, attivo 24/7, restart automatico al boot.
+
 ### Locale (Windows PowerShell)
 
 ```powershell
@@ -531,16 +537,61 @@ cd c:\Users\mmbus\Desktop\lavoro\trad
 # Test offline
 python -m pytest tests/
 
-# Confluence
+# Confluence (locale, niente broker MT5 necessario)
 python -m strategies.confluence_levels validate-levels
 python -m strategies.confluence_levels dry-run --symbol EURUSD --price 1.16700
 python -m strategies.confluence_levels run --once --verbose
 
-# Stock Selector
+# Stock Selector (weekend tool)
 python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing
 
-# Sync levels.yaml al VPS
-scp strategies\confluence_levels\levels.yaml matteo@<IP-VPS>:~/trad/strategies/confluence_levels/levels.yaml
+# Push modifiche del codice al GitHub
+git add . ; git commit -m "msg" ; git push
+
+# Sync diretto di levels.yaml (file privato, NON su git)
+scp strategies\confluence_levels\levels.yaml matteo@204.168.249.76:~/trad/strategies/confluence_levels/levels.yaml
+
+# Connessione SSH al VPS
+ssh matteo@204.168.249.76
+```
+
+### Sul VPS Linux (dopo `ssh matteo@204.168.249.76`)
+
+```bash
+# Aggiornare codice da GitHub (se hai fatto git push da locale)
+cd ~/trad && git pull && sudo systemctl restart confluence
+
+# Status del service
+sudo systemctl status confluence
+sudo systemctl restart confluence
+sudo systemctl stop confluence
+sudo systemctl start confluence
+
+# Log live (Ctrl+C per uscire)
+sudo journalctl -u confluence -f --no-pager
+
+# Log ultime 100 righe
+sudo journalctl -u confluence -n 100 --no-pager
+
+# Run manuale "once" per debug (richiede prima stop del service per evitare doppi messaggi)
+sudo systemctl stop confluence
+cd ~/trad && source venv/bin/activate && python -m strategies.confluence_levels run --once --verbose
+sudo systemctl start confluence
+```
+
+### Workflow weekly (domenica sera)
+
+```powershell
+# 1. Aggiorni levels.yaml in locale e validi
+cd c:\Users\mmbus\Desktop\lavoro\trad
+# (modifica levels.yaml a mano)
+python -m strategies.confluence_levels validate-levels
+
+# 2. Sync al VPS (il runner rilegge entro 60s, NO restart)
+scp strategies\confluence_levels\levels.yaml matteo@204.168.249.76:~/trad/strategies/confluence_levels/levels.yaml
+
+# 3. Stock Selector (output Excel)
+python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing
 ```
 
 ### Sul VPS Linux (SSH)
