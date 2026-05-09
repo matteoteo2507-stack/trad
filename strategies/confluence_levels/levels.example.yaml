@@ -1,0 +1,40 @@
+# Template per `levels.yaml` (gitignored).
+#
+# Compila questo file ogni weekend con la mappa dei livelli che hai identificato
+# durante l'analisi top-down (Monthly → Weekly → H4/H1). Il sistema legge questi
+# livelli per generare le notifiche di prossimità.
+#
+# Regole:
+# - `id` deve essere univoco (usato per dedup notifiche).
+# - `confluence` ≥ 2 elementi (il sistema accetta anche 1 ma logga warning).
+# - `valid_until` in formato YYYY-MM-DD: livelli scaduti vengono ignorati.
+# - `bias` deve essere "long" o "short" (coerente con la direzione del setup).
+# - `tp_target_price` esplicito: è il prossimo livello strutturale dove portare il TP.
+# - `sl_buffer_pips` opzionale: override per livello, altrimenti si usa il default
+#   da `config.yaml` (default_sl_buffer_pips per simbolo).
+
+EURUSD:
+  - id: "EURUSD-2026W19-S1"
+    price: 1.08500
+    type: support
+    confluence: [SR_weekly, SD_H4, Fib_618]
+    bias: long
+    valid_until: 2026-05-09
+    tp_target_price: 1.09500
+    # sl_buffer_pips: 7   # opzionale, sovrascrive il default
+  - id: "EURUSD-2026W19-R1"
+    price: 1.09800
+    type: resistance
+    confluence: [SR_weekly, Fib_786, supply_zone_H4]
+    bias: short
+    valid_until: 2026-05-09
+    tp_target_price: 1.08800
+
+XAUUSD:
+  - id: "XAU-2026W19-D1"
+    price: 2380.0
+    type: demand_zone
+    confluence: [SR_D1, SD_H4, Fib_50]
+    bias: long
+    valid_until: 2026-05-09
+    tp_target_price: 2430.0

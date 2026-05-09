@@ -1,0 +1,83 @@
+# Mercati abilitati per scopo. Stratificazione confermata 2026-04-29.
+
+markets:
+  # ===========================
+  # MT5 — training ground per la prop firm
+  # ===========================
+  mt5:
+    enabled: true
+    purpose: "training_ground_prop"
+    broker: "mt5"  # Riferimento alla classe in brokers/
+    paper_mode: true  # Le 3 demo sono paper per natura
+    # Account default usato dal runner se non specificato via CLI.
+    account_alias: "DEMO1"
+    # AvaTrade demo non usa suffisso. Override per eventuali broker che richiedono
+    # "EURUSD.r" o simili: mettere `symbol_suffix: ".r"` o specificare per simbolo
+    # in `symbol_overrides`.
+    symbol_suffix: ""
+    symbol_overrides: {}
+    instruments:
+      - "EURUSD"
+      - "GBPUSD"
+      - "USDJPY"
+      - "XAUUSD"  # gold
+    timeframes_default:
+      - "M5"
+      - "M15"
+      - "H1"
+
+  # ===========================
+  # Crypto — laboratorio sperimentale
+  # ===========================
+  coinbase:
+    enabled: true
+    purpose: "crypto_lab"
+    broker: "coinbase"
+    paper_mode: true  # Default sandbox/testnet
+    instruments:
+      - "BTC/USD"
+      - "ETH/USD"
+      - "SOL/USD"
+    timeframes_default:
+      - "M15"
+      - "H1"
+      - "H4"
+
+  binance:
+    enabled: true
+    purpose: "crypto_lab"
+    broker: "binance"
+    paper_mode: true  # Default testnet
+    instruments:
+      - "BTC/USDT"
+      - "ETH/USDT"
+      - "BNB/USDT"
+    timeframes_default:
+      - "M15"
+      - "H1"
+      - "H4"
+
+  # ===========================
+  # IBKR — casa dello Stock Selector
+  # ===========================
+  ibkr:
+    enabled: true
+    purpose: "stock_selector_paper"
+    broker: "ibkr"
+    paper_mode: true
+    instruments:
+      - "SPY"
+      # I top picks dello Stock Selector sono dinamici, gestiti dal modulo strategia.
+    timeframes_default:
+      - "D1"
+
+# ===========================
+# Filtri condizionati al worldmonitor (Stage 5)
+# Quando worldmonitor è collegato, regole come:
+# - Se 7-signal radar = "CASH" → disabilita strategie aggressive su crypto/forex
+# - Se geopolitical_alert = "HIGH" → disabilita XAUUSD long
+# Verranno aggiunti qui in Stage 5.
+# ===========================
+worldmonitor_filters:
+  enabled: false  # Diventerà true in Stage 5
+  rules: []

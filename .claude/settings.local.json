@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest tests/test_stock_selector_scoring.py -v)",
+      "Bash(python -m pytest tests/test_stock_selector_scoring.py)"
+    ]
+  }
+}

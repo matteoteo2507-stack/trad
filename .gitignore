@@ -1,0 +1,53 @@
+# Ambiente
+.env
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# Notebook
+.ipynb_checkpoints/
+
+# Output e cache
+data/cache/
+data/*.json
+logs/
+output/
+*.log
+backtest_results/
+*.xlsx
+*.ods
+!Top_Picks*.ods
+!Analisi_Completa*.ods
+
+# Stato runtime strategie (input umano + state persistente)
+strategies/confluence_levels/levels.yaml
+strategies/*/state.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribuzioni e segreti
+*.key
+*.pem
+secrets/

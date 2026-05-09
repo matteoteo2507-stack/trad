@@ -1,0 +1,39 @@
+# Parametri globali di gestione del rischio.
+# Tutte le strategie e tutti i broker rispettano questi limiti via "risk gate".
+
+# Drawdown massimo (% del capitale iniziale) oltre il quale tutte le strategie vengono sospese.
+max_drawdown_pct: 0.15  # 15%
+
+# Drawdown giornaliero massimo (% del capitale corrente).
+max_daily_drawdown_pct: 0.05  # 5%
+
+# Size massima per singolo trade (% del capitale corrente).
+max_size_per_trade_pct: 0.02  # 2%
+
+# Numero massimo di posizioni aperte simultaneamente.
+max_open_positions: 5
+
+# Numero massimo di posizioni aperte per singolo simbolo.
+max_positions_per_symbol: 1
+
+# Esposizione massima totale (somma % del capitale di tutte le posizioni).
+max_total_exposure_pct: 0.50  # 50%
+
+# Reward/Risk minimo accettato (sotto questo, il segnale viene scartato).
+min_reward_to_risk: 1.5
+
+# Stop trading dopo N perdite consecutive (cooldown).
+max_consecutive_losses: 4
+cooldown_minutes_after_max_losses: 60
+
+# Per il path-to-prop (challenge 1k$): regole specifiche da configurare quando arriviamo a Stage 7.
+# Le prop firm tipicamente richiedono:
+# - daily loss limit (es. -5%)
+# - total drawdown limit (es. -10%)
+# - profit target (es. +8%)
+# Da personalizzare in base al fornitore scelto.
+prop_challenge_rules:
+  enabled: false  # diventerà true in Stage 7
+  daily_loss_limit_pct: 0.05
+  total_drawdown_limit_pct: 0.10
+  profit_target_pct: 0.08

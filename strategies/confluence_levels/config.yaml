@@ -1,0 +1,50 @@
+# Parametri della strategia Confluence Levels (post-pivot 2026-05-05).
+#
+# La Confluence è SOLO NOTIFICA per design: l'utente ha deciso che è una
+# strategia umano-centrica e non sarà mai automatica. I flag legacy
+# (auto_place_pending, require_telegram_confirm, auto_be_management) sono stati
+# rimossi insieme al codice morto associato.
+
+# === Strumenti operativi ===
+symbols:
+  - EURUSD
+  - XAUUSD
+
+timeframe: M15      # con yfinance M15 è il sweet-spot: granularità sufficiente,
+                    # latenza dato ~1-2 minuti, gratis senza limiti pratici.
+lookback_bars: 200
+
+# === Soglie di trigger ===
+proximity_alert_pips: 15          # entro quanti pip dal livello scattare la notifica
+min_rr: 3.0                       # RR minimo per considerare il livello operativo
+
+# Massimo SL strutturale per simbolo (in pip). Se il livello richiederebbe SL più
+# largo → skip (livello troppo distante per essere operativo).
+max_sl_pips:
+  EURUSD: 30
+  XAUUSD: 200
+
+# Buffer di default tra livello e SL (in pip), se non specificato sul livello.
+default_sl_buffer_pips:
+  EURUSD: 5
+  XAUUSD: 30
+
+# === Filtri operativi ===
+session_rome:                     # finestra operativa in ora di Roma
+  start: "09:00"
+  end: "18:00"
+
+news_block_minutes: 30            # skip se evento high impact entro questa finestra
+                                  # (richiede data/news_calendar.csv compilato a mano,
+                                  # Stage 5 → integrazione worldmonitor automatica)
+
+# === Input umano ===
+levels_file: "levels.yaml"        # relativo alla cartella della strategia
+
+# === Runtime ===
+poll_interval_seconds: 60         # frequenza polling. Con yfinance M15, valori
+                                  # < 30s sprecano risorse (il dato non aggiorna).
+default_valid_minutes: 240        # validità del segnale Telegram
+
+# === Stato persistente ===
+state_dir: "data"                 # contiene notifications_sent.json

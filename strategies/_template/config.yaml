@@ -1,0 +1,41 @@
+# Parametri della strategia. Mai hardcodare valori nel codice — tutto qui.
+
+# Strumenti su cui opera la strategia
+symbols:
+  - "EURUSD"
+
+# Timeframe operativo (M1, M5, M15, M30, H1, H4, D1, W1)
+timeframe: "H1"
+
+# Quante candele indietro vuole vedere la strategia per decidere
+lookback_bars: 200
+
+# Indicatori richiesti (verranno calcolati dal data layer prima di chiamare should_enter)
+indicators:
+  - "rsi_14"
+  - "ema_50"
+  - "ema_200"
+  - "atr_14"
+
+# Risk management
+risk:
+  # % del capitale a rischio per ogni trade (es. 0.01 = 1%)
+  risk_per_trade: 0.01
+  # SL come multiplo dell'ATR
+  sl_atr_multiplier: 1.5
+  # TP come multiplo dell'ATR
+  tp_atr_multiplier: 3.0
+  # Reward/Risk minimo accettato
+  min_rr: 1.5
+
+# Filtri temporali (opzionali)
+filters:
+  # Solo durante queste sessioni (UTC). Vuoto = sempre.
+  trading_sessions: []
+  # Skip se ci sono news ad alto impatto previste entro X minuti
+  avoid_news_minutes_before: 30
+
+# Soglie specifiche della strategia (esempio)
+strategy_params:
+  rsi_oversold: 30
+  rsi_overbought: 70

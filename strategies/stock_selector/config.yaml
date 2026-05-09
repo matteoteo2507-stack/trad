@@ -1,0 +1,84 @@
+# Parametri Stock Selector V6.0. Tutti i valori magici del notebook vivono qui.
+
+# Benchmark di default per il calcolo RRG
+default_benchmark: "^GSPC"
+
+# Soglia tassi: oltre questa percentuale i tassi sono considerati "alti"
+high_rate_threshold: 3.0
+
+# Punteggio minimo per entrare nelle Top Picks
+top_picks_min_score: 5
+
+# Scoring fondamentale (max 6 punti) — soglie identiche al notebook V6.0
+scoring:
+  debt_to_equity:
+    full_point_below: 0.5     # D/E < 0.5 → +1
+    half_point_below: 1.0     # 0.5 ≤ D/E ≤ 1.0 → +0.5
+  ebitda_margin:
+    full_point_above: 0.20    # MOL > 20% → +1
+    half_point_above: 0.10    # MOL > 10% → +0.5
+  profit_margin_above: 0.08   # Profit margin > 8% → +1
+  # P/E > 0 → +1; EPS > 0 → +1; ROE > risk_free_decimal → +1
+
+# RRG (Relative Rotation Graph)
+rrg:
+  min_history_bars: 100       # Sotto a questo lookback non calcoliamo
+  rs_window: 50               # Media mobile sull'RS
+  momentum_lookback: 10       # Differenza per il momentum
+
+# Filtri di scenario macro
+scenario_filters:
+  defensive:
+    de_max: 0.8
+    beta_max: 1.0
+  aggressive:
+    beta_min: 1.1
+  quality:
+    roe_min: 0.15
+    de_max: 1.0
+
+# Download dati storici
+data:
+  history_period: "1y"
+  history_interval: "1d"
+  # Pausa tattica nel ciclo per evitare blocchi yfinance (ogni N ticker)
+  rate_limit_every: 15
+  rate_limit_seconds: 1
+  # Lista di emergenza se GitHub non risponde (top 30 SP500 per market cap)
+  fallback_tickers:
+    - AAPL
+    - MSFT
+    - GOOGL
+    - AMZN
+    - NVDA
+    - TSLA
+    - META
+    - BRK-B
+    - UNH
+    - JNJ
+    - XOM
+    - JPM
+    - PG
+    - V
+    - LLY
+    - HD
+    - MA
+    - CVX
+    - ABBV
+    - PEP
+    - KO
+    - MRK
+    - BAC
+    - COST
+    - PFE
+    - TMO
+    - AVGO
+    - CSCO
+    - MCD
+    - DIS
+  sp500_csv_url: "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/master/data/constituents.csv"
+
+# Output Excel
+output:
+  top_picks_filename: "Top_Picks.xlsx"
+  full_analysis_filename: "Analisi_Completa.xlsx"
