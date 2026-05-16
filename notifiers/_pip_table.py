@@ -27,8 +27,8 @@ _PIP_TABLE: dict[str, PipSpec] = {
     "USDCAD": PipSpec(decimals=5, pip_size=0.0001),
     "USDCHF": PipSpec(decimals=5, pip_size=0.0001),
     "USDJPY": PipSpec(decimals=3, pip_size=0.01),
-    # Metalli
-    "XAUUSD": PipSpec(decimals=2, pip_size=0.01),
+    # Metalli — convenzione: 1 pip XAU = $0.10 (= 10 tick broker da 0.01)
+    "XAUUSD": PipSpec(decimals=2, pip_size=0.10),
     "XAGUSD": PipSpec(decimals=3, pip_size=0.001),
     # Indici (CFD AvaTrade)
     "US500": PipSpec(decimals=1, pip_size=0.1),

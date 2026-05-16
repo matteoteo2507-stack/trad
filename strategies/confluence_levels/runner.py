@@ -29,6 +29,9 @@ from notifiers.base import NotifierBase
 from .news_filter import is_blocked as news_is_blocked
 from .strategy import ConfluenceLevelsStrategy, LevelEvaluation
 
+
+HEARTBEAT_INTERVAL_SECONDS = 15 * 60  # log riassuntivo ogni 15 minuti
+
 logger = logging.getLogger(__name__)
 
 
@@ -85,6 +88,8 @@ class ConfluenceRunner:
             else Path(strategy.config.get("state_dir", "data"))
         )
         self.state = _load_state(self.state_dir)
+        # Heartbeat: ultimo timestamp di log riassuntivo per simbolo.
+        self._last_heartbeat: dict[str, datetime] = {}
 
     # ---- Loop principale ------------------------------------------------
 
@@ -144,6 +149,8 @@ class ConfluenceRunner:
                     continue
                 self._send_proximity_alert(ev, now=now)
 
+            self._maybe_log_heartbeat(symbol, price, evaluations, now)
+
         _save_state(self.state, self.state_dir)
         return all_evaluations
 
@@ -161,6 +168,41 @@ class ConfluenceRunner:
             return
         key = self.strategy.notif_key(ev.level, now)
         self.state.notifications_sent.add(key)
+
+    # ---- Heartbeat ------------------------------------------------------
+
+    def _maybe_log_heartbeat(
+        self,
+        symbol: str,
+        price: float,
+        evaluations: list[LevelEvaluation],
+        now: datetime,
+    ) -> None:
+        """Log INFO ogni HEARTBEAT_INTERVAL_SECONDS con prezzo + livello più vicino.
+
+        Serve a distinguere "runner sano ma niente entro proximity" da "runner
+        bloccato/silenzioso per bug". Senza questo, tra una notifica e l'altra
+        non c'è traccia che il runner stia osservando il prezzo.
+        """
+        last = self._last_heartbeat.get(symbol)
+        if last is not None and (now - last).total_seconds() < HEARTBEAT_INTERVAL_SECONDS:
+            return
+        self._last_heartbeat[symbol] = now
+
+        if not evaluations:
+            logger.info("[heartbeat] %s price=%s nessun livello attivo", symbol, price)
+            return
+
+        nearest = min(evaluations, key=lambda e: e.distance_pips)
+        logger.info(
+            "[heartbeat] %s price=%s nearest=%s @%.2f dist=%.1f pip (%s)",
+            symbol,
+            price,
+            nearest.level.id,
+            nearest.level.price,
+            nearest.distance_pips,
+            "PASS" if nearest.passed else nearest.reason,
+        )
 
     # ---- Helper ---------------------------------------------------------
 
