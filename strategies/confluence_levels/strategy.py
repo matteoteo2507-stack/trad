@@ -154,8 +154,8 @@ class ConfluenceLevelsStrategy(StrategyBase):
         if news_blocked:
             return LevelEvaluation(level, distance, False, "news high entro finestra")
 
-        # Prossimità.
-        threshold = float(self.config["proximity_alert_pips"])
+        # Prossimità — soglia per-simbolo (dict in config.yaml).
+        threshold = self._proximity_pips(level.symbol)
         if distance > threshold:
             return LevelEvaluation(
                 level, distance, False, f"distanza {distance:.1f} pip > {threshold}"
@@ -217,6 +217,22 @@ class ConfluenceLevelsStrategy(StrategyBase):
             if norm.startswith(str(key).upper()):
                 return float(val)
         return None
+
+    def _proximity_pips(self, symbol: str) -> float:
+        """Soglia di prossimità per-simbolo. Accetta dict o int (back-compat)."""
+        raw = self.config.get("proximity_alert_pips")
+        if raw is None:
+            raise KeyError("proximity_alert_pips mancante in config.yaml")
+        if isinstance(raw, dict):
+            norm = symbol.upper().split(".")[0]
+            for key, val in raw.items():
+                if norm.startswith(str(key).upper()):
+                    return float(val)
+            raise KeyError(
+                f"proximity_alert_pips: nessuna voce per simbolo '{symbol}' "
+                f"(disponibili: {sorted(raw.keys())})"
+            )
+        return float(raw)
 
     def _sl_buffer_pips(self, level: Level) -> float:
         if level.sl_buffer_pips is not None:

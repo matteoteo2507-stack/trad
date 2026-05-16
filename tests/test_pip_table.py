@@ -21,7 +21,8 @@ def test_eurusd_decimali_e_pip():
 def test_xauusd_decimali_e_pip():
     spec = get_pip_spec("XAUUSD")
     assert spec.decimals == 2
-    assert spec.pip_size == 0.01
+    # 1 pip XAU = $0.10 (convenzione broker forex: 10 tick da 0.01)
+    assert spec.pip_size == 0.10
 
 
 def test_usdjpy_pip_size():
@@ -55,8 +56,8 @@ def test_pip_delta_eurusd():
 
 
 def test_pip_delta_xau():
-    """2380 → 2378 = 200 pip su XAU (pip = 0.01)."""
-    assert price_delta_pips("XAUUSD", 2380.0, 2378.0) == pytest.approx(200, rel=0.01)
+    """2380 → 2378 = 20 pip su XAU (pip = 0.10, convenzione broker forex)."""
+    assert price_delta_pips("XAUUSD", 2380.0, 2378.0) == pytest.approx(20, rel=0.01)
 
 
 def test_pct_delta_segno_corretto():

@@ -15,16 +15,23 @@ timeframe: M15      # con yfinance M15 è il sweet-spot: granularità sufficient
 lookback_bars: 200
 
 # === Soglie di trigger ===
-proximity_alert_pips: 15          # entro quanti pip dal livello scattare la notifica
+# Entro quanti pip dal livello scattare la notifica. Per-simbolo: i mercati
+# hanno volatilità e pip-size diversi, una soglia unica era inadeguata per XAU.
+# (pip XAU = $0.10 → 50 pip = $5 di tolleranza, congruo coi suoi swing intraday)
+proximity_alert_pips:
+  EURUSD: 15
+  XAUUSD: 50
 min_rr: 3.0                       # RR minimo per considerare il livello operativo
 
 # Massimo SL strutturale per simbolo (in pip). Se il livello richiederebbe SL più
 # largo → skip (livello troppo distante per essere operativo).
+# Pip XAU = $0.10 → 200 pip = $20 di SL strutturale max.
 max_sl_pips:
   EURUSD: 30
   XAUUSD: 200
 
 # Buffer di default tra livello e SL (in pip), se non specificato sul livello.
+# Pip XAU = $0.10 → 30 pip = $3 di buffer (lo SL si piazza $3 oltre il livello).
 default_sl_buffer_pips:
   EURUSD: 5
   XAUUSD: 30
