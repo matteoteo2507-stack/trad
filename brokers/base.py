@@ -43,6 +43,7 @@ class BrokerPosition:
     unrealized_pnl: float
     sl: Optional[float]
     tp: Optional[float]
+    ticket: Optional[int] = None  # id posizione broker (per gestione per-ticket su hedging)
 
 
 @dataclass
@@ -110,6 +111,36 @@ class BrokerBase(ABC):
     def close_position(self, position: BrokerPosition) -> None:
         """Chiude la posizione data."""
         ...
+
+    # ---- Gestione per-ticket (account hedging) -------------------------
+    # Default broker-agnostici. I broker che supportano account hedging
+    # (più posizioni sullo stesso simbolo, es. MT5) sovrascrivono questi metodi.
+
+    def get_positions(self, symbol: str) -> list[BrokerPosition]:
+        """Tutte le posizioni aperte sul simbolo (≥1 su account hedging).
+
+        Default: avvolge `get_position` in una lista. I broker hedging
+        restituiscono tutte le posizioni, ciascuna col proprio `ticket`.
+        """
+        pos = self.get_position(symbol)
+        return [pos] if pos is not None else []
+
+    def get_price(self, symbol: str) -> float:
+        """Prezzo corrente di mercato del simbolo (mid bid/ask)."""
+        raise NotImplementedError(f"{self.name} non espone get_price")
+
+    def modify_position_by_ticket(
+        self,
+        ticket: int,
+        new_sl: Optional[float] = None,
+        new_tp: Optional[float] = None,
+    ) -> None:
+        """Modifica SL/TP della posizione identificata dal ticket."""
+        raise NotImplementedError(f"{self.name} non supporta la gestione per-ticket")
+
+    def close_position_by_ticket(self, ticket: int) -> None:
+        """Chiude la singola posizione identificata dal ticket."""
+        raise NotImplementedError(f"{self.name} non supporta la gestione per-ticket")
 
     def is_paper(self) -> bool:
         return self.paper_mode

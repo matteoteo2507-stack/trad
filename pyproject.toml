@@ -38,8 +38,11 @@ MetaTrader5 = { version = "^5.0.45", markers = "sys_platform == 'win32'" }
 # Broker — Crypto (ccxt copre Coinbase, Binance, +100 exchange)
 ccxt = "^4.3.0"
 
-# Notifier — Telegram
+# Notifier — Telegram (outbound, Bot API)
 python-telegram-bot = "^21.0"
+
+# Signal copier — lettura canali Telegram via account utente (MTProto)
+telethon = "^1.36.0"
 
 # Stage 4 — Consensus layer (LLM)
 langchain = "^0.3.0"

@@ -14,6 +14,14 @@ timeframe: M15      # con yfinance M15 è il sweet-spot: granularità sufficient
                     # latenza dato ~1-2 minuti, gratis senza limiti pratici.
 lookback_bars: 200
 
+# === Risk (per calcolo lottaggio suggerito nelle notifiche Telegram) ===
+# La Confluence non piazza ordini, ma suggerisce il lottaggio nel messaggio
+# Telegram così riduci la friction al momento di eseguire manualmente.
+# Aggiornare account_balance quando cambia (mensilmente, dopo prelievi/depositi).
+risk:
+  account_balance: 10000      # saldo conto in USD (demo MetaQuotes)
+  risk_per_trade: 0.01        # 1% del balance per trade
+
 # === Soglie di trigger ===
 # Entro quanti pip dal livello scattare la notifica. Per-simbolo: i mercati
 # hanno volatilità e pip-size diversi, una soglia unica era inadeguata per XAU.
@@ -45,8 +53,15 @@ news_block_minutes: 30            # skip se evento high impact entro questa fine
                                   # (richiede data/news_calendar.csv compilato a mano,
                                   # Stage 5 → integrazione worldmonitor automatica)
 
-# === Input umano ===
-levels_file: "levels.yaml"        # relativo alla cartella della strategia
+# === Input livelli ===
+# Lista di file letti in ordine. Il primo è quello manuale (umano-centrico),
+# il secondo è il file shadow generato da Confluence Auto (algoritmico, suffisso
+# "-AUTO" sugli ID per distinguibilità). Eventuali file mancanti vengono
+# saltati con warning, quindi puoi commentare il secondo finché non avrai
+# ancora generato `levels_auto.yaml` per la prima volta.
+levels_file:
+  - "levels.yaml"
+  - "levels_auto.yaml"
 
 # === Runtime ===
 poll_interval_seconds: 60         # frequenza polling. Con yfinance M15, valori

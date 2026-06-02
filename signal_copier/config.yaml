@@ -1,0 +1,59 @@
+# Configurazione signal copier. Solo parametri NON sensibili (i segreti — api_id,
+# api_hash, session — stanno in .env). Vedi signal_copier/README.md.
+
+# Modalità di default. "dry_run" = parsa e logga senza inviare. "live" = apre su MT5.
+# Passare a "live" è una scelta esplicita (CLI --mode live), non un default silenzioso.
+mode: "dry_run"
+
+# Mappa canale Telegram → channel_id del parser registrato.
+# Chiave = username del canale senza @ (o id numerico). Valore = channel_id parser.
+channels:
+  XAUUSD_AnalysisLab: "xauusd_analysislab"
+
+# Quale broker MT5 usare in live (riferito alle credenziali MT5_DEMO*_ in .env).
+# MT5_DEMO3 = account MetaQuotes 10685251 (hedge), usato anche per London.
+broker_account: "MT5_DEMO3"
+
+# Trade journal append-only (JSONL): ogni evento del copier (segnale, gambe,
+# gestione) viene loggato qui per analisi/quant-review. Sostituisce il Notion
+# manuale. Il dryrun su esempi offline scrive su <stem>_dryrun.jsonl.
+journal_file: "logs/signal_copier_journal.jsonl"
+
+copier:
+  # Simboli ammessi (difesa contro parse spuri o canali che cambiano asset).
+  symbols_whitelist:
+    - "XAUUSD"
+
+  risk:
+    # Rischio TOTALE per segnale (somma di tutte le gambe), in frazione del balance.
+    risk_per_signal_pct: 0.01  # 1%
+    # Lo split è equo sulle N gambe (una per TP).
+    split_equally: true
+
+  # Vincoli broker per l'arrotondamento dei lotti.
+  min_lot: 0.01
+  lot_step: 0.01
+  max_total_lots: 5.0
+
+  # Gate anti-ritardo: se al momento del segnale il prezzo si è già mosso troppo
+  # (eravamo offline / latenza), non rincorriamo il trade.
+  anti_late:
+    enabled: true
+    max_slippage_pips: 20
+
+  # Gestione posizione.
+  manage:
+    # Su quale TP raggiunto spostare lo SL a break-even (1 = dopo TP1).
+    move_sl_to_be_on_tp: 1
+
+  # Entrata sul messaggio trigger "BUY/SELL NOW": il mentore entra a mercato in
+  # quel momento, quindi apriamo subito a mercato (niente attesa del messaggio
+  # coi livelli, che arriva ~1 min dopo quando il prezzo si è già mosso).
+  entry:
+    on_trigger: true        # apri sul "NOW"; il messaggio coi livelli riconcilia SL/TP esatti
+    sl_distance: 10.0       # distanza SL dall'entry in PREZZO (XAU: ~$10, fisso su questo canale)
+    tp_offsets: [5.0, 10.0, 15.0]  # TP PROVVISORI in prezzo finché non arrivano i livelli esatti
+                                   # (n. gambe = lunghezza di questa lista)
+
+  # Usato SOLO in dry-run per dimensionare (in live il balance arriva dal broker).
+  account_balance_hint: 10000

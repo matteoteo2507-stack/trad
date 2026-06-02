@@ -6,6 +6,7 @@ pura per uso programmatico. La CLI è in `__main__.py`.
 
 from __future__ import annotations
 
+import json
 import logging
 import time
 from datetime import datetime
@@ -89,7 +90,17 @@ class StockSelector:
 
         full_sorted = sorted(picks, key=lambda p: p.score, reverse=True)
         min_score = self.config["top_picks_min_score"]
-        top = [p for p in full_sorted if p.score >= min_score]
+        require_match = self.config.get("top_picks_require_macro_match", False)
+        top = [
+            p for p in full_sorted
+            if p.score >= min_score
+            and (not require_match or p.target_match.startswith("SI"))
+        ]
+
+        out = Path(output_dir)
+        prev_tickers = self._load_previous_top_tickers(out) if save_excel else []
+        current_tickers = {p.ticker for p in top}
+        sell_signals = self._compute_sell_signals(prev_tickers, current_tickers, full_sorted)
 
         result = SelectionResult(
             scenario=scenario,
@@ -102,7 +113,6 @@ class StockSelector:
         )
 
         if save_excel and full_sorted:
-            out = Path(output_dir)
             out.mkdir(parents=True, exist_ok=True)
             top_path = out / self.config["output"]["top_picks_filename"]
             full_path = out / self.config["output"]["full_analysis_filename"]
@@ -111,7 +121,97 @@ class StockSelector:
             result.excel_top_picks_path = str(top_path)
             result.excel_full_analysis_path = str(full_path)
 
+            if sell_signals:
+                sell_path = out / self.config["output"]["sell_signals_filename"]
+                self._save_sell_signals_excel(sell_signals, sell_path)
+                logger.info("Sell signals: %d ticker da vendere (%s)",
+                            len(sell_signals), sell_path)
+            else:
+                logger.info("Nessun sell signal (prima run o nessuna uscita).")
+
+            self._save_current_top_tickers(out, sorted(current_tickers))
+
         return result
+
+    # ---- Sell signals -------------------------------------------------------
+
+    def _load_previous_top_tickers(self, output_dir: Path) -> list[str]:
+        state_path = output_dir / self.config["output"]["previous_picks_state_filename"]
+        if not state_path.exists():
+            return []
+        try:
+            data = json.loads(state_path.read_text(encoding="utf-8"))
+            return list(data.get("tickers", []))
+        except Exception as exc:
+            logger.warning("Stato precedente illeggibile (%s): %s", state_path, exc)
+            return []
+
+    def _save_current_top_tickers(self, output_dir: Path, tickers: list[str]) -> None:
+        state_path = output_dir / self.config["output"]["previous_picks_state_filename"]
+        payload = {
+            "saved_at": datetime.utcnow().isoformat(),
+            "tickers": tickers,
+        }
+        state_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+    def _compute_sell_signals(
+        self,
+        prev_tickers: list[str],
+        current_tickers: set[str],
+        full_sorted: list[StockPick],
+    ) -> list[dict[str, Any]]:
+        """Calcola ticker che erano top picks ma non lo sono più.
+
+        Assunzione operativa: l'utente compra TUTTE le top picks della run, quindi
+        il "portafoglio" implicito coincide con la lista precedente. Vendere = uscire
+        dalla lista corrente.
+        """
+        if not prev_tickers:
+            return []
+        exited = [t for t in prev_tickers if t not in current_tickers]
+        if not exited:
+            return []
+        by_ticker = {p.ticker: p for p in full_sorted}
+        signals: list[dict[str, Any]] = []
+        min_score = self.config["top_picks_min_score"]
+        require_match = self.config.get("top_picks_require_macro_match", False)
+        for t in exited:
+            p = by_ticker.get(t)
+            if p is None:
+                reason = "Ticker non più presente nell'universo analizzato"
+            else:
+                reasons = []
+                if p.score < min_score:
+                    reasons.append(f"score sceso a {p.score} (< {min_score})")
+                if require_match and not p.target_match.startswith("SI"):
+                    reasons.append(f"target_match={p.target_match} (scenario cambiato)")
+                reason = "; ".join(reasons) or "Uscita dalle top picks"
+            signals.append({
+                "Ticker": t,
+                "Settore": p.sector if p else "N/A",
+                "Score attuale": p.score if p else None,
+                "RRG attuale": p.rrg.value if p else "N/A",
+                "Target Match": p.target_match if p else "N/A",
+                "Motivo Sell": reason,
+            })
+        return signals
+
+    def _save_sell_signals_excel(self, signals: list[dict[str, Any]], path: Path) -> None:
+        df = pd.DataFrame(signals)
+        try:
+            with pd.ExcelWriter(path, engine="xlsxwriter") as writer:
+                df.to_excel(writer, sheet_name="Sell", index=False)
+                wb = writer.book
+                ws = writer.sheets["Sell"]
+                red = wb.add_format({"bg_color": "#FFC7CE", "font_color": "#9C0006"})
+                ws.set_column("A:F", 22)
+                ws.conditional_format(
+                    "A2:A500",
+                    {"type": "no_blanks", "format": red},
+                )
+            logger.info("Salvato: %s", path)
+        except Exception as exc:
+            logger.error("Errore salvataggio %s: %s", path, exc)
 
     # ---- Helpers interni ----------------------------------------------------
 

@@ -1,0 +1,95 @@
+# Confluence Auto — parametri detector algoritmici
+#
+# Tutti i numeri qui sono "calibrati a occhio" sui regimi forex/XAU tipici.
+# Il Quant Reviewer (Stage 2.5) li tunerà via PBO/walk-forward quando avrà
+# abbastanza dati di confronto manuale vs auto.
+
+# === Strumenti operativi ===
+symbols:
+  EURUSD:
+    yfinance_ticker: "EURUSD=X"
+    mt5_symbol: "EURUSD"
+    pip_size: 0.0001
+    proximity_pips: 15
+  XAUUSD:
+    yfinance_ticker: "GC=F"           # gold futures CME (XAUUSD=X non esposto)
+    mt5_symbol: "XAUUSD"
+    pip_size: 0.10                    # 1 pip XAU = $0.10 (convenzione retail)
+    proximity_pips: 50
+
+# === Data source ===
+data_source:
+  prefer: "mt5"                       # "mt5" o "yfinance". Cade in fallback su yfinance se MT5 non disponibile.
+  bars_d1: 400                        # ~1.5 anni di D1 per pivot di lungo periodo
+  bars_h4: 600                        # ~4 mesi di H4 per pivot intraday
+  bars_m15_for_poc: 2880              # ~30 giorni di M15 per Volume Profile mensile
+
+# === Detector S/R (swing pivots + cluster) ===
+sr:
+  # ZigZag threshold = movimento minimo % per qualificare uno swing.
+  # Più alto = pivot più "robusti" ma meno numerosi.
+  zigzag_threshold_atr_mult:
+    d1: 1.5                           # swing significativo se > 1.5 × ATR(14) D1
+    h4: 1.2
+  # Cluster width: pivot entro questa distanza vengono fusi in un livello unico.
+  cluster_width_pips:
+    EURUSD: 12
+    XAUUSD: 80
+  # Soglia minima di "touch" per qualificare il livello (1 = anche pivot singolo).
+  min_touches: 1
+  # Numero massimo di livelli S/R per simbolo (top-N per touch count).
+  max_levels_per_tf:
+    d1: 6
+    h4: 4
+
+# === Detector S/D (base-impulse-base) ===
+sd:
+  # Base = K barre consecutive con range < base_range_atr_mult × ATR.
+  base_min_bars: 2
+  base_max_bars: 6
+  base_range_atr_mult: 0.5
+  # Impulse = candela con range >= impulse_atr_mult × ATR.
+  impulse_atr_mult: 1.5
+  # Freshness: numero massimo di touch dopo creazione perché la zona resti valida.
+  max_touches_for_valid: 1
+  # Massimo numero di zone S/D per timeframe.
+  max_zones_per_tf:
+    d1: 4
+    h4: 6
+  # Età massima della zona (giorni) — zone più vecchie scartate.
+  max_age_days:
+    d1: 180
+    h4: 60
+
+# === Detector POC / Volume Profile ===
+poc:
+  # Bins per il volume histogram (più alto = risoluzione più fine).
+  n_bins: 100
+  # Window in barre M15.
+  weekly_window_m15: 480              # 5 giorni × 96 M15
+  monthly_window_m15: 2080            # ~21.5 giorni × 96 M15
+  # Value Area: porzione del volume totale per VAH/VAL.
+  value_area_pct: 0.70
+  # Soglia per HVN/LVN (% del POC).
+  hvn_threshold_pct: 0.7              # bin >= 70% del POC = HVN
+  lvn_threshold_pct: 0.2              # bin <= 20% del POC = LVN
+
+# === Confluenza cross-detector ===
+confluence:
+  # Distanza max in pip perché 2 livelli di natura diversa siano in confluenza.
+  match_window_pips:
+    EURUSD: 10
+    XAUUSD: 50
+  # Numero minimo di detector concordanti per emettere il livello AUTO.
+  min_detectors: 2
+  # I tipi auto-generati devono finire in `levels_auto.yaml` con id sufficient:
+  # tutti i livelli auto hanno suffisso "-AUTO" per essere distinguibili
+  # nelle notifiche Telegram e nel journal.
+
+# === Output ===
+output:
+  # File path RELATIVO alla cartella della strategia (= strategies/confluence_auto/).
+  # Il loader di confluence_levels lo caricherà come secondary file.
+  yaml_path: "../confluence_levels/levels_auto.yaml"
+  # Durata di validità dei livelli auto (settimana entrante).
+  valid_for_days: 7

@@ -33,8 +33,8 @@
 
 #include <Trade\Trade.mqh>
 
-#include "include/telegram.mqh"
-#include "include/helpers.mqh"
+#include <TradingSystemWorkspace/telegram.mqh>
+#include <TradingSystemWorkspace/helpers.mqh>
 
 //+------------------------------------------------------------------+
 //| Inputs (esposti nel dialog dell'EA)                              |
@@ -52,9 +52,19 @@ input int    InpTimeStopMinUtc        = 0;
 
 input group "=== Soglie ==="
 input double InpBreakoutBufferAtr     = 0.10;  // Buffer (frazione di ATR_D1)
-input double InpTpRMultiple           = 1.5;   // TP come multiplo di R
+input double InpTpRMultiple           = 1.5;   // TP come multiplo di R (usato in FIXED_RR e PARTIAL_TRAIL)
 input double InpMaxRangeToAtrRatio    = 1.5;   // Skip se range >= ratio × ATR_D1
 input int    InpAtrPeriod             = 14;    // ATR periodi (su D1)
+
+input group "=== Exit mode (A/B/C in parallelo su account demo distinti) ==="
+// FIXED_RR     = baseline: TP fisso a InpTpRMultiple × R (variante A).
+// PARTIAL_TRAIL= TP parziale 50% a 1R, trailing ATR(M15)·InpTrailAtrMult sul resto (B).
+// FULL_TRAIL   = no TP fisso; trailing ATR(M15)·InpTrailAtrMult dall'apertura (C).
+input int    InpExitMode              = 0;     // 0=FIXED_RR, 1=PARTIAL_TRAIL, 2=FULL_TRAIL
+input double InpPartialAtR            = 1.0;   // R-multiplo del partial close (PARTIAL_TRAIL)
+input double InpPartialFraction       = 0.5;   // Frazione di volume chiusa al partial (0..1)
+input int    InpTrailAtrPeriod        = 14;    // Periodi ATR per trailing (M15)
+input double InpTrailAtrMult          = 1.5;   // Distanza trailing = mult × ATR_M15
 
 input group "=== Filtri eventi ==="
 input bool   InpSkipNfp               = true;  // Skip primo venerdì del mese
@@ -83,9 +93,15 @@ struct DayState
    ulong    buy_ticket;        // ticket pending buy_stop
    ulong    sell_ticket;       // ticket pending sell_stop
    bool     one_side_filled;   // una posizione si è aperta
+   // Stato per PARTIAL_TRAIL / FULL_TRAIL:
+   bool     partial_done;      // true dopo aver chiuso la quota parziale a 1R
+   double   entry_price;       // prezzo medio di apertura (long o short)
+   double   initial_risk;      // |entry - SL| iniziale, usato per il partial trigger
+   long     position_type;     // POSITION_TYPE_BUY / POSITION_TYPE_SELL
+   double   current_sl;        // SL corrente (potenzialmente trailato)
 };
 
-DayState g_day = { "", false, 0, 0, false };
+DayState g_day = { "", false, 0, 0, false, false, 0.0, 0.0, -1, 0.0 };
 CTrade   g_trade;
 string   g_fomc_dates[];
 
@@ -148,6 +164,11 @@ void OnTick()
       g_day.buy_ticket      = 0;
       g_day.sell_ticket     = 0;
       g_day.one_side_filled = false;
+      g_day.partial_done    = false;
+      g_day.entry_price     = 0.0;
+      g_day.initial_risk    = 0.0;
+      g_day.position_type   = -1;
+      g_day.current_sl      = 0.0;
    }
 
    // 1. Time stop: chiudi posizioni aperte oltre l'orario.
@@ -168,6 +189,12 @@ void OnTick()
    {
       g_day.one_side_filled = true;
       CancelOrphanedAfterFill();
+   }
+
+   // 3b. Gestione exit avanzati per PARTIAL_TRAIL e FULL_TRAIL.
+   if(g_day.one_side_filled && InpExitMode != 0)
+   {
+      ManageActivePositionExits();
    }
 
    // 4. Build piano se siamo nella finestra entry e non ancora costruito.
@@ -253,17 +280,41 @@ void TryBuildAndPlace(const datetime now)
       return;
    }
 
-   double buy_tp  = NormalizePrice(buy_entry  + InpTpRMultiple * risk_long);
-   double sell_tp = NormalizePrice(sell_entry - InpTpRMultiple * risk_short);
+   // TP fisso solo in FIXED_RR e PARTIAL_TRAIL (in PARTIAL_TRAIL serve come
+   // anchor del partial close); in FULL_TRAIL non lo settiamo (0 = nessun TP).
+   double buy_tp  = 0.0;
+   double sell_tp = 0.0;
+   if(InpExitMode == 0)
+   {
+      // FIXED_RR
+      buy_tp  = NormalizePrice(buy_entry  + InpTpRMultiple * risk_long);
+      sell_tp = NormalizePrice(sell_entry - InpTpRMultiple * risk_short);
+   }
+   else if(InpExitMode == 1)
+   {
+      // PARTIAL_TRAIL — il partial close è gestito dinamicamente, ma settiamo
+      // comunque un TP "sicurezza" molto largo (= 5R) per evitare posizioni
+      // infinite in caso di crash dell'EA.
+      buy_tp  = NormalizePrice(buy_entry  + 5.0 * risk_long);
+      sell_tp = NormalizePrice(sell_entry - 5.0 * risk_short);
+   }
+   // InpExitMode == 2 (FULL_TRAIL) → no TP.
 
    // 6. Sizing.
    double volume = ComputeVolume(risk_long);
 
    // 7. Piazzamento.
-   bool buy_ok  = g_trade.BuyStop (volume, buy_entry,  _Symbol, buy_sl,  buy_tp);
+   // Il `comment` dell'ordine viene scritto nella colonna Comment della
+   // history MT5 → riconoscibilità immediata della variante senza dover
+   // guardare il magic. InpStrategyName è settabile per istanza dell'EA
+   // (es. "LB_FIXED_RR", "LB_PARTIAL_TRAIL", "LB_FULL_TRAIL").
+   string order_comment = InpStrategyName;
+   bool buy_ok  = g_trade.BuyStop(volume, buy_entry, _Symbol, buy_sl, buy_tp,
+                                  ORDER_TIME_GTC, 0, order_comment);
    ulong buy_ticket = (buy_ok ? g_trade.ResultOrder() : 0);
 
-   bool sell_ok = g_trade.SellStop(volume, sell_entry, _Symbol, sell_sl, sell_tp);
+   bool sell_ok = g_trade.SellStop(volume, sell_entry, _Symbol, sell_sl, sell_tp,
+                                   ORDER_TIME_GTC, 0, order_comment);
    ulong sell_ticket = (sell_ok ? g_trade.ResultOrder() : 0);
 
    if(!buy_ok || !sell_ok)
@@ -282,11 +333,13 @@ void TryBuildAndPlace(const datetime now)
    g_day.buy_ticket  = buy_ticket;
    g_day.sell_ticket = sell_ticket;
 
+   string exit_label = (InpExitMode == 0 ? "FIXED_RR" :
+                        (InpExitMode == 1 ? "PARTIAL_TRAIL" : "FULL_TRAIL"));
    string msg = StringFormat(
-      "📌 London Breakout %s %s\nrange %.5f, buffer %.5f, TP %.1fR\n"
+      "📌 London Breakout %s %s [%s]\nrange %.5f, buffer %.5f, TP_anchor %.1fR\n"
       "BUY  stop @ %s SL %s TP %s\n"
       "SELL stop @ %s SL %s TP %s\nvol=%.2f",
-      _Symbol, g_day.iso_date, range_width, buffer, InpTpRMultiple,
+      _Symbol, g_day.iso_date, exit_label, range_width, buffer, InpTpRMultiple,
       DoubleToString(buy_entry,  _Digits),
       DoubleToString(buy_sl,     _Digits),
       DoubleToString(buy_tp,     _Digits),
@@ -399,10 +452,118 @@ void CancelOrphanedAfterFill()
    if(side != "")
    {
       double fill_price = PositionGetDouble(POSITION_PRICE_OPEN);
+      double sl_price   = PositionGetDouble(POSITION_SL);
       string direction  = (side == "buy") ? "BUY" : "SELL";
+
+      // Cache stato per la gestione trailing/partial.
+      g_day.entry_price   = fill_price;
+      g_day.current_sl    = sl_price;
+      g_day.position_type = (side == "buy") ? POSITION_TYPE_BUY : POSITION_TYPE_SELL;
+      g_day.initial_risk  = MathAbs(fill_price - sl_price);
+      g_day.partial_done  = false;
+
       string msg = TG_FormatFill(InpStrategyName, _Symbol, direction, fill_price);
       PrintFormat("[%s] %s", InpStrategyName, msg);
       NotifyTelegram(msg);
+   }
+}
+
+//+------------------------------------------------------------------+
+//| ManageActivePositionExits — chiamato a ogni tick quando una      |
+//| posizione è aperta e InpExitMode != FIXED_RR.                    |
+//|                                                                  |
+//| PARTIAL_TRAIL (1): se non ancora fatto, chiudi `InpPartialFraction|
+//|   del volume al raggiungimento di InpPartialAtR × initial_risk;  |
+//|   poi trailing ATR(M15)·InpTrailAtrMult sul resto.               |
+//| FULL_TRAIL (2): trailing ATR(M15)·InpTrailAtrMult dal fill.      |
+//+------------------------------------------------------------------+
+void ManageActivePositionExits()
+{
+   if(g_day.initial_risk <= 0 || g_day.entry_price <= 0) return;
+
+   // Trova la posizione attiva.
+   ulong pos_ticket = 0;
+   double pos_volume = 0;
+   double pos_tp = 0;
+   for(int i = 0; i < PositionsTotal(); i++)
+   {
+      ulong t = PositionGetTicket(i);
+      if(t == 0) continue;
+      if(PositionGetInteger(POSITION_MAGIC) != (long)InpMagicNumber) continue;
+      if(PositionGetString(POSITION_SYMBOL) != _Symbol) continue;
+      pos_ticket = t;
+      pos_volume = PositionGetDouble(POSITION_VOLUME);
+      // Cattura il TP ORA che la posizione è selezionata: dopo una
+      // PositionClosePartial la selezione decade e PositionGetDouble
+      // tornerebbe 0, cancellando di fatto il TP nella PositionModify.
+      // La parziale preserva il TP sul residuo, quindi questo valore resta
+      // valido per entrambi i rami sotto.
+      pos_tp = PositionGetDouble(POSITION_TP);
+      break;
+   }
+   if(pos_ticket == 0) return;  // posizione chiusa (TP/SL)
+
+   bool is_long = (g_day.position_type == POSITION_TYPE_BUY);
+   double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+   double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+   double mark = is_long ? bid : ask;
+
+   // === Partial close (solo PARTIAL_TRAIL) ===
+   if(InpExitMode == 1 && !g_day.partial_done)
+   {
+      double trigger = is_long
+         ? g_day.entry_price + InpPartialAtR * g_day.initial_risk
+         : g_day.entry_price - InpPartialAtR * g_day.initial_risk;
+      bool hit = is_long ? (mark >= trigger) : (mark <= trigger);
+      if(hit)
+      {
+         double step = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
+         double vmin = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
+         if(step <= 0) step = 0.01;
+         double close_vol = MathFloor((pos_volume * InpPartialFraction) / step) * step;
+         if(close_vol >= vmin && close_vol < pos_volume)
+         {
+            if(g_trade.PositionClosePartial(pos_ticket, close_vol))
+            {
+               g_day.partial_done = true;
+               // BE shift: SL al breakeven sulla parte residua.
+               double new_sl = NormalizePrice(g_day.entry_price);
+               g_trade.PositionModify(pos_ticket, new_sl, pos_tp);
+               g_day.current_sl = new_sl;
+
+               string msg = StringFormat(
+                  "✂ %s partial close %.2f @ %s (≈%.1fR), SL→BE %s",
+                  _Symbol, close_vol, DoubleToString(mark, _Digits),
+                  InpPartialAtR, DoubleToString(new_sl, _Digits));
+               PrintFormat("[%s] %s", InpStrategyName, msg);
+               NotifyTelegram(msg);
+            }
+         }
+      }
+   }
+
+   // === Trailing stop (PARTIAL_TRAIL dopo partial, oppure FULL_TRAIL sempre) ===
+   bool do_trail = (InpExitMode == 2) ||
+                   (InpExitMode == 1 && g_day.partial_done);
+   if(do_trail)
+   {
+      double atr_m15 = H_ATR(_Symbol, PERIOD_M15, InpTrailAtrPeriod);
+      if(atr_m15 <= 0) return;
+      double trail_dist = InpTrailAtrMult * atr_m15;
+      double candidate_sl = is_long ? (mark - trail_dist) : (mark + trail_dist);
+      candidate_sl = NormalizePrice(candidate_sl);
+
+      // Solo mosse favorevoli al PnL (SL non torna mai indietro).
+      bool improving = is_long
+         ? (candidate_sl > g_day.current_sl)
+         : (candidate_sl < g_day.current_sl || g_day.current_sl == 0.0);
+      if(improving)
+      {
+         if(g_trade.PositionModify(pos_ticket, candidate_sl, pos_tp))
+         {
+            g_day.current_sl = candidate_sl;
+         }
+      }
    }
 }
 

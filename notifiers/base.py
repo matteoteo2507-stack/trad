@@ -56,6 +56,7 @@ class NotifierBase(ABC):
         sl: float,
         tp: float,
         rationale: str,
+        suggested_lots: float | None = None,
     ) -> None:
         """Notifica di prossimità a un livello (Confluence)."""
         return None

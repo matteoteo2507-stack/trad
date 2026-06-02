@@ -11,7 +11,7 @@ Sono i comandi che lanci tu. Sotto a ciascuno trovi tutta la catena di import.
 | `python -m strategies.confluence_levels run` | `strategies/confluence_levels/__main__.py` | Avvia il runner Confluence |
 | `python -m strategies.confluence_levels validate-levels` | (idem) | Valida `levels.yaml` |
 | `python -m strategies.confluence_levels dry-run` | (idem) | Simula a un prezzo dato |
-| `python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing` | `strategies/stock_selector/__main__.py` | Genera Top_Picks.xlsx + Analisi_Completa.xlsx |
+| `python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing` | `strategies/stock_selector/__main__.py` | Genera Top_Picks.xlsx + Analisi_Completa.xlsx + Sell_Signals.xlsx (diff vs run precedente) |
 | `python -m core.runner run --strategy ...` | `core/runner.py` | Orchestrator generico (alternative al CLI specifico) |
 | `python -m pytest tests/` | `conftest.py` (auto) + `tests/test_*.py` | Esegue tutti i test offline |
 

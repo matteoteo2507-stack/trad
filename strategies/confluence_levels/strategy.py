@@ -23,7 +23,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 
 from brokers.base import BrokerPosition
-from notifiers._pip_table import get_pip_spec, price_delta_pips
+from notifiers._pip_table import get_pip_spec, price_delta_pips, suggested_lots
 from strategies._base import DataRequirement, Signal, StrategyBase
 
 from .levels_loader import Level, load_levels
@@ -54,7 +54,12 @@ class ConfluenceLevelsStrategy(StrategyBase):
     def __init__(self, config_path: Path | str):
         super().__init__(config_path=str(config_path))
         self._config_dir = Path(config_path).parent
-        self._levels_path = self._config_dir / self.config["levels_file"]
+        levels_file = self.config["levels_file"]
+        # Supporta sia singolo path che lista (per Confluence Auto shadow file).
+        if isinstance(levels_file, (list, tuple)):
+            self._levels_path = [self._config_dir / p for p in levels_file]
+        else:
+            self._levels_path = self._config_dir / levels_file
         self._levels_cache: Optional[dict[str, list[Level]]] = None
         self._rome_tz = ZoneInfo("Europe/Rome")
 
@@ -308,4 +313,20 @@ class ConfluenceLevelsStrategy(StrategyBase):
             "sl": ev.signal.sl,
             "tp": ev.signal.tp,
             "rationale": ev.reason,
+            "suggested_lots": self._suggested_lots_for(ev),
         }
+
+    def _suggested_lots_for(self, ev: LevelEvaluation) -> Optional[float]:
+        """Lottaggio suggerito per il payload Telegram. None se risk non in config."""
+        risk = self.config.get("risk") or {}
+        balance = risk.get("account_balance")
+        pct = risk.get("risk_per_trade")
+        if balance is None or pct is None or ev.signal is None:
+            return None
+        return suggested_lots(
+            symbol=ev.level.symbol,
+            account_balance=float(balance),
+            risk_pct=float(pct),
+            entry_price=ev.level.price,
+            sl_price=ev.signal.sl,
+        )

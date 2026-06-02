@@ -3,7 +3,8 @@
 Piattaforma modulare per costruire, testare e mettere in produzione strategie di trading
 **automatiche** ed **semiautomatiche**, con scouting senza supervisione umana costante.
 
-> Status: **Stage 0 (workspace setup)**. Stage successivi → vedi `ROADMAP.md`.
+> **Framing corrente** → [PROJECT.md](PROJECT.md) (milestone di profittabilità + 3 sistemi + traccia investing).
+> Decisioni già prese → [DECISIONS.md](DECISIONS.md). Storia degli stage di build → [ROADMAP.md](ROADMAP.md).
 
 ---
 
@@ -11,25 +12,33 @@ Piattaforma modulare per costruire, testare e mettere in produzione strategie di
 
 | Cartella | Cosa contiene |
 |---|---|
-| `agents/` | Prompt di sistema per i subagent (Stock Selector + 4 personas del consensus) |
+| `fondamenti_tecnici/` | **Knowledge base**: teoria/concetti, `blueprints/`, `strategie_candidate/`, `_sorgenti/` (PDF/txt originali). Vedi il suo [README](fondamenti_tecnici/README.md) |
+| `strategies/` | Strategie Python + **indice master** di tutte le strategie per sistema ([README](strategies/README.md)) |
+| `mql5/` | Expert Advisor MQL5 (London Breakout archiviata NO-GO, futuri EA) |
+| `signal_copier/` | Copia-segnali Telegram → MT5 (demo full-auto) |
+| `agents/` | Prompt di sistema per i subagent (quant_reviewer, Stock Selector, 4 personas consensus) |
 | `skills/` | Skill in formato `SKILL.md` per Claude Code / Antigravity |
-| `strategies/` | Strategie Python (Confluence, Stock Selector). `_template/` come scaffold |
-| `mql5/` | Expert Advisor MQL5 nativi per esecuzione automatica (es. London Breakout) |
 | `brokers/` | Astrazione broker (yfinance read-only, MT5 legacy) |
 | `notifiers/` | Canali di notifica (Telegram outbound) |
-| `core/` | Componenti trasversali (risk gate, runner generico, registry strategie) |
+| `core/` | Componenti trasversali (regime, quant_metrics, risk gate, runner, registry) |
 | `data/` | Sorgenti dati locali, news calendar stub, stato persistente |
 | `config/` | File YAML di configurazione (rischio, mercati) |
+| `journals/` | Schema journaling (markdown weekend + Notion) |
 | `tests/` | Test automatici (offline) |
-| `docs/` | Documentazione tecnica |
+| `docs/` | Documentazione tecnica + [reviews/](docs/reviews/) |
 
-I file legacy al top level (`algoritmo selezione azioni.ipynb`, PDF, `.ods`, immagini) restano dove sono;
-verranno integrati in `data/` o trasformati in subagent nelle fasi successive (vedi Stage 1).
+I documenti sorgente densi (PDF, `.txt`, immagini) sono stati **spostati** in
+[`fondamenti_tecnici/_sorgenti/`](fondamenti_tecnici/_sorgenti/) e distillati in `principles.md`
+strutturati (vedi [fondamenti_tecnici/README.md](fondamenti_tecnici/README.md)). Il notebook
+`algoritmo selezione azioni.ipynb` resta al top level (sorgente dello Stock Selector).
 
 ## Documenti chiave
 
-- `PROJECT.md` — Mission, obiettivi, vincoli, stack, decisioni architetturali.
-- `ROADMAP.md` — I 7 stage in dettaglio, deliverable per stage, criterio di completamento.
+- `PROJECT.md` — Mission, milestone di profittabilità, 3 sistemi, traccia investing, asset esterni.
+- `DECISIONS.md` — **Decisioni già prese** (pivot, NO-GO, priorità). Leggi prima di proporre.
+- `TRADING_PRINCIPLES.md` — Costituzione operativa (regimi, S/R, S/D, Fib, entry, journaling).
+- `fondamenti_tecnici/` — Knowledge base teorica (concetti, blueprint, candidate).
+- `ROADMAP.md` — Storia degli stage di build (con riconciliazione 2026-05-31 in testa).
 - `CONVENTIONS.md` — Convenzioni di codice, naming, lingua commenti, pattern di estensione.
 
 ## Quick start (quando passi su Antigravity / Claude Code)

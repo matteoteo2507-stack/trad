@@ -27,6 +27,9 @@ backtest_results/
 strategies/confluence_levels/levels.yaml
 strategies/*/state.json
 
+# Journal operativi settimanali (dati personali di trading)
+journals/journal_settimana_*.md
+
 # IDE
 .vscode/
 .idea/
@@ -51,3 +54,6 @@ htmlcov/
 *.key
 *.pem
 secrets/
+# Sessioni Telethon (credenziali account Telegram — MAI su git)
+*.session
+*.session-journal

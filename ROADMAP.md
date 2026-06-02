@@ -1,5 +1,17 @@
 # ROADMAP — I 7 stage di build
 
+> ## Stato reale 2026-05-31 (riconciliazione)
+>
+> Questo file è la **storia degli stage di build**. Il framing operativo corrente è in
+> [PROJECT.md](PROJECT.md) (milestone di profittabilità + 3 sistemi) e le scelte chiuse sono in
+> [DECISIONS.md](DECISIONS.md). In sintesi, rispetto agli stage sotto:
+>
+> - **Pivot 2026-05-05**: architettura a 3 componenti ibridi → [docs/ARCHITECTURE_v2.md](docs/ARCHITECTURE_v2.md).
+> - **Priorità 2026-05-30**: **OctoBot** (#1) → dati Confluence + Telegram → prop → strategie custom *per ultime*.
+> - **London Breakout** (Stage 2.5/2.6): **NO-GO**, archiviata. **TSMOM** (Stage 2.6): **NO-GO** single-asset.
+> - **Telegram Signal Copier**: demo full-auto (non previsto negli stage originali).
+> - Gli stage sotto restano come riferimento storico/tecnico, non come ordine di lavoro vincolante.
+
 Filosofia: **complessità crescente**. Ogni stage produce qualcosa di osservabile. Lo stage N+1
 inizia solo quando lo stage N è stabile.
 
@@ -47,6 +59,119 @@ structures, NYSE scalping) che gira su uno dei 3 demo MT5 e manda i segnali via 
 
 **Criterio di completamento**: la strategia gira 1 settimana sul demo, manda almeno 5 segnali
 plausibili via Telegram.
+
+---
+
+## Stage 2.5 — Quant Reviewer subagent
+
+**Cosa**: subagent Claude Code locale specializzato in valutazione quantitativa adversariale
+delle strategie. Invocabile via skill `/quant-review <strategia>`. Output: report markdown
+con verdict GO/NO-GO/RAFFINA basato su metriche statistiche formali (PBO, DSR, walk-forward,
+MC permutation).
+
+**Motivazione**: dopo 2 settimane di trading live (London Breakout: 2 trade, RR fisso 1.5
+percepito basso; Confluence: 0 trade per attrito operativo), le decisioni su quali strategie
+promuovere/scartare devono passare da analisi quantitative, non da impressioni.
+
+**Deliverable**:
+- [agents/quant_reviewer.md](agents/quant_reviewer.md) — persona prompt con rigore accademico
+  (López de Prado, Bailey, Harvey).
+- [skills/quant-review/SKILL.md](skills/quant-review/SKILL.md) — invocazione `/quant-review`.
+- [core/quant_metrics.py](core/quant_metrics.py) — DSR, PBO via CSCV, CPCV, walk-forward,
+  Monte Carlo permutation, White's Reality Check, risk metrics oltre lo Sharpe.
+- [docs/QUANT_REVIEW_PROTOCOL.md](docs/QUANT_REVIEW_PROTOCOL.md) — protocollo operativo
+  passo-passo.
+
+**Criterio di completamento**: `/quant-review mql5/london_breakout.mq5` produce un report
+DSR+PBO leggibile in `docs/reviews/london_breakout-<data>.md`.
+
+---
+
+## Stage 2.6 — Strategy fleet expansion (parallel data collection)
+
+**Cosa**: aumentare in parallelo il numero di trade/settimana per generare campione
+statisticamente significativo entro 4 settimane.
+
+**Componenti**:
+
+1. **London Breakout 3 varianti A/B/C** (refactor `InpExitMode`):
+   - A: `FIXED_RR` (1.5R) — baseline attuale.
+   - B: `PARTIAL_TRAIL` — partial 50% a 1R, trailing ATR(M15)·1.5 sul resto + BE shift.
+   - C: `FULL_TRAIL` — no TP fisso, trailing ATR(M15)·1.5 dal fill.
+
+   Deploy su 3 account demo MT5 distinti, stesso simbolo/entry → 3× dati in parallelo
+   sulla stessa price action.
+
+2. **TSMOM USDJPY D1** ([strategies/tsmom/](strategies/tsmom/)):
+   - Moskowitz-Ooi-Pedersen JFE 2012, sizing vol-target.
+   - Modalità `notify_only` su VPS Hetzner, segnali via Telegram.
+   - 4-8 trade/mese attesi → bassa attenzione operativa, ortogonale a London Breakout.
+
+3. **Confluence manuale**: derubricata a opportunistica
+   ([WEEKEND_CHECKLIST.md](WEEKEND_CHECKLIST.md) aggiornato), nessun obbligo settimanale.
+
+4. **Confluence Auto (shadow run)** — nuovo modulo `strategies/confluence_auto/`:
+   ricava i livelli **algoritmicamente** (S/R da swing pivot ZigZag/fractals,
+   S/D da impulse-base-impulse detection, POC/VAH/VAL da volume profile, opzionale
+   Fib su swing dominante) e li alimenta come `levels.yaml` virtuale al runner
+   Confluence esistente. Gira **in parallelo** alla versione manuale per:
+   - garantire copertura settimanale anche quando l'utente non ha tempo per
+     l'analisi weekend;
+   - costruire dataset di confronto manuale vs algoritmico → nel lungo periodo
+     identifica quali concetti la mente umana cattura meglio dell'algoritmo
+     e viceversa, per **rifinire la lettura dei livelli**;
+   - moltiplicare i dati per il Quant Reviewer (Stage 2.7).
+
+   I livelli Fib restano (per ora) **manuali** — lo swing dominante è scelta
+   contestuale difficile da automatizzare in modo robusto; il modulo li
+   marca come `[MANUAL_ONLY]` e li importa dall'analisi weekend se presente.
+
+**Criterio di completamento**: ≥3 trade/settimana aggregati, mantenuto per ≥4 settimane
+consecutive.
+
+---
+
+## Stage 2.6.5 — Regime gating automatico
+
+**Cosa**: meccanismo che mappa regime corrente → quali strategie devono essere attive,
+in `half_size` o `disabled`. Estensione di [`core/regime.py`](core/regime.py) che oggi
+si limita a calcolare il regime senza pilotare le strategie.
+
+**Motivazione**: ogni strategia funziona in regimi specifici (vedi
+[TRADING_PRINCIPLES.md §1](TRADING_PRINCIPLES.md)), ma oggi è solo una regola scritta —
+sta all'utente ricordarsene. Automatizzando si elimina un punto di disciplina umana.
+
+**Architettura proposta**:
+- `core/regime.py` scrive `data/current_regime.yaml` ad ogni esecuzione (cron daily 21 UTC).
+- Ogni `strategies/*/config.yaml` dichiara `enabled_regimes` con la mappa regime → azione.
+- All'avvio giornata ogni strategia legge il file e decide. Logga su Telegram quando
+  passa in `disabled` / `half_size` / torna `active`.
+
+**Quando implementarlo**: **dopo Stage 2.6** (London×3 + TSMOM attive). Senza un
+campione di trade non possiamo validare che il mapping regime→strategia sia corretto.
+
+**Deliverable**:
+- Estensione `core/regime.py` → output `data/current_regime.yaml`.
+- Nuovo campo `enabled_regimes` nei config delle strategie Python.
+- Per gli EA MQL5: lettura del file via `FileOpen` al primo tick di ogni giornata.
+
+**Criterio di completamento**: log Telegram mostra almeno 1 transizione di regime
+che disabilita o riduce size di una strategia in modo osservabile.
+
+---
+
+## Stage 2.7 — Decision gate quant
+
+**Cosa**: il Quant Reviewer ispeziona i dati raccolti in Stage 2.6 e decide quali strategie/
+varianti promuovere a Stage 3 (backtester pluralistico) e quali deprecare.
+
+**Deliverable**:
+- Report `/quant-review` per ciascuna delle 4 strategie attive (London×3 + TSMOM).
+- Confronto White's Reality Check sulle 3 varianti London (multiple-testing penalty).
+- Decisione documentata in `docs/reviews/decision-gate-<data>.md`.
+
+**Criterio di completamento**: almeno 1 strategia con verdict **GO** (PBO < 15%, DSR
+significativo al 95%, walk-forward OOS degrado < 30%), pronta per Stage 3.
 
 ---
 

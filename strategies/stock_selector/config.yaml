@@ -7,7 +7,11 @@ default_benchmark: "^GSPC"
 high_rate_threshold: 3.0
 
 # Punteggio minimo per entrare nelle Top Picks
-top_picks_min_score: 5
+top_picks_min_score: 4
+
+# Filtro Top Picks: oltre allo score minimo, richiede TARGET MATCH == "SI"
+# (titolo coerente con lo scenario macro). Se false, qualunque target_match passa.
+top_picks_require_macro_match: true
 
 # Scoring fondamentale (max 6 punti) — soglie identiche al notebook V6.0
 scoring:
@@ -82,3 +86,7 @@ data:
 output:
   top_picks_filename: "Top_Picks.xlsx"
   full_analysis_filename: "Analisi_Completa.xlsx"
+  sell_signals_filename: "Sell_Signals.xlsx"
+  # File di stato (JSON) con i ticker delle top picks della run precedente.
+  # Serve a calcolare il diff per i sell signals. Sta dentro output_dir.
+  previous_picks_state_filename: "last_top_picks.json"

@@ -2,6 +2,17 @@
 
 Copia questa cartella in `strategies/<nome_strategia>/` e personalizza i 3 file.
 
+**Inizia il README della tua strategia con questo blocco metadati** (lo legge l'indice
+[strategies/README.md](../README.md)):
+
+```markdown
+> **Sistema:** semiauto | auto | investing | candidata
+> **Stato:** active | shadow | backlog | archived-NO-GO | stub
+> **Habitat:** VPS Hetzner | MetaQuotes VPS | PC | demo MT5
+> **Quant review:** <link a docs/reviews/...> oppure —
+> **Fondamenti:** <link a ../../fondamenti_tecnici/...>
+```
+
 ## Documenta la tua strategia qui
 
 ### Mercato target

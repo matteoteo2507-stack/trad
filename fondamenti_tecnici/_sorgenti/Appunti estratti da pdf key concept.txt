@@ -1,0 +1,283 @@
+Appunti estratti da pdf key concepts da integrare:
+FTD Detector
+Detects Follow-Through Day signals for market bottom confirmation using William O'Neil's
+methodology. A significant index gain on higher volume, occurring on day 4 or later of an
+attempted rally, is the signal that institutional buyers are stepping in. Requires FMP API.
+IBD Distribution Day Monitor
+Counts Distribution Days on QQQ and SPY. Risk classification: 0-3 days NORMAL, 4-5 days
+CAUTION, 6+ days HIGH to SEVERE. Days expire after 25 sessions or if the index rallies 5%+
+from the Distribution Day close. Requires FMP for daily QQQ/SPY OHLCV.
+Macro Regime Detector
+Detects structural macro regime transitions across a 1-2 year horizon using cross-asset ratio
+analysis. Tracks stocks vs. bonds, growth vs. value, credit spreads, yield curve, commodity
+momentum. Requires FMP or yfinance.
+Market Environment Analysis
+Comprehensive market environment analysis and reporting tool. Requires web search for
+current data. Chart image optional for additional context. Gives you the full macro picture in one
+output.
+Market News Analyst
+Analyzes recent market-moving news events and their impact on equity markets and
+commodities. Requires web search. Use this daily to understand the narrative driving price
+action.
+Sector Analyst
+Analyzes sector rotation patterns and market cycle positioning. Provide chart images of sector
+ETF weekly charts. Get a rotation analysis: which sectors are leading, lagging, and at what
+cycle phase. For crypto: substitute BTC, ETH, DeFi, L2, AI tokens for traditional sectors.
+US Market Bubble Detector
+Scores current market conditions for bubble risk using the Minsky/Kindleberger framework v2.1.
+Tracks valuations, margin debt, IPO activity, volatility compression, and sentiment extremes.
+Outputs a 0-100 risk score. User input required, no API.
+SKILL AREA 2: Core Portfolio - Know What You Own
+Portfolio Manager
+Comprehensive live portfolio analysis via Alpaca MCP. Fetches actual holdings, calculates
+allocation, computes risk metrics (beta, volatility, concentration), generates
+HOLD/ADD/TRIM/SELL flags for each position. Alpaca API required.
+Value Dividend Screener
+Screens for dividend stocks combining value characteristics: P/E under 20, P/B under 2, yield
+3%+, dividend + revenue + EPS all trending up over 3 years. FMP required. FINVIZ Elite
+reduces execution time 70-80%.
+Dividend Growth Pullback Screener
+Finds high-quality dividend growth stocks (12%+ annual dividend growth, 1.5%+ yield) with RSI
+at or below 40. Quality companies on oversold pullbacks. FMP required, FINVIZ recommended.
+Kanchi Dividend SOP
+Converts Kanchi-style dividend investing into a repeatable 5-step US-stock operating
+procedure. Universe definition, quality filter, yield filter, entry trigger, invalidation conditions.
+Knowledge workflow, no API needed.
+Kanchi Dividend Review Monitor
+Monitors dividend portfolios with 5 forced-review triggers (T1-T5). T1: dividend cut. T2: earnings
+miss 20%+. T3: fundamental deterioration. T4: technical breakdown. T5: thesis invalidation.
+Flags OK, WARN, or REVIEW. Local rule engine, no API.
+Kanchi Dividend US Tax Accounting
+US dividend tax and account-location workflow for Kanchi-style income portfolios. Aligns
+holdings with qualified-dividend assumptions and account location (taxable vs. tax-advantaged).
+Local calculation, no API.
+SKILL AREA 3: Swing Opportunity - Find the Setups
+Only use these when the Market Regime gives you a green light. Screening for setups in a
+broken market finds great charts that immediately fail.
+VCP Screener
+Screens S&P 500 stocks for Mark Minervini's Volatility Contraction Pattern. Stage 2 uptrend +
+progressive volatility contraction + volume decline into base + near pivot breakout point. FMP
+required. Free tier sufficient for 35 stocks.
+CANSLIM Screener
+Scores stocks on William O'Neil's 7-factor CANSLIM methodology with multi-period Relative
+Strength calculations. Phase 3.1 with 7 components. FMP required. Free tier sufficient for 35
+stocks. FINVIZ web scraping handles institutional data.
+Breakout Trade Planner
+Generates Minervini-style breakout trade plans from VCP screener output. Pivot breakout price,
+stop loss, position size, portfolio heat, Alpaca-compatible order templates (stop-limit for
+pre-placement, limit bracket for post-confirmation). Local calculation, no API.
+FINVIZ Screener
+Converts natural language screening requests into FINVIZ screener URLs and opens them.
+Free public screener works without an API. FINVIZ Elite auto-detected via environment variable
+for faster results.
+Theme Detector
+Identifies which market themes and narratives are driving capital flows across sectors. Core
+functionality uses FINVIZ public + yfinance (both free). FMP optional for ETF holdings data.
+FINVIZ Elite recommended for stock lists. For crypto, this is essential: AI tokens, DePIN, RWA,
+L2 rotation moves fast.
+
+Edge Candidate Agent
+Generates and prioritizes edge research tickets from End-Of-Day observations. Formalizes
+market observations before you spend time backtesting them. Outputs pipeline-ready candidate
+specs for the edge pipeline Phase 1. FMP optional, local YAML generation.
+Edge Hint Extractor
+Extracts edge hints from daily market observations and news reactions. Outputs canonical
+hints.yaml for downstream concept synthesis and auto-detection. Local calculation only.
+Edge Concept Synthesizer
+Abstracts multiple edge detector outputs into reusable edge concepts with defined thesis,
+invalidation signals, and strategy playbooks. Identifies when multiple observations are the same
+underlying edge. Stops you from backtesting the same edge five different ways. Local
+calculation.
+Edge Strategy Designer
+Converts abstract edge concepts into concrete strategy drafts with exact entry/exit logic, data
+requirements, parameter set, and expected performance characteristics. Local calculation.
+Edge Strategy Reviewer
+Critically reviews strategy drafts before backtesting. Checks: edge plausibility, overfitting risk,
+sample size adequacy, execution realism, survivorship bias. The quality gate that stops you
+from trading strategies that only work in the backtest. Deterministic scoring on local YAML
+drafts.
+Edge Signal Aggregator
+Aggregates and ranks signals from multiple edge-finding skills (edge-candidate-agent,
+theme-detector, sector-analyst, institutional-flow-tracker) into a prioritized conviction dashboard
+with weighted scoring and deduplication. Local calculation.
+Edge Pipeline Orchestrator
+Orchestrates the full edge research pipeline from candidate detection through strategy design,
+review, revision, and export. The master controller sequencing all edge skills. Orchestrates local
+edge skills via subprocess. Local calculation.
+Stanley Druckenmiller Investment Advisor
+Integrates 8 upstream skill outputs into a unified conviction score from 0 to 100. Inspired by
+Druckenmiller's macro-to-micro framework. The 8 inputs: Market Breadth, Uptrend Analysis,
+Market Top probability, Macro Regime, FTD Detector, VCP Screener, Theme Detector,
+CANSLIM Screener. Output: one number telling you how aggressive or defensive to be. Local
+calculation.
+Strategy Pivot Designer
+Detects backtest iteration stagnation and generates structurally different pivot proposals when
+parameter tuning reaches a local optimum. Stops you from over-optimizing one approach when
+you should be testing a fundamentally different one. Local calculation.
+
+THE REAL EDGE
+Every hour you spend gathering data manually, formatting spreadsheets, or running
+repetitive calculations is an hour you are not spending on strategy and decision making.
+That is what you should be optimizing for.
+
+Data Quality Checker
+Validates data quality in market analysis documents and blog articles before publication. Checks
+five categories:
+• Price scale inconsistencies (ETF vs. futures digit differences)
+• Instrument notation consistency across the document
+• Date and weekday mismatches (supports English and Japanese)
+• Allocation total errors (section-limited checks)
+• Unit mismatches
+Advisory mode: flags issues as warnings for human review, exits cleanly even with findings.
+Supports full-width Japanese characters, range notation (50-55%), and year inference for dates
+without explicit year. No API required, works offline on local markdown files.
+
+This is the definitive reference table for all 40+ skills in the claude-trading-skills toolkit. Pulled
+directly from the official repository README and skills-index.yaml.
+Legend: Required means the skill will not function without it. Optional means the skill works but
+is slower, less complete, or falls back to manual input. Not used means there is zero
+dependency.
+Skill FMP API FINVIZ Elite Alpaca Notes
+MARKET REGIME
+Market Breadth Analyzer ❌ Not used ❌ Not used ❌ Not used Free GitHub CSV data; no API
+required
+Uptrend Analyzer ❌ Not used ❌ Not used ❌ Not used Free GitHub CSV data; no API
+required
+Breadth Chart Analyst ❌ Not used ❌ Not used ❌ Not used Chart image required; no API
+needed
+Sector Analyst ❌ Not used ❌ Not used ❌ Not used Free GitHub CSV + optional chart
+images
+Market Top Detector ❌ Not used ❌ Not used ❌ Not used Uses public CSV; no paid API
+needed
+Downtrend Duration
+Analyzer
+❌ Not used ❌ Not used ❌ Not used Local calculation only
+Exposure Coach 🟡 Optional ❌ Not used ❌ Not used FMP only when
+institutional-flow-tracker data
+included
+FTD Detector ✅ Required ❌ Not used ❌ Not used Index price data for rally/FTD
+detection
+IBD Distribution Day
+Monitor
+✅ Required ❌ Not used ❌ Not used Daily QQQ/SPY OHLCV for
+Distribution Day detection
+Macro Regime Detector ✅ Required ❌ Not used ❌ Not used Cross-asset ETF ratio analysis;
+yfinance also works
+Market Environment
+Analysis
+❌ Not used ❌ Not used ❌ Not used Requires web search; chart
+image optional
+Market News Analyst ❌ Not used ❌ Not used ❌ Not used Requires web search only
+US Market Bubble
+Detector
+❌ Not used ❌ Not used ❌ Not used User input required; no API
+needed
+CORE PORTFOLIO
+Portfolio Manager ❌ Not used ❌ Not used ✅ Required Real-time holdings via Alpaca
+MCP
+Value Dividend Screener ✅ Required 🟡 Optional ❌ Not used FINVIZ reduces execution time
+70-80%
+Dividend Growth
+Pullback Screener
+✅ Required 🟡 Optional ❌ Not used FINVIZ for RSI pre-screening
+Kanchi Dividend SOP ❌ Not used ❌ Not used ❌ Not used Knowledge workflow; uses
+outputs from other skills
+Kanchi Dividend Review
+Monitor
+❌ Not used ❌ Not used ❌ Not used Local rule engine; consumes
+normalized input JSON
+Kanchi Dividend US Tax
+Accounting
+❌ Not used ❌ Not used ❌ Not used Knowledge workflow for
+classification/account location
+SWING OPPORTUNITY
+VCP Screener ✅ Required ❌ Not used ❌ Not used Stage 2 + VCP pattern screening;
+free tier sufficient
+CANSLIM Screener ✅ Required ❌ Not used ❌ Not used Phase 3.1 (7 components,
+multi-period RS); free tier OK for
+35 stocks
+Breakout Trade Planner ❌ Not used ❌ Not used ❌ Not used Local calculation from VCP
+output; no API needed
+FINVIZ Screener ❌ Not used 🟡 Optional ❌ Not used Public screener free; Elite
+auto-detected via
+$FINVIZ_API_KEY
+Theme Detector 🟡 Optional 🟡 Optional ❌ Not used Core uses FINVIZ public +
+yfinance (free). FMP for ETF
+holdings
+TRADE PLANNING
+Position Sizer ❌ Not used ❌ Not used ❌ Not used Pure local calculation; zero
+dependencies
+Technical Analyst ❌ Not used ❌ Not used ❌ Not used Chart image required; no API
+needed
+US Stock Analysis ❌ Not used ❌ Not used ❌ Not used User input required; no API
+needed
+TRADE MEMORY
+Trader Memory Core 🟡 Optional ❌ Not used ❌ Not used FMP only for MAE/MFE in
+postmortem; core features work
+offline
+Signal Postmortem 🟡 Optional ❌ Not used ❌ Not used FMP for fetching realized returns;
+manual price entry also supported
+Trade Hypothesis
+Ideator
+❌ Not used ❌ Not used ❌ Not used Local JSON hypothesis pipeline
+with optional strategy export
+STRATEGY RESEARCH
+Backtest Expert ❌ Not used ❌ Not used ❌ Not used User input required; no external
+API needed
+Edge Candidate Agent 🟡 Optional ❌ Not used ❌ Not used Local YAML generation; validates
+against local pipeline repo
+Edge Concept
+Synthesizer
+❌ Not used ❌ Not used ❌ Not used Local calculation only
+Edge Hint Extractor ❌ Not used ❌ Not used ❌ Not used Local calculation only
+Edge Pipeline
+Orchestrator
+❌ Not used ❌ Not used ❌ Not used Orchestrates local edge skills via
+subprocess
+Edge Signal Aggregator ❌ Not used ❌ Not used ❌ Not used Aggregates local edge-skill
+JSON/YAML into weighted
+ranked signals
+Edge Strategy Designer ❌ Not used ❌ Not used ❌ Not used Local calculation only
+Edge Strategy Reviewer ❌ Not used ❌ Not used ❌ Not used Deterministic scoring on local
+YAML drafts
+Stanley Druckenmiller
+Advisor
+❌ Not used ❌ Not used ❌ Not used Local calculation integrating 8
+upstream skill outputs
+Strategy Pivot Designer ❌ Not used ❌ Not used ❌ Not used Local calculation only
+Scenario Analyzer ❌ Not used ❌ Not used ❌ Not used Requires web search only
+ADVANCED SATELLITE
+Earnings Trade Analyzer ✅ Required ❌ Not used ❌ Not used 5-factor scoring system; FMP
+required
+PEAD Screener ✅ Required ❌ Not used ❌ Not used Post-earnings gap-up screening;
+FMP required
+Institutional Flow
+Tracker
+✅ Required ❌ Not used ❌ Not used 13F filings analysis; free tier
+sufficient
+Pair Trade Screener ✅ Required ❌ Not used ❌ Not used Statistical arbitrage analysis
+Options Strategy
+Advisor
+🟡 Optional ❌ Not used ❌ Not used FMP for stock data; theoretical
+pricing works without
+Parabolic Short Trade
+Planner
+✅ Required ❌ Not used ✅ Ph3 / 🟡
+Ph2
+FMP for Phase 1; Alpaca required
+for Phase 3 intraday bars (paper
+feed OK); optional Phase 2
+borrow checks
+META / DEVELOPMENT TOOLING
+Earnings Calendar ✅ Required ❌ Not used ❌ Not used Fetches earnings dates via FMP
+Economic Calendar
+Fetcher
+✅ Required ❌ Not used ❌ Not used Fetches economic events via
+FMP
+Data Quality Checker ❌ Not used ❌ Not used ❌ Not used Works offline on local markdown
+files
+Skill Designer ❌ Not used ❌ Not used ❌ Not used No API key required
+Skill Idea Miner ❌ Not used ❌ Not used ❌ Not used Mines Claude Code session logs;
+no API needed
+Dual-Axis Skill Reviewer ❌ Not used ❌ Not used ❌ Not used Deterministic scoring + optional
+LLM review; no API

@@ -495,17 +495,20 @@ Tempo stimato: 5-10 minuti (download dati + analisi 503 ticker SP500).
    Output console: scenario rilevato, progress bar download SP500, tabella delle Top Picks.
 
 4. Output file:
-   - `Top_Picks.xlsx` — i titoli con score ≥ 5 (formattati con highlight verde sui RRG=LEADING e Macro Match=SI).
+   - `Top_Picks.xlsx` — i titoli con **score ≥ 4 e TARGET MATCH = SI** (formattati con highlight verde su RRG=LEADING). Tutti i titoli qui sono già coerenti con lo scenario macro.
    - `Analisi_Completa.xlsx` — tutti i 503 titoli ordinati.
+   - `Sell_Signals.xlsx` — generato a partire dalla **seconda run**. Contiene i ticker che erano nelle top picks della run precedente ma non lo sono più, con il `Motivo Sell` (score sceso, scenario cambiato, ecc.).
+   - `last_top_picks.json` — stato persistente per il diff sell. **Non cancellare** tra una run e la successiva.
 
-5. Apri `Top_Picks.xlsx` in Excel. Tipicamente avrai 10-30 titoli. Filtra per:
-   - **RRG Trend = LEADING** (sta sovraperformando il benchmark).
-   - **TARGET MATCH = SI** (matcha lo scenario macro).
+5. Apri `Top_Picks.xlsx` in Excel. Tutti i titoli qui sono già "buy" (SI). Affina la shortlist per:
+   - **RRG Trend = LEADING** (sta sovraperformando il benchmark) — priorità massima.
    - **Settori** che ti interessano (es. evita energy se sei convinto di un crollo del petrolio).
 
-6. Da quella shortlist, eventualmente fai analisi qualitative (Damodaran, Buffett-style, ecc.) — questo è quello che diventerà Stage 4 con i 4 personas LLM.
+6. Apri `Sell_Signals.xlsx` (se presente): **vendi** le posizioni elencate prima di entrare sui nuovi buy. Assunzione: stai tenendo in portafoglio tutte le top picks della run precedente.
 
-7. Per ora: usi le top picks come **watchlist** da monitorare nella settimana, non come segnali di entry diretti. La Confluence sui forex è automatica per le notifiche; le azioni le tradi a mano se ti convince il contesto.
+7. Da quella shortlist, eventualmente fai analisi qualitative (Damodaran, Buffett-style, ecc.) — questo è quello che diventerà Stage 4 con i 4 personas LLM.
+
+8. Per ora: usi le top picks come **watchlist** da monitorare nella settimana, non come segnali di entry diretti. La Confluence sui forex è automatica per le notifiche; le azioni le tradi a mano se ti convince il contesto.
 
 ### C. (Opzionale) Workflow combinato
 

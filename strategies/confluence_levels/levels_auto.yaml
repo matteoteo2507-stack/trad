@@ -1,0 +1,110 @@
+# levels_auto.yaml — generato automaticamente da Confluence Auto.
+#
+# **NON EDITARE A MANO**: il file viene sovrascritto a ogni run di
+# `python -m strategies.confluence_auto generate`.
+#
+# Per i livelli compilati manualmente, usa `levels.yaml`.
+#
+# Generato il: 2026-05-25T21:18:48
+# Detectors: S/R (swing pivots), S/D (base-impulse-base), POC (volume profile).
+# Tutti gli ID hanno suffisso "-AUTO" per distinguibilità nel runner Telegram.
+
+
+EURUSD:
+  - id: "EURUSD-2026W22-R1-AUTO"
+    price: 1.16575
+    type: resistance
+    confluence: [LVN, SR_D1, VAH_weekly, VAL_monthly]
+    bias: short
+    valid_until: 2026-06-01
+    tp_target_price: 1.16401
+
+  - id: "EURUSD-2026W22-S2-AUTO"
+    price: 1.16098
+    type: support
+    confluence: [HVN, LVN, SR_D1, VAL_weekly]
+    bias: long
+    valid_until: 2026-06-01
+    tp_target_price: 1.16270
+
+  - id: "EURUSD-2026W22-R3-AUTO"
+    price: 1.16270
+    type: resistance
+    confluence: [HVN, LVN, SR_D1]
+    bias: short
+    valid_until: 2026-06-01
+    tp_target_price: 1.16098
+
+  - id: "EURUSD-2026W22-R4-AUTO"
+    price: 1.17287
+    type: resistance
+    confluence: [HVN, SR_D1]
+    bias: short
+    valid_until: 2026-06-01
+    tp_target_price: 1.17041
+
+  - id: "EURUSD-2026W22-S5-AUTO"
+    price: 1.17041
+    type: support
+    confluence: [HVN, SR_D1]
+    bias: long
+    valid_until: 2026-06-01
+    tp_target_price: 1.17287
+
+  - id: "EURUSD-2026W22-S6-AUTO"
+    price: 1.15798
+    type: support
+    confluence: [LVN, SR_D1]
+    bias: long
+    valid_until: 2026-06-01
+    tp_target_price: 1.16098
+
+  - id: "EURUSD-2026W22-SH4-1-AUTO"
+    price: 1.17789
+    type: support
+    confluence: [LVN, SR_H4]
+    bias: long
+    valid_until: 2026-06-01
+
+  - id: "EURUSD-2026W22-RH4-2-AUTO"
+    price: 1.16401
+    type: resistance
+    confluence: [HVN, LVN, POC_weekly, SR_H4]
+    bias: short
+    valid_until: 2026-06-01
+    tp_target_price: 1.16270
+
+
+XAUUSD:
+  - id: "XAUUSD-2026W22-R4-AUTO"
+    price: 4554.10
+    type: resistance
+    confluence: [HVN, LVN, SR_D1, VAH_weekly]
+    bias: short
+    valid_until: 2026-06-01
+    tp_target_price: 4538.35
+
+  - id: "XAUUSD-2026W22-SH4-1-AUTO"
+    price: 4700.20
+    type: support
+    confluence: [HVN, SR_H4]
+    bias: long
+    valid_until: 2026-06-01
+    tp_target_price: 4717.70
+
+  - id: "XAUUSD-2026W22-RH4-2-AUTO"
+    price: 4731.84
+    type: resistance
+    confluence: [HVN, SR_H4]
+    bias: short
+    valid_until: 2026-06-01
+    tp_target_price: 4717.70
+
+  - id: "XAUUSD-2026W22-SH4-3-AUTO"
+    price: 4538.35
+    type: support
+    confluence: [HVN, POC_weekly, SR_H4]
+    bias: long
+    valid_until: 2026-06-01
+    tp_target_price: 4554.10
+

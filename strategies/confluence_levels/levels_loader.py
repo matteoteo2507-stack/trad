@@ -55,46 +55,62 @@ class Level:
 
 
 def load_levels(
-    path: Path | str,
+    path: Path | str | list[Path | str],
     today: Optional[date] = None,
 ) -> dict[str, list[Level]]:
-    """Carica e valida `levels.yaml`. Restituisce dict per simbolo.
+    """Carica e valida uno o più file `levels.yaml`. Restituisce dict per simbolo.
+
+    Args:
+        path: singolo path OPPURE lista di path (merge per simbolo).
+              Il caso lista serve all'integrazione con Confluence Auto, che
+              genera un secondo file `levels_auto.yaml` da affiancare al
+              manuale (vedi `strategies/confluence_auto/`). I file mancanti
+              vengono saltati con warning (non bloccante).
 
     - Scarta livelli con `valid_until < today`.
     - Solleva `ValueError` su bias non valido.
     - Logga warning su confluenza < 2 elementi e su `tp_target_price` mancante.
     """
-    path = Path(path)
     today = today or date.today()
-
-    if not path.exists():
-        logger.warning("levels file mancante: %s", path)
-        return {}
-
-    with open(path, "r", encoding="utf-8") as f:
-        raw = yaml.safe_load(f) or {}
+    paths: list[Path] = (
+        [Path(p) for p in path] if isinstance(path, (list, tuple))
+        else [Path(path)]
+    )
 
     out: dict[str, list[Level]] = {}
-    for symbol, items in raw.items():
-        if not isinstance(items, list):
-            raise ValueError(
-                f"Sezione '{symbol}' deve essere una lista di livelli, non {type(items).__name__}"
-            )
-        valid_levels: list[Level] = []
-        for i, raw_level in enumerate(items):
-            level = _parse_level(symbol, i, raw_level)
-            if level.is_expired(today):
-                logger.info(
-                    "livello scaduto ignorato: %s %s valid_until=%s",
-                    level.symbol,
-                    level.id,
-                    level.valid_until,
+    seen_ids: set[str] = set()
+    for p in paths:
+        if not p.exists():
+            logger.warning("levels file mancante: %s", p)
+            continue
+        with open(p, "r", encoding="utf-8") as f:
+            raw = yaml.safe_load(f) or {}
+        if not isinstance(raw, dict):
+            logger.warning("levels file %s vuoto o malformato — skip", p)
+            continue
+        for symbol, items in raw.items():
+            if not isinstance(items, list):
+                raise ValueError(
+                    f"{p}:'{symbol}' deve essere una lista di livelli, non "
+                    f"{type(items).__name__}"
                 )
-                continue
-            _validate_level_warnings(level)
-            valid_levels.append(level)
-        if valid_levels:
-            out[symbol] = valid_levels
+            for i, raw_level in enumerate(items):
+                level = _parse_level(symbol, i, raw_level)
+                if level.is_expired(today):
+                    logger.info(
+                        "livello scaduto ignorato: %s %s valid_until=%s",
+                        level.symbol, level.id, level.valid_until,
+                    )
+                    continue
+                if level.id in seen_ids:
+                    logger.warning(
+                        "ID duplicato fra file %s: %s — salto",
+                        p.name, level.id,
+                    )
+                    continue
+                seen_ids.add(level.id)
+                _validate_level_warnings(level)
+                out.setdefault(symbol, []).append(level)
     return out
 
 

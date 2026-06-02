@@ -19,7 +19,10 @@ Questa skill agentizza il sistema di selezione azionaria V6.0 (file originale:
      contro il benchmark.
    - calcola lo **score fondamentale 0-6** su P/E, D/E, EPS, EBITDA margin, profit margin, ROE.
    - verifica il **macro match** in base allo scenario.
-5. Output: `Top_Picks.xlsx` (score >= 5) e `Analisi_Completa.xlsx`, formattati condizionalmente.
+5. Output:
+   - `Top_Picks.xlsx` — score ≥ **4** **e** `TARGET MATCH == "SI"` (filtro coerenza macro).
+   - `Analisi_Completa.xlsx` — tutti i titoli analizzati, formattati condizionalmente.
+   - `Sell_Signals.xlsx` — ticker che erano top picks nella run **precedente** ma non lo sono più. Generato per diff vs `last_top_picks.json` salvato in `output_dir`. **Assunzione operativa**: l'utente compra tutte le top picks; quando un ticker esce, va venduto.
 
 ## Cosa va costruito (Stage 1 della roadmap)
 

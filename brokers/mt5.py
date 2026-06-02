@@ -163,14 +163,40 @@ class MT5Broker(BrokerBase):
         df = df.rename(columns={"tick_volume": "volume"})
         return df[["open", "high", "low", "close", "volume"]]
 
+    def get_price(self, symbol: str) -> float:
+        """Prezzo corrente (mid bid/ask) del simbolo. Usato dal gate anti-ritardo."""
+        self._ensure_connected()
+        sym = self._resolve_symbol(symbol)
+        tick = self._mt5.symbol_info_tick(sym)
+        if tick is None:
+            raise RuntimeError(f"MT5 nessun tick per {sym}: {self._mt5.last_error()}")
+        return float((tick.bid + tick.ask) / 2)
+
     def get_position(self, symbol: str) -> Optional[BrokerPosition]:
         self._ensure_connected()
         sym = self._resolve_symbol(symbol)
         positions = self._mt5.positions_get(symbol=sym)
         if not positions:
             return None
-        # Una sola posizione per simbolo per convenzione (vedi risk.yaml).
-        p = positions[0]
+        # Su account netting c'è una sola posizione per simbolo; su hedging
+        # restituiamo la prima (per la gestione multi-gamba usa get_positions()).
+        return self._to_position(positions[0], symbol)
+
+    def get_positions(self, symbol: str) -> list[BrokerPosition]:
+        """Tutte le posizioni aperte sul simbolo, ognuna col proprio ticket.
+
+        Su account HEDGING ogni gamba di un segnale è una posizione distinta:
+        serve al signal copier per gestire (BE / close) le singole gambe.
+        """
+        self._ensure_connected()
+        sym = self._resolve_symbol(symbol)
+        positions = self._mt5.positions_get(symbol=sym)
+        if not positions:
+            return []
+        return [self._to_position(p, symbol) for p in positions]
+
+    def _to_position(self, p: Any, symbol: str) -> BrokerPosition:
+        """Converte una posizione MT5 grezza in BrokerPosition (con ticket)."""
         direction = "long" if p.type == self._mt5.POSITION_TYPE_BUY else "short"
         return BrokerPosition(
             symbol=symbol,
@@ -182,6 +208,7 @@ class MT5Broker(BrokerBase):
             unrealized_pnl=float(p.profit),
             sl=float(p.sl) if p.sl else None,
             tp=float(p.tp) if p.tp else None,
+            ticket=int(p.ticket),
         )
 
     # ---- Ordini ---------------------------------------------------------
@@ -277,6 +304,75 @@ class MT5Broker(BrokerBase):
         logger.info(
             "MT5 SL/TP modificati su %s: sl=%s tp=%s", sym, new_sl, new_tp
         )
+
+    def modify_position_by_ticket(
+        self,
+        ticket: int,
+        new_sl: Optional[float] = None,
+        new_tp: Optional[float] = None,
+    ) -> None:
+        """Modifica SL/TP della posizione col ticket dato (account hedging).
+
+        A differenza di `modify_position` (che opera sulla prima posizione del
+        simbolo), agisce sulla posizione specifica: indispensabile quando più
+        gambe insistono sullo stesso simbolo.
+        """
+        self._ensure_connected()
+        positions = self._mt5.positions_get(ticket=int(ticket))
+        if not positions:
+            raise RuntimeError(f"Nessuna posizione MT5 col ticket {ticket}")
+        p = positions[0]
+        request = {
+            "action": self._mt5.TRADE_ACTION_SLTP,
+            "position": int(ticket),
+            "symbol": p.symbol,
+            "sl": float(new_sl) if new_sl is not None else float(p.sl or 0),
+            "tp": float(new_tp) if new_tp is not None else float(p.tp or 0),
+        }
+        result = self._mt5.order_send(request)
+        if result is None or result.retcode != self._mt5.TRADE_RETCODE_DONE:
+            raise RuntimeError(
+                f"MT5 modify per-ticket {ticket} fallito "
+                f"retcode={getattr(result, 'retcode', '?')}"
+            )
+        logger.info("MT5 SL/TP modificati ticket=%s sl=%s tp=%s", ticket, new_sl, new_tp)
+
+    def close_position_by_ticket(self, ticket: int) -> None:
+        """Chiude la singola posizione col ticket dato (account hedging).
+
+        Invia un deal opposto con `position=ticket`, così MT5 chiude proprio
+        quella gamba e non un'altra posizione dello stesso simbolo.
+        """
+        self._ensure_connected()
+        positions = self._mt5.positions_get(ticket=int(ticket))
+        if not positions:
+            logger.info("close per-ticket: ticket %s già chiuso/assente", ticket)
+            return
+        p = positions[0]
+        is_long = p.type == self._mt5.POSITION_TYPE_BUY
+        otype = self._mt5.ORDER_TYPE_SELL if is_long else self._mt5.ORDER_TYPE_BUY
+        tick = self._mt5.symbol_info_tick(p.symbol)
+        request = {
+            "action": self._mt5.TRADE_ACTION_DEAL,
+            "symbol": p.symbol,
+            "volume": float(p.volume),
+            "type": otype,
+            "position": int(ticket),
+            "deviation": self.deviation,
+            "magic": self.magic,
+            "comment": "close_leg",
+            "type_time": self._mt5.ORDER_TIME_GTC,
+            "type_filling": self._mt5.ORDER_FILLING_IOC,
+        }
+        if tick is not None:
+            request["price"] = float(tick.bid if is_long else tick.ask)
+        result = self._mt5.order_send(request)
+        if result is None or result.retcode != self._mt5.TRADE_RETCODE_DONE:
+            raise RuntimeError(
+                f"MT5 close per-ticket {ticket} fallito "
+                f"retcode={getattr(result, 'retcode', '?')}"
+            )
+        logger.info("MT5 posizione chiusa ticket=%s vol=%s", ticket, p.volume)
 
     # ---- Helper interni -------------------------------------------------
 

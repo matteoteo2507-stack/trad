@@ -1,0 +1,77 @@
+# Time Series Momentum — USDJPY D1
+#
+# Fonte: Moskowitz, Ooi, Pedersen (2012) "Time Series Momentum", JFE 104(2).
+#        AQR: Hurst, Ooi, Pedersen (2017) "A Century of Evidence on Trend-
+#        Following Investing".
+#
+# Edge tipico atteso (paper):
+#   Sharpe annuo 0.7-1.0
+#   Frequenza: 4-8 trade/mese su singolo asset D1
+#   Max DD: 15-25%
+#   Decay post-2008 documentato → applicare cautela su sub-sample recente.
+
+name: tsmom
+description: "Time Series Momentum su USDJPY D1 con vol-targeting (Moskowitz et al. 2012)"
+
+symbols:
+  - "USDJPY"
+
+timeframe: "D1"
+lookback_bars: 400   # >= 252 (long-term momentum) + 60 (realized vol) + buffer
+
+# Logica di signal:
+#   sign_long  = sign(close - close[lookback_signal])
+#   sign_short = sign(EWMA(fast) - EWMA(slow))
+#   trade = sign_long se concorde con sign_short, altrimenti flat
+signal:
+  lookback_long_bars: 252      # ~1 anno trading
+  ewma_fast: 20
+  ewma_slow: 60
+
+# Stop loss = entry ± atr_mult × ATR(atr_period)
+stop_loss:
+  atr_period: 20
+  atr_mult: 3.0
+
+# Sizing vol-target (Harvey-Hoyle-Korgaonkar JPM 2018):
+#   size = (vol_target_annual / realized_vol_60d_annual) × account_size_factor
+# Cap per evitare leva eccessiva in mercati a bassa vol.
+sizing:
+  vol_target_annual: 0.15     # 15% target annual vol del singolo asset
+  realized_vol_window: 60     # bar D1 per stima della realized vol
+  account_risk_pct: 0.01      # frazione equity rischiata se realized = vol_target
+  size_cap_mult: 3.0          # massimo size × baseline (anti-leva eccessiva)
+
+# Take profit: nessun TP fisso. Exit per:
+#   - signal flip (sign cambia) → close.
+#   - SL hit.
+take_profit:
+  fixed_r_multiple: null      # null = no TP, gestito da exit on flip
+  trailing_atr_mult: null     # placeholder per estensione futura
+
+# Filtri operativi
+filters:
+  session_only_utc:
+    enabled: false             # D1 → niente filtro sessione
+  news_block:
+    enabled: false             # D1 → news intraday meno rilevanti, BoJ a parte
+  min_history_bars: 312        # 252 + 60: sotto questo, skip
+
+# Costi backtest (per realismo López de Prado §14)
+costs:
+  spread_pips: 0.8             # USDJPY tipico retail
+  slippage_pips: 0.5
+  commission_per_lot: 0.0
+  swap_long_per_day: 0.0       # da popolare da broker; per ora 0
+  swap_short_per_day: 0.0
+
+# Notifier
+notifier:
+  telegram:
+    enabled: true
+    only_on_signal: true       # niente heartbeat (D1 strategia → 1 valutazione/giorno)
+
+# Esecuzione
+execution:
+  evaluate_at_utc: "21:00"     # dopo close NY, prima della rollover swap
+  mode: "notify_only"          # in Stage 2.6 → solo notifica via Telegram, esecuzione manuale

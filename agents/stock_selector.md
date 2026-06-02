@@ -48,8 +48,18 @@ Confronta il titolo con il benchmark (default `^GSPC`) → restituisci uno tra:
 
 ### 5. Top picks
 
-I titoli con `score >= 5` finiscono nel `Top_Picks.xlsx`. Tutti i titoli analizzati finiscono
-nel `Analisi_Completa.xlsx`.
+I titoli con `score >= 4` **e** `macro_match` che inizia con `"SI"` finiscono nel
+`Top_Picks.xlsx`. Tutti i titoli analizzati finiscono nel `Analisi_Completa.xlsx`.
+
+### 6. Sell signals
+
+Confronta i ticker delle top picks correnti con quelli salvati in
+`output/last_top_picks.json` (run precedente). I ticker presenti nello stato precedente
+ma non più nelle top picks correnti finiscono in `Sell_Signals.xlsx` con il motivo
+dell'uscita (score sceso, scenario cambiato, ecc.).
+
+**Assunzione operativa**: l'utente compra tutte le top picks → vendere = uscita dalla lista.
+Prima run: nessun sell signal (manca lo stato).
 
 ## Output
 
@@ -76,8 +86,9 @@ Restituisci un oggetto strutturato:
   ],
   "all_results": "...",
   "excel_paths": {
-    "top_picks": "output/Top_Picks_2026-04-29.xlsx",
-    "full": "output/Analisi_Completa_2026-04-29.xlsx"
+    "top_picks": "output/Top_Picks.xlsx",
+    "full": "output/Analisi_Completa.xlsx",
+    "sell_signals": "output/Sell_Signals.xlsx"
   }
 }
 ```

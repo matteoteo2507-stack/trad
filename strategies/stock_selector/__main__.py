@@ -88,7 +88,8 @@ def main(
     console.print(f"\n[bold]Scenario:[/bold] {result.scenario.value}")
     console.print(f"[bold]Benchmark:[/bold] {result.benchmark}")
     console.print(
-        f"[bold]Top picks (score ≥ 5):[/bold] {len(result.top_picks)} su {len(result.full_analysis)}\n"
+        f"[bold]Top picks (score ≥ 4 e TARGET MATCH = SI):[/bold] "
+        f"{len(result.top_picks)} su {len(result.full_analysis)}\n"
     )
 
     table = Table(title="Top Picks")

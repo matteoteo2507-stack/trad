@@ -90,8 +90,11 @@ class TelegramNotifier(NotifierBase):
         sl: float,
         tp: float,
         rationale: str,
+        suggested_lots: float | None = None,
     ) -> None:
-        text = self._format_pending_alert(level, direction, symbol, sl, tp, rationale)
+        text = self._format_pending_alert(
+            level, direction, symbol, sl, tp, rationale, suggested_lots
+        )
         self._send(text)
 
     def send_execution_log(
@@ -147,6 +150,7 @@ class TelegramNotifier(NotifierBase):
         sl: float,
         tp: float,
         rationale: str,
+        suggested_lots: float | None = None,
     ) -> str:
         emoji = "🟢" if direction.upper() in ("BUY", "LONG") else "🔴"
         confluence = level.get("confluence", [])
@@ -167,9 +171,11 @@ class TelegramNotifier(NotifierBase):
             f"🛑 SL:      {format_price(symbol, sl)}  ({sl_pips:.1f} pip)",
             f"🎯 TP:      {format_price(symbol, tp)}  ({tp_pips:.1f} pip)",
             f"Ratio R/R: {rr:.2f}",
-            "",
-            rationale,
         ]
+        if suggested_lots is not None:
+            lines.append(f"💰 Lotti suggeriti: {suggested_lots:.2f}")
+        lines.append("")
+        lines.append(rationale)
         return "\n".join(lines)
 
     # ---- HTTP -----------------------------------------------------------
