@@ -5,6 +5,14 @@
 > niente algoritmo custom, niente selezione titoli, niente market-timing. Il pilastro investing
 > diventa **due secchi passivi**. L'utente tornerà a costruire gli step esecutivi DOPO essersi
 > informato sulle incognite elencate in §4. Qui c'è solo lo scheletro + i guardrail del quant.
+>
+> **▶ NEXT SESSION — START HERE.** Questo è il documento vivo del pilastro investing. Per produrre
+> il piano NUMERICO concreto serve la **categoria A (input personali)** in §5c: chiedi all'utente
+> età (e quando compie 30), orizzonte di decumulo, spese mensili, rata DCA sostenibile, target di
+> capitale, equity floor finale, view sugli Emergenti, uso del buffer. Con quelli → allocazione
+> iniziale, sizing buffer, tabella glide-path, step esecutivi (broker→PAC→ribilancio). Da chiudere
+> con l'utente anche il bivio **DIY vs LifeStrategy all-in-one** (§5b). NON costruire esecuzione/
+> codice prima di avere la categoria A.
 
 ## 1. Architettura: due secchi separati
 
@@ -70,8 +78,62 @@ I "campi non ancora toccati" dichiarati dall'utente — oggi **assenti** dai mat
    12.5% su titoli di Stato white-list); compensazione minus/plus; bollo.
 5. **Dimensionamento**: buffer in mesi/€ sui tuoi numeri; soglie del glide path; importo DCA.
 
+## 5b. Ricerca esecutiva — 3 deep-research (2026-06-02)
+
+### Cosa è ora SOLIDO (evidenza, non più da discutere)
+- **DCA vs lump-sum**: il lump-sum batte il DCA ~67% delle volte (Vanguard 2023), ma chi versa
+  flussi da reddito **è DCA per costruzione** → non-problema. Decisione lump-sum rilevante SOLO
+  su importi straordinari (bonus/eredità → investi subito).
+- **Ribilancio**: annuale + bande ±5% = 99% del beneficio del ribilancio giornaliero a 1/10 dei
+  costi (Vanguard 1926-2014). Per un accumulatore: **ribilancia coi NUOVI versamenti** sull'asset
+  sottopesato → gratis, nessun evento fiscale.
+- **Buffer emergenza**: 3-6 mesi di spese; **6-12 se reddito variabile/irregolare** (il tuo caso:
+  stipendio estivo + prop). Fuori dal portafoglio investito.
+- **Glide-path**: scritto a priori, mai reattivo. Riferimenti TDF: ~90% equity da giovane → 30-50%
+  a 65 (Vanguard), declino ~1%/anno. Conta in DECUMULO, non in accumulo.
+- **Sequence risk**: in accumulo il crash è un ALLEATO (compri a sconto) → conferma "DCA puro ora".
+
+### Candidati concreti emersi (da verificare, non raccomandazioni)
+| Categoria | Candidati | Note |
+|---|---|---|
+| Broker PAC IT (gratis + **regime amministrato**) | Trade Republic, Fineco, Directa | under-30 azzera canoni; Scalable = dichiarativo |
+| ETF All-World UCITS Acc | VWCE (IE00BK5BQT80, 0,22%), FWRA (IE000716YHJ7, 0,15%), SWDA+EIMI | FTSE All-World include EM ~10-12%; MSCI World no |
+| Sleeve bond (glide-path futuro) | IS3S (€ govt 3-5y), VGEA | duration BREVE preferita per stabilità |
+| Buffer cash EUR | XEON (LU0290358497, ~12,9% tax eff.), BOT 6-12m (12,5%) | XEON se serve liquidità rapida; BOT se mai toccato |
+
+### Bivio strutturale NUOVO (rilevante per "light-touch")
+**DIY** (All-World + bond sleeve gestiti a mano nel glide-path) **vs all-in-one LifeStrategy**
+(es. Vanguard LifeStrategy 80/60/40 UCITS, fa il mix azioni/bond internamente). Il secondo
+elimina il lavoro manuale del glide-path → coerente col tuo vincolo light-touch, al costo di meno
+controllo e TER leggermente più alto. **Da decidere.**
+
+## 5c. BUCHI DI KNOWLEDGE — mappa consolidata
+
+**A. Input personali (solo tu — sbloccano i numeri del piano):**
+- [ ] Età oggi (e quando compi 30 → azzera canoni broker) · orizzonte/età target decumulo.
+- [ ] Spese mensili essenziali (base per il sizing del buffer).
+- [ ] Rata DCA mensile sostenibile · target di capitale finale.
+- [ ] Equity floor desiderato a fine glide-path (30/40/50%) · velocità del declino.
+- [ ] View su Emergenti (→ FTSE All-World vs MSCI World).
+- [ ] Logica d'uso del buffer (mai toccato → BOT; liquidità rapida → XEON).
+
+**B. Verifiche fattuali (da confermare prima di scegliere):**
+- [ ] Scalable Capital: data effettiva regime amministrato IT (oggi non confermata).
+- [ ] Importo minimo PAC Directa · lista ETF zero-commissioni Fineco attuale (include VWCE/SWDA?).
+- [ ] Tracking difference reale FWRA (giovane, TER 0,15% ma poca storia) vs VWCE.
+- [ ] Tassazione esatta ETF monetari (XEON) e dividendi reinvestiti in ETF Acc in regime amministrato.
+- [ ] Bollo sotto soglia nei primi anni · tassi cash/deposito EUR attuali (post-tagli BCE) ·
+      portabilità deposito + "zainetto" minusvalenze se cambio broker.
+
+**C. Decisioni strutturali (forks di design):**
+- [ ] DIY vs LifeStrategy (vedi §5b) · broker (condiziona ticker/piazza/costi/fisco).
+- [ ] MSCI World vs FTSE All-World · strumento buffer · trigger+duration sleeve bond.
+- [ ] Regola di revisione glide-path (per età annuale? per evento di vita?).
+
 ## 5. Prossimi step (quando l'utente torna)
-- [ ] Studiare le incognite §4 → distillare in `fondamenti_tecnici/08_asset_allocation_passiva/`.
+- [x] Modulo KB creato: [08_asset_allocation_passiva](../fondamenti_tecnici/08_asset_allocation_passiva/principles.md)
+      (distillato da "Petrodollar ed ETF.txt": tipi ETF, UCITS vs US, fiscalità IT, bond, globale/US/EM, debunk petrodollaro).
+      Restano da approfondire: soglie numeriche del glide-path, scelta ETF/broker specifici, sizing sui propri numeri.
 - [ ] Fissare: target buffer (€), ETF All-World specifico, importo DCA, soglie glide path.
 - [ ] Scrivere gli step esecutivi (apertura conto/broker, PAC automatico, regola di ribilancio).
 - [ ] (Opzionale) aggiornare PROJECT.md: il pilastro investing = 2 secchi passivi, non lo Stock Selector.

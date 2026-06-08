@@ -45,14 +45,18 @@ bot) man mano che parsing, risk gate e affidabilità lo permettono.
 - **OctoBot**: layer esecutivo crypto — **priorità #1 corrente** ([DECISIONS.md](DECISIONS.md)).
 
 ### 3. Manuale / Investing (lungo termine, alimentato dalle entrate prop)
-Traccia di **accumulo e crescita capitale**, parallela al trading e **parte conclusiva** del progetto:
-- **PAC** — piano di accumulo capitale (manuale, lungo orizzonte).
-- **Stock Selector** — progetto **dinamico**: oggi semiauto, automatizzabile in futuro →
-  **non lo etichettiamo per regime esecutivo**. Seleziona azioni SP500 (V6.0).
-- **worldmonitor** — dashboard di intelligence geopolitica/macro ([worldmonitor.app](https://worldmonitor.app)):
-  fonte sensoriale che **converge** con Stock Selector e PAC nella fase conclusiva.
+Traccia di **accumulo e crescita capitale**, parallela al trading e **parte conclusiva** del progetto.
+**Riformulata 2026-06-02** (vedi [DECISIONS.md](DECISIONS.md) e [docs/INVESTING_PILLAR_PLAN.md](docs/INVESTING_PILLAR_PLAN.md)):
+- **Pilastro investing = due secchi passivi**, non un algoritmo:
+  - **Secchio A — buffer di sicurezza** (cash/bond brevi, riempito prima dallo stipendio).
+  - **Secchio B — PAC**: DCA su ETF azionario **globale All-World** + glide-path per età.
+- **Stock Selector** — **ARCHIVIATO come edge-seeker**: dati live + backtest 12y + MVP TAA hanno
+  mostrato nessun edge di selezione/timing che batta l'indice. I materiali tecnici (regime, Fed,
+  archetipi) restano utili alla traccia trading, non al PAC. Vedi [reviews](docs/reviews/).
+- **worldmonitor** — dashboard macro/geopolitica ([worldmonitor.app](https://worldmonitor.app)):
+  sensore macro, eventuale supporto al contesto, **non** un selettore di titoli.
 
-Stock Selector ∥ PAC ∥ worldmonitor si **fondono** nel pilastro investing di lungo periodo.
+PAC passivo ∥ buffer ∥ worldmonitor compongono il pilastro investing di lungo periodo.
 
 ---
 

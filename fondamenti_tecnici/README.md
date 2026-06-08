@@ -28,6 +28,7 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 | 05 | [Portfolio & Decomposizione del rischio](05_portfolio_rischio/principles.md) | stock_selector |
 | 06 | [Stock Selection](06_stock_selection/principles.md) | stock_selector, consensus |
 | 07 | [Data Sources (reference)](07_data_sources/reference.md) | stock_selector/data_sources.py |
+| 08 | [Asset Allocation Passiva (ETF/bond/fiscalità/USD)](08_asset_allocation_passiva/principles.md) | pilastro investing (PAC), INVESTING_PILLAR_PLAN |
 
 ### Blueprints (idee non committate)
 - [Markov regime skill](blueprints/markov_regime_skill.md) — alternativa probabilistica a `core/regime.py`
