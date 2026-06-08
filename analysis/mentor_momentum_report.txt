@@ -1,0 +1,48 @@
+
+  # side   oc   sess  alH1  alM15   dip  rng1h$   push
+  1 SELL  ALL     NY     n      n  0.78   10.33     vs
+  2 SELL   SL LONDON     Y      n  1.70   21.27     vs
+  3  BUY  ALL   ASIA     n      n  2.42   17.14     vs
+  4  BUY  ALL     NY     Y      Y  1.18   35.84   with
+  5 SELL  ALL     NY     Y      Y  5.08   10.92   with
+  6 SELL  ALL   ASIA     n      n  1.06   16.40     vs
+  7  BUY  TP2 LONDON     n      n  1.59   20.94   with
+  8  BUY  TP1   ASIA     n      n  0.82   25.78   with
+  9  BUY  ALL     NY     n      n  4.44    9.60     vs
+ 10  BUY   SL     NY     Y      Y  3.64    7.07   with
+ 11 SELL  ALL LONDON     n      n  3.72   13.80     vs
+ 12 SELL  TP1   ASIA     Y      Y  2.38   26.54     vs
+ 13  BUY  ALL     NY     Y      Y  4.42   13.09   with
+ 14  BUY  ALL     NY     n      Y  3.27   12.74   with
+ 15  BUY  TP1 LONDON     n      n  1.59   15.05   with
+ 16  BUY  ALL   ASIA     n      Y  3.35   10.78     vs
+ 17 SELL  ALL LONDON     n      n  1.63   15.46   with
+ 18 SELL  TP2 LONDON     n      Y  2.59   10.47     vs
+ 19  BUY  ALL   ASIA     n      n -0.10    9.06   with
+ 20 SELL  ALL LONDON     Y      n  1.19   19.36   with
+ 21  BUY  ALL   ASIA     Y      n  2.19   41.39     vs
+ 22  BUY  TP1   ASIA     n      n -4.28   13.10     vs
+ 23  BUY   SL   ASIA     n      n -5.12   13.10     vs
+ 24  BUY  ALL     NY     n      Y  8.15   10.22     vs
+ 25  BUY  ALL LONDON     n      n  3.43   13.45     vs
+ 26  BUY   SL LONDON     n      n  0.74   19.10     vs
+ 27  BUY  TP1   ASIA     n      n  1.43   12.01     vs
+ 28  BUY  ALL   ASIA     Y      Y  0.94   15.62     vs
+ 29  BUY  ALL     NY     n      n  1.87   18.63     vs
+ 30 SELL  ALL LONDON     Y      Y  1.33   11.95   with
+ 31  BUY  TP1 LONDON     n      n  2.22    9.19     vs
+ 32  BUY  TP2   ASIA     Y      n  2.30   20.19     vs
+
+=== 32 ingressi ===
+A) Continuazione (side = trend), baseline 50%:
+   allineato a trend H1(4h):  34%
+   allineato a trend M15(2h): 34%
+B) Dentro l'ultima ora (dipscore: 1=compra minimo/vende massimo):
+   mediana dipscore: 1.78
+   stile DIP/reversione (>=0.6): 91%   stile BREAKOUT (<=0.4): 9%
+C) Spinta nei 15' prima a favore della direzione (breakout): 38%
+
+Range medio dell'ultima ora prima dell'ingresso: $16.2
+D) Mean-reversion vs VWAP/apertura (segno + = entry sul lato dello sconto):
+   vs VWAP:     mediana $+22.83   % dal lato fade: 90%
+   vs apertura: mediana $+31.54   % dal lato fade: 73%
