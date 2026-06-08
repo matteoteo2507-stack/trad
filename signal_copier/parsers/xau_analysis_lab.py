@@ -54,6 +54,7 @@ class XauAnalysisLabParser(ChannelParser):
     """Parser deterministico per XAU/USD ANALYSIS TEAM."""
 
     channel_id = "xauusd_analysislab"
+    entry_mode = "trigger"  # "NOW" apre, messaggio coi livelli riconcilia
 
     def parse(self, text: str) -> ParseResult:
         if not text:

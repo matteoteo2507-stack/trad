@@ -190,5 +190,5 @@ def build_market_plan(
     plan = build_plan(synth, balance, config, current_price=None)
     if plan.accepted:
         for leg in plan.legs:
-            leg.note = f"{trigger.channel} TP{leg.tp_index} (NOW, tp provvisorio)"
+            leg.note = f"{trigger.channel}_TP{leg.tp_index}_NOW"
     return plan

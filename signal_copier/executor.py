@@ -94,12 +94,8 @@ class Executor:
             self._journal_update(update, None)
             return
 
-        if update.kind == "tp_hit" and (update.tp_index or 0) >= self._be_trigger():
-            msg = f"➡️ {plan.signal.symbol}: TP{update.tp_index} hit → SL a break-even ({plan.signal.entry})"
-            logger.info(msg)
-            self._notify(msg)
-            if self.mode == "live":
-                self._move_sl_to_be(plan)
+        if update.kind == "tp_hit":
+            self._manage_tp_hit(plan, update.tp_index or 0)
         elif update.kind == "close_all":
             msg = f"🚫 {plan.signal.symbol}: chiusura richiesta dal canale"
             logger.info(msg)
@@ -113,13 +109,177 @@ class Executor:
             self._notify(msg)
             self._active.pop(update.channel, None)
 
+        # Canali senza messaggio di chiusura: libera il canale quando sul broker non
+        # resta aperta nessuna delle gambe (tutte chiuse da TP o SL). Vale anche da
+        # rete di sicurezza per i canali con "close" se quel messaggio si perde.
+        if update.channel in self._active and self._all_legs_closed(plan):
+            logger.info("%s: gambe tutte chiuse sul broker → canale liberato",
+                        plan.signal.symbol)
+            self._active.pop(update.channel, None)
+
         self._journal_update(update, plan)
+
+    def _manage_tp_hit(self, plan: TradePlan, idx: int) -> None:
+        """Gestione su 'tp_hit' dal canale: delega alla logica condivisa."""
+        self._apply_management(plan, idx)
+
+    def _apply_management(self, plan: TradePlan, reached_tp: int) -> None:
+        """Scala lo SL in base al numero di TP raggiunti (`reached_tp`).
+
+        Sorgente unica per i due trigger: il messaggio del canale (`tp_index`) e
+        il broker (n. gambe chiuse — vedi `poll_broker_management`). Due gradini,
+        in ordine crescente di protezione; flag idempotenti così non si torna mai
+        indietro (un trigger tardivo non riporta lo SL a BE dopo il trailing):
+        1. `reached_tp >= move_sl_to_be_on_tp` (default 1) → SL a break-even.
+        2. trailing opzionale: `reached_tp >= manage.trail.on_tp` → SL al livello di
+           `manage.trail.to_tp` (1-based) sulle gambe residue, **una sola volta**.
+
+        Es. gold_5tp (5 TP, spacing fisso): BE dopo TP1, poi a TP3 lo SL va a TP1
+        (blocca profitto lasciando correre i runner TP4/TP5). Sui canali con meno
+        TP il trailing è inerte (al TP finale le gambe sono già chiuse).
+        """
+        if reached_tp <= 0:
+            return
+        trail = (self.config.get("manage", {}) or {}).get("trail", {}) or {}
+        trail_on = int(trail.get("on_tp", 0)) if trail.get("enabled") else 0
+        if trail_on and reached_tp >= trail_on and not plan.trailed:
+            to_tp = int(trail.get("to_tp", 1))
+            level = self._tp_level(plan, to_tp)
+            if level is None:
+                logger.warning("%s: trailing richiesto a TP%d ma livello assente "
+                               "(%d TP) → niente trailing", plan.signal.symbol, to_tp,
+                               len(plan.signal.tps))
+                return
+            msg = (f"⏫ {plan.signal.symbol}: TP{reached_tp} raggiunto → SL a TP{to_tp} "
+                   f"({level}) sulle gambe residue")
+            logger.info(msg)
+            self._notify(msg)
+            if self.mode == "live":
+                self._move_sl_to_price(plan, level)
+            plan.trailed = True
+            plan.be_armed = True  # il trailing è più protettivo del BE: copre anche quello
+            return
+        if not plan.be_armed and reached_tp >= self._be_trigger():
+            msg = (f"➡️ {plan.signal.symbol}: TP{reached_tp} raggiunto → SL a "
+                   f"break-even ({plan.signal.entry})")
+            logger.info(msg)
+            self._notify(msg)
+            if self.mode == "live":
+                self._move_sl_to_be(plan)
+            plan.be_armed = True
+
+    def poll_broker_management(self) -> None:
+        """Gestione guidata dal broker, indipendente dai messaggi del canale.
+
+        Chiamata periodicamente dal loop live: per ogni piano attivo conta le
+        gambe **chiuse sul broker** (= TP raggiunti, dato che condividono lo SL) e
+        applica BE/trailing di conseguenza. Così il break-even scatta anche quando
+        il canale **non manda** (o manda in formato non parsato) il "TP hit" — il
+        caso che ieri ha lasciato due gambe sullo SL pieno. I messaggi restano
+        come conferma ridondante. Libera il canale quando tutto è chiuso.
+        """
+        if self.mode != "live" or self.broker is None:
+            return
+        for channel, plan in list(self._active.items()):
+            reached = self._closed_leg_count(plan)
+            if reached > 0:
+                self._apply_management(plan, reached)
+            if self._all_legs_closed(plan):
+                logger.info("%s: gambe tutte chiuse sul broker (poll) → canale liberato",
+                            plan.signal.symbol)
+                self._active.pop(channel, None)
+
+    def _closed_leg_count(self, plan: TradePlan) -> int:
+        """Quante gambe del piano non sono più aperte sul broker (proxy dei TP raggiunti)."""
+        leg_tickets = [leg.ticket for leg in plan.legs if leg.ticket is not None]
+        if not leg_tickets:
+            return 0
+        try:
+            open_tickets = {
+                getattr(p, "ticket", None)
+                for p in self.broker.get_positions(plan.signal.symbol)
+            }
+        except Exception as exc:
+            logger.debug("poll get_positions fallito: %s", exc)
+            return 0
+        return sum(1 for t in leg_tickets if t not in open_tickets)
 
     # ---- Stato / riconciliazione ---------------------------------------
 
     def has_active(self, channel: str) -> bool:
-        """True se c'è già un trade attivo sul canale (policy: uno per canale)."""
-        return channel in self._active
+        """True se c'è un trade davvero attivo sul canale.
+
+        Si riconcilia col broker (fonte di verità): se le gambe risultano tutte
+        chiuse — es. **SL colpito senza notifica** del canale — libera il canale
+        così il prossimo segnale può entrare. Senza questo, lo stato dedotto dai
+        soli messaggi (incompleti) bloccherebbe i segnali successivi.
+        """
+        plan = self._active.get(channel)
+        if plan is None:
+            return False
+        if self._all_legs_closed(plan):
+            logger.info("%s: trade non più aperto sul broker → canale liberato",
+                        plan.signal.symbol)
+            self._active.pop(channel, None)
+            return False
+        return True
+
+    def prepare_for_new_trade(self, symbol: str, direction: str) -> bool:
+        """Policy "uno per simbolo" + flip su cambio bias. True se si deve aprire.
+
+        - nessun trade nostro aperto sul simbolo → True (apri);
+        - trade aperto **stesso bias** → False (re-entry ignorato);
+        - trade aperto **bias opposto** → chiude il vecchio e ritorna True (flip).
+
+        Fonte di verità: il broker in live (posizioni nostre, filtrate per magic),
+        altrimenti i piani in memoria (dry-run).
+        """
+        open_dir, tickets = self._open_direction_and_tickets(symbol)
+        if open_dir is None:
+            return True
+        if open_dir == direction:
+            logger.info("%s: trade %s già aperto, stesso bias → re-entry ignorato",
+                        symbol, direction)
+            return False
+        logger.info("%s: bias cambiato (%s → %s) → chiudo il vecchio trade e apro il nuovo",
+                    symbol, open_dir, direction)
+        self._notify(f"🔄 {symbol}: bias invertito → chiudo {open_dir}, apro {direction}")
+        self._close_tickets(tickets)
+        for ch, plan in list(self._active.items()):
+            if plan.signal.symbol == symbol:
+                self._active.pop(ch, None)
+        return True
+
+    def _open_direction_and_tickets(self, symbol: str):
+        """(direzione, [ticket]) del trade NOSTRO aperto sul simbolo, o (None, [])."""
+        if self.mode == "live" and self.broker is not None:
+            try:
+                positions = self.broker.get_positions(symbol)
+            except Exception as exc:
+                logger.debug("prepare get_positions fallito: %s", exc)
+                positions = []
+            magic = getattr(self.broker, "magic", None)
+            ours = [p for p in positions
+                    if magic is None or getattr(p, "magic", None) == magic]
+            if ours:
+                tickets = [p.ticket for p in ours if getattr(p, "ticket", None) is not None]
+                return ours[0].direction, tickets
+            return None, []
+        # dry-run / no broker: stato in memoria
+        for plan in self._active.values():
+            if plan.signal.symbol == symbol and not self._all_legs_closed(plan):
+                return plan.signal.direction, [l.ticket for l in plan.legs if l.ticket]
+        return None, []
+
+    def _close_tickets(self, tickets) -> None:
+        """Chiude per-ticket (flip). Best-effort: una gamba già chiusa non è errore."""
+        if self.mode != "live" or self.broker is None:
+            return
+        for t in tickets:
+            try:
+                self.broker.close_position_by_ticket(t)
+            except Exception as exc:
+                logger.info("Flip: chiusura ticket %s saltata: %s", t, exc)
 
     def on_reconcile(self, signal: ParsedSignal) -> None:
         """Applica i livelli esatti del mentore (messaggio #3) al trade aperto sul 'NOW'.
@@ -134,6 +294,11 @@ class Executor:
                         "(manca il trigger NOW)", signal.channel)
             self._journal_reconcile(signal, None)
             return
+        if plan.reconciled:
+            # I livelli del trade in corso sono già stati applicati: questo è un
+            # secondo messaggio di livelli (es. re-entry stesso bias) → non riscrivere.
+            logger.info("%s: livelli già applicati, ignoro (probabile re-entry)", signal.symbol)
+            return
 
         for i, leg in enumerate(plan.legs):
             new_tp = signal.tps[i] if i < len(signal.tps) else leg.take_profit
@@ -147,6 +312,7 @@ class Executor:
                 except Exception as exc:
                     logger.info("Riconciliazione ticket %s saltata (gamba chiusa?): %s",
                                 leg.ticket, exc)
+        plan.reconciled = True
         if len(signal.tps) != len(plan.legs):
             logger.warning("Riconciliazione %s: %d TP dichiarati vs %d gambe aperte",
                            signal.symbol, len(signal.tps), len(plan.legs))
@@ -184,16 +350,27 @@ class Executor:
 
     def _move_sl_to_be(self, plan: TradePlan) -> None:
         """Sposta lo SL a break-even su tutte le gambe ancora aperte (per-ticket)."""
-        be_price = plan.signal.entry
+        self._move_sl_to_price(plan, plan.signal.entry)
+
+    def _move_sl_to_price(self, plan: TradePlan, price: float) -> None:
+        """Sposta lo SL al prezzo dato su tutte le gambe ancora aperte (per-ticket)."""
         for leg in plan.legs:
             if leg.ticket is None:
                 continue
             try:
-                self.broker.modify_position_by_ticket(leg.ticket, new_sl=be_price)
+                self.broker.modify_position_by_ticket(leg.ticket, new_sl=price)
             except Exception as exc:
                 # Una gamba può essersi già chiusa (TP colpito sul broker): non è un errore.
-                logger.info("BE su ticket %s saltato (probabile gamba già chiusa): %s",
+                logger.info("Spostamento SL su ticket %s saltato (probabile gamba già chiusa): %s",
                             leg.ticket, exc)
+
+    @staticmethod
+    def _tp_level(plan: TradePlan, tp_index: int) -> Optional[float]:
+        """Prezzo del TP `tp_index` (1-based) dichiarato dal segnale, o None se assente."""
+        tps = plan.signal.tps
+        if 1 <= tp_index <= len(tps):
+            return tps[tp_index - 1]
+        return None
 
     def _close_all(self, plan: TradePlan) -> None:
         """Chiude a mercato tutte le gambe ancora aperte (per-ticket)."""
@@ -205,6 +382,23 @@ class Executor:
             except Exception as exc:
                 logger.info("Close su ticket %s saltato (probabile gamba già chiusa): %s",
                             leg.ticket, exc)
+
+    def _all_legs_closed(self, plan: TradePlan) -> bool:
+        """True se nessuna gamba del piano è più aperta sul broker (solo live)."""
+        if self.mode != "live" or self.broker is None:
+            return False
+        leg_tickets = {leg.ticket for leg in plan.legs if leg.ticket is not None}
+        if not leg_tickets:
+            return False
+        try:
+            open_tickets = {
+                getattr(p, "ticket", None)
+                for p in self.broker.get_positions(plan.signal.symbol)
+            }
+        except Exception as exc:
+            logger.debug("flat-check get_positions fallito: %s", exc)
+            return False
+        return leg_tickets.isdisjoint(open_tickets)
 
     # ---- Util -----------------------------------------------------------
 

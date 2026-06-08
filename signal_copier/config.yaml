@@ -8,7 +8,8 @@ mode: "dry_run"
 # Mappa canale Telegram → channel_id del parser registrato.
 # Chiave = username del canale senza @ (o id numerico). Valore = channel_id parser.
 channels:
-  XAUUSD_AnalysisLab: "xauusd_analysislab"
+  XAUUSD_AnalysisLab: "xauusd_analysislab"   # entry_mode=trigger (NOW + livelli separati)
+  gfetyydh8959: "gold_5tp"                    # entry_mode=signal (5 TP tutto-in-uno)
 
 # Quale broker MT5 usare in live (riferito alle credenziali MT5_DEMO*_ in .env).
 # MT5_DEMO3 = account MetaQuotes 10685251 (hedge), usato anche per London.
@@ -18,6 +19,11 @@ broker_account: "MT5_DEMO3"
 # gestione) viene loggato qui per analisi/quant-review. Sostituisce il Notion
 # manuale. Il dryrun su esempi offline scrive su <stem>_dryrun.jsonl.
 journal_file: "logs/signal_copier_journal.jsonl"
+
+# Log append-only di OGNI messaggio ricevuto dai canali (raw text + classificazione).
+# Sopravvive alla console: forensics ("perché non è scattato il BE?") + dataset per il
+# reverse-engineering della strategia dei mentori.
+raw_message_log: "logs/messages_received.jsonl"
 
 copier:
   # Simboli ammessi (difesa contro parse spuri o canali che cambiano asset).
@@ -45,6 +51,18 @@ copier:
   manage:
     # Su quale TP raggiunto spostare lo SL a break-even (1 = dopo TP1).
     move_sl_to_be_on_tp: 1
+    # Trailing a gradino (canali con molti TP, es. gold_5tp a 5 TP con spacing fisso):
+    # dopo aver raggiunto `on_tp`, sposta UNA SOLA VOLTA lo SL delle gambe rimaste al
+    # livello di `to_tp` (1-based), poi non lo tocca più. Regola concordata: BE dopo
+    # TP1 → a TP3 lo SL va a TP1 (blocca +1 gradino di profitto lasciando ~2 TP di
+    # cuscinetto ai runner TP4/TP5). Inerte sui canali con ≤ on_tp TP (gambe già chiuse).
+    trail:
+      enabled: true
+      on_tp: 3   # quando scatta lo spostamento (TP raggiunto)
+      to_tp: 1   # a quale livello TP portare lo SL delle gambe residue
+    # Ogni quanti secondi il loop live interroga il broker per gestire BE/trailing
+    # senza dipendere dai messaggi del canale (che possono mancare/arrivare tardi).
+    poll_seconds: 20
 
   # Entrata sul messaggio trigger "BUY/SELL NOW": il mentore entra a mercato in
   # quel momento, quindi apriamo subito a mercato (niente attesa del messaggio

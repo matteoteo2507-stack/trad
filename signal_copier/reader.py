@@ -68,16 +68,23 @@ class TelegramReader:
         session: str,
         channel_map: dict[str, str],
         on_message: Callable[[str, str], None],
+        on_tick: Callable[[], None] | None = None,
+        tick_interval: float = 20.0,
     ):
         self.api_id = int(api_id)
         self.api_hash = api_hash
         self.session = session
         self.channel_map = channel_map
         self.on_message = on_message
+        # Callback periodica (gestione guidata dal broker, indipendente dai messaggi).
+        self.on_tick = on_tick
+        self.tick_interval = float(tick_interval)
         self._client: Any = None
 
     def run(self) -> None:
         """Avvia il client e resta in ascolto (bloccante) fino a disconnessione."""
+        import asyncio
+
         TelegramClient, events = _import_telethon()
         self._client = TelegramClient(self.session, self.api_id, self.api_hash)
 
@@ -95,8 +102,21 @@ class TelegramReader:
             except Exception as exc:  # non far cadere il client per un parse error
                 logger.exception("on_message ha sollevato: %s", exc)
 
+        async def _ticker() -> None:
+            # Poll periodico: la gestione (BE/trailing) non deve dipendere solo dai
+            # messaggi del canale, che possono mancare. on_tick interroga il broker.
+            while True:
+                await asyncio.sleep(self.tick_interval)
+                try:
+                    self.on_tick()  # type: ignore[misc]
+                except Exception as exc:
+                    logger.exception("on_tick ha sollevato: %s", exc)
+
         logger.info("TelegramReader avviato su canali: %s", watched)
         with self._client:
+            if self.on_tick is not None:
+                self._client.loop.create_task(_ticker())
+                logger.info("Poll gestione broker attivo ogni %.0fs", self.tick_interval)
             self._client.run_until_disconnected()
 
     def _resolve_channel(self, event: Any) -> str | None:

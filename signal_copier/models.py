@@ -108,6 +108,9 @@ class TradePlan:
     legs: list[TradeLeg] = field(default_factory=list)
     accepted: bool = True
     reason: str = "ok"
+    reconciled: bool = False  # True dopo che i livelli esatti sono stati applicati (canali trigger)
+    be_armed: bool = False  # True dopo che lo SL è stato portato a break-even (idempotenza BE)
+    trailed: bool = False  # True dopo lo step di trailing (SL portato a un TP): non si torna più a BE
 
     @property
     def total_size(self) -> float:

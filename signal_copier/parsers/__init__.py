@@ -9,6 +9,7 @@ from __future__ import annotations
 from .base import ChannelParser, get_parser, register_parser, registered_channels
 
 # Import dei parser concreti → side-effect di registrazione.
+from . import gold_5tp  # noqa: F401
 from . import xau_analysis_lab  # noqa: F401
 
 __all__ = [

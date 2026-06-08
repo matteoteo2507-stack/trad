@@ -26,7 +26,7 @@ from .executor import Executor
 from .journal import TradeJournal
 from .models import EntryTrigger, ParsedSignal, SignalUpdate
 from .parsers import get_parser
-from .planner import build_market_plan
+from .planner import build_market_plan, build_plan
 from .reader import TelegramReader, iter_offline_messages
 
 logger = logging.getLogger("signal_copier")
@@ -42,10 +42,35 @@ def _setup_logging() -> None:
             stream.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
         except (AttributeError, ValueError):
             pass
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    )
+    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+    if not root.handlers:
+        stream_h = logging.StreamHandler()
+        stream_h.setFormatter(fmt)
+        root.addHandler(stream_h)
+        # Log persistente su file (UTF-8): la console si perde, questo no. Serve a
+        # ricostruire cosa è arrivato dai canali anche dopo (forensics + dataset).
+        try:
+            Path("logs").mkdir(exist_ok=True)
+            file_h = logging.FileHandler("logs/signal_copier.log", encoding="utf-8")
+            file_h.setFormatter(fmt)
+            root.addHandler(file_h)
+        except OSError as exc:
+            root.warning("Impossibile aprire logs/signal_copier.log: %s", exc)
+
+
+def _log_raw_message(channel_id: str, text: str, raw_log: Path) -> None:
+    """Append-only del messaggio grezzo ricevuto (audit + dataset reverse-eng.)."""
+    import json
+    from datetime import datetime, timezone
+
+    rec = {"ts": datetime.now(timezone.utc).isoformat(), "channel": channel_id, "text": text}
+    try:
+        with open(raw_log, "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except OSError as exc:
+        logger.warning("Scrittura messaggio grezzo fallita: %s", exc)
 
 
 def _load_config() -> dict[str, Any]:
@@ -66,13 +91,13 @@ def _dispatch(parser: Any, executor: Executor, copier_cfg: dict, balance: float,
     result = parser.parse(text)
 
     if isinstance(result, EntryTrigger):
-        # Policy v1: un trade per canale. Un nuovo trigger mentre uno è attivo è ignorato.
-        if executor.has_active(result.channel):
-            logger.info("Messaggio → TRIGGER %s %s IGNORATO (trade già attivo): %s",
-                        result.symbol, result.side, preview)
-            return
         if broker is None:
             logger.info("Messaggio → TRIGGER %s %s (dry-run: nessuna esecuzione): %s",
+                        result.symbol, result.side, preview)
+            return
+        # Policy "uno per simbolo" + flip su cambio bias (chiude il vecchio se opposto).
+        if not executor.prepare_for_new_trade(result.symbol, result.direction):
+            logger.info("Messaggio → TRIGGER %s %s IGNORATO (re-entry stesso bias): %s",
                         result.symbol, result.side, preview)
             return
         try:
@@ -86,9 +111,26 @@ def _dispatch(parser: Any, executor: Executor, copier_cfg: dict, balance: float,
         executor.on_signal(plan)
 
     elif isinstance(result, ParsedSignal):
-        # Il messaggio coi livelli NON apre: riconcilia SL/TP sul trade aperto dal trigger.
-        logger.info("Messaggio → LIVELLI (riconcilio): %s", preview)
-        executor.on_reconcile(result)
+        if getattr(parser, "entry_mode", "trigger") == "signal":
+            # Canale "signal": livelli tutto-in-uno → apri a mercato direttamente.
+            if not executor.prepare_for_new_trade(result.symbol, result.direction):
+                logger.info("Messaggio → SEGNALE %s %s IGNORATO (re-entry stesso bias): %s",
+                            result.symbol, result.side, preview)
+                return
+            current_price = None
+            if broker is not None:
+                try:
+                    current_price = broker.get_price(result.symbol)
+                except Exception as exc:
+                    logger.warning("get_price fallito, gate anti-ritardo off: %s", exc)
+            logger.info("Messaggio → SEGNALE %s %s (apre a mercato): %s",
+                        result.symbol, result.side, preview)
+            plan = build_plan(result, balance, copier_cfg, current_price=current_price)
+            executor.on_signal(plan)
+        else:
+            # Canale "trigger": i livelli riconciliano il trade già aperto dal "NOW".
+            logger.info("Messaggio → LIVELLI (riconcilio): %s", preview)
+            executor.on_reconcile(result)
 
     elif isinstance(result, SignalUpdate):
         logger.info("Messaggio → UPDATE[%s]: %s", result.kind, preview)
@@ -156,7 +198,12 @@ def cmd_live(args: argparse.Namespace) -> int:
     journal = TradeJournal(config.get("journal_file", "logs/signal_copier_journal.jsonl"))
     executor = Executor(mode=mode, broker=broker, config=copier_cfg, journal=journal)
 
+    raw_log = Path(config.get("raw_message_log", "logs/messages_received.jsonl"))
+    raw_log.parent.mkdir(parents=True, exist_ok=True)
+
     def on_message(channel_id: str, text: str) -> None:
+        # Prima di tutto: persisti il messaggio grezzo (anche se il parser lo ignora).
+        _log_raw_message(channel_id, text, raw_log)
         parser = get_parser(channel_id)
         if parser is None:
             logger.warning("Messaggio da canale senza parser: %s", channel_id)
@@ -169,12 +216,18 @@ def cmd_live(args: argparse.Namespace) -> int:
                 logger.warning("get_info fallito, uso hint: %s", exc)
         _dispatch(parser, executor, copier_cfg, balance, text, broker=broker)
 
+    # Gestione guidata dal broker (BE/trailing indipendenti dai messaggi): solo in live.
+    on_tick = executor.poll_broker_management if mode == "live" else None
+    poll_seconds = float(copier_cfg.get("manage", {}).get("poll_seconds", 20))
+
     reader = TelegramReader(
         api_id=int(api_id),
         api_hash=api_hash,
         session=session,
         channel_map=config["channels"],
         on_message=on_message,
+        on_tick=on_tick,
+        tick_interval=poll_seconds,
     )
     reader.run()
     return 0

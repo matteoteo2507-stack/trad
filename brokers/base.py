@@ -44,6 +44,7 @@ class BrokerPosition:
     sl: Optional[float]
     tp: Optional[float]
     ticket: Optional[int] = None  # id posizione broker (per gestione per-ticket su hedging)
+    magic: Optional[int] = None   # magic number (per distinguere i nostri trade dagli altri)
 
 
 @dataclass

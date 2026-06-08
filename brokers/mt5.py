@@ -17,6 +17,7 @@ Note:
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime
 from typing import Any, Optional
 
@@ -163,6 +164,34 @@ class MT5Broker(BrokerBase):
         df = df.rename(columns={"tick_volume": "volume"})
         return df[["open", "high", "low", "close", "volume"]]
 
+    def get_bars_until(
+        self, symbol: str, timeframe: str, end: datetime, count: int
+    ) -> pd.DataFrame:
+        """`count` barre che TERMINANO a `end` (incluso), andando indietro.
+
+        Look-ahead-safe: per analizzare un ingresso passato si guardano solo le
+        barre disponibili fino a quel momento. `end` va passato in tempo server
+        del broker (vedi nota TZ in cima al file); il chiamante è responsabile
+        dell'allineamento. Le colonne sono normalizzate come in `get_market_data`.
+        """
+        self._ensure_connected()
+        tf_map = _build_timeframe_map(self._mt5)
+        if timeframe not in tf_map:
+            raise ValueError(
+                f"Timeframe '{timeframe}' non supportato. Validi: {_TIMEFRAME_KEYS}"
+            )
+        sym = self._resolve_symbol(symbol)
+        rates = self._mt5.copy_rates_from(sym, tf_map[timeframe], end, count)
+        if rates is None or len(rates) == 0:
+            raise RuntimeError(
+                f"MT5 nessun dato per {sym} {timeframe} fino a {end}: {self._mt5.last_error()}"
+            )
+        df = pd.DataFrame(rates)
+        df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
+        df = df.set_index("time")
+        df = df.rename(columns={"tick_volume": "volume"})
+        return df[["open", "high", "low", "close", "volume"]]
+
     def get_price(self, symbol: str) -> float:
         """Prezzo corrente (mid bid/ask) del simbolo. Usato dal gate anti-ritardo."""
         self._ensure_connected()
@@ -209,6 +238,7 @@ class MT5Broker(BrokerBase):
             sl=float(p.sl) if p.sl else None,
             tp=float(p.tp) if p.tp else None,
             ticket=int(p.ticket),
+            magic=int(getattr(p, "magic", 0)),
         )
 
     # ---- Ordini ---------------------------------------------------------
@@ -234,7 +264,6 @@ class MT5Broker(BrokerBase):
             "magic": self.magic,
             "comment": (order.note or "")[:31],  # MT5 limita comment a 31 char
             "type_time": self._mt5.ORDER_TIME_GTC,
-            "type_filling": self._mt5.ORDER_FILLING_IOC,
         }
         if price is not None:
             request["price"] = price
@@ -243,11 +272,14 @@ class MT5Broker(BrokerBase):
         if order.take_profit is not None:
             request["tp"] = float(order.take_profit)
 
-        result = self._mt5.order_send(request)
+        self._normalize_request(request, info)
+        result = self._send_with_filling(request, info)
         if result is None or result.retcode != self._mt5.TRADE_RETCODE_DONE:
             raise RuntimeError(
-                f"MT5 order_send fallito retcode={getattr(result, 'retcode', '?')} "
-                f"comment={getattr(result, 'comment', '?')}"
+                f"MT5 order_send fallito retcode={getattr(result, 'retcode', None)} "
+                f"comment={getattr(result, 'comment', None)} "
+                f"last_error={self._mt5.last_error()} "
+                f"(filling={request.get('type_filling')}, symbol={sym})"
             )
         order_id = str(result.order or result.deal)
         logger.info(
@@ -329,6 +361,7 @@ class MT5Broker(BrokerBase):
             "sl": float(new_sl) if new_sl is not None else float(p.sl or 0),
             "tp": float(new_tp) if new_tp is not None else float(p.tp or 0),
         }
+        self._normalize_request(request, self._mt5.symbol_info(p.symbol))
         result = self._mt5.order_send(request)
         if result is None or result.retcode != self._mt5.TRADE_RETCODE_DONE:
             raise RuntimeError(
@@ -352,6 +385,7 @@ class MT5Broker(BrokerBase):
         is_long = p.type == self._mt5.POSITION_TYPE_BUY
         otype = self._mt5.ORDER_TYPE_SELL if is_long else self._mt5.ORDER_TYPE_BUY
         tick = self._mt5.symbol_info_tick(p.symbol)
+        info = self._mt5.symbol_info(p.symbol)
         request = {
             "action": self._mt5.TRADE_ACTION_DEAL,
             "symbol": p.symbol,
@@ -362,15 +396,15 @@ class MT5Broker(BrokerBase):
             "magic": self.magic,
             "comment": "close_leg",
             "type_time": self._mt5.ORDER_TIME_GTC,
-            "type_filling": self._mt5.ORDER_FILLING_IOC,
         }
         if tick is not None:
             request["price"] = float(tick.bid if is_long else tick.ask)
-        result = self._mt5.order_send(request)
+        self._normalize_request(request, info)
+        result = self._send_with_filling(request, info)
         if result is None or result.retcode != self._mt5.TRADE_RETCODE_DONE:
             raise RuntimeError(
                 f"MT5 close per-ticket {ticket} fallito "
-                f"retcode={getattr(result, 'retcode', '?')}"
+                f"retcode={getattr(result, 'retcode', None)} last_error={self._mt5.last_error()}"
             )
         logger.info("MT5 posizione chiusa ticket=%s vol=%s", ticket, p.volume)
 
@@ -379,6 +413,76 @@ class MT5Broker(BrokerBase):
     def _ensure_connected(self) -> None:
         if not self._connected:
             raise RuntimeError("MT5 non connesso. Chiamare connect() prima.")
+
+    def _filling_candidates(self, info: Any) -> list[int]:
+        """Ordine di `type_filling` da provare: prima quelli dichiarati dal simbolo, poi tutti.
+
+        Alcune build del pacchetto `MetaTrader5` NON espongono le costanti
+        `SYMBOL_FILLING_*`: usiamo i valori del bitmask (FOK=1, IOC=2). Il broker
+        a volte rifiuta un filling con `result=None` o retcode 10030
+        (INVALID_FILL): in quei casi proviamo il successivo.
+        """
+        mt5 = self._mt5
+        fm = getattr(info, "filling_mode", 0) if info is not None else 0
+        order: list[int] = []
+        if fm & 1:  # SYMBOL_FILLING_FOK
+            order.append(mt5.ORDER_FILLING_FOK)
+        if fm & 2:  # SYMBOL_FILLING_IOC
+            order.append(mt5.ORDER_FILLING_IOC)
+        # Fallback: includi comunque tutti i modi, senza duplicati.
+        for f in (mt5.ORDER_FILLING_RETURN, mt5.ORDER_FILLING_FOK, mt5.ORDER_FILLING_IOC):
+            if f not in order:
+                order.append(f)
+        return order
+
+    def _send_with_filling(self, request: dict, info: Any) -> Any:
+        """`order_send` provando i filling supportati finché uno non viene accettato."""
+        result = None
+        for filling in self._filling_candidates(info):
+            request["type_filling"] = filling
+            result = self._mt5.order_send(request)
+            rc = getattr(result, "retcode", None)
+            if result is not None and rc == self._mt5.TRADE_RETCODE_DONE:
+                return result
+            # Riprova con un altro filling SOLO se è (probabile) errore di filling.
+            if not (result is None or rc == 10030):  # 10030 = TRADE_RETCODE_INVALID_FILL
+                return result
+        return result
+
+    @staticmethod
+    def _safe_comment(text: str) -> str:
+        """Comment MT5-safe: solo `[A-Za-z0-9_-]`, max 31 char.
+
+        MT5 rifiuta i comment con spazi/parentesi/virgole ecc.
+        (`-2 'Invalid comment argument'`): i run di caratteri non ammessi
+        diventano `_`.
+        """
+        cleaned = re.sub(r"[^A-Za-z0-9_-]+", "_", text or "")
+        return cleaned.strip("_")[:31]
+
+    def _norm_volume(self, volume: float, info: Any) -> float:
+        """Allinea il volume al passo del simbolo e lo clampa a [min, max]."""
+        step = float(getattr(info, "volume_step", 0.01) or 0.01)
+        vmin = float(getattr(info, "volume_min", step) or step)
+        vmax = float(getattr(info, "volume_max", 1e9) or 1e9)
+        v = round(round(volume / step) * step, 8)
+        return max(vmin, min(v, vmax))
+
+    def _normalize_request(self, request: dict, info: Any) -> dict:
+        """Rende il request MT5-safe e previene i rifiuti più comuni di order_send:
+        comment ripulito, prezzi ai `digits` del simbolo, volume al passo (min/max).
+        """
+        if "comment" in request:
+            request["comment"] = self._safe_comment(request.get("comment", ""))
+        if info is None:
+            return request
+        digits = int(getattr(info, "digits", 2) or 2)
+        for k in ("price", "sl", "tp"):
+            if request.get(k) is not None:
+                request[k] = round(float(request[k]), digits)
+        if "volume" in request:
+            request["volume"] = self._norm_volume(float(request["volume"]), info)
+        return request
 
     def _order_constants(self, order: Order) -> tuple[int, int]:
         """Restituisce `(action, order_type)` per `order_send`."""

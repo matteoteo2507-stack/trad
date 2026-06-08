@@ -22,6 +22,11 @@ class ChannelParser(ABC):
     """Base per i parser di un singolo canale."""
 
     channel_id: str = "unnamed_channel"
+    # Come si entra su questo canale:
+    # - "trigger": un messaggio "NOW" apre a mercato, un secondo messaggio coi livelli
+    #   riconcilia SL/TP (canali che separano entrata e livelli).
+    # - "signal": il messaggio coi livelli arriva tutto insieme → si apre direttamente.
+    entry_mode: str = "trigger"
 
     @abstractmethod
     def parse(self, text: str) -> ParseResult:
