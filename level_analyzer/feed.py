@@ -53,3 +53,28 @@ def fetch_mt5(symbol: str, h1_window: int = 120):
     # daily chiuso precedente = penultimo (l'ultimo e' la candela di oggi in formazione)
     prev_daily = conv(d[-2])
     return prev_daily, h1[-h1_window:], price
+
+
+def fetch_yfinance(ticker: str, h1_window: int = 120):
+    """Live da Yahoo (per host Linux/cloud senza MT5): (prev_daily, h1_window_bars, price).
+    NB: per l'oro il ticker e' GC=F (futures), ~spot con offset; per BTC e' BTC-USD (~spot)."""
+    import pandas as pd
+    import yfinance as yf
+    h = yf.download(ticker, period="60d", interval="1h", auto_adjust=False, progress=False)
+    d = yf.download(ticker, period="200d", interval="1d", auto_adjust=False, progress=False)
+    if h is None or len(h) < 30 or d is None or len(d) < 2:
+        raise RuntimeError(f"yfinance: dati insufficienti per {ticker}")
+    for df in (h, d):
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = [c[0] for c in df.columns]
+        df.columns = [c.lower() for c in df.columns]
+
+    def rows(df):
+        return [{"open": float(r.open), "high": float(r.high),
+                 "low": float(r.low), "close": float(r.close)}
+                for r in df[["open", "high", "low", "close"]].dropna().itertuples()]
+    h1 = rows(h)
+    drows = rows(d)
+    prev_daily = drows[-2]      # ultimo daily e' quello in formazione di oggi
+    price = h1[-1]["close"]
+    return prev_daily, h1[-h1_window:], price

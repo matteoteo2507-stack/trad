@@ -52,6 +52,22 @@ def _signals(prev, win, price):
         atr_val=detector.atr(win, CFG["atr_n"]))
 
 
+def _fetch(a):
+    """Dispatch sorgente dati: yfinance (cloud) o mt5 (host Windows)."""
+    if CFG.get("data_backend", "yfinance") == "mt5":
+        return feed.fetch_mt5(a["mt5_symbol"], CFG["h1_window"])
+    return feed.fetch_yfinance(a["yf_ticker"], CFG["h1_window"])
+
+
+def _alert(asset_cfg, sig, price):
+    ok = notify.send_telegram(
+        CFG["telegram_chat_id"],
+        notify.format_signal(sig, asset_cfg["name"], round(price, 2), asset_cfg.get("note", "")),
+        CFG.get("telegram_token_env", "TELEGRAM_BOT_TOKEN"))
+    _log(asset_cfg["name"], sig, price)
+    return ok
+
+
 def _print(name, sigs, price):
     print(f"-- {name}  prezzo={price}" + (f"  ATR(H1)={sigs[0]['atr']}" if sigs else ""))
     if not sigs:
@@ -87,16 +103,14 @@ def cmd_scan(notify_on=False):
     print(f"== SCAN live  {datetime.now(timezone.utc):%Y-%m-%d %H:%M}Z ==")
     for a in CFG["assets"]:
         try:
-            prev, win, price = feed.fetch_mt5(a["mt5_symbol"], CFG["h1_window"])
+            prev, win, price = _fetch(a)
         except Exception as e:
-            print(f"-- {a['name']}: MT5 non disponibile ({e})"); continue
+            print(f"-- {a['name']}: dati non disponibili ({e})"); continue
         sigs = _signals(prev, win, price)
         _print(a["name"], sigs, round(price, 2))
         if notify_on:
             for s in [x for x in sigs if x["dist_atr"] <= CFG["proximity_atr"]]:
-                ok = notify.send_telegram(CFG["telegram_chat_id"],
-                                          notify.format_signal(s, a["name"], round(price, 2)))
-                _log(a["name"], s, price)
+                ok = _alert(a, s, price)
                 print(f"   [alert {'inviato' if ok else 'solo-log'}] {s['side']} {s['zone']}")
 
 
@@ -107,7 +121,7 @@ def cmd_run():
         day = datetime.now(timezone.utc).date()
         for a in CFG["assets"]:
             try:
-                prev, win, price = feed.fetch_mt5(a["mt5_symbol"], CFG["h1_window"])
+                prev, win, price = _fetch(a)
                 for s in _signals(prev, win, price):
                     if s["dist_atr"] > CFG["proximity_atr"]:
                         continue
@@ -115,9 +129,7 @@ def cmd_run():
                     if key in seen:
                         continue
                     seen.add(key)
-                    ok = notify.send_telegram(CFG["telegram_chat_id"],
-                                              notify.format_signal(s, a["name"], round(price, 2)))
-                    _log(a["name"], s, price)
+                    ok = _alert(a, s, price)
                     print(f"{datetime.now(timezone.utc):%H:%M}Z {a['name']} alert "
                           f"{'OK' if ok else '(solo log)'}: {s['side']} {s['zone']}")
             except Exception as e:
