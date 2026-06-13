@@ -57,3 +57,16 @@ secrets/
 # Sessioni Telethon (credenziali account Telegram — MAI su git)
 *.session
 *.session-journal
+
+# Export chat AlphaAnalist (dati personali, fuori dal repo)
+alphanalist_chat_*
+analysis/veltrix/signals.*
+
+# Repo del socio clonato per la review (NON committare codice di terzi)
+analysis/trading-bot-eval/vendor-trading-bot/
+
+# Level Analyzer — log forward dei segnali (dati operativi personali)
+level_analyzer/signals_log.csv
+
+# Dati OHLC esportati (rigenerabili da export_mt5_spot.py / fetch_ohlc.py — fuori da git)
+analysis/trading-bot-eval/data/

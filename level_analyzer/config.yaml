@@ -1,0 +1,21 @@
+# Level Analyzer — Fase A (notifica → manuale). Parametri da spec validata.
+# Asset validati al netto dei costi: XAUUSD (13y) e BTCUSD (6y). EURUSD escluso.
+atr_n: 14
+k_sl: 0.5              # SL = k_sl * ATR(H1)
+rr: 1.5              # RR primario (cross-asset robusto netto); su XAU regge anche 1:2
+cluster_tol_pct: 0.25
+h1_window: 120
+proximity_atr: 0.25   # alerta quando il prezzo entra entro proximity_atr*ATR dalla zona
+max_dist_atr: 8.0     # considera solo zone entro questa distanza dal prezzo
+poll_seconds: 300
+telegram_chat_id: ""    # tuo chat id; il token arriva da .env TELEGRAM_BOT_TOKEN
+log_path: level_analyzer/signals_log.csv
+assets:
+  - name: XAUUSD
+    mt5_symbol: XAUUSD
+    d1_csv: analysis/trading-bot-eval/data/XAU_spot_D1.csv
+    h1_csv: analysis/trading-bot-eval/data/XAU_spot_H1.csv
+  - name: BTCUSD
+    mt5_symbol: BTCUSD
+    d1_csv: analysis/trading-bot-eval/data/BTC_spot_D1.csv
+    h1_csv: analysis/trading-bot-eval/data/BTC_spot_H1.csv
