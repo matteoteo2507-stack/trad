@@ -62,11 +62,29 @@ cd ~/trad
 Devi vedere le zone in console e (se ce ne sono entro `proximity_atr`) un **messaggio nel canale**.
 
 ## 7. 🧑 systemd service (always-on)
+Genera il service col TUO utente/home (auto-detect → evita l'errore `217/USER`):
 ```bash
-sudo cp ~/trad/level_analyzer/deploy/level-analyzer.service /etc/systemd/system/
+U=$(whoami); H="$HOME"
+sudo tee /etc/systemd/system/level-analyzer.service >/dev/null <<EOF
+[Unit]
+Description=Level Analyzer (Fase A)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=$U
+WorkingDirectory=$H/trad
+ExecStart=$H/trad/venv/bin/python -m level_analyzer run
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now level-analyzer
-sudo systemctl status level-analyzer
+sudo systemctl status level-analyzer --no-pager
 sudo journalctl -u level-analyzer -f --no-pager      # log live
 ```
 
