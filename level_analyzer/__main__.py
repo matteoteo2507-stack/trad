@@ -143,6 +143,9 @@ def main():
     except Exception:
         pass
     _load_cfg()
+    # chat_id: da config.yaml, altrimenti da .env (TELEGRAM_CHAT_ID) come Confluence
+    if not CFG.get("telegram_chat_id"):
+        CFG["telegram_chat_id"] = notify.env_value("TELEGRAM_CHAT_ID") or ""
     cmd = sys.argv[1] if len(sys.argv) > 1 else "preview"
     if cmd == "preview":
         cmd_preview()

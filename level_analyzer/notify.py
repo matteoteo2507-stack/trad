@@ -5,16 +5,21 @@ import os
 from pathlib import Path
 
 
-def _token(env_name: str = "TELEGRAM_BOT_TOKEN") -> str | None:
-    tok = os.environ.get(env_name)
-    if tok:
-        return tok.strip()
+def env_value(name: str) -> str | None:
+    """Legge una variabile da os.environ, altrimenti dal file .env nella cwd."""
+    v = os.environ.get(name)
+    if v:
+        return v.strip()
     env = Path(".env")
     if env.exists():
         for line in env.read_text(encoding="utf-8").splitlines():
-            if line.strip().startswith(env_name + "="):
+            if line.strip().startswith(name + "="):
                 return line.split("=", 1)[1].strip().strip('"').strip("'")
     return None
+
+
+def _token(env_name: str = "TELEGRAM_BOT_TOKEN") -> str | None:
+    return env_value(env_name)
 
 
 def format_signal(sig: dict, asset: str, price: float, note: str = "") -> str:

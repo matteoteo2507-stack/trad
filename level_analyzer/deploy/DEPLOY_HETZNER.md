@@ -41,18 +41,18 @@ python3 -m venv venv
 ./venv/bin/pip install yfinance pandas pyyaml requests
 ```
 
-## 5. 🧑 Secret + config
+## 5. 🧑 Secret (SOLO i 2 valori Telegram)
+> ⚠️ **NON copiare l'intero `.env` locale sul server**: contiene chiavi broker (Bybit,
+> Binance, MT5…). Sul server servono solo questi due:
 ```bash
-# Solo il token del bot (NON l'intero .env locale coi segreti broker):
-echo 'TELEGRAM_BOT_TOKEN=<IL_TUO_TOKEN>' > ~/trad/.env
+cat > ~/trad/.env <<'EOF'
+TELEGRAM_BOT_TOKEN=<IL_TUO_TOKEN>
+TELEGRAM_CHAT_ID=<IL_TUO_CHAT_ID>
+EOF
 chmod 600 ~/trad/.env
 ```
-Poi in `~/trad/level_analyzer/config.yaml` imposta:
-```yaml
-data_backend: yfinance
-telegram_chat_id: "-100xxxxxxxxxx"   # il chat_id del canale
-```
-(Modifica con `nano ~/trad/level_analyzer/config.yaml`.)
+`data_backend: yfinance` è già in `config.yaml`; il `telegram_chat_id` viene letto dal `.env`
+(puoi lasciarlo vuoto in config).
 
 ## 6. 🧑 Prova manuale (prima del service)
 ```bash
