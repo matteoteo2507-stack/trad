@@ -7,7 +7,8 @@
 > [DECISIONS.md](DECISIONS.md). In sintesi, rispetto agli stage sotto:
 >
 > - **Pivot 2026-05-05**: architettura a 3 componenti ibridi → [docs/ARCHITECTURE_v2.md](docs/ARCHITECTURE_v2.md).
-> - **Priorità 2026-05-30**: **OctoBot** (#1) → dati Confluence + Telegram → prop → strategie custom *per ultime*.
+> - **Priorità 2026-05-30** (emendata): dati Confluence + Telegram → prop → strategie custom *per ultime*.
+>   **OctoBot è DORMIENTE** dal 2026-06-14 (traccia crypto in stand-by, rispolverabile) — vedi DECISIONS.md.
 > - **London Breakout** (Stage 2.5/2.6): **NO-GO**, archiviata. **TSMOM** (Stage 2.6): **NO-GO** single-asset.
 > - **Telegram Signal Copier**: demo full-auto (non previsto negli stage originali).
 > - Gli stage sotto restano come riferimento storico/tecnico, non come ordine di lavoro vincolante.
@@ -108,7 +109,9 @@ statisticamente significativo entro 4 settimane.
    - 4-8 trade/mese attesi → bassa attenzione operativa, ortogonale a London Breakout.
 
 3. **Confluence manuale**: derubricata a opportunistica
-   ([WEEKEND_CHECKLIST.md](WEEKEND_CHECKLIST.md) aggiornato), nessun obbligo settimanale.
+   (concetti in [TRADING_PRINCIPLES.md](TRADING_PRINCIPLES.md)), nessun obbligo settimanale.
+   Il vecchio `WEEKEND_CHECKLIST.md` (lettura livelli a grafico → `levels.yaml` → VPS Hetzner) è
+   stato eliminato il 2026-06-14: meccanica superata da Confluence Auto + VELTRIX.
 
 4. **Confluence Auto (shadow run)** — nuovo modulo `strategies/confluence_auto/`:
    ricava i livelli **algoritmicamente** (S/R da swing pivot ZigZag/fractals,
@@ -225,7 +228,10 @@ osservabile (log mostra "strategia X disabilitata perché radar = CASH").
 
 ---
 
-## Stage 6 — OctoBot integration crypto live
+## Stage 6 — OctoBot integration crypto live  ⏸️ DORMIENTE (dal 2026-06-14)
+
+> **Stand-by**: traccia crypto messa in pausa col pivot forex/quant/investing. Rispolverabile in
+> futuro se si riapre un fronte crypto-automation. Vedi [DECISIONS.md 2026-06-14](DECISIONS.md).
 
 **Cosa**: prima strategia quant live su Binance/Coinbase con capitale minimo (5-10 €) usando
 OctoBot come executor. Strategia validata in backtest e in demo deve passare a live con il

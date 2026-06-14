@@ -476,6 +476,97 @@ def tail_metrics(returns: np.ndarray | pd.Series) -> dict:
     }
 
 
+def omega_ratio(
+    returns: np.ndarray | pd.Series,
+    threshold: float = 0.0,
+) -> float:
+    """Omega ratio rispetto a una soglia (per-period).
+
+    Omega(θ) = Σ max(r - θ, 0) / Σ max(θ - r, 0): rapporto fra massa di
+    rendimento sopra la soglia e massa sotto. A differenza dello Sharpe non
+    assume normalità — usa l'intera distribuzione. θ=0 = break-even per-period.
+    Restituisce inf se non ci sono perdite sotto soglia.
+    """
+    r = np.asarray(returns, dtype=float)
+    if r.size < 2:
+        return float("nan")
+    gains = np.maximum(r - threshold, 0.0).sum()
+    losses = np.maximum(threshold - r, 0.0).sum()
+    if losses == 0:
+        return float("inf") if gains > 0 else float("nan")
+    return float(gains / losses)
+
+
+def tail_ratio(returns: np.ndarray | pd.Series) -> float:
+    """Tail ratio = |percentile 95| / |percentile 5|.
+
+    > 1 indica coda destra (guadagni estremi) più larga della sinistra
+    (perdite estreme); < 1 il contrario. Complementare a skew per leggere
+    l'asimmetria delle code.
+    """
+    r = np.asarray(returns, dtype=float)
+    if r.size < 2:
+        return float("nan")
+    left = abs(np.percentile(r, 5))
+    if left == 0:
+        return float("nan")
+    return float(abs(np.percentile(r, 95)) / left)
+
+
+def benchmark_metrics(
+    returns: np.ndarray | pd.Series,
+    benchmark: np.ndarray | pd.Series,
+    rf: float = 0.0,
+    periods_per_year: int = 252,
+) -> dict:
+    """Metriche relative a un benchmark (allineate per indice/posizione).
+
+    Returns dict con:
+      - alpha: alpha di Jensen annualizzato (intercetta della regressione
+        degli excess return della strategia sugli excess return del benchmark).
+      - beta: sensibilità al benchmark, cov(r, b) / var(b).
+      - information_ratio: active return annualizzato / tracking error.
+      - tracking_error: std(r - b, ddof=1) annualizzato.
+      - r_squared: quota di varianza spiegata dal benchmark (corr²).
+
+    `returns` e `benchmark` devono avere la stessa lunghezza e stessa cadenza.
+    """
+    r = np.asarray(returns, dtype=float)
+    b = np.asarray(benchmark, dtype=float)
+    if r.size < 2 or r.size != b.size:
+        return {"alpha": float("nan"), "beta": float("nan"),
+                "information_ratio": float("nan"), "tracking_error": float("nan"),
+                "r_squared": float("nan")}
+    rf_per = rf / periods_per_year
+    er = r - rf_per
+    eb = b - rf_per
+
+    var_b = eb.var(ddof=1)
+    beta = float(np.cov(er, eb, ddof=1)[0, 1] / var_b) if var_b > 0 else float("nan")
+    alpha = float((er.mean() - beta * eb.mean()) * periods_per_year)
+
+    active = r - b
+    te_per = active.std(ddof=1)
+    tracking_error = float(te_per * np.sqrt(periods_per_year))
+    information_ratio = (
+        float(np.sqrt(periods_per_year) * active.mean() / te_per)
+        if te_per > 0 else float("nan")
+    )
+
+    if r.std(ddof=1) == 0 or b.std(ddof=1) == 0:
+        r_squared = float("nan")
+    else:
+        r_squared = float(np.corrcoef(r, b)[0, 1] ** 2)
+
+    return {
+        "alpha": alpha,
+        "beta": beta,
+        "information_ratio": information_ratio,
+        "tracking_error": tracking_error,
+        "r_squared": r_squared,
+    }
+
+
 # ---------------------------------------------------------------------------
 # White's Reality Check (versione semplice, single-step)
 # ---------------------------------------------------------------------------
@@ -531,6 +622,108 @@ def whites_reality_check(
         "p_value": p_value,
         "best_strategy_idx": best_idx,
         "best_strategy_mean": float(obs_means[best_idx]),
+    }
+
+
+# ---------------------------------------------------------------------------
+# BCa bootstrap confidence interval (Efron 1987)
+# ---------------------------------------------------------------------------
+
+def bca_bootstrap_ci(
+    returns: np.ndarray | pd.Series,
+    metric: Callable[[np.ndarray], float] | None = None,
+    conf: float = 0.95,
+    n_boot: int = 2000,
+    seed: int | None = None,
+    periods_per_year: int = 252,
+) -> dict:
+    """Intervallo di confidenza BCa (bias-corrected & accelerated) su una
+    metrica di backtest — Efron (1987).
+
+    Risponde a una domanda diversa da DSR/PBO/MC-permutation: non "l'edge è
+    distinguibile dal caso?" ma "**quanto è incerta** la stima e qual è il
+    *lower bound* plausibile?". Decidere sul limite inferiore (es. dello
+    Sharpe) è più prudente che sul valore centrale.
+
+    Il BCa corregge il bootstrap percentile ingenuo per (i) **bias** (z0) e
+    (ii) **acceleration** (a, da jackknife) — quest'ultima aggiusta per
+    l'asimmetria tipica dei rendimenti di trading.
+
+    Args:
+        returns: serie di returns (o di trade-level returns) già generata
+            dalla strategia.
+        metric: funzione array → float. Default: Sharpe annualizzato con
+            `periods_per_year`. Es. `lambda r: profit_factor(r)`.
+        conf: livello di confidenza a due code (0.95 → CI 95%).
+        n_boot: numero di ricampionamenti bootstrap.
+        seed: per riproducibilità.
+
+    Returns:
+        dict con `point` (stima osservata), `low`/`high` (estremi CI),
+        `conf`, `n_boot`, `bias_correction` (z0), `acceleration` (a).
+        Se il campione è troppo piccolo o la metrica degenera, gli estremi
+        sono NaN.
+    """
+    if metric is None:
+        metric = lambda r: sharpe_ratio(r, periods_per_year=periods_per_year)  # noqa: E731
+
+    r = np.asarray(returns, dtype=float)
+    r = r[np.isfinite(r)]
+    n = r.size
+    nan_out = {"point": float("nan"), "low": float("nan"), "high": float("nan"),
+               "conf": conf, "n_boot": n_boot, "bias_correction": float("nan"),
+               "acceleration": float("nan")}
+    if n < 3:
+        return nan_out
+
+    point = float(metric(r))
+    if not np.isfinite(point):
+        return nan_out
+
+    rng = np.random.default_rng(seed)
+    boot = np.empty(n_boot, dtype=float)
+    for b in range(n_boot):
+        boot[b] = metric(r[rng.integers(0, n, size=n)])
+    boot = boot[np.isfinite(boot)]
+    if boot.size < 2:
+        return {**nan_out, "point": point}
+
+    # Bias-correction z0: quota di replicazioni sotto la stima osservata.
+    prop = float(np.mean(boot < point))
+    eps = 1.0 / (boot.size + 1)
+    prop = min(max(prop, eps), 1.0 - eps)
+    z0 = _norm_inv(prop)
+
+    # Acceleration a via jackknife (leave-one-out).
+    jack = np.empty(n, dtype=float)
+    idx = np.arange(n)
+    for i in range(n):
+        jack[i] = metric(r[idx != i])
+    jack = jack[np.isfinite(jack)]
+    jbar = jack.mean()
+    diff = jbar - jack
+    denom = 6.0 * (np.sum(diff ** 2) ** 1.5)
+    a = float(np.sum(diff ** 3) / denom) if denom != 0 else 0.0
+
+    # Percentili aggiustati BCa.
+    alpha_lo = (1.0 - conf) / 2.0
+    alpha_hi = 1.0 - alpha_lo
+    out = {}
+    for tag, alpha in (("low", alpha_lo), ("high", alpha_hi)):
+        z = _norm_inv(alpha)
+        denom_adj = 1.0 - a * (z0 + z)
+        p_adj = _norm_cdf(z0 + (z0 + z) / denom_adj) if denom_adj != 0 else alpha
+        p_adj = min(max(p_adj, 0.0), 1.0)
+        out[tag] = float(np.percentile(boot, 100.0 * p_adj))
+
+    return {
+        "point": point,
+        "low": out["low"],
+        "high": out["high"],
+        "conf": conf,
+        "n_boot": int(boot.size),
+        "bias_correction": float(z0),
+        "acceleration": a,
     }
 
 

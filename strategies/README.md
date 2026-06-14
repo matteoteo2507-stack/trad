@@ -53,7 +53,7 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 | [../mql5/](../mql5/) London Breakout | **archived-NO-GO** | MetaQuotes VPS | [review](../docs/reviews/london_breakout-2026-05-29.md) · [postmortem](../docs/reviews/london_breakout-postmortem-2026-05-30.md) | [regimi/macro](../fondamenti_tecnici/03_regimi_macro/) |
 | [tsmom/](tsmom/) | **NO-GO** / stub | (Python) | [review](../docs/reviews/tsmom_jpy-2026-05-29.md) | [quant](../fondamenti_tecnici/04_quant_metodologia/) |
 | [confluence_auto/](confluence_auto/) | shadow run | VPS Hetzner | — | [liquidità/POC](../fondamenti_tecnici/02_liquidita_orderflow/) |
-| OctoBot (crypto) | backlog **(priorità #1)** | esterno | — | [quant](../fondamenti_tecnici/04_quant_metodologia/) |
+| OctoBot (crypto) | **DORMIENTE** (stand-by 2026-06-14, rispolverabile) | esterno | — | [quant](../fondamenti_tecnici/04_quant_metodologia/) |
 
 ### 3. Manuale / Investing — *lungo termine, da entrate prop (parte conclusiva)*
 
@@ -71,7 +71,8 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 | Backlog automatiche | [ARCHITECTURE_v2 §backlog](../docs/ARCHITECTURE_v2.md) | TSMOM multiasset, Donchian, DXY z-score, mean-reversion, KAMA+ATR |
 
 > Le candidate e i [blueprints](../fondamenti_tecnici/blueprints/) restano in fondo alle priorità
-> finché OctoBot + raccolta dati non sono completi ([DECISIONS.md 2026-05-30](../DECISIONS.md)).
+> finché la raccolta dati non è completa ([DECISIONS.md](../DECISIONS.md)). NB: OctoBot **dormiente**
+> dal 2026-06-14, non più gating per le custom.
 
 ---
 

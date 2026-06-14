@@ -196,6 +196,10 @@ reale (correlazione ~0.85–0.90 coi futures CME). Per livelli importanti, confe
 
 Per livelli intraday minori, il tick volume forex è sufficiente.
 
+**Regola di conferma POC su XAU** (salvata dal vecchio workflow weekend): calcola il POC sia su
+XAUUSD spot sia su `GC1!`. Se i due POC coincidono entro **~$5**, il livello è confermato; se
+divergono di più, **fida del POC su `GC1!`** (volume reale), non dello spot.
+
 ---
 
 ## Journaling

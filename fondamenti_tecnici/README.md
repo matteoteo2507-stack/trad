@@ -14,7 +14,8 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 
 > **Regola anti-allucinazione.** Questa cartella raccoglie *materiale*, non *decisioni*. Prima di
 > proporre "costruiamo X" da un blueprint o una candidata, controlla [DECISIONS.md](../DECISIONS.md):
-> la priorità 2026-05-30 mette le strategie/agenti custom **per ultime** (OctoBot prima).
+> la priorità 2026-05-30 mette le strategie/agenti custom **per ultime**. (OctoBot, un tempo #1, è
+> **dormiente** dal 2026-06-14 — traccia crypto in stand-by.)
 
 ## Indice
 

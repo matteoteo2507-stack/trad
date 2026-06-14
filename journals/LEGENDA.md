@@ -29,19 +29,19 @@ Esempio: `journal_settimana_2026-05-17.md` copre la settimana lun 18/05 → ven 
 
 ## Markdown settimanale — struttura
 
-Generata seguendo [`../WEEKEND_CHECKLIST.md`](../WEEKEND_CHECKLIST.md). Sezioni:
+Concetti di riferimento in [`../TRADING_PRINCIPLES.md`](../TRADING_PRINCIPLES.md). Sezioni del markdown:
 
-| Sezione | Quando si compila | Fase del checklist |
+| Sezione | Quando si compila | Riferimento principi |
 |---|---|---|
-| `## Regime corrente` | Domenica | Fase 1 |
-| `## Monthly / Weekly / Daily / H4 / H1 <simbolo>` | Domenica | Fase 2 |
-| `## Fibonacci <simbolo>` | Domenica | Fase 3 |
-| `## POC <simbolo>` (BOZZA) | Domenica | Fase 4 |
-| `## Setup <simbolo>` | Domenica | Fase 5 |
-| `## News settimana` | Domenica | Fase 9 |
-| `## Trade NON eseguiti` | Ogni sera di trading | Fase 11 |
-| `## Osservazioni di mercato` | Ogni sera di trading | Fase 11 |
-| `## Auto-valutazione fine settimana` | Venerdì sera | Fase 11 |
+| `## Regime corrente` | Domenica (output `python -m core.regime`) | §1 Regimi |
+| `## Monthly / Weekly / Daily / H4 / H1 <simbolo>` | Domenica | §2 S/R · §3 S/D freshness |
+| `## Fibonacci <simbolo>` | Domenica | §4 Fibonacci |
+| `## POC <simbolo>` | Domenica | §7 Volume Profile / POC |
+| `## Setup <simbolo>` | Domenica | §5 Criteri di ingresso |
+| `## News settimana` | Domenica | filtro news (runner) |
+| `## Trade NON eseguiti` | Ogni sera di trading | §Journaling |
+| `## Osservazioni di mercato` | Ogni sera di trading | §Journaling |
+| `## Auto-valutazione fine settimana` | Venerdì sera | §Journaling |
 
 > La sezione `## Trade eseguiti` **non c'è più** nel template markdown. I trade
 > eseguiti vivono su Notion.

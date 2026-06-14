@@ -104,6 +104,27 @@ api_id/api_hash si ottengono da <https://my.telegram.org> → *API development t
 4. **Live full-auto** — `python -m signal_copier live --mode live` in background
    (tmux/servizio). Da qui parte la raccolta dati del mese.
 
+## Red lines (sicurezza esecuzione automatica)
+
+Regole non negoziabili per qualsiasi automazione che può piazzare ordini. Adattate dal pattern
+di safety di un AI-trading platform (review GitHub QuantDinger), tarate sul nostro caso.
+
+1. **Default = `dry_run`.** Nessun percorso apre ordini per default: `live` va passato esplicitamente
+   ogni avvio (già imposto in [`executor.py`](executor.py), `mode ∈ {dry_run, live}`). Non aggiungere
+   default che eseguano ordini.
+2. **Capitale reale = decisione separata, mai implicita.** Oggi: **demo-only**. Il passaggio da demo a
+   conto reale (e da segnali a prop) è una decisione esplicita e scoped — non una conseguenza automatica
+   del "funziona in demo". Tenere un secondo gate (account demo vs reale verificato in `.env`) oltre al
+   flag `--mode live` prima di rischiare capitale.
+3. **Segreti mai nel repo.** `.env`, `*.session`, chiavi broker/Telegram restano **gitignored** (verificato
+   2026-06-14: non tracciati). Precedente da non ripetere: chiave Bybit finita nella git history di VELTRIX.
+   Mai loggare token/chiavi in chiaro.
+4. **Audit di ogni evento, incluso il rifiuto.** Il journal append-only registra sia `signal_accepted` sia
+   `signal_rejected` (col motivo) — mantenere questa simmetria: serve a tarare i gate e a ricostruire cosa
+   è successo. Vedi [`journal.py`](journal.py).
+5. **Niente bypass della review umana verso il reale.** Compliance copy-trading lato prop (alcune vietano la
+   copia di segnali terzi): la piena automazione resta confinata alla demo finché la milestone-1 non è chiusa.
+
 ## Dati raccolti (auto-trade-log — niente Notion)
 
 Il copier scrive **da solo** un journal append-only (`logs/signal_copier_journal.jsonl`,

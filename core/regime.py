@@ -1,7 +1,8 @@
 """Diagnosi automatica del regime di mercato.
 
-Sostituisce la regola empirica HH/HL della Fase 1 di WEEKEND_CHECKLIST.md
-con un albero decisionale deterministico basato su DMI/ADX/ATR (Wilder 1978).
+Sostituisce la vecchia regola empirica HH/HL della diagnosi regime del workflow
+weekend manuale (ora dismesso) con un albero decisionale deterministico basato
+su DMI/ADX/ATR (Wilder 1978). Concetti in TRADING_PRINCIPLES.md §1.
 
 Output: regime ∈ {Bull|Bear|Sideways} × {Quiet|Volatile} + decisione operativa
 (proceed / halve_size / stay_out) coerente con TRADING_PRINCIPLES.md §1.

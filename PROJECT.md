@@ -42,7 +42,7 @@ bot) man mano che parsing, risk gate e affidabilità lo permettono.
   (è il percorso di automazione dei segnali semiauto). Prop rimandata; caveat compliance.
 - **Strategie quant / EA MQL5**: London Breakout (archiviata NO-GO), TSMOM (NO-GO), Confluence
   Auto (shadow), future EA. Regole codificate, niente LLM nel loop esecutivo.
-- **OctoBot**: layer esecutivo crypto — **priorità #1 corrente** ([DECISIONS.md](DECISIONS.md)).
+- **OctoBot**: layer esecutivo crypto — **DORMIENTE dal 2026-06-14** (traccia crypto in stand-by, rispolverabile; era priorità #1 pre-pivot) ([DECISIONS.md](DECISIONS.md)).
 
 ### 3. Manuale / Investing (lungo termine, alimentato dalle entrate prop)
 Traccia di **accumulo e crescita capitale**, parallela al trading e **parte conclusiva** del progetto.
@@ -113,7 +113,7 @@ Linguaggio principale **Python 3.11+**; TS solo se imposto da repo esterni (es. 
 
 | Repo | Ruolo |
 |---|---|
-| `OctoBot` | Layer esecutivo crypto — **priorità #1** |
+| `OctoBot` | Layer esecutivo crypto — **DORMIENTE** (stand-by dal 2026-06-14, rispolverabile) |
 | `worldmonitor` | Fonte sensoriale macro/geopolitica (pilastro investing conclusivo) |
 | `claude-trading-skills` | Catalogo 40+ skill trading — fonte di `blueprints/claude_skills_catalog.md` + `claude_code_for_trading.md` |
 | `ai-hedge-fund` | Substrato multi-agent (LangGraph) + personas per il Consensus |

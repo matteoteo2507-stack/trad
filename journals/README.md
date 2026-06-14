@@ -62,6 +62,5 @@ il weekend, Notion lo riferisce quando esegui il trade.
 
 ## Riferimenti
 
-- Workflow weekend: [`../WEEKEND_CHECKLIST.md`](../WEEKEND_CHECKLIST.md)
-- Principi operativi: [`../TRADING_PRINCIPLES.md`](../TRADING_PRINCIPLES.md)
+- Principi operativi (incl. planning weekend): [`../TRADING_PRINCIPLES.md`](../TRADING_PRINCIPLES.md)
 - Setup levels yaml: [`../strategies/confluence_levels/levels.yaml`](../strategies/confluence_levels/levels.yaml)

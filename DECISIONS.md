@@ -11,6 +11,26 @@
 
 ---
 
+## 2026-06-14 — OctoBot (traccia crypto): **DORMIENTE**
+
+**Decisione.** La traccia **OctoBot / crypto-automation** è messa in **stand-by (dormiente)**, non
+archiviata: rispolverabile in futuro se si riapre esplicitamente un fronte crypto. **Emenda la priorità
+del 2026-05-30** (sotto), dove OctoBot era #1.
+
+**Razionale.** Dopo il pivot di giugno 2026 il lavoro reale è su **forex/XAUUSD via MT5** (signal copier
+mentori, prop), **quant** (quant-review, metriche, backtest) e **investing passivo**. OctoBot è
+**crypto-only** (esecuzione via ccxt, nessun MT5/forex) → non serve lo stack attuale. La priorità "#1
+OctoBot" era anteriore a questo pivot. La review della repo forkata conferma: i pezzi che sembravano
+combaciare (TelegramSignalEvaluator, modulo `signals/`) sono esempi banali / plumbing interno crypto, meno
+adatti del nostro `signal_copier`.
+
+**Condizione per riaprire.** Quando (a) si decide consapevolmente di aprire un fronte crypto-automation
+**E** (b) c'è slack-time dopo milestone-1 forex. Allora OctoBot torna candidato come executor crypto.
+
+→ Review: `github_repo_reviews/OctoBot.md` (memoria di lavoro) · Stage storico: [ROADMAP.md Stage 6](ROADMAP.md)
+
+---
+
 ## 2026-06-14 — Terzo secchio (sleeve trend/managed-futures): **RIMANDATO a fase 2-3**
 
 **Decisione.** Il pilastro investing resta a **due secchi** (buffer + All-World PAC) in fase di
@@ -35,6 +55,13 @@ ha ancora i numeri (categoria A) → non aggiungere il layer più avanzato prima
 in fase 2-3 del glide-path **E** (c) esiste un veicolo UCITS trend/managed-futures verificato (TER,
 AUM, domicilio) → valutarlo come quota **modesta** del difensivo, misurandone il contributo reale a
 drawdown/correlazione, **non** con leva.
+
+**Corroborazione esterna (2026-06-14, review GitHub).** Il `ManagedFuturesAnalyzer` di FinceptTerminal
+(impostazione standard CFA) classifica i managed futures come *"The Flawed"*: i benefici di crisis-alpha
+**non giustificano** i costi (2&20), cita capacity constraints, e suggerisce **replica via ETF
+trend-following low-cost o di saltare del tutto**. Converge con la nostra decisione (fee drag vs
+crisis-alpha) e con la cautela sul singolo backtest levered-hedge. Da rileggere quando si riapre lo
+sleeve in fase 2-3 → `github_repo_reviews/FinceptTerminal.md` (memoria di lavoro).
 
 → [docs/INVESTING_PILLAR_PLAN.md §3b](docs/INVESTING_PILLAR_PLAN.md) ·
 teoria [fondamenti_tecnici/05_portfolio_rischio](fondamenti_tecnici/05_portfolio_rischio/principles.md) ·
@@ -152,7 +179,8 @@ nessun obbligo settimanale. L'energia è sull'**automazione** (`confluence_auto/
 **Razionale.** L'attrito operativo del planning weekend produceva 0 trade. Meglio investire
 sull'estrazione algoritmica dei livelli e raccogliere dati di confronto manuale vs algoritmico.
 
-→ [WEEKEND_CHECKLIST.md](WEEKEND_CHECKLIST.md) · [strategies/confluence_auto/](strategies/confluence_auto/)
+→ Concetti: [TRADING_PRINCIPLES.md](TRADING_PRINCIPLES.md) · [strategies/confluence_auto/](strategies/confluence_auto/)
+(il vecchio `WEEKEND_CHECKLIST.md` — procedura manuale livelli→`levels.yaml`→VPS — è stato eliminato il 2026-06-14)
 
 ---
 

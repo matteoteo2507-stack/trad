@@ -67,9 +67,21 @@ Riduce la probabilità di overfitting e produce set di parametri più robusti. I
 
 Considerazioni reali ma **non bias core**: costi di transazione, impatto bid-ask spread, slippage di mercato. Erodono l'equity curve. Ma sono **secondari**: se una strategia non è viabile dopo aver corretto i 3 bias, aggiungere i costi non fa che peggiorare il quadro. Vanno comunque modellati (lo Step 5 del protocollo verifica spread variabile, slippage 2× su stop, commissioni, swap, lot rounding).
 
+### 6. Strumenti di backtest (librerie Python) — riferimento
+
+Il nostro harness è custom (`core/runner.py` + `backtesters/`), pensato per integrarsi con la quant-review. Se in futuro servisse un **motore pronto** per esplorare grandi griglie di parametri, walk-forward o portafogli multi-asset più velocemente, le librerie Python serie sono:
+
+- **pybroker** (`pip install lib-pybroker`) — **la più allineata alla nostra filosofia**. Engine NumPy/Numba veloce, ML-native, **walk-forward** integrato, e soprattutto **prevenzione del look-ahead by-design** (gli indicatori vedono solo il passato) + **bootstrap metrics**: `pybroker.eval` calcola CI bootstrap **BCa** (bias-corrected & accelerated) su Sharpe/profit-factor e upper-bound CI sul max drawdown (99.9/99/95/90%). È l'opposto dei "scoring engine" commerciali che premiano il backtest grezzo.
+- **vectorbt** — backtest vettorizzati molto rapidi, ideale per sweep di parametri.
+- **bt** — portfolio/allocation con ribilanciamento. **backtesting.py** — single-asset, API semplice. **zipline** — event-driven, pipeline universo.
+
+Caveat: un motore veloce rende facilissimo il look-ahead e l'overfitting su griglie enormi — vanno comunque passati i gate di §1-§4 (DSR, PBO, walk-forward). Un pattern d'integrazione pulito (review FinceptTerminal) è "**Python single source of truth**": ogni engine dietro un'interfaccia provider comune.
+
+**Complemento metodologico (review pybroker → implementato).** Il nostro `core/quant_metrics.py` copre la *distribuzione null* (MC permutation, White's RC) e la penalizzazione multiple-testing (DSR, PBO). Il tassello complementare — l'**intervallo di confidenza sul metric osservato** (es. lower bound dello Sharpe reale) — è ora implementato dependency-free in [`bca_bootstrap_ci`](../../core/quant_metrics.py) (bootstrap **BCa**, bias-corrected & accelerated, Efron 1987): dato un array di returns e una metrica, restituisce `point`/`low`/`high`. **Regola d'oro**: decidi sul **lower bound**, non sul valore centrale (uno Sharpe 2.2 su 40 trade può avere CI 95% con estremo inferiore < 0 → edge non affidabile). Resta valida l'opzione di adottare l'engine completo `pip install lib-pybroker` per backtest+eval. Dettagli nel catalogo review esterno (`github_repo_reviews/pybroker.md`).
+
 ## Regole operative
 
-- **Sharpe primario, max drawdown secondario.** Lo Sharpe è la metrica di test principale; il max DD è di contorno. Ma lo Sharpe assume return normali — affianca sempre Sortino/Calmar/CVaR ([`core/quant_metrics.py`](../../core/quant_metrics.py)).
+- **Sharpe primario, max drawdown secondario.** Lo Sharpe è la metrica di test principale; il max DD è di contorno. Ma lo Sharpe assume return normali — affianca sempre Sortino/Calmar/CVaR/Ulcer e, per leggere code e asimmetria senza assumere normalità, **Omega** ([`omega_ratio`](../../core/quant_metrics.py)) e **Tail ratio** ([`tail_ratio`](../../core/quant_metrics.py)). Quando esiste un benchmark di riferimento (es. buy&hold dell'asset), usa le metriche relative — alpha, beta, information ratio, tracking error, R² ([`benchmark_metrics`](../../core/quant_metrics.py)) — per distinguere edge reale da semplice esposizione direzionale.
 - **Prima i 3 bias, poi i costi.** Non perdere tempo a raffinare spread/slippage su una strategia che non sopravvive a look-ahead/overfitting/survivorship.
 - **Filtration sempre**: nessun dato futuro nella decisione. Regime timeline solo con lag ≥1 giorno per intraday.
 - **Conta i trial.** Se non documentati, assumi ≥100 e applica DSR (Bailey-LdP 2014). Sharpe retail > 2 = red flag; > 3 = quasi certo errore metodologico.
@@ -82,7 +94,7 @@ Considerazioni reali ma **non bias core**: costi di transazione, impatto bid-ask
 
 - [[03_regimi_macro]] — l'edge è condizionato al regime; un backtest "tutto in regime favorevole" è una forma di selection bias.
 - [`06_stock_selection`](../06_stock_selection) — dove il survivorship bias morde di più (universo equity).
-- [`core/quant_metrics.py`](../../core/quant_metrics.py) — implementazione dei rimedi: DSR, PBO via CSCV, CPCV (purging+embargo), walk-forward, Monte Carlo permutation, White's Reality Check.
+- [`core/quant_metrics.py`](../../core/quant_metrics.py) — implementazione dei rimedi: DSR, PBO via CSCV, CPCV (purging+embargo), walk-forward, Monte Carlo permutation, White's Reality Check, BCa bootstrap CI sul metric osservato (`bca_bootstrap_ci`).
 - [`docs/QUANT_REVIEW_PROTOCOL.md`](../../docs/QUANT_REVIEW_PROTOCOL.md) — protocollo passo-passo che applica questa teoria.
 - [`agents/quant_reviewer.md`](../../agents/quant_reviewer.md) — la persona reviewer (rigore López de Prado / Bailey / Harvey), adversariale per default.
 - Casi reali (entrambi **NO-GO**): [`docs/reviews/london_breakout-2026-05-29.md`](../../docs/reviews/london_breakout-2026-05-29.md) e [`docs/reviews/tsmom_jpy-2026-05-29.md`](../../docs/reviews/tsmom_jpy-2026-05-29.md). Per il London Breakout il cap era proprio il **look-ahead della regime timeline** (label same-day).
