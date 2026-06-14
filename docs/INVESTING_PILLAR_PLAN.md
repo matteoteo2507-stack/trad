@@ -63,6 +63,39 @@ Numeri e strumenti esatti = da definire DOPO lo studio (§4).
   *strutturale* tenuto con disciplina che un 100% azioni abbandonato nel panico. Insurance contro
   te stesso, non contro il mercato.
 
+## 3b. Terzo secchio (sleeve trend/managed-futures) — DECISIONE: rimandato a fase 2-3
+
+> Chiusura 2026-06-14 ([DECISIONS.md](../DECISIONS.md)). Idea emersa dal materiale
+> volatility-drag / orthogonal-streams ([05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)):
+> aggiungere uno *sleeve* trend-following / managed-futures (tipo DBMF/KMLM) come terzo secchio,
+> orthogonale all'equity, per **ridurre il drawdown** → meno volatility drag → meglio il geometrico.
+
+**Decisione: NON ora. Rimandato alla fase 2-3 del glide-path.** Il pilastro resta a 2 secchi in
+accumulo. Perché:
+
+1. **Phase mismatch (decisivo).** Lo sleeve serve a tagliare il drawdown, ma **in accumulo il
+   drawdown è un alleato** (il DCA compra a sconto — §3). Pagare carry negativo / CAGR inferiore per
+   assicurarsi contro un non-rischio è sbagliato *adesso*. La protezione serve in **fase 3**, dove il
+   glide-path (§2) già introduce la quota "difensiva".
+2. **Casa naturale = il secchio difensivo della fase 2-3, non un secchio nuovo.** Là dove oggi
+   scrivi "bond/cash", il drag-insight **raffina** la scelta: una parte di quella quota difensiva
+   può essere uno sleeve **trend/managed-futures** invece dei (o accanto ai) bond — perché i **bond
+   lunghi hanno fallito la diversificazione nel 2022** (correlazione salita coi tassi, §3 e
+   [08](../fondamenti_tecnici/08_asset_allocation_passiva/principles.md)), mentre il trend-following
+   fu orthogonale/positivo. **Questo è l'unico contributo operativo utile dell'idea.**
+3. **Principio valido, ricetta no.** Lo stream orthogonale (R²≈0 → meno DD → meno drag) è fondato;
+   la versione commerciale "leva + hedge-leg che batte SPY" è un singolo backtest in-sample non
+   robusto. Se mai adottato: quota **modesta**, **mai con leva**, **mai come "batti il mercato"**.
+4. **Praticità retail-IT.** DBMF/KMLM sono **US-domiciled** → estate tax + non-armonizzati + fisco
+   complesso. Opzioni **UCITS** trend/managed-futures sottili → da verificare al momento (TER, AUM,
+   domicilio), non ora.
+5. **Base non costruita.** Il piano a 2 secchi non ha ancora i numeri (categoria A, §5c) → non
+   aggiungere il layer più avanzato prima delle fondamenta.
+
+**Condizione per riaprire:** (a) pilastro passivo numericamente vivo **E** (b) ingresso in fase 2-3
+**E** (c) veicolo UCITS verificato → allora valuta lo sleeve come **frazione del difensivo**,
+misurandone il contributo reale a drawdown/correlazione. Fino ad allora: **chiuso, non in sospeso.**
+
 ## 4. Incognite da studiare PRIMA di costruire l'esecuzione
 
 I "campi non ancora toccati" dichiarati dall'utente — oggi **assenti** dai materiali raccolti

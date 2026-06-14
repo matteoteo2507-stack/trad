@@ -11,6 +11,37 @@
 
 ---
 
+## 2026-06-14 — Terzo secchio (sleeve trend/managed-futures): **RIMANDATO a fase 2-3**
+
+**Decisione.** Il pilastro investing resta a **due secchi** (buffer + All-World PAC) in fase di
+accumulo. Lo *sleeve* trend-following / managed-futures — idea emersa dal materiale
+volatility-drag / orthogonal-streams (QuantGuild) — **non si aggiunge ora**: è uno strumento di
+**riduzione del drawdown**, quindi appartiene alla **fase 2-3** del glide-path (preservazione),
+dove il piano già prevede una quota "difensiva". Quando ci si arriverà, va valutato come
+**diversificatore del secchio difensivo accanto/al posto dei bond** (che nel 2022 hanno fallito la
+diversificazione, correlazione salita coi tassi), **mai con leva**, **mai come "batti il mercato"**.
+
+**Razionale.** (1) **Phase mismatch decisivo**: in accumulo il drawdown è un ALLEATO (il DCA compra
+a sconto) → pagare carry negativo / CAGR inferiore per assicurarsi contro un non-rischio è sbagliato
+ora (guardrail quant §3 del piano). (2) Il **principio** è solido (stream ortogonale R²≈0 → meno
+drawdown → meno volatility drag → meglio geometrico; il trend-following fu orthogonale/positivo nel
+2022 quando i bond fallirono), ma la **ricetta** commerciale (leva + hedge-leg "batte SPY") è un
+singolo backtest in-sample non robusto. (3) **Praticità retail-IT**: gli strumenti canonici
+(DBMF/KMLM) sono **US-domiciled** → estate tax + non-armonizzati + fisco complesso; opzioni UCITS
+sottili, da verificare al momento. (4) La **base non è ancora costruita**: il piano a 2 secchi non
+ha ancora i numeri (categoria A) → non aggiungere il layer più avanzato prima delle fondamenta.
+
+**Condizione per riaprire.** Quando (a) il pilastro passivo è numericamente vivo **E** (b) si entra
+in fase 2-3 del glide-path **E** (c) esiste un veicolo UCITS trend/managed-futures verificato (TER,
+AUM, domicilio) → valutarlo come quota **modesta** del difensivo, misurandone il contributo reale a
+drawdown/correlazione, **non** con leva.
+
+→ [docs/INVESTING_PILLAR_PLAN.md §3b](docs/INVESTING_PILLAR_PLAN.md) ·
+teoria [fondamenti_tecnici/05_portfolio_rischio](fondamenti_tecnici/05_portfolio_rischio/principles.md) ·
+caveat evidenza [fondamenti_tecnici/08_asset_allocation_passiva](fondamenti_tecnici/08_asset_allocation_passiva/principles.md)
+
+---
+
 ## 2026-06-02 — Due tracce parallele + pivot Stock Selector → TAA risk-management
 
 **Decisione.** Il lavoro procede su **due strade parallele**, non più in catena unica:
