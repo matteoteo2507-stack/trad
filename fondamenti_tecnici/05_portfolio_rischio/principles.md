@@ -38,6 +38,36 @@ Covarianza e correlazione misurano le relazioni tra titoli:
 
 Le serie storiche finanziarie sono **non-stazionarie**: le proprietà statistiche classiche (convergenza delle correlazioni empiriche, Legge dei Grandi Numeri, Teorema del Limite Centrale) non valgono sotto cambi di regime. Di conseguenza **le matrici di correlazione sono dinamiche e inaffidabili come predittori durante le crisi**. Stesso problema per i beta e per le esposizioni fattoriali: instabili nel tempo, richiedono monitoraggio e ribilanciamento continui.
 
+### Volatility drag (variance drain)
+
+La crescita di un capitale è **geometrica** (moltiplicativa periodo-su-periodo), non aritmetica. Da $V_n = \prod_{i=1}^n (1+R_i) = (1+R_G)^n$, prendendo i logaritmi e usando l'espansione di Taylor $\ln(1+x)\approx x - x^2/2$ per rendimenti piccoli, si ricava l'approssimazione fondamentale:
+
+$$R_G \approx \bar{R} - \frac{\sigma^2}{2}$$
+
+dove $R_G$ è il rendimento **geometrico** (la crescita composta effettiva del capitale), $\bar R$ la media **aritmetica** dei rendimenti, $\sigma^2$ la varianza. Il termine sottratto $\sigma^2/2$ è il **volatility drag** (variance drain): quanto la volatilità erode la crescita composta anche a fronte di una media positiva.
+
+Conseguenze, in ordine di importanza operativa:
+
+1. **EV positivo è necessario ma NON sufficiente.** Una strategia con media aritmetica positiva ($\bar R>0$, cioè "expectancy positiva") può avere **crescita geometrica nulla o negativa** se $\sigma^2$ è alta. Il conto non cresce. Questo è il buco della metrica "win_rate × RR = EV": misura $\bar R$, non $R_G$.
+2. **Il geometrico è sempre ≤ dell'aritmetico**, e il gap cresce col **quadrato** della volatilità.
+3. **La leva amplifica il drag in modo non-lineare.** Scalando i rendimenti per una leva $L$: la media cresce come $L$, ma la varianza come $L^2$ → il drag cresce come $L^2$. Esiste una leva oltre la quale aumentare l'esposizione **riduce** la crescita geometrica (oltre a far esplodere il drawdown). È la base matematica del **Kelly frazionario** e del perché "raddoppiare la size" non raddoppia la crescita.
+4. **Massimizzare lo Sharpe ≠ massimizzare la crescita geometrica.** Sono funzioni obiettivo diverse; la frontiera efficiente Sharpe-ottima non coincide con quella growth-ottima / min-drawdown. Una variante che alza lo Sharpe ma peggiora il geometrico **non** è un miglioramento per chi compounda.
+
+**Tradotto per il trading a R-multiple** (es. il Level Analyzer): la R per-trade è già normalizzata al rischio, quindi il drag **non si vede nella singola R** — vive nella **varianza della equity curve**, governata da (a) la frazione di capitale rischiata per trade e (b) la **correlazione/clustering tra trade**. Trade simultanei o nello stesso regime/sessione **non sono indipendenti**: la loro varianza combinata è più alta di $n$ trade iid → più drag → la frazione corretta per-trade è **più piccola** del Kelly calcolato come se fossero indipendenti.
+
+### Orthogonal return streams: oltre la diversificazione
+
+Estende l'idea di alpha-come-rendimento-ortogonale e di fattori PCA ortogonali. Metafora del **"gioco contro i giocatori"**: giudicare una strategia dagli esiti passati dei singoli trade/titoli (i "giocatori") è fragile e prono all'overfitting; ciò che conta è il **meccanismo che genera il rendimento** (il "gioco"). Due strategie possono essere "giocatori" diversi dello **stesso gioco** (stesso driver di rischio) → la loro combinazione è diversificazione **illusoria**.
+
+La diversificazione classica (più titoli, più settori) fallisce nelle crisi perché le correlazioni convergono a 1 (vedi sopra). La risposta robusta non è "più asset correlati" ma **return stream fisicamente e stocasticamente indipendenti** — driver che si risolvono per cause strutturalmente diverse:
+
+- **Indipendenza fisica**: il payoff si determina per un meccanismo causale diverso (es. l'esito di un prediction market politico non dipende dal ciclo macro; il trend-following su futures non dipende dalla direzione spot dell'azionario).
+- **Indipendenza stocastica**: $R^2 \approx 0$ regredendo uno stream sull'altro (CAPM cross-stream).
+
+Esempio canonico (managed futures): il beta azionario (SPY) e il trend-following su futures gestiti (DBMF/KMLM) hanno $R^2 \approx 0$ tra loro. Da solo il trend-following ha Sharpe e crescita molto inferiori; ma **combinato** abbassa il max drawdown del portafoglio in modo marcato. E qui si chiude il cerchio col volatility drag: **drawdown più basso = meno variance drain = miglior crescita geometrica**, anche a parità (o lieve calo) di media aritmetica. Una "sleeve" perfino a crescita geometrica **negativa**, se anti-correlata nei momenti giusti (convexity/hedge), può **alzare** la crescita geometrica del combinato — risultato controintuitivo ma corretto.
+
+⚠️ **Caveat di evidenza** (coerente con la nota in [[08_asset_allocation_passiva]]): il **concetto** è solido e ben fondato; le **ricette commerciali** che lo accompagnano ("leva + hedge leg che batte SPY con meno drawdown") sono tipicamente supportate da **un singolo backtest in-sample a 5 anni, senza walk-forward né out-of-sample** → trattare l'idea come **principio di costruzione**, non i numeri come evidenza robusta. Il modo corretto di usarla: misurare la correlazione/$R^2$ tra i propri stream **reali** (forward, non backtest curve-fit) e chiedersi se aggiungere uno stream **abbassa il drawdown combinato**.
+
 ### PCA / spectral decomposition
 
 L'Analisi delle Componenti Principali (PCA) è una decomposizione spettrale che estrae **fattori ortogonali** dalla variazione dei rendimenti, ciascuno un fattore di rischio indipendente, comprimendo 9 titoli in pochi componenti.
@@ -98,13 +128,20 @@ L'obiettivo non è "battere il mercato" ma **targettizzare le esposizioni ai fat
 - Tratta beta ed esposizioni fattoriali come **grandezze dinamiche**: monitora e ribilancia, non assumerle stabili.
 - Definisci obiettivi chiari di rischio/rendimento e costruisci targettizzando esposizioni fattoriali, non rincorrendo il benchmark.
 - Un beta > 1 va messo in conto come drawdown più severi nei ribassi, non come "edge".
+- **Riporta sempre il rendimento geometrico accanto all'aritmetico.** Un EV/Sharpe positivo non garantisce crescita se $\sigma$ è alta: la metrica che compounda il conto è $R_G \approx \bar R - \sigma^2/2$, non la media.
+- **Dimensiona con consapevolezza del drag**: Kelly frazionario, e ricorda che trade correlati/clusterati (stessa sessione, stesso regime) riducono la frazione ottimale **sotto** il Kelly calcolato come iid.
+- **Per abbassare il drawdown (e quindi alzare il geometrico) cerca stream ortogonali** ($R^2\approx 0$), non più asset della stessa famiglia. Valuta una strategia per il suo **contributo marginale** al drawdown/crescita del book combinato, non per lo Sharpe standalone.
+- **Non confondere il concetto valido (drag, ortogonalità) con le ricette levered-hedge da singolo backtest**: il primo è principio, le seconde non sono evidenza robusta.
 
 ## Collegamenti
 
 - Repo: [`../../strategies/stock_selector/`](../../strategies/stock_selector/) — lo scoring fondamentale + RRG applica questa logica di fattori e decomposizione del rischio.
 - [[06_stock_selection]] — selezione titoli a valle della logica fattoriale.
 - [[03_regimi_macro]] — il rischio di mercato (sistematico) dipende dal regime; correlazioni e beta cambiano con il regime.
+- [[08_asset_allocation_passiva]] — applicazione al pilastro investing (hedge-leg / managed futures) con il caveat di evidenza già calibrato lì.
+- `agents/quant_reviewer.md` — l'agente quant porta volatility drag, crescita geometrica e review portfolio-level come bagaglio permanente, citando questo documento.
 
 ## Fonti
 
 - `_sorgenti/quantportfolio managernotes.txt` (~righe 1-152) — note da video "Quant Portfolio Manager" (materiali Quant Guild / quantguild.com). La parte successiva del file (gamma exposure / Argo) non è inclusa in questo documento.
+- `NOZIONI AGGIUNTIVE.txt` (root del repo) — trascrizioni QuantGuild su **volatility drag** (derivazione $R_G \approx \bar R - \sigma^2/2$) e **orthogonal return streams** (game-vs-players, SPY+DBMF, convexity sleeve). Stessa scuola del file sopra; secondo passaggio sullo stesso tema. Da archiviare in `_sorgenti/` quando si fa pulizia.

@@ -183,6 +183,8 @@ Va tenuto separato dal portafoglio investito. Deve coprire spese vive e imprevis
 
 La fonte include una sezione che propone l'uso di un ETF alternativo (KMLM, trend following) come "hedge leg" su un portafoglio SPY, con leva per mantenere l'esposizione beta. I numeri citati (Sharpe ~0,79 vs 0,77, max drawdown -22% vs -25%, backtest 5 anni) provengono da un singolo backtest in-sample su un periodo specifico, senza walk-forward ne out-of-sample validation. La conclusione — che l'active risk allocation superi sistematicamente il passive investing — e una tesi commerciale tipica delle societa di gestione quantitativa, non un risultato peer-reviewed. Il concetto di volatility drag e reale e ben fondato; la soluzione proposta (leva + hedge leg su 5y backtest) non costituisce evidenza robusta. Non riprodurre i numeri come fatto; considerare il concetto di diversificazione con asset a bassa correlazione come principio valido ma non come ricetta operativa validata.
 
+> Derivazione formale del volatility drag ($R_G \approx \bar R - \sigma^2/2$) e degli **orthogonal return streams** in [[05_portfolio_rischio]]. Il principio (drawdown piu basso → meno variance drain → miglior crescita geometrica) e solido; resta valida la cautela qui sopra sulle *ricette* levered-hedge da singolo backtest. Eventuale terzo secchio managed-futures/trend nel pilastro investing: trattarlo come ipotesi da validare su correlazione forward reale, non come fatto.
+
 ---
 
 ## Regole operative

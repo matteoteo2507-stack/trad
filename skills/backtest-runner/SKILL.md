@@ -10,6 +10,16 @@ custom) e produce un report **normalizzato** per confronto.
 
 ## Filosofia
 
+**A cosa serve (e a cosa NON serve) un backtest.** Il backtest serve a **falsificare** una
+strategia e a misurarne le proprietà **distributive/strutturali** (varianza, code, drawdown,
+correlazione con altri stream). **Non** serve a *scoprire* una regola di timing ottimizzando
+parametri sui dati passati: quella è la via maestra dell'overfitting. Prima viene il **meccanismo**
+("qual è il gioco?" — microstruttura, comportamento istituzionale, premio di rischio), poi il
+backtest lo corrobora o lo falsifica. Una strategia il cui unico argomento è "i numeri storici sono
+buoni" è un *giocatore fortunato*, non un edge. (Stessa epistemica del
+[Quant Reviewer](../../agents/quant_reviewer.md) §0 e di
+[05_portfolio_rischio](../../fondamenti_tecnici/05_portfolio_rischio/principles.md).)
+
 NON fissare un solo backtester. La diversità di motori riduce il rischio di artefatti del singolo
 framework e fornisce materiale di backtest più ricco. Vedi `backtesters/README.md`.
 
@@ -48,14 +58,34 @@ Output Markdown + CSV con metriche normalizzate per backtester:
 |---|---|
 | `total_return` | Rendimento totale % |
 | `cagr` | Tasso di crescita annualizzato |
+| `arithmetic_mean_R` | Media aritmetica dei rendimenti per periodo/trade ($\bar R$, ≈ "EV") |
+| `geometric_growth` | Crescita geometrica $R_G \approx \bar R - \sigma^2/2$ — **ciò che compounda davvero il conto** |
+| `volatility_drag` | $\sigma^2/2$: quanto la varianza erode il geometrico vs l'aritmetico |
 | `sharpe` | Sharpe ratio |
 | `sortino` | Sortino ratio |
 | `max_drawdown` | Drawdown massimo % |
 | `win_rate` | % trade in profitto |
 | `profit_factor` | Profitti totali / perdite totali |
 | `n_trades` | Numero totale di trade |
+| `n_eff` | $N$ effettivo **indipendente** (dopo block-bootstrap; può essere ≪ `n_trades` se clusterati) |
 | `avg_trade` | P&L medio per trade |
 | `max_consecutive_losses` | Massimo numero di trade in perdita consecutivi |
+
+**Reporting geometric-aware (obbligatorio).** Non riportare solo media/`win_rate`/`avg_trade`: una
+strategia con EV positivo ma alta varianza può avere `geometric_growth` ≈ 0 e **non far crescere il
+conto**. Riporta sempre `geometric_growth` e `volatility_drag` accanto alle metriche aritmetiche.
+Se una variante alza lo Sharpe ma peggiora `geometric_growth` o `max_drawdown`, **non è un
+miglioramento** per chi compounda (Sharpe-ottimo ≠ growth-ottimo).
+
+**Trade non indipendenti.** CI ed `n_eff` vanno calcolati con **block-bootstrap**, non assumendo
+trade iid: trade nella stessa sessione/regime sono correlati e gonfiano la confidenza apparente.
+Riporta `n_eff` insieme a `n_trades`.
+
+**Correlazione al book esistente.** Una strategia non si valuta solo standalone: riporta la sua
+correlazione / $R^2$ (regressione CAPM cross-stream) verso gli stream già attivi (segnali mentori,
+Level Analyzer, investing). $R^2 \approx 0$ = stream **ortogonale**, prezioso anche con Sharpe
+modesto perché abbassa il drawdown del combinato (→ meno volatility drag → più crescita geometrica).
+Misura su dati **forward reali** dove disponibili, non sul backtest curve-fit.
 
 Se i backtester divergono significativamente su una metrica (es. Sharpe 1.2 vs 0.4 sulla stessa
 strategia/dati), **segnalare la divergenza** e ipotizzare la causa (gestione fee, slippage,
@@ -75,6 +105,13 @@ ordine di esecuzione tick-vs-bar, ecc.).
   Coinbase fee tier 0).
 - Lo slippage va modellato (default: 1-2 pip su forex, 0.05% su crypto).
 - Il backtest deve essere **walk-forward o out-of-sample** quando possibile, per evitare overfitting.
+- **Conta i gradi di libertà** (parametri tunabili) e dichiarali nel report: tanti parametri su
+  pochi trade = overfitting probabile → richiedi al [Quant Reviewer](../../agents/quant_reviewer.md)
+  DSR/PBO prima di qualsiasi conclusione GO.
+- **Lead with the mechanism**: il report deve aprire con *perché* la strategia dovrebbe funzionare
+  (il "gioco"), non con la equity curve. Una equity curve bella senza meccanismo = NO-GO di default.
+- **Mai concludere "edge" su `geometric_growth`/CI calcolati come iid** se i trade sono clusterati:
+  usa block-bootstrap e riporta `n_eff`.
 
 ## Riferimenti
 

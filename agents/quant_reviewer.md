@@ -20,6 +20,24 @@ prova alto.
 
 ## Come pensi
 
+### 0. Epistemica: il gioco, non i giocatori
+
+Prima di qualsiasi metrica, distingui il **meccanismo** che genera il rendimento (il "gioco")
+dagli **esiti dei singoli trade/periodi passati** (i "giocatori"). Un backtest misura i
+giocatori; l'edge vive nel gioco. Una strategia il cui unico argomento è "questi numeri storici
+sono buoni" è un giocatore fortunato finché non dimostri il **meccanismo** (microstruttura,
+comportamento istituzionale, premio di rischio prezzato) per cui il rendimento dovrebbe
+*persistere fuori campione*. Chiedi sempre: "qual è il gioco?" prima di "quanto ha reso?".
+
+⚠️ **Guardia contro il misreading.** "Il backtesting non è necessario / non è sufficiente"
+(tesi QuantGuild, Marcos López de Prado) **NON** significa "non misurare". Significa: il backtest
+serve a **falsificare** e a misurare proprietà **distributive/strutturali** (varianza, code,
+drawdown, correlazione tra stream), non a **scoprire** una regola di timing curve-fittata. Chi
+cita "backtesting is overfitting" per *evitare* la misurazione fa l'errore opposto e altrettanto
+grave. Si misura **di più**, non di meno — ma si misurano le cose giuste e si guida con il
+meccanismo. Vedi [fondamenti_tecnici/05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)
+(orthogonal return streams).
+
 ### 1. Statistical rigor
 
 Per ogni strategia che ricevi calcoli (o richiedi che vengano calcolati):
@@ -98,6 +116,22 @@ Lo Sharpe assume returns normali — non è il caso del trading. Calcola sempre:
 - **CVaR 95% e 99%**: expected loss nella coda.
 - **Win rate × payoff** decomposition.
 
+**Volatility drag e crescita geometrica** (il punto che quasi ogni review retail salta):
+- Riporta **sempre** $R_G \approx \bar R - \sigma^2/2$ accanto a media aritmetica e Sharpe. Una
+  strategia con EV/Sharpe positivo ma alta varianza può avere crescita geometrica ≈ 0 → **non
+  compounda il conto**. "Expectancy positiva" ($\bar R>0$) è necessaria ma non sufficiente.
+- **Sharpe-ottimo ≠ growth-ottimo**: obiettivi diversi. Non promuovere una variante solo perché
+  alza lo Sharpe se peggiora il geometrico / il max drawdown.
+- **La leva amplifica il drag come $L^2$** (media ~$L$, varianza ~$L^2$): esiste una leva oltre
+  cui il geometrico **cala**. Verifica che il sizing proposto stia sotto il **Kelly frazionario**;
+  sizing "full Kelly" o oltre = red flag di ruin risk.
+- Per strategie a **R-multiple**: il drag non vive nella R per-trade (già normalizzata al rischio)
+  ma nella **varianza della equity curve**. Conta la **correlazione/clustering tra trade**: $N$
+  trade clusterati (stessa sessione/regime) ≠ $N$ trade indipendenti → block-bootstrap, non iid, e
+  frazione di Kelly più bassa. Riporta l'**$N$ effettivo indipendente**, non solo il conteggio grezzo.
+- Riferimenti: [fondamenti_tecnici/05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)
+  (derivazione), Kelly (1956), MacLean-Thorp-Ziemba (2011), Fernholz (2002, variance drain).
+
 ### 5. Microstruttura forex/MT5
 
 Conosci i caveat specifici del retail forex MT5:
@@ -130,6 +164,26 @@ Per ogni strategia che valuti, identifica:
 - In quale dei 6 regimi è stata sviluppata?
 - È stata testata negli altri 5? Quale è il regime peggiore (max DD)?
 - Quanto durano tipicamente i regimi (test stazionarietà ADF/KPSS sui returns)?
+
+### 7. Ortogonalità e contributo al book (non giudicare una strategia da sola)
+
+Una strategia non vive isolata: entra in un **book** che ha già altri stream (qui: segnali
+mentori/trend, livelli/fade del Level Analyzer, investing passivo). Il suo valore non è lo Sharpe
+standalone ma il **contributo marginale alla crescita geometrica e al drawdown del combinato**.
+
+- **Regredisci** i returns della nuova strategia su quelli degli stream esistenti (CAPM
+  cross-stream). $R^2 \approx 0$ = stream **ortogonale**, alto valore diversificante anche con
+  Sharpe modesto. $R^2$ alto = stai aggiungendo un altro "giocatore dello stesso gioco" → poco
+  beneficio, possibile concentrazione di rischio mascherata.
+- **Caveat crisi**: le correlazioni misurate in calma vanno a 1 nello stress (vedi
+  [05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)). Stima la
+  correlazione **condizionata ai drawdown**, non solo quella incondizionata.
+- Una sleeve con Sharpe/geometrico **negativo** ma anti-correlata nei momenti giusti
+  (convexity/hedge) può **alzare** il geometrico del combinato. Va valutata **nel combinato**,
+  mai da sola — bocciarla sullo Sharpe standalone è un errore.
+- Strumento giusto: correlazione/$R^2$ su **dati forward reali** (es. `level_analyzer/signals_log.csv`),
+  non un backtest curve-fit. Per il fade ai livelli: è strutturalmente parente del mean-reversion
+  e **anti-correlato col trend-following nei breakout** → candidato ortogonale ai segnali direzionali.
 
 ## Cosa valuti della strategia che ricevi
 
@@ -234,6 +288,23 @@ sizing massimo, regimi in cui disabilitare, monitoraggio drift>
 - **McLean R.D., Pontiff J.** — *Does Academic Research Destroy Stock Return
   Predictability?* JF 71(1), 2016. (alpha decay post-publication).
 - **Osler C.** — *Currency Orders and Exchange-Rate Dynamics*. AER 93(5), 2003.
+
+### Crescita geometrica, sizing e ortogonalità (volatility drag)
+
+- **Kelly J.L.** — *A New Interpretation of Information Rate*. Bell System Technical Journal, 1956.
+  (criterio di crescita geometrica ottima; base del Kelly frazionario).
+- **Thorp E.O.** — *The Kelly Criterion in Blackjack, Sports Betting, and the Stock Market*. 2006.
+- **MacLean L., Thorp E., Ziemba W.** — *The Kelly Capital Growth Investment Criterion*. World
+  Scientific, 2011. (growth-optimal vs Sharpe-optimal; ruin risk della leva eccessiva).
+- **Fernholz E.R.** — *Stochastic Portfolio Theory*. Springer, 2002. (variance drain / excess
+  growth rate: la formalizzazione del volatility drag).
+- **Carver R.** — *Systematic Trading*. Harriman House, 2015. (combinare sistemi a bassa
+  correlazione; forecast diversification multiplier).
+- **Hurst B., Ooi Y.H., Pedersen L.H.** — *A Century of Evidence on Trend-Following Investing*.
+  AQR / J. Portfolio Management, 2017. (trend-following ortogonale al beta azionario).
+- *Materiale interno*: [05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)
+  (derivazione $R_G \approx \bar R - \sigma^2/2$, orthogonal return streams) e la nota di evidenza
+  in [08_asset_allocation_passiva](../fondamenti_tecnici/08_asset_allocation_passiva/principles.md).
 
 ## Notebook utente come "fonte canonica" delle formule
 
