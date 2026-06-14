@@ -22,13 +22,18 @@ def _token(env_name: str = "TELEGRAM_BOT_TOKEN") -> str | None:
     return env_value(env_name)
 
 
-def format_signal(sig: dict, asset: str, price: float, note: str = "") -> str:
+def format_signal(sig: dict, asset: str, price: float, note: str = "",
+                  risk_pct: float = 0.0, agg_pct: float = 0.0) -> str:
     arrow = "🟢 LONG" if sig["side"] == "long" else "🔴 SHORT"
     msg = (f"{arrow}  {asset}  (zona conf=2)\n"
            f"Zona: {sig['zone']}  ({', '.join(sig['types'])})\n"
            f"Prezzo: {price}  (dist {sig['dist']} ≈ {sig['dist_atr']} ATR)\n"
-           f"SL: {sig['sl']}   TP: {sig['tp']}   RR 1:{sig['rr']}\n"
-           f"— Fase A: valuta e piazza a mano (pending/market). Non automatico.")
+           f"SL: {sig['sl']}   TP: {sig['tp']}   RR 1:{sig['rr']}")
+    if risk_pct:
+        msg += f"\n💰 Rischio: {risk_pct}% del conto"
+        if agg_pct:
+            msg += f"  (cap aggregato {agg_pct}%)"
+    msg += "\n— Fase A: valuta e piazza a mano (pending/market). Non automatico."
     if note:
         msg += f"\n⚠️ {note}"
     return msg

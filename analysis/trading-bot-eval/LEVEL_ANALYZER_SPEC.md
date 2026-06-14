@@ -64,7 +64,8 @@ robusto netto; RR1:2 ok su XAU; RR1:3 muore su BTC).
 ## 5. Caveat (onestà)
 
 - **Edge sottile in assoluto** (+0.15-0.19R netti): è un edge da **disciplina + volume di
-  trade**, non un colpo grosso. Va gestito con sizing rigoroso (rischio fisso per trade).
+  trade**, non un colpo grosso. Sizing vol-drag-aware in [SIZING_SPEC.md](SIZING_SPEC.md)
+  (1/4 Kelly, **tetto 0.5–1%/trade**, cap aggregato 2%): il tetto regge anche con edge dimezzato.
 - **Spread storici:** il gate costi usa lo spread **attuale** ($0.10); nel 2013-2018 erano
   più larghi → il netto delle epoche vecchie è **ottimistico**. Il dato affidabile è il
   **regime recente (2023-2026): +0.19/+0.22R netti**.

@@ -15,6 +15,13 @@ h1_window: 120
 proximity_atr: 0.25   # alerta quando il prezzo entra entro proximity_atr*ATR dalla zona
 max_dist_atr: 8.0     # considera solo zone entro questa distanza dal prezzo
 poll_seconds: 300
+
+# Sizing guardrail (vol-drag-aware) — vedi analysis/trading-bot-eval/SIZING_SPEC.md
+# Mostrato nell'alert (Fase A informativa). Start conservativo 0.5% perche' NON ancora
+# forward-tested; salire verso 1.0% (tetto) solo a edge confermato sul forward log.
+risk_pct_per_trade: 0.5    # % del conto a rischio per singolo trade conf=2
+risk_pct_aggregate: 2.0    # % max a rischio simultaneo su zone conf=2 concorrenti
+
 telegram_chat_id: ""    # chat id del canale (negativo, -100...); token da .env
 telegram_token_env: TELEGRAM_BOT_TOKEN   # nome della variabile .env col token del bot
 log_path: level_analyzer/signals_log.csv

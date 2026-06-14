@@ -20,6 +20,7 @@ CFG = {
     "atr_n": 14, "k_sl": 0.5, "rr": 1.5, "cluster_tol_pct": 0.25,
     "h1_window": 120, "proximity_atr": 0.25, "max_dist_atr": 8.0,
     "poll_seconds": 300, "telegram_chat_id": "",
+    "risk_pct_per_trade": 0.5, "risk_pct_aggregate": 2.0,
     "log_path": "level_analyzer/signals_log.csv",
     "assets": [
         {"name": "XAUUSD", "mt5_symbol": "XAUUSD",
@@ -62,7 +63,9 @@ def _fetch(a):
 def _alert(asset_cfg, sig, price):
     ok = notify.send_telegram(
         CFG["telegram_chat_id"],
-        notify.format_signal(sig, asset_cfg["name"], round(price, 2), asset_cfg.get("note", "")),
+        notify.format_signal(sig, asset_cfg["name"], round(price, 2), asset_cfg.get("note", ""),
+                             risk_pct=CFG.get("risk_pct_per_trade", 0.0),
+                             agg_pct=CFG.get("risk_pct_aggregate", 0.0)),
         CFG.get("telegram_token_env", "TELEGRAM_BOT_TOKEN"))
     _log(asset_cfg["name"], sig, price)
     return ok
