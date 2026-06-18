@@ -17,6 +17,11 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 > la priorità 2026-05-30 mette le strategie/agenti custom **per ultime**. (OctoBot, un tempo #1, è
 > **dormiente** dal 2026-06-14 — traccia crypto in stand-by.)
 
+> **Porta d'ingresso del materiale nuovo.** Ogni fonte grezza in entrata passa dal registro
+> [`_INTAKE.md`](_INTAKE.md) (cattura lossless → triage → distilla/parcheggia). I conflitti tra
+> teorie si gestiscono con la **mappa dei modelli** ([DECISIONS.md](../DECISIONS.md)): condizioni di
+> validità esplicite, nessun "X batte Y".
+
 ## Indice
 
 ### Concetti / reference
@@ -32,7 +37,8 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 | 08 | [Asset Allocation Passiva (ETF/bond/fiscalità/USD)](08_asset_allocation_passiva/principles.md) | pilastro investing (PAC), INVESTING_PILLAR_PLAN |
 
 ### Blueprints (idee non committate)
-- [Markov regime skill](blueprints/markov_regime_skill.md) — alternativa probabilistica a `core/regime.py`
+- [Markov regime skill](blueprints/markov_regime_skill.md) — alternativa probabilistica a `core/regime.py` (con i 3 fix della "2.0")
+- [Roan Quant Series extract](blueprints/roan_quant_series_extract.md) — catalogo @RohOnChain + 18 repo `jackson-video-resources` (reference; 3 repo = input workflow)
 - [Hermes optimizer](blueprints/hermes_optimizer.md) — agente auto-migliorante di strategie
 - [Insider constellation](blueprints/insider_constellation.md) — 7 agenti SEC/13F/Fed/on-chain
 - [Catalogo skill Claude](blueprints/claude_skills_catalog.md) — 40+ skill (repo `claude-trading-skills`)

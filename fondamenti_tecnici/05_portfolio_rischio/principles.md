@@ -68,6 +68,24 @@ Esempio canonico (managed futures): il beta azionario (SPY) e il trend-following
 
 ⚠️ **Caveat di evidenza** (coerente con la nota in [[08_asset_allocation_passiva]]): il **concetto** è solido e ben fondato; le **ricette commerciali** che lo accompagnano ("leva + hedge leg che batte SPY con meno drawdown") sono tipicamente supportate da **un singolo backtest in-sample a 5 anni, senza walk-forward né out-of-sample** → trattare l'idea come **principio di costruzione**, non i numeri come evidenza robusta. Il modo corretto di usarla: misurare la correlazione/$R^2$ tra i propri stream **reali** (forward, non backtest curve-fit) e chiedersi se aggiungere uno stream **abbassa il drawdown combinato**.
 
+### Volatility risk premium (VRP) — nota di reference
+
+**Fuori dallo scope operativo** (non tradiamo opzioni), ma chiude il cerchio della convexity sleeve
+ed è l'**esempio cardine della mappa dei modelli**. L'**implied vol** (dai prezzi opzioni, invertendo
+Black-Scholes) sovrastima **sistematicamente** la **realized vol**: la regressione IV-oggi vs
+RV-30g-dopo ha pendenza < 1, l'istogramma IV è shiftato a destra, lo smile rende le put OTM più care
+(assicurazione "prezzata cara"). Da qui due claim apparentemente opposti, **entrambi veri secondo
+regime/timing**:
+- **Vendere** il premio (short straddle/strangle) raccoglie il VRP **in mercato normale**, ma viene
+  **devastato nei crash** (tail) se non coperto.
+- **Comprare** convexity/long-vol **costa** (negative carry) ma **paga nei tail** e — collegandosi al
+  volatility drag sopra — **riduce il drawdown → migliora il geometrico** nonostante il bleed
+  aritmetico.
+
+Non è una contraddizione: è la stessa cosa vista in regimi diversi → caso scuola della dottrina
+[Mappa dei modelli](../../DECISIONS.md). Per noi: **reference, non operativo**. Fonte in
+`_sorgenti/NOZIONI AGGIUNTIVE.txt`.
+
 ### PCA / spectral decomposition
 
 L'Analisi delle Componenti Principali (PCA) è una decomposizione spettrale che estrae **fattori ortogonali** dalla variazione dei rendimenti, ciascuno un fattore di rischio indipendente, comprimendo 9 titoli in pochi componenti.
@@ -144,4 +162,4 @@ L'obiettivo non è "battere il mercato" ma **targettizzare le esposizioni ai fat
 ## Fonti
 
 - `_sorgenti/quantportfolio managernotes.txt` (~righe 1-152) — note da video "Quant Portfolio Manager" (materiali Quant Guild / quantguild.com). La parte successiva del file (gamma exposure / Argo) non è inclusa in questo documento.
-- `NOZIONI AGGIUNTIVE.txt` (root del repo) — trascrizioni QuantGuild su **volatility drag** (derivazione $R_G \approx \bar R - \sigma^2/2$) e **orthogonal return streams** (game-vs-players, SPY+DBMF, convexity sleeve). Stessa scuola del file sopra; secondo passaggio sullo stesso tema. Da archiviare in `_sorgenti/` quando si fa pulizia.
+- `_sorgenti/NOZIONI AGGIUNTIVE.txt` — trascrizioni Roman Paolucci / Quant Guild su **volatility drag** (derivazione $R_G \approx \bar R - \sigma^2/2$), **orthogonal return streams** (game-vs-players, SPY+DBMF, convexity sleeve) e **volatility risk premium** (IV vs RV, smile, vendi-vs-compra assicurazione). Stessa scuola del file sopra. Tracciato in [`_INTAKE.md`](../_INTAKE.md).

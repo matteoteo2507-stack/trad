@@ -11,6 +11,12 @@ tipo: blueprint
 
 > Distillato implementativo della skill `markov-hedge-fund-method`: un modulo Python che etichetta i regimi da rolling return, costruisce la matrice di transizione, risolve la stazionaria, fa forecast n-step e gira un walk-forward senza look-ahead — più un layer HMM opzionale e un indicatore PineScript per la visualizzazione live su TradingView. La teoria sottostante è in [[principles]] (`03_regimi_macro`).
 
+> **AGGIORNAMENTO 2026-06-18 — Markov 2.0 (3 fix documentati).** Un mentore ha condiviso la versione corretta del metodo (framework di Roan, vedi [[roan_quant_series_extract]]). I tre fix:
+> - **FIX 1 — stride sampling (autocorrelazione).** La `build_transition_matrix` qui sotto conta le transizioni `arr[i]→arr[i+1]` su label da rolling window **sovrapposte** (20g condividono 19g) → **persistenza fasulla sulla diagonale**. Va contata tra finestre **non sovrapposte** (stride = finestra), mostrando entrambe. È il **bug reale della v1.0**; tecnica assorbita in [[04_quant_metodologia]] §7.
+> - **FIX 2 — verifica label.** Controllare programmaticamente la mappa stati (0/1/2) contro 3 periodi storici noti (bull, crash, flat) prima di mostrarla (la v1.0 aveva bull/bear scambiati in un display).
+> - **FIX 3 — due modalità esplicite.** *Filter* (il regime fa da gate a una strategia esistente — l'uso più difendibile) vs *standalone* (tradare il differenziale `P(bull)−P(bear)`).
+> Resta **idea NON committata** (DECISIONS: custom in fondo): non si installa la skill, si è assorbito solo il FIX 1 nella metodologia.
+
 ## Concetti
 
 ### 1. Modulo `regime.py` (modello osservabile)

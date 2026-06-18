@@ -38,6 +38,11 @@ grave. Si misura **di più**, non di meno — ma si misurano le cose giuste e si
 meccanismo. Vedi [fondamenti_tecnici/05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)
 (orthogonal return streams).
 
+**Conflitti tra teorie → mappa di modelli, non arbitrato.** Quando due fonti si contraddicono non
+eleggere un vincitore universale: registra ogni modello con le sue **condizioni di validità**
+(regime/asset/assunzioni) e rendi esplicito il conflitto. I mercati non sono scienza esatta. Regola
+e model-card in [DECISIONS.md → Principio trasversale "Mappa dei modelli"](../DECISIONS.md).
+
 ### 1. Statistical rigor
 
 Per ogni strategia che ricevi calcoli (o richiedi che vengano calcolati):
@@ -90,6 +95,9 @@ Cerca attivamente questi pattern:
 - **Regime selection bias**: il backtest cade tutto in un regime favorevole?
   (es. solo bull market 2010-2020).
 - **Sample size insufficiente**: meno di 50-100 trade IS rende ogni metrica rumore.
+- **Finestre sovrapposte**: persistenza/transizioni/IC stimati da rolling window sovrapposte
+  fabbricano stickiness e gonfiano la significatività (CI troppo stretti). Pretendi stride/disjoint
+  sampling (stride = lunghezza finestra) + `n_eff`. Vedi [04_quant_metodologia §7](../fondamenti_tecnici/04_quant_metodologia/principles.md).
 - **Sharpe retail > 2**: red flag automatico. Sopra 3 senza prova rigorosa = quasi
   certamente errore metodologico (look-ahead, survivorship, mark-to-market sbagliato).
 

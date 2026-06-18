@@ -206,3 +206,32 @@ Nessuna fase di mercato è tradabile/non-tradabile **in assoluto**: l'edge è co
 strategia + regime. Il backtest da solo **non basta** — triangolare con razionale economico e
 walk-forward. Vedi [fondamenti_tecnici/03_regimi_macro/](fondamenti_tecnici/03_regimi_macro/) e
 [fondamenti_tecnici/04_quant_metodologia/](fondamenti_tecnici/04_quant_metodologia/).
+
+---
+
+## Principio trasversale — Mappa dei modelli (gestione dei conflitti tra teorie)
+
+I mercati non sono scienza esatta: **non esiste l'equazione madre** che spiega/predice tutto.
+Quando due fonti o teorie si contraddicono, il nostro compito **NON è eleggere un vincitore
+universale** ("X è più giusto di Y"). Si registra **ogni modello con le sue CONDIZIONI di
+validità** e si rende il conflitto **esplicito**, così la decisione operativa sceglie il modello
+che calza il contesto. È l'estensione naturale del principio "edge condizionato" qui sopra.
+
+**Model card minima** per ogni claim in conflitto:
+`{ claim · fonte · condizioni (regime/asset/timeframe/assunzioni) · contraddice · stato (attivo/reference/parcheggiato) }`
+
+**Esempi svolti** (i due conflitti già emersi nel materiale):
+- *"Il backtest è inutile / è overfitting"* (Roan, Quant Guild) **vs** *"misura con DSR/PBO/
+  walk-forward"* (López de Prado, nostro quant). **Non** è una contraddizione: vale separando
+  *non curve-fittare una regola di timing* (vero) da *non misurare distribuzioni / non falsificare*
+  (falso). Condizione: il backtest serve a **falsificare e misurare proprietà distributive**, non
+  a *scoprire* la regola.
+- *"Vendi il volatility risk premium"* (IV sovrastima RV in media) **vs** *"compra convexity /
+  long-vol"* (mitiga il drag nei crash). Entrambe vere secondo **regime/timing**: vendi il premio
+  in mercato normale, l'assicurazione paga nei tail.
+
+Operativamente la mappa vive in due posti: il **registro di intake**
+([fondamenti_tecnici/_INTAKE.md](fondamenti_tecnici/_INTAKE.md)) traccia stato e destinazione di
+ogni fonte; le **condizioni di validità** stanno accanto al concetto nel file `fondamenti_tecnici/`
+che lo ospita, con cross-link al claim opposto. Regola epistemica di base: §0 di
+[agents/quant_reviewer.md](agents/quant_reviewer.md) (il gioco, non i giocatori).

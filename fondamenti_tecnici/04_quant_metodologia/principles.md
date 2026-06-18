@@ -79,11 +79,35 @@ Caveat: un motore veloce rende facilissimo il look-ahead e l'overfitting su grig
 
 **Complemento metodologico (review pybroker → implementato).** Il nostro `core/quant_metrics.py` copre la *distribuzione null* (MC permutation, White's RC) e la penalizzazione multiple-testing (DSR, PBO). Il tassello complementare — l'**intervallo di confidenza sul metric osservato** (es. lower bound dello Sharpe reale) — è ora implementato dependency-free in [`bca_bootstrap_ci`](../../core/quant_metrics.py) (bootstrap **BCa**, bias-corrected & accelerated, Efron 1987): dato un array di returns e una metrica, restituisce `point`/`low`/`high`. **Regola d'oro**: decidi sul **lower bound**, non sul valore centrale (uno Sharpe 2.2 su 40 trade può avere CI 95% con estremo inferiore < 0 → edge non affidabile). Resta valida l'opzione di adottare l'engine completo `pip install lib-pybroker` per backtest+eval. Dettagli nel catalogo review esterno (`github_repo_reviews/pybroker.md`).
 
+### 7. Finestre sovrapposte → persistenza/IC fasulla (stride / disjoint sampling)
+
+**Definizione**: stimare statistiche di **persistenza, autocorrelazione, matrici di transizione o
+Information Coefficient (IC)** da **finestre/return sovrapposti** gonfia artificialmente il segnale.
+Due finestre rolling consecutive da N barre condividono N−1 barre: la sovrapposizione **fabbrica
+persistenza** (diagonale della transizione, autocorrelazione, significatività dell'IC) che nei dati
+non c'è. È il cugino del look-ahead/overfitting per le serie autocorrelate.
+
+Esempi:
+- **Matrice di transizione di regime (Markov)**: etichettare i regimi da rolling return a 20 giorni
+  e contare le transizioni giorno-su-giorno conta quasi sempre "stesso stato" perché le finestre si
+  sovrappongono → **stickiness illusoria sulla diagonale**. Va contata tra finestre **non
+  sovrapposte** (stride = lunghezza finestra). [Materiale "Markov 2.0", FIX 1; il blueprint
+  [markov_regime_skill](../blueprints/markov_regime_skill.md) segnala che la v1.0 ha questo bug.]
+- **IC di un alpha** misurato su return sovrapposti (forward 30g campionati ogni giorno): il CI è
+  troppo stretto, la significatività gonfiata. Misurare su **barre disgiunte** (ogni h barre, return
+  a h) — il consiglio "disjoint bars" ricorrente nella prassi quant.
+
+**Rimedio**: per qualunque statistica di persistenza/transizione/IC, **calcola anche la versione
+stride-sampled (non sovrapposta)** e confrontala con quella overlapping; tratta come onesta solo la
+non-sovrapposta. Si lega al nostro **`n_eff` via block-bootstrap** (skill backtest): N osservazioni
+clusterate ≠ N indipendenti.
+
 ## Regole operative
 
 - **Sharpe primario, max drawdown secondario.** Lo Sharpe è la metrica di test principale; il max DD è di contorno. Ma lo Sharpe assume return normali — affianca sempre Sortino/Calmar/CVaR/Ulcer e, per leggere code e asimmetria senza assumere normalità, **Omega** ([`omega_ratio`](../../core/quant_metrics.py)) e **Tail ratio** ([`tail_ratio`](../../core/quant_metrics.py)). Quando esiste un benchmark di riferimento (es. buy&hold dell'asset), usa le metriche relative — alpha, beta, information ratio, tracking error, R² ([`benchmark_metrics`](../../core/quant_metrics.py)) — per distinguere edge reale da semplice esposizione direzionale.
 - **Prima i 3 bias, poi i costi.** Non perdere tempo a raffinare spread/slippage su una strategia che non sopravvive a look-ahead/overfitting/survivorship.
 - **Filtration sempre**: nessun dato futuro nella decisione. Regime timeline solo con lag ≥1 giorno per intraday.
+- **Mai persistenza/transizioni/IC da finestre sovrapposte.** Usa stride/disjoint sampling (stride = lunghezza finestra), riporta `n_eff`; l'overlapping va mostrato solo come confronto, mai come prova.
 - **Conta i trial.** Se non documentati, assumi ≥100 e applica DSR (Bailey-LdP 2014). Sharpe retail > 2 = red flag; > 3 = quasi certo errore metodologico.
 - **Instabilità parametrica = NO-GO.** Se piccole variazioni dei parametri ribaltano la performance, il modello è overfit.
 - **Universo dinamico per equity**: includi delisted/falliti al timestep T.

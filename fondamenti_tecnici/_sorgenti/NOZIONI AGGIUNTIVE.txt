@@ -385,3 +385,121 @@ Summary table of key portfolio concepts:
 | Long Convexity Positions         | Buying options or puts for protection                       | Negative arithmetic return but positive geometric impact |
 
 
+
+AGGIORNAMENTO 18-06-2026
+
+
+### Introduction to Volatility Risk Premium (VRP)  
+- The video begins with a critique of repetitive hedge fund strategies focused on **shorting volatility ("short V")**, suggesting the need for more creative approaches.  
+- Emphasizes the **volatility risk premium** as a core concept that hedge funds and quantitative (quant) funds exploit daily for profit by trading options.  
+- Frames **trading as a business of selling “portfolio insurance”**—akin to the insurance business but applied to financial portfolios. The profitability of selling this form of insurance underpins the existence of the volatility risk premium.  
+  
+### Core Concepts: Realized Volatility vs. Implied Volatility  
+- To understand VRP, two key volatility concepts must be clarified:  
+  - **Realized Volatility:** The historical, backward-looking measure derived from actually observed returns (statistical variance or standard deviation).  
+  - **Implied Volatility:** The forward-looking market expectation of volatility, **derived from option prices under the Black–Scholes model** (though the model itself is not a prediction tool but a pricing formula).  
+- Despite being mathematically distinct and fundamentally unrelated, realized and implied volatilities tend to track each other closely over time, as illustrated over a 10-year period for the S&P 500.  
+
+  
+### Implied Volatility Details  
+- Implied volatility is extracted by **inverting the Black–Scholes pricing model** to find the volatility that would produce observed equilibrium option prices in the market.  
+- It captures the market consensus about future volatility but **is not a predictive model itself**—this differentiation is emphasized repeatedly for conceptual clarity.  
+- The speaker notes frequent misunderstanding and criticism relating to Black–Scholes in the comments but underscores the pragmatic use of implied volatility in practice.  
+
+  
+### Realized Volatility Details and Latency  
+- Realized volatility is calculated from actual return data using variance and standard deviation.  
+- It is described as a **latent process**: it exists conceptually but **cannot be observed directly in real-time**; only approximated through data windows and statistics.  
+- The video touches on theoretical mean and variance calculations via integration over probability density functions, but highlights the mismatch with actual financial markets where parameters are **non-stationary and volatile**.  
+ 
+### Challenges in Modeling Realized Volatility  
+- Models based on static parameters or theoretical PDFs often fail due to frequent and violent market regime shifts.  
+- Practical modeling requires approximating volatility with rolling windows over historical data, but the choice of window size directly affects the responsiveness and accuracy of realized volatility estimates.  
+- Understanding this difference between textbook probability/statistics and real-world data deviations is crucial to developing robust trading strategies—an insight gained by the presenter over a decade of experience.   
+
+
+### Effect of Rolling Window Size on Realized Volatility Estimates  
+- Demonstrates through animation how different rolling window lengths dramatically impact realized volatility:  
+  - **Short windows** yield highly responsive, but potentially noisier volatility estimates.  
+  - **Long windows** produce smoother, lagged estimates that may under-react to recent market events.  
+- Implied volatility remains unaffected by window size as it is forward-looking and derived from options pricing, not historical data.  
+- The choice of window impacts both the **timing and magnitude** of observed volatility spikes compared to implied volatility, complicating direct comparisons.  
+ 
+### Statistical Relationship Between Realized and Implied Volatility  
+| Rolling Window Size | Effect on Realized Volatility Response | Relationship to Implied Volatility |  
+|--------------------|------------------------------------------|-----------------------------------|  
+| Very Small         | Highly reactive, may overshoot implied volatility on average | Realized volatility tends to exceed implied volatility |  
+| Larger             | Smoothed, lagged response; slower to reflect changes | Realized volatility tends to be lower than implied volatility |  
+
+- This variance necessitates **judgment calls in quantitative research** on selecting appropriate parameters, implicitly affecting VRP strategy design.
+ 
+### Why Does the Volatility Risk Premium Exist?  
+- Implied volatility (IV) represents the market’s consensus about future risk; realized volatility (RV) represents the actual outcome.  
+- Statistically, IV tends to **overstate future realized volatility**, creating a **risk premium for selling options (portfolio insurance)**.  
+- Viewing the implied volatility surface (a plot of IV over various strikes and maturities) reveals a **“volatility smile”**: implied volatilities for out-of-the-money (OTM) puts are generally higher than calls or at-the-money options.  
+- This overpricing aligns with the idea of insurance being **priced “expensively”** so sellers can profit, just as in traditional insurance markets.  
+  
+### Implied Volatility Surface and Its Shape  
+- The surface is constructed by extracting IV values for options across different strike prices and maturities.  
+- The smile reflects **higher put prices**, interpreted as portfolio insurance—investors pay a premium for downside protection.  
+- This phenomenon underpins the profitability of **selling volatility** and harvesting the volatility risk premium.
+
+
+### Quantitative Evidence of Volatility Risk Premium via Regression  
+- The video presents a regression comparing implied volatility today with realized volatility 30 days later:  
+  - If the market was perfectly calibrated, data points would lie on the line $y = x$.  
+  - Empirical results show the slope is **less than 1**, indicating implied volatility **systematically overestimates** future realized volatility.  
+- This overestimation justifies **selling volatility**, through positions like short straddles, strangles, or naked calls/puts, to capture the volatility risk premium.  
+  
+### Distributional Comparison of Implied and Realized Volatility  
+- Histograms of implied and realized volatility show the implied distribution is **shifted right**, i.e., higher mean volatility estimates.  
+- This distributional edge confirms the statistical basis for volatility-selling strategies.  
+ 
+### Practical Challenges of Volatility Selling and Volatility Drag  
+- Although theoretically profitable, **implementing VRP harvesting is complex**:  
+  - Volatility-selling strategies suffer significant **drawdowns during market crashes** (tail events).  
+  - Recent videos by the creator explain **volatility drag**—the negative impact on geometric returns from volatility itself.  
+- This leads to a paradox: while implied volatility is overpriced (suggesting selling volatility), **buying portfolio insurance (long volatility) is beneficial for mitigating extreme drawdowns and compounding geometric returns over long horizons**.  
+  
+### Paradox of Selling vs. Buying Portfolio Insurance  
+- The apparent contradiction stems from **different timing and market conditions**:  
+  - Selling volatility earns the premium during regular market environments.  
+  - Buying volatility (insurance) protects during rare but severe crashes (Black Swan events).  
+- Strategic portfolio construction involves balancing these to optimize risk-return profiles.
+ 
+### Illustration: Performance During Market Crashes  
+| Portfolio Type        | Drawdown During Crash | Recovery Characteristics              |  
+|----------------------|----------------------|-------------------------------------|  
+| Volatility Risk Premium (VRP) Hedge Fund | ~31%                 | Large losses, slow recovery          |  
+| Insured Portfolio     | ~18%                 | Significant protection, faster recovery |  
+| Market Overall        | ~49%                 | Severe loss                         |  
+
+- The insured portfolio experiences **much smaller drawdowns and faster recovery**, leveraging the "paid" insurance premium to buy assets cheap post-crash.  
+- The VRP strategy, while profitable in most conditions, **can be devastated by tail events if unhedged**.  
+
+  
+### Why Both Selling and Buying Portfolio Insurance Make Sense  
+- Both strategies are **valid and simultaneously true** depending on timing, market cycle, and portfolio design.  
+- Outlier events cause discrepancies (the regression’s outliers), which must be managed by techniques such as **rolling down options and monetizing convexity**.  
+- The speaker stresses the importance of hedging to avoid catastrophic portfolio loss, even if it means sacrificing some upside in bull markets.  
+  
+### Final Remarks on Strategy and Risk Management  
+- Volatility trading is a zero-sum game at the individual contract level, but the **portfolio-level strategy dominance depends on construction and timing**.  
+- Selling volatility earns premium but requires risk management to survive tail events.  
+- Buying insurance (long volatility) reduces drawdowns, enabling recovery and compounding growth.  
+- Strategic combination and risk balancing are key.  
+
+---
+
+### **Key Insights Summary:**
+
+- **Volatility Risk Premium (VRP)** arises because implied volatility generally **overestimates future realized volatility**, allowing option sellers (portfolio insurers) to earn systematic profits.  
+- **Implied volatility** is a forward-looking, market-implied metric derived by inverting the Black–Scholes model against options prices, while **realized volatility** is backward-looking, based on historical returns statistics.  
+- The choice of **rolling windows for realized volatility estimation critically influences the consistency and timing of VRP signals.**  
+- The **volatility smile** in implied volatilities reveals that downside protection (put options) is systematically priced higher, reflecting insurance premiums.  
+- Seller profitability comes with **significant risk during market crashes** (tail events), which can cause large drawdowns—this risk is managed through portfolio insurance and hedging.  
+- The **paradox between selling and buying portfolio insurance** is resolved by recognizing the importance of **timing, convexity exposure, and portfolio construction**. Both strategies can be profitable and necessary under different conditions.  
+- Quantitative skill development and careful research are essential to implement these strategies practically and sustainably.  
+
+
+
