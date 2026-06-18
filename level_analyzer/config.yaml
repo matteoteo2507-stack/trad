@@ -24,18 +24,20 @@ risk_pct_aggregate: 2.0    # % max a rischio simultaneo su zone conf=2 concorren
 
 telegram_chat_id: ""    # chat id del canale (negativo, -100...); token da .env
 telegram_token_env: TELEGRAM_BOT_TOKEN   # nome della variabile .env col token del bot
-log_path: level_analyzer/signals_log.csv
+log_path: level_analyzer/trade_records.csv   # spina dati contestualizzata (gitignored)
 
 assets:
   - name: XAUUSD
     mt5_symbol: XAUUSD
     yf_ticker: "GC=F"
+    spread_assumed: 0.10        # spread reale broker (per la spina; NON spread live con yfinance)
     note: "Prezzi su GC=F futures — RICONFERMA la zona sul tuo grafico XAUUSD spot (~$10-20 offset)."
     d1_csv: analysis/trading-bot-eval/data/XAU_spot_D1.csv
     h1_csv: analysis/trading-bot-eval/data/XAU_spot_H1.csv
   - name: BTCUSD
     mt5_symbol: BTCUSD
     yf_ticker: "BTC-USD"
+    spread_assumed: 13          # spread reale demo FPM (per la spina)
     note: ""
     d1_csv: analysis/trading-bot-eval/data/BTC_spot_D1.csv
     h1_csv: analysis/trading-bot-eval/data/BTC_spot_H1.csv

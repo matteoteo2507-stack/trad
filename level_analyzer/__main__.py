@@ -8,20 +8,19 @@ Non piazza ordini: solo notifica. Tu decidi e piazzi a mano.
 """
 from __future__ import annotations
 
-import csv
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import detector, feed, notify
+from . import detector, feed, notify, record
 
 CFG = {
     "atr_n": 14, "k_sl": 0.5, "rr": 1.5, "cluster_tol_pct": 0.25,
     "h1_window": 120, "proximity_atr": 0.25, "max_dist_atr": 8.0,
     "poll_seconds": 300, "telegram_chat_id": "",
     "risk_pct_per_trade": 0.5, "risk_pct_aggregate": 2.0,
-    "log_path": "level_analyzer/signals_log.csv",
+    "log_path": "level_analyzer/trade_records.csv",
     "assets": [
         {"name": "XAUUSD", "mt5_symbol": "XAUUSD",
          "d1_csv": "analysis/trading-bot-eval/data/XAU_spot_D1.csv",
@@ -60,14 +59,14 @@ def _fetch(a):
     return feed.fetch_yfinance(a["yf_ticker"], CFG["h1_window"])
 
 
-def _alert(asset_cfg, sig, price):
+def _alert(asset_cfg, sig, price, win):
     ok = notify.send_telegram(
         CFG["telegram_chat_id"],
         notify.format_signal(sig, asset_cfg["name"], round(price, 2), asset_cfg.get("note", ""),
                              risk_pct=CFG.get("risk_pct_per_trade", 0.0),
                              agg_pct=CFG.get("risk_pct_aggregate", 0.0)),
         CFG.get("telegram_token_env", "TELEGRAM_BOT_TOKEN"))
-    _log(asset_cfg["name"], sig, price)
+    _log(asset_cfg, sig, price, win)
     return ok
 
 
@@ -80,16 +79,19 @@ def _print(name, sigs, price):
               f"dist {s['dist_atr']:>4} ATR   SL {s['sl']}  TP {s['tp']}  RR 1:{s['rr']}")
 
 
-def _log(asset, sig, price):
-    p = Path(CFG["log_path"]); new = not p.exists()
-    with open(p, "a", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        if new:
-            w.writerow(["ts_utc", "asset", "side", "zone", "sl", "tp", "rr",
-                        "confluence", "types", "price", "dist_atr", "outcome"])
-        w.writerow([datetime.now(timezone.utc).isoformat(), asset, sig["side"],
-                    sig["zone"], sig["sl"], sig["tp"], sig["rr"], sig["confluence"],
-                    "|".join(sig["types"]), round(price, 2), sig["dist_atr"], ""])
+def _param_version():
+    return (f"ksl{CFG['k_sl']}-rr{CFG['rr']}-tol{CFG['cluster_tol_pct']}"
+            f"-prox{CFG['proximity_atr']}")
+
+
+def _log(asset_cfg, sig, price, win):
+    """Spina dati: scrive il record CONTESTUALIZZATO (vedi level_analyzer/record.py)."""
+    rec = record.build_record(
+        asset_cfg, sig, price, win,
+        data_backend=CFG.get("data_backend", "yfinance"),
+        risk_pct=CFG.get("risk_pct_per_trade", ""),
+        param_version=_param_version())
+    record.append_record(CFG["log_path"], rec)
 
 
 def cmd_preview():
@@ -113,7 +115,7 @@ def cmd_scan(notify_on=False):
         _print(a["name"], sigs, round(price, 2))
         if notify_on:
             for s in [x for x in sigs if x["dist_atr"] <= CFG["proximity_atr"]]:
-                ok = _alert(a, s, price)
+                ok = _alert(a, s, price, win)
                 print(f"   [alert {'inviato' if ok else 'solo-log'}] {s['side']} {s['zone']}")
 
 
@@ -132,7 +134,7 @@ def cmd_run():
                     if key in seen:
                         continue
                     seen.add(key)
-                    ok = _alert(a, s, price)
+                    ok = _alert(a, s, price, win)
                     print(f"{datetime.now(timezone.utc):%H:%M}Z {a['name']} alert "
                           f"{'OK' if ok else '(solo log)'}: {s['side']} {s['zone']}")
             except Exception as e:

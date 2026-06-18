@@ -67,6 +67,7 @@ analysis/trading-bot-eval/vendor-trading-bot/
 
 # Level Analyzer — log forward dei segnali (dati operativi personali)
 level_analyzer/signals_log.csv
+level_analyzer/trade_records.csv
 
 # Dati OHLC esportati (rigenerabili da export_mt5_spot.py / fetch_ohlc.py — fuori da git)
 analysis/trading-bot-eval/data/
