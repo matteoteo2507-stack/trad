@@ -55,6 +55,26 @@ def fetch_mt5(symbol: str, h1_window: int = 120):
     return prev_daily, h1[-h1_window:], price
 
 
+def fetch_h1_ts(ticker: str, days: int = 14):
+    """H1 CON timestamp (per la riconciliazione forward): lista di {t,open,high,low,close} UTC."""
+    import pandas as pd
+    import yfinance as yf
+    h = yf.download(ticker, period=f"{days}d", interval="1h", auto_adjust=False, progress=False)
+    if h is None or len(h) < 2:
+        raise RuntimeError(f"yfinance: dati insufficienti per {ticker}")
+    if isinstance(h.columns, pd.MultiIndex):
+        h.columns = [c[0] for c in h.columns]
+    h.columns = [c.lower() for c in h.columns]
+    out = []
+    for ts, r in h[["open", "high", "low", "close"]].dropna().iterrows():
+        t = ts.to_pydatetime()
+        t = t.replace(tzinfo=timezone.utc) if t.tzinfo is None else t.astimezone(timezone.utc)
+        out.append({"t": t, "open": float(r.open), "high": float(r.high),
+                    "low": float(r.low), "close": float(r.close)})
+    out.sort(key=lambda x: x["t"])
+    return out
+
+
 def fetch_yfinance(ticker: str, h1_window: int = 120):
     """Live da Yahoo (per host Linux/cloud senza MT5): (prev_daily, h1_window_bars, price).
     NB: per l'oro il ticker e' GC=F (futures), ~spot con offset; per BTC e' BTC-USD (~spot)."""

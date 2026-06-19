@@ -59,8 +59,8 @@ def test_build_record_schema_and_context():
               "instrument_basis", "param_version", "data_source", "record_id"):
         assert rec[k] != "", f"campo contesto vuoto: {k}"
     assert rec["instrument_basis"] == "futures"   # GC=F
-    # campi umano/esito VUOTI alla cattura (li riempie la riconciliazione)
-    for k in ("human_decision", "human_note", "real_entry", "real_R", "outcome"):
+    # campi esito VUOTI alla cattura (li riempie l'auto-riconciliazione dal price path)
+    for k in ("real_entry", "real_exit", "real_cost", "real_R", "outcome", "reconciled_at"):
         assert rec[k] == "", f"campo {k} non vuoto alla cattura"
 
 
@@ -72,12 +72,11 @@ def test_append_update_roundtrip():
         record.append_record(p, rec)
         record.append_record(p, rec)   # secondo append: niente doppio header
         ok = record.update_record(p, rec["record_id"],
-                                   human_decision="taken", real_R="1.5", outcome="win")
+                                   real_R="1.5", outcome="win", reconciled_at="2026-06-19T00:00:00")
         assert ok, "update_record non ha trovato il record_id"
         with open(p, encoding="utf-8") as f:
             rows = list(csv.DictReader(f))
         assert len(rows) == 2, f"attese 2 righe dati, trovate {len(rows)}"
-        assert rows[0]["human_decision"] == "taken"
         assert rows[0]["real_R"] == "1.5" and rows[0]["outcome"] == "win"
 
 

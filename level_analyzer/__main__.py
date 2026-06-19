@@ -13,7 +13,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import detector, feed, notify, record
+from . import detector, feed, notify, reconcile, record
 
 CFG = {
     "atr_n": 14, "k_sl": 0.5, "rr": 1.5, "cluster_tol_pct": 0.25,
@@ -94,6 +94,18 @@ def _log(asset_cfg, sig, price, win):
     record.append_record(CFG["log_path"], rec)
 
 
+def _maps():
+    tick = {a["name"]: a.get("yf_ticker") for a in CFG["assets"]}
+    spread = {a["name"]: a.get("spread_assumed", 0.0) for a in CFG["assets"]}
+    return tick, spread
+
+
+def _reconcile_once():
+    tick, spread = _maps()
+    return reconcile.reconcile_log(CFG["log_path"], tick, spread,
+                                   lambda t: feed.fetch_h1_ts(t, days=14))
+
+
 def cmd_preview():
     print(f"== PREVIEW offline (ultimo dato CSV) ==")
     for a in CFG["assets"]:
@@ -122,8 +134,17 @@ def cmd_scan(notify_on=False):
 def cmd_run():
     print(f"== RUN loop ogni {CFG['poll_seconds']}s (Ctrl+C per fermare) ==")
     seen = set()
+    last_recon = 0.0
     while True:
         day = datetime.now(timezone.utc).date()
+        if time.time() - last_recon > 3600:          # auto-riconciliazione oraria (self-labeling)
+            try:
+                n = _reconcile_once()
+                if n:
+                    print(f"   [reconcile] etichettati {n} record")
+            except Exception as e:
+                print("reconcile errore:", e)
+            last_recon = time.time()
         for a in CFG["assets"]:
             try:
                 prev, win, price = _fetch(a)
@@ -142,6 +163,14 @@ def cmd_run():
         time.sleep(CFG["poll_seconds"])
 
 
+def cmd_reconcile():
+    print("== RECONCILE (self-labeling dal price path) ==")
+    try:
+        print(f"record etichettati: {_reconcile_once()}")
+    except Exception as e:
+        print("errore:", e)
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
@@ -158,8 +187,10 @@ def main():
         cmd_scan(notify_on=("--notify" in sys.argv))
     elif cmd == "run":
         cmd_run()
+    elif cmd == "reconcile":
+        cmd_reconcile()
     else:
-        print("comandi: preview | scan [--notify] | run")
+        print("comandi: preview | scan [--notify] | run | reconcile")
 
 
 if __name__ == "__main__":

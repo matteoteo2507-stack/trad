@@ -39,15 +39,17 @@ Capture → Journal/reconcile → Analyze (gate) → [Scouting → candidati]
 
 | Stadio | Cosa fa | Substrato | Gate |
 |---|---|---|---|
-| **Capture** | logga ogni segnale col contesto *al momento della decisione* + posto per la scelta umana e l'esito reale | **Python (repo)** — `level_analyzer/record.py` | — |
-| **Journal/reconcile** | riempie decisione umana (taken/skipped/modified) ed esito reale netto costi | skill agente + tuo input | 🔒 esiti |
-| **Analyze (gate)** | stratifica per regime/sessione; E[R]+CI, `n_eff`, **taken vs skipped**, vs baseline invariato → *stato dell'evidenza* (non una modifica) | **Python (repo)** — riusa `core/quant_metrics.py` | — |
+| **Capture** | logga ogni segnale col contesto *al momento della decisione* + posto per l'esito | **Python (repo)** — `level_analyzer/record.py` | — |
+| **Reconcile (auto)** | calcola l'esito di OGNI segnale dal price path (entry→SL/TP/time-stop), netto costi assunti — **self-labeling, nessun input umano** | **Python (repo)** — `level_analyzer/reconcile.py` | — |
+| **Analyze (gate)** | stratifica per regime/sessione; E[R]+CI, `n_eff`, vs baseline → *stato dell'evidenza* (non una modifica) | **Python (repo)** — riusa `core/quant_metrics.py` | — |
 | **Scouting** (bi-settimanale) | scouting web → `_INTAKE.md`, **max N candidati** | skill agente | 🔒 triage |
 | **Experiment** | pre-registra ipotesi+metrica, misura forward vs baseline | Python + skill | 🔒 **approvi tu** |
 | **Risk-gate / go-live** | ogni modifica a parametri/sizing live | — | 🔒 **approvi tu** |
 
-I tre **human-gate** (🔒) sono il punto in cui resti nel loop: riconciliazione esiti · approvazione
-di ogni esperimento/modifica · go-live. Coerente con Fase A e con la discrezione del socio.
+I due **human-gate** (🔒) sono il punto in cui resti nel loop: **approvazione di ogni
+esperimento/modifica** · **go-live** (deploy di capitale reale). La riconciliazione **non** è un
+gate: è automatica. Le decisioni *per-trade* sono interamente sostituite dal sistema — l'umano resta
+solo sulla governance (cosa va live, cosa si cambia).
 
 ## La spina dorsale — record contestualizzato
 Oggi `signals_log.csv` ha ~12 campi scarni. La spina (`level_analyzer/trade_records.csv`, gitignored)
@@ -56,23 +58,33 @@ porta ogni record a:
 - **identità/segnale:** `record_id, ts_utc, asset, instrument_basis (spot/futures), data_source,
   side, zone, confluence, types, price, dist_atr, sl, tp, rr, risk_pct, param_version`
 - **contesto decisione (alla cattura):** `session, regime, adx_h1, atr_h1, vol_h1, spread_assumed`
-- **decisione umana (riempita dopo):** `human_decision (taken|skipped|modified), human_note`
-- **esito reale (riempito dopo, netto costi):** `real_entry, real_exit, real_cost, real_R, outcome`
+- **esito (AUTO-riconciliato dal price path, netto costi assunti):** `real_entry, real_exit,
+  real_cost, real_R, outcome, reconciled_at`
 
-> **Perché questi campi sono non-negoziabili.** Senza `human_decision` non separi **edge del
-> sistema** da **edge della discrezione**. Senza `spread_assumed`/`real_cost` non separi **edge
-> decaduto** da **costo aumentato**. Senza `regime`/`session` non eviti il confounding di regime.
-> Senza `instrument_basis`/`param_version` ripeti l'errore spot-vs-futures e mescoli versioni.
-> Il contesto *al momento della decisione* **non è recuperabile dopo**: ecco perché la spina è
-> l'Incremento 1 e ha l'unico vero costo-di-ritardo.
+> **Niente campo "decisione umana".** Il Level Analyzer **sostituisce** il lavoro decisionale, non
+> lo affianca: in fase di test si registrano **TUTTI** i segnali senza filtro umano → si misura
+> l'**edge incondizionato** del sistema, niente selection bias. (La discrezione andrebbe loggata
+> solo per un sistema *discrezionale* — es. il bot del socio — che è fuori da questo workflow.)
+> L'unico "skip" legittimo, le **news ad alto impatto**, è un **filtro sistematico** (calendario
+> economico) da aggiungere in un incremento futuro e da usare come **variabile di stratificazione**,
+> non come campo manuale.
+
+> **Perché gli altri campi sono non-negoziabili.** Senza `spread_assumed`/`real_cost` non separi
+> **edge decaduto** da **costo aumentato**. Senza `regime`/`session` non eviti il confounding di
+> regime. Senza `instrument_basis`/`param_version` ripeti l'errore spot-vs-futures e mescoli
+> versioni. Il contesto *al momento della decisione* **non è recuperabile dopo**: ecco perché la
+> spina è l'Incremento 1 e ha l'unico vero costo-di-ritardo.
 
 ## Build incrementale (testabile)
-1. **Spina dati** ← *questo incremento*. Record contestualizzato in cattura + colonne per umano/esito.
-2. **Report del gate.** Legge la spina → stato dell'evidenza (CI, `n_eff`, regime, taken-vs-skipped,
-   vs baseline). Nessuna modifica, solo verdetto "abbastanza evidenza? per quale conclusione?".
-3. **Registro esperimenti / change-control.** Pre-registrazione ipotesi+metrica; misura forward vs
-   baseline invariato + baseline naive. Evita p-hacking sul proprio forward.
-4. **Agente di scouting** (bi-settimanale) → `_INTAKE.md`, ingresso capato, poi gate.
+1. **Spina dati** ✓ — record contestualizzato in cattura.
+2. **Auto-riconciliatore** ← *questo incremento*. Calcola l'esito di ogni segnale dal price path
+   (entry→SL/TP/time-stop, self-labeling), netto costi assunti. **Il sistema genera da solo i propri
+   dati etichettati** — niente input umano.
+3. **Report del gate.** Legge la spina riconciliata → stato dell'evidenza (E[R], CI, `n_eff`,
+   stratificato per regime/sessione, vs baseline). Solo verdetto "abbastanza evidenza? per cosa?".
+4. **Registro esperimenti / change-control.** Pre-registrazione ipotesi+metrica; forward vs baseline.
+5. **Agente di scouting** (bi-settimanale) → `_INTAKE.md`, ingresso capato, poi gate.
+6. **Filtro news** (calendario economico) — componente sistematico + variabile di stratificazione.
 
 ## Substrato ibrido — chi fa cosa
 - **Python nel repo** (riproducibile, versionato, dietro il gate): spina (`record.py`), analisi/gate

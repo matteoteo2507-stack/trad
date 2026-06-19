@@ -25,10 +25,8 @@ HEADER = [
     "sl", "tp", "rr", "risk_pct", "param_version",
     # contesto della decisione (popolato alla cattura)
     "session", "regime", "adx_h1", "atr_h1", "vol_h1", "spread_assumed",
-    # decisione umana (riempita dopo — journal/reconcile)
-    "human_decision", "human_note",
-    # esito reale, netto costi (riempito dopo)
-    "real_entry", "real_exit", "real_cost", "real_R", "outcome",
+    # esito AUTO-riconciliato dal price path (netto costi assunti) — nessun input umano
+    "real_entry", "real_exit", "real_cost", "real_R", "outcome", "reconciled_at",
 ]
 
 
