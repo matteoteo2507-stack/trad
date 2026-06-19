@@ -51,6 +51,19 @@ esperimento/modifica** · **go-live** (deploy di capitale reale). La riconciliaz
 gate: è automatica. Le decisioni *per-trade* sono interamente sostituite dal sistema — l'umano resta
 solo sulla governance (cosa va live, cosa si cambia).
 
+## Regola di decisione (gate) — quando l'evidenza basta
+Scritta **a priori** (no p-hacking), implementata in `level_analyzer/gate.py`:
+- **Si decide sul LOWER BOUND** del CI, mai sul valore centrale (regola d'oro quant).
+- I trade sono **clusterati per giorno** → CI via **block-bootstrap sui giorni** (non iid); il
+  numero di **giorni distinti** è il proxy di `n_eff`.
+- **INSUFFICIENTE** se `n_trade < 30` **o** `giorni < 10` → continua a raccogliere, non concludere.
+- Sopra le soglie: **EDGE FORWARD** se il CI di E[R] esclude 0 (lower bound > 0) · **NEGATIVO** se
+  l'upper bound < 0 · **AMBIGUO** se il CI include 0 (troppo sottile / pochi dati).
+- Tutto **condizionato** (regime/sessione/asset): il verdetto vale sotto le sue condizioni
+  (mappa dei modelli), mai in assoluto.
+- Il gate **non modifica nulla**: produce un verdetto. Ogni modifica passa dal registro
+  esperimenti + human-gate.
+
 ## La spina dorsale — record contestualizzato
 Oggi `signals_log.csv` ha ~12 campi scarni. La spina (`level_analyzer/trade_records.csv`, gitignored)
 porta ogni record a:

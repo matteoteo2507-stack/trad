@@ -13,7 +13,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import detector, feed, notify, reconcile, record
+from . import detector, feed, gate, notify, reconcile, record
 
 CFG = {
     "atr_n": 14, "k_sl": 0.5, "rr": 1.5, "cluster_tol_pct": 0.25,
@@ -171,6 +171,10 @@ def cmd_reconcile():
         print("errore:", e)
 
 
+def cmd_report():
+    print(gate.format_report(CFG["log_path"]))
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
@@ -189,8 +193,10 @@ def main():
         cmd_run()
     elif cmd == "reconcile":
         cmd_reconcile()
+    elif cmd == "report":
+        cmd_report()
     else:
-        print("comandi: preview | scan [--notify] | run | reconcile")
+        print("comandi: preview | scan [--notify] | run | reconcile | report")
 
 
 if __name__ == "__main__":
