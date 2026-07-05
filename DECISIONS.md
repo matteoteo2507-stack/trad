@@ -11,6 +11,42 @@
 
 ---
 
+## 2026-07-05 — Level Analyzer conf=2 (fade): **NO-GO forward** (i livelli ≠ zone di reazione)
+
+**Decisione.** Il fade sistematico dei livelli conf=2 (XAU+BTC) è **NO-GO**. Analisi con 3 agenti
+Fable indipendenti (criteri di reazione dai materiali · audit fallacie · misura reazione-vs-random)
+su 101 record forward (18-06 → 05-07-2026, 81 riconciliati).
+
+**La prova decisiva = misura DIRETTA dei livelli** (indipendente dalla meccanica del trade): i
+livelli conf=2 **non reagiscono più di livelli casuali** alla stessa distanza (BTC 18.5% vs 22.5%,
+CI include 0; con baseline a 0.3–6 ATR reagiscono *meno* del caso); **~63% dei touch finisce in
+break**. La classificazione livello→esito è forte (REACTION→67% win, BREAK→13% win): i livelli sono
+in maggioranza cattivi. Coerente col trade E[R]=−0.37R (CI esclude 0).
+
+**Il trade da solo NON basta a concludere (audit).** Il forward NON testava la strategia validata:
+24/7 vs sessione 06–21 (61/101 fuori finestra), livelli "appena nati" ricalcolati sulla barra in
+formazione (repaint → fade del momentum), XAU su **GC=F futures** (spec: spot), exact-touch vs fill
+tollerante. Inoltre "conf=2" NON era 2 nature diverse (47/101 = stessa natura doppia; `cluster_confluence`
+conta i membri) e il backtest "+0.15R" era esso stesso debole (CI iid su trade clusterizzati,
+selezione post-hoc del bucket). → il −0.37 del trade è confondato, MA la misura diretta (C)
+falsifica il **concetto** alla radice: non serve "fixare il protocollo e ri-fadare".
+
+**Razionale.** N-esimo negativo custom (cfr. London Breakout, TSMOM, Stock Selector, sweep+reclaim,
+regime gate). Il workflow ha fatto il suo lavoro: refutato strategia **e** la sua validazione debole,
+prima dei soldi veri. Il Level Analyzer va **sospeso** (stop `run` sul server); il workflow
+(capture→reconcile→gate + agenti) è l'asset riusabile che resta.
+
+**Segnali deboli conservati (non azionabili, n piccolo):** natura **OB** sopra media (33% reaction,
+n=21) e regime "transizione" (n=13); **FVG** (5% reaction, 90% break) e regime "range" (0/18) = rumore.
+XAU inconcludente (futures + n=29). **Bug noti:** conteggio no_fill nel gate (fill reale ~83%), fill/exit
+idealizzati (−0.37 = upper bound).
+
+→ Analisi: [`analysis/trading-bot-eval/level_reaction_analysis.py`](analysis/trading-bot-eval/level_reaction_analysis.py) ·
+spec [`LEVEL_ANALYZER_SPEC.md`](analysis/trading-bot-eval/LEVEL_ANALYZER_SPEC.md) ·
+workflow [`docs/TRADING_WORKFLOW_DESIGN.md`](docs/TRADING_WORKFLOW_DESIGN.md)
+
+---
+
 ## 2026-06-14 — OctoBot (traccia crypto): **DORMIENTE**
 
 **Decisione.** La traccia **OctoBot / crypto-automation** è messa in **stand-by (dormiente)**, non
