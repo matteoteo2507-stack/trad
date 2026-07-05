@@ -36,6 +36,14 @@ regime gate). Il workflow ha fatto il suo lavoro: refutato strategia **e** la su
 prima dei soldi veri. Il Level Analyzer va **sospeso** (stop `run` sul server); il workflow
 (capture→reconcile→gate + agenti) è l'asset riusabile che resta.
 
+**Reverse/breakout anch'esso REFUTATO (check `breakout_check.py`, 13y/6y):** tradare la direzione
+OPPOSTA alle zone conf=2 è **catastrofico** (XAU −0.78 / BTC −0.70 / EUR −0.77, win 11-16%), molto
+PEGGIO del random → nessun edge inverso, le zone non sono neanche livelli di breakout. Chiude
+"tradare questi livelli in qualunque direzione". NB tensione: nel **backtest** il fade batte il
+random (+0.19 vs −0.16) ma NON regge **forward** (−0.37) → edge in-sample fragile/overfit + protocollo
+forward rotto. C'è debole struttura mean-reversion in-sample (il reverse-catastrofico lo conferma),
+troppo fragile per la meccanica grezza e diluita dal blob conf=2.
+
 **Segnali deboli conservati (non azionabili, n piccolo):** natura **OB** sopra media (33% reaction,
 n=21) e regime "transizione" (n=13); **FVG** (5% reaction, 90% break) e regime "range" (0/18) = rumore.
 XAU inconcludente (futures + n=29). **Bug noti:** conteggio no_fill nel gate (fill reale ~83%), fill/exit
