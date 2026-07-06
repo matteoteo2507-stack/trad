@@ -21,8 +21,8 @@ OUT = "analysis/trading-bot-eval/data"
 SYMBOLS = [
     ("EURUSD", "EURUSD", "fx"), ("GBPUSD", "GBPUSD", "fx"), ("USDJPY", "USDJPY", "fx"),
     ("AUDUSD", "AUDUSD", "fx"), ("USDCAD", "USDCAD", "fx"), ("NZDUSD", "NZDUSD", "fx"),
-    ("USDCHF", "USDCHF", "fx"), ("EURJPY", "EURJPY", "fx"), ("GBPJPY", "GBPJPY", "fx"),
-    ("EURGBP", "EURGBP", "fx"),
+    ("USDCHF", "USDCHF", "fx"), ("EURJPY.r", "EURJPY.r", "fx"), ("GBPJPY.r", "GBPJPY.r", "fx"),
+    ("EURGBP.r", "EURGBP.r", "fx"),
     ("XAUUSD.cyr", "XAUUSD", "metal-cfd"), ("XAGUSD.cyr", "XAGUSD", "metal-cfd"),
     ("BTCUSD", "BTCUSD", "crypto"), ("ETHUSD", "ETHUSD", "crypto"),
     ("US500", "US500", "index-cfd"), ("US100", "US100", "index-cfd"),
