@@ -81,9 +81,14 @@ distance-matched**.
   reggono → sono i criteri veri su cui costruire.
 
 ## Fasi di esecuzione
-0. **Acquisizione dati (gating, azione utente):** export MT5 spot di ~15-20 simboli (H1+D1 **con
-   tick_volume**) via `analysis/trading-bot-eval/export_mt5_spot.py` esteso; crypto/indici da
-   exchange/yfinance. Simboli broker-specifici → lista configurabile.
+0. **Acquisizione dati (gating, azione utente): ✅ FATTO + VALIDATO (2026-07-06).** Export di 16
+   simboli H1+D1 (OHLC+tick_volume) da MT5 demo4 FP Markets via `export_mt5_universe.py`.
+   Validazione feed (`validate_feed.py`): (a) i buchi >3g sono **tutti festività** (Natale/Capodanno/
+   Pasqua) + 1 evento SNB 2015 — zero buchi di feed; (b) i close broker combaciano coi riferimenti
+   pubblici (yfinance) con **|dev| mediana 0.09-0.31% e bias medio ~0%** su EUR/GBP/JPY/XAU/BTC/ETH/
+   US500/US100 → stesso mercato, non sintetico distorto (l'opposto della lezione GC=F). Storia: FX
+   major 14.5y, cross 5.1y, metalli/crypto/indici 6.1-6.4y (multi-regime). Nota: il CFD crypto del
+   broker **non è 24/7** (chiude ai festivi). **I dati sono usabili.**
 1. **Detector v1**: riusare gli esistenti (swing/PD/OB/FVG/S-D/POC) + aggiungere i mancanti
    OHLC-puri (round number, EQH/EQL, sweep pulito, session).
 2. **Motore reazione-vs-random** generalizzato multi-asset multi-concetto (estende
