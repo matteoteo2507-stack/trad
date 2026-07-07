@@ -31,10 +31,16 @@ INSUFF = "INSUFFICIENT"
 TESTED = frozenset({REACTION, WEAK, BREAK, SWEEP})   # classi "toccato"
 
 
-def classify(bars: list[dict], zone: float, side: str, atr: float) -> dict:
+def classify(bars: list[dict], zone: float, side: str, atr: float,
+             touch_tol: float | None = None, break_tol: float | None = None) -> dict:
     """Classifica l'esito del livello sul price path post-segnale (barre gia' filtrate a
-    open-time > punto di decisione). side in {'SUPPORT','RESISTANCE'}."""
-    tol = TOL_ATR * atr
+    open-time > punto di decisione). side in {'SUPPORT','RESISTANCE'}.
+
+    touch_tol/break_tol: tolleranze ASSOLUTE (prezzo). Per i livelli-LINEA lasciarle None
+    (default 0.10*ATR pre-registrato). Per i livelli-ZONA (OB): touch_tol = mezza larghezza
+    della zona (ingresso), break_tol = 0 con zone = 50% MT (break = body-close oltre il 50%)."""
+    tol = TOL_ATR * atr if touch_tol is None else touch_tol
+    btol = tol if break_tol is None else break_tol
     sup = side == "SUPPORT"
     res = {"cls": None, "touch_idx": None, "net_atr": None, "fav_atr": None,
            "rejection_wick": False, "displacement": False}
@@ -46,7 +52,7 @@ def classify(bars: list[dict], zone: float, side: str, atr: float) -> dict:
         if not touched:
             continue
         touch_idx = i
-        immediate_break = (b["close"] < zone - tol) if sup else (b["close"] > zone + tol)
+        immediate_break = (b["close"] < zone - btol) if sup else (b["close"] > zone + btol)
         break
 
     if touch_idx is None:
@@ -74,12 +80,12 @@ def classify(bars: list[dict], zone: float, side: str, atr: float) -> dict:
         return res
 
     def is_sweep(b):
-        return (b["low"] < zone - tol and b["close"] >= zone - tol) if sup else \
-               (b["high"] > zone + tol and b["close"] <= zone + tol)
+        return (b["low"] < zone - btol and b["close"] >= zone - btol) if sup else \
+               (b["high"] > zone + btol and b["close"] <= zone + btol)
 
     swept = is_sweep(tb)
     for b in win:
-        broke = (b["close"] < zone - tol) if sup else (b["close"] > zone + tol)
+        broke = (b["close"] < zone - btol) if sup else (b["close"] > zone + btol)
         if broke:
             res["cls"] = SWEEP if swept else BREAK
             return res

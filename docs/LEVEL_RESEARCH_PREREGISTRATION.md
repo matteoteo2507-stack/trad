@@ -112,3 +112,56 @@ marcata **"proxy, confidenza inferiore"**; un eventuale segnale andrebbe riconfe
 **Molteplicità aggiornata:** v2 = 3 concetti × 16 asset = **48 trial** (falsi attesi a CI95 ≈ 2.4).
 Cumulativo dichiarato v1+v2 = 9 × 16 = **144 trial**. Verdetto v2 per **breadth ≥ 50% + pool CI>0**,
 identico alla v1. Se anche il volume nulla → si chiude il libro "livelli come zona di reazione".
+
+---
+
+## ADDENDUM v3 — livelli HTF con metodologia CORRETTA (2026-07-07, committato PRIMA dei risultati v3)
+
+**Perché una v3.** L'audit delle tolleranze (post v1/v2) ha trovato che la `0.10·ATR` era una costante
+**ereditata e tarata su XAU-H1** (era `$1` fisso), poi applicata uniforme a tutti gli asset, a tutti i
+concetti e — errore — anche ai livelli-**zona**; e che i nostri stessi materiali dicono che i livelli
+**forti** stanno sugli **HTF** (Monthly>Weekly>Daily>H4>H1), che le zone (OB/S-D) hanno **larghezza
+intrinseca** e reazione con la regola del **50%/Mean Threshold**, e che i livelli sono **ubiqui** (quindi
+un random può sedersi sulla struttura). La v1/v2 ha misurato "touch di un livello fermo H1, tolleranza da
+linea": **domanda ristretta, non la tesi dei materiali.** La v3 la corregge. Decisioni utente: **FVG
+eliminato** (retail, non ottimizzabile); **niente Monthly** (troppo ampio); **volume messo da parte** (già
+nullo in v2); il random structure-free resta una **misura**, non una pretesa di edge.
+
+**Timeframe di rilevamento e misura: H4, D1, W1.** Bar per TF: D1 dal CSV; **H4 ricampionato da H1**
+(bucket a 0/4/8/12/16/20 UTC); **W1 ricampionato da D1** (settimana ISO). OHLC aggregato, volume sommato.
+ATR(14) **sul TF**. Tutto look-ahead-safe (detection su barre chiuse del TF, misura su barre successive).
+
+**Cadenza e finestra.** Punto di decisione = **ogni barra chiusa del TF**. Finestra di detection (barre
+chiuse trailing): **H4=180, D1=120, W1=52**. Orizzonte in **barre del TF**: touch entro **24**, reazione
+sulle **4** successive (scala naturalmente col TF). Reazione = escursione favorevole ≥ **1.0·ATR(TF)** e
+netto>0, senza break prima (stessa tassonomia `classify`, look-ahead-safe).
+
+**Concetti (5; FVG e volume esclusi):**
+| Concetto | Definizione | Tolleranza / reazione |
+|---|---|---|
+| **swing S/R** | pivot 3 candele sul TF | **linea**: banda 0.20·ATR(TF) |
+| **prev-period H/L** | D1→PDH/PDL · W1→PWH/PWL · H4→high/low barra prec. | **linea**: 0.20·ATR(TF) |
+| **Order Block** | zona = range candela OB (wick-incl); anchor = 50% MT | **zona**: touch = ingresso zona; **break = body-close oltre il 50% MT** (regola materiali) |
+| **round number** | passo per asset (come v1) | **linea**: 0.20·ATR(TF) |
+| **EQH/EQL** | ≥2 pivot entro 0.20·ATR(TF) = pool | **linea**: 0.20·ATR(TF) |
+
+**Tolleranza — sweep di robustezza (non tuning).** Primaria per i livelli-linea = **0.20·ATR(TF)**;
+riporto anche **0.10 e 0.30** come check (il verdetto non deve dipendere dalla tolleranza). Per i
+livelli-zona la tolleranza è la **larghezza vera della zona** (intrinseca), non un multiplo di ATR.
+
+**Random distance-matched + STRUCTURE-FREE.** Per ogni livello vero, 5 random a distanza pescata dalla
+distribuzione reale (concetto/TF/side), stesso giorno/percorso, **rifiutati se cadono entro la banda di
+touch di QUALSIASI livello vero rilevato in quel punto di decisione** (unione di tutti i concetti). Così
+confronto "struttura" vs "spazio vuoto", non "struttura" vs "struttura" (il punto 5 dell'audit).
+
+**Freshness (stratificazione dichiarata a priori).** Ogni livello reale è **naked** (0 touch precedenti
+nella finestra dopo la sua formazione) o **tested** (≥1). Riporto %REACTION separata: i materiali
+affermano fresh≫tested; se l'edge esiste, deve stare nei **naked**.
+
+**Metrica/verdetto identici a v1** (%REACTION|touch reale vs random, block-bootstrap sui punti-decisione,
+breadth≥50% + pooled CI>0, holdout 70/30 temporale per asset×TF). **Molteplicità v3:** 5 concetti × 3 TF
+× 16 asset = **240 trial** (falsi attesi ≈ 12). Cumulativo dichiarato: 144 + 240 = **384**.
+
+**Regola di decisione (a priori).** Se **≥1 concetto** su **≥1 TF** batte il random con breadth **e** tiene
+in holdout **e** l'effetto è concentrato nei **naked** → è un criterio vero → forward (Fase 4). Se anche
+gli HTF fatti bene nullano → **libro chiuso davvero**, pivot senza rimpianti.
