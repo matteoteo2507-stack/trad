@@ -11,6 +11,32 @@
 
 ---
 
+## 2026-07-07 (v3) — Livelli HTF fatti bene: confermato NULL. Libro CHIUSO davvero (384 trial).
+
+Dopo l'audit delle tolleranze (la `0.10·ATR` era una costante ereditata/tarata su XAU-H1, applicata a
+sproposito anche alle zone; i materiali dicono che i livelli forti stanno sugli HTF, che OB/S-D sono
+**zone** con larghezza intrinseca e regola del **50% MT**, e che la struttura è **ubiqua**), abbiamo
+rifatto il test **come si deve** (addendum pre-registrato). Motore `analysis/level_research/htf.py`:
+- detection/misura su **H4, D1, W1** (H4 resample da H1, W1 da D1); **tolleranza scalata all'ATR del TF**
+  (0.20 linea; le zone usano la **larghezza vera** + break = body-close oltre il 50% MT);
+- **random distance-matched E structure-free** (rifiutato se cade su qualsiasi struttura vera — il punto
+  che chiedeva l'utente); **freshness** naked/tested stratificata. FVG e Monthly esclusi (decisione utente).
+
+**Esito (5 concetti × 3 TF × 16 asset = 240 trial): 0 sopravvissuti.** Pooled reale ≤ random su ogni TF
+(spesso **negativo**: swing W1 CI[−2.4,−0.7], D1[−2.0,−1.3], H4[−1.5,−0.8]; prev H/L, round, EQH/EQL
+idem; OB il "meno peggio" ma CI che tocca 0, breadth 2/16). **7 celle "battono" su 240, attese ~12 per
+caso** → sotto il rumore. **Freshness piatta** (naked ≈ tested, entrambi ≤ random) → smentisce anche la
+tesi "fresh≫tested" dei materiali. Con il random *structure-free* i livelli reagiscono spesso **meno del
+vuoto** → coerente con "i livelli sono dove il prezzo rompe/consuma liquidità, non dove rimbalza".
+
+**Robustezza tolleranza:** il null tiene a **0.10·ATR** (v1, H1) **e** a **0.20·ATR** (v3, H4/D1/W1) →
+non è un artefatto della soglia. **Totale ricerca livelli: v1(96)+v2(48)+v3(240) = 384 trial
+pre-registrati, 0 edge.** "Il prezzo reagisce ai livelli come zona" è **falsificato a fondo, su ogni
+timeframe e con la metodologia dei nostri stessi materiali.** Libro chiuso senza rimpianti. **Pivot** a
+strategie **non** level-based (razionale economico/peer-reviewed) — da decidere con l'utente.
+
+---
+
 ## 2026-07-07 — Ricerca livelli v2 (volume): 0/3 concetti. Libro CHIUSO (144 trial, 0 edge).
 
 Testata l'ultima famiglia rimasta (concetti **volume**, tick-proxy), stesso protocollo pre-registrato
