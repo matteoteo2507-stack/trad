@@ -127,11 +127,21 @@ def boot_rate_diff_ci(real_items, rand_items, n_boot=2000, seed=42):
     point = (float("nan") if rc.sum() == 0 or cc.sum() == 0
              else 100.0 * (rs.sum() / rc.sum() - cs.sum() / cc.sum()))
     rng = np.random.default_rng(seed)
-    idx = rng.integers(0, len(days), size=(n_boot, len(days)))
-    rsum, rcnt = rs[idx].sum(1), rc[idx].sum(1)
-    csum, ccnt = cs[idx].sum(1), cc[idx].sum(1)
-    ok = (rcnt > 0) & (ccnt > 0)
-    diff = 100.0 * (rsum[ok] / rcnt[ok] - csum[ok] / ccnt[ok])
+    nd = len(days)
+    # bootstrap a blocchi: la matrice indici resta limitata anche con molti cluster
+    # (il pool multi-asset ha ~decine di migliaia di giorni-asset -> niente allocazioni GB).
+    chunk = max(1, 4_000_000 // nd)
+    diffs = []
+    done = 0
+    while done < n_boot:
+        b = min(chunk, n_boot - done)
+        idx = rng.integers(0, nd, size=(b, nd))
+        rsum, rcnt = rs[idx].sum(1), rc[idx].sum(1)
+        csum, ccnt = cs[idx].sum(1), cc[idx].sum(1)
+        ok = (rcnt > 0) & (ccnt > 0)
+        diffs.append(100.0 * (rsum[ok] / rcnt[ok] - csum[ok] / ccnt[ok]))
+        done += b
+    diff = np.concatenate(diffs) if diffs else np.array([])
     if diff.size < 10:
         return (float("nan"), float("nan"), point, len(days))
     return (float(np.percentile(diff, 2.5)), float(np.percentile(diff, 97.5)),

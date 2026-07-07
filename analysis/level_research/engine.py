@@ -206,7 +206,9 @@ def summarize_cell(A, boot_rate=2000, boot_med=800):
     med_real = float(np.median([v for _, v in A["net_real"]])) if A["net_real"] else float("nan")
     med_rand = float(np.median([v for _, v in A["net_rand"]])) if A["net_rand"] else float("nan")
     mlo = mhi = float("nan")
-    if len(A["net_real"]) >= 20 and len(A["net_rand"]) >= 20:
+    # CI mediana (secondaria) solo su campioni gestibili: il pool multi-asset e' enorme e il
+    # verdetto poggia comunque sul CI del TASSO (primaria). n_days>6000 -> solo punto.
+    if 20 <= len(A["net_real"]) and 20 <= len(A["net_rand"]) and n_days <= 6000:
         mlo, mhi, _, _ = bootstrap_diff_by_day(
             A["net_real"], A["net_rand"], lambda v: float(np.median(v)),
             n_boot=boot_med, seed=SEED)

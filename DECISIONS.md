@@ -11,6 +11,39 @@
 
 ---
 
+## 2026-07-06 — Ricerca livelli v1: NESSUN concetto batte il random (0/6). Pivot.
+
+**Contesto.** Dopo il NO-GO del conf=2 (sotto), abbiamo rifondato la domanda: *quali criteri trovano
+livelli dove il mercato reagisce davvero?* Test **pre-registrato**
+([docs/LEVEL_RESEARCH_PREREGISTRATION.md](docs/LEVEL_RESEARCH_PREREGISTRATION.md)), motore walk-forward
+look-ahead-safe ([analysis/level_research/](analysis/level_research/)), **6 concetti OHLC-puri** ×
+**16 asset** (FX/metalli/crypto/indici, feed demo4 validato), metrica = **%REACTION|touch reale vs
+random distance-matched**, CI block-bootstrap sui giorni, breadth, DSR sui 96 trial, holdout 70/30.
+
+**Esito (TRAIN, breadth = asset che battono / testati):**
+| concetto | breadth | pooled %REACT reale vs random | CI95 diff | esito |
+|---|---|---|---|---|
+| swing S/R | 1/16 | 29.0% vs 29.8% | [−1.1, −0.6] | peggio del random |
+| PDH/PDL | 0/16 | 28.8% vs 30.5% | [−2.4, −1.2] | **peggio** (rotti più del caso) |
+| order block | 3/16 | 30.0% vs 29.6% | [+0.0, +0.9] | pool>0 ma breadth<50%, ~0.4pt |
+| FVG | 0/16 | 29.6% vs 29.8% | [−0.5, +0.2] | nullo |
+| round number | 0/16 | 29.4% vs 30.1% | [−1.1, −0.3] | peggio del random |
+| EQH/EQL | 0/16 | ~nullo | — | nullo |
+
+**DSR/molteplicità:** 4 celle "battono" su 96; falsi attesi per caso a CI95 = 0.05·96 ≈ **4.8** →
+osservati ≤ attesi = **rumore**. La %REACTION è ~29-30% ovunque, **identica** tra livello "vero" e
+punto arbitrario alla stessa distanza.
+
+**Decisione (regola pre-registrata attivata).** Nessun concetto sopravvive → a questa risoluzione
+**i livelli non sono zone di reazione**: la posizione "strutturale" non aggiunge nulla oltre la
+distanza. Generalizza il conf=2 su 16 asset × 6 concetti. **Non forziamo edge dove non c'è → Pivot.**
+
+**Scope onesto (NON falsificato):** (a) concetti **volume** (POC/VWAP/TPO), rimandati a v2 (proxy su
+FX); (b) livelli come **filtro condizionale** in un contesto direzionale/sessione (non zona di reazione
+unconditional); (c) altri timeframe/orizzonti. Unici spiragli prima di chiudere il libro "livelli".
+
+---
+
 ## 2026-07-05 — Level Analyzer conf=2 (fade): **NO-GO forward** (i livelli ≠ zone di reazione)
 
 **Decisione.** Il fade sistematico dei livelli conf=2 (XAU+BTC) è **NO-GO**. Analisi con 3 agenti
