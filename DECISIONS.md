@@ -11,6 +11,23 @@
 
 ---
 
+## 2026-07-07 — Ricerca livelli v2 (volume): 0/3 concetti. Libro CHIUSO (144 trial, 0 edge).
+
+Testata l'ultima famiglia rimasta (concetti **volume**, tick-proxy), stesso protocollo pre-registrato
+([addendum](docs/LEVEL_RESEARCH_PREREGISTRATION.md)): POC/VAH/VAL, VWAP, anchored VWAP × 16 asset.
+**Nessuno batte il random distance-matched** — breadth 0/16 ciascuno, pooled reale≈random (POC 30.1
+vs 30.5 CI[−0.8,+0.1]; VWAP 30.6 vs 30.5 CI[−0.7,+1.0]; AVWAP 29.7 vs 29.7 CI[−0.5,+0.4]). **0 celle
+"battono" su 48** (attese per caso ~2.4). Caveat dichiarato: volume = tick-proxy su tutti gli asset.
+
+**Conclusione (regola pre-registrata).** v1 (6 OHLC) + v2 (3 volume) = **9 concetti × 16 asset = 144
+trial, 0 sopravvissuti.** La premessa "il prezzo reagisce ai livelli come zona" è **falsificata in modo
+ampio e a prova di p-hacking**. **Libro livelli-come-zona-di-reazione CHIUSO. Pivot.** Unico angolo mai
+testato (e volutamente non aperto: alto rischio DoF/overfit) = livelli come *filtro condizionale* dentro
+un contesto direzionale/sessione — NON è "reazione al livello", è un'altra ipotesi. Motore
+`analysis/level_research/` resta riusabile per qualsiasi nuovo concetto (basta dichiararlo nuovo trial).
+
+---
+
 ## 2026-07-06 — Ricerca livelli v1: NESSUN concetto batte il random (0/6). Pivot.
 
 **Contesto.** Dopo il NO-GO del conf=2 (sotto), abbiamo rifondato la domanda: *quali criteri trovano
