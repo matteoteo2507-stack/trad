@@ -84,3 +84,31 @@ su TEST**. Avanza solo chi sopravvive a **entrambi**.
 3. Random **distance-matched**; block-bootstrap **sui giorni**; holdout **+** forward per i sopravvissuti.
 4. Verdetto per **breadth**, mai per miglior asset; volume marcato "proxy" e tenuto separato (v2).
 5. Look-ahead-safe: detection solo su barre chiuse, misura solo su barre successive al punto decisione.
+
+---
+
+## ADDENDUM v2 — concetti VOLUME (2026-07-07, committato PRIMA dei risultati v2)
+
+**Esito v1 (per contesto):** 0/6 concetti OHLC battono il random distance-matched (DECISIONS.md
+2026-07-06). La v2 testa l'unica famiglia rimasta: i livelli **volume-based**. Tutto il resto del
+protocollo (soglie touch 0.10·ATR, finestra 24, reazione 4, random distance-matched, block-bootstrap
+sui giorni, breadth, holdout 70/30, geometria) è **identico alla v1**. Cambiano solo i detector.
+
+**⚠️ Caveat dato (dichiarato a priori):** su TUTTI i 16 asset il "volume" è **tick-volume** (numero di
+tick), non volume scambiato reale — proxy (corr. ~0.85-0.90 con volume vero su FX). L'intera v2 è
+marcata **"proxy, confidenza inferiore"**; un eventuale segnale andrebbe riconfermato con volume reale.
+
+**3 nuovi concetti (nuovi trial per il DSR), definizione fissa:**
+
+| # | Concetto | Definizione operativa (a priori) | Side |
+|---|---|---|---|
+| 7 | **POC / VAH / VAL** | Volume profile sulle ultime 120 barre H1: bin di ampiezza **0.20·ATR**, volume di ogni barra distribuito uniformemente sul suo range [low,high]. **POC** = bin a volume max. **Value Area** = 70% del volume attorno al POC; **VAH/VAL** = estremi della VA. 3 livelli, tag `poc`. | posizione |
+| 8 | **VWAP** | VWAP rolling sulle ultime 120 barre H1: `Σ(typ·vol)/Σvol`, typ=(H+L+C)/3. 1 livello, tag `vwap`. | posizione |
+| 9 | **Anchored VWAP** | 2 AVWAP ancorate agli estremi della finestra (barra del max-high e barra del min-low), calcolate dall'ancora fino a "ora". Tag `avwap`. | posizione |
+
+**Side**: livello ≤ prezzo → SUPPORT, > prezzo → RESISTANCE (poi filtro geometria come v1).
+**Volume** = colonna `volume` dei CSV (= tick_volume dell'export MT5).
+
+**Molteplicità aggiornata:** v2 = 3 concetti × 16 asset = **48 trial** (falsi attesi a CI95 ≈ 2.4).
+Cumulativo dichiarato v1+v2 = 9 × 16 = **144 trial**. Verdetto v2 per **breadth ≥ 50% + pool CI>0**,
+identico alla v1. Se anche il volume nulla → si chiude il libro "livelli come zona di reazione".

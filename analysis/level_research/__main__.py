@@ -7,7 +7,9 @@ Esegue il protocollo PRE-REGISTRATO (docs/LEVEL_RESEARCH_PREREGISTRATION.md):
   - verdetto per BREADTH (frazione di asset che battono il random) + effetto POOLATO,
   - correzione molteplicita' (falsi attesi = 0.05*T) + verifica out-of-sample dei sopravvissuti.
 
-Uso: python analysis/level_research/__main__.py    (dalla root; i path usano __file__, cwd-agnostici)
+Uso:  python analysis/level_research/__main__.py            # v1: 6 concetti OHLC
+      python analysis/level_research/__main__.py volume     # v2: poc/vwap/avwap (tick-proxy)
+(i path usano __file__, cwd-agnostici)
 """
 from __future__ import annotations
 
@@ -17,8 +19,8 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 import numpy as np  # noqa: E402
 
-from engine import (CONCEPTS, build_decisions, measure_core, split_days,  # noqa: E402
-                    summarize_cell)
+from engine import (OHLC_CONCEPTS, VOLUME_CONCEPTS, build_decisions,  # noqa: E402
+                    measure_core, split_days, summarize_cell)
 
 ASSETS = ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF",
           "EURJPY.r", "GBPJPY.r", "EURGBP.r", "XAUUSD", "XAGUSD", "BTCUSD", "ETHUSD",
@@ -27,13 +29,13 @@ MIN_TOUCH = 30      # soglia di evidenza per-cella (come il gate del Level Analy
 MIN_DAYS = 10
 
 
-def empty_acc():
+def empty_acc(concepts):
     return {c: {"real": [], "rand": [], "net_real": [], "net_rand": [],
-                "n_levels": 0, "n_touch": 0} for c in CONCEPTS}
+                "n_levels": 0, "n_touch": 0} for c in concepts}
 
 
-def merge(pool, asset, acc):
-    for c in CONCEPTS:
+def merge(pool, asset, acc, concepts):
+    for c in concepts:
         A, P = acc[c], pool[c]
         for k in ("real", "rand", "net_real", "net_rand"):
             P[k] += [(f"{asset}:{d}", v) for d, v in A[k]]
@@ -46,72 +48,68 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
     except Exception:
         pass
+    mode = sys.argv[1].lower() if len(sys.argv) > 1 else "ohlc"
+    concepts = VOLUME_CONCEPTS if mode == "volume" else OHLC_CONCEPTS
+    tag = "v2 VOLUME (tick-proxy)" if mode == "volume" else "v1 OHLC"
 
-    train_pool, test_pool = empty_acc(), empty_acc()
-    per_asset = {}                         # asset -> {concept -> cell(train)}
-    breadth = {c: 0 for c in CONCEPTS}     # asset che battono (train)
-    tested = {c: 0 for c in CONCEPTS}      # asset con evidenza sufficiente (train)
+    train_pool, test_pool = empty_acc(concepts), empty_acc(concepts)
+    breadth = {c: 0 for c in concepts}
+    tested = {c: 0 for c in concepts}
 
     print("=" * 92)
-    print("MATRICE REAZIONE-vs-RANDOM (distance-matched) — TRAIN 70%  [* = batte il random, CI>0]")
+    print(f"MATRICE REAZIONE-vs-RANDOM (distance-matched) — {tag} — TRAIN 70%  "
+          f"[* = batte il random, CI>0]")
     print("=" * 92)
     for asset in ASSETS:
-        h1, decisions = build_decisions(asset)
+        h1, decisions = build_decisions(asset, concepts)
         if not decisions:
             print(f"{asset:9}  (dati mancanti/insufficienti)"); continue
         tr, te = split_days(decisions)
-        acc_tr = measure_core(h1, [d for d in decisions if d["day"] in tr])
-        acc_te = measure_core(h1, [d for d in decisions if d["day"] in te])
+        acc_tr = measure_core(h1, [d for d in decisions if d["day"] in tr], concepts)
+        acc_te = measure_core(h1, [d for d in decisions if d["day"] in te], concepts)
         if acc_tr is None:
             print(f"{asset:9}  (train vuoto)"); continue
-        merge(train_pool, asset, acc_tr)
+        merge(train_pool, asset, acc_tr, concepts)
         if acc_te:
-            merge(test_pool, asset, acc_te)
-        cells = {}
+            merge(test_pool, asset, acc_te, concepts)
         row = [f"{asset:9}"]
-        for c in CONCEPTS:
+        for c in concepts:
             cell = summarize_cell(acc_tr[c])
-            cells[c] = cell
             enough = cell["n_touch"] >= MIN_TOUCH and cell["n_days"] >= MIN_DAYS
             if enough:
                 tested[c] += 1
                 if cell["beats"]:
                     breadth[c] += 1
-            if not enough:
-                row.append(f"{c[:5]}:  n/a ")
-            else:
                 mark = "*" if cell["beats"] else " "
-                row.append(f"{c[:5]}:{cell['diff']:+5.1f}{mark}")
-        per_asset[asset] = cells
+                row.append(f"{c[:6]}:{cell['diff']:+5.1f}{mark}")
+            else:
+                row.append(f"{c[:6]}:  n/a ")
         print("  ".join(row))
 
     # ---- verdetto per concetto: breadth + pooled ----------------------------
     print("\n" + "=" * 92)
     print("VERDETTO PER CONCETTO  (breadth = asset che battono / asset con evidenza)")
     print("=" * 92)
-    print(f"{'concetto':10} {'breadth':>10} {'pooled %REACT reale vs rand':>34} "
-          f"{'CI95 diff':>18}  esito")
     survivors = []
     total_beats = sum(breadth.values())
     total_tested = sum(tested.values())
-    for c in CONCEPTS:
+    for c in concepts:
         pc = summarize_cell(train_pool[c], boot_rate=4000, boot_med=1500)
-        br = f"{breadth[c]}/{tested[c]}"
         frac = breadth[c] / tested[c] if tested[c] else 0.0
         pooled_beats = (not np.isnan(pc["ci_lo"])) and pc["ci_lo"] > 0
         surv = (frac >= 0.50) and pooled_beats
         if surv:
             survivors.append(c)
-        verdict = "SOPRAVVIVE" if surv else ("(pool>0 ma breadth<50%)" if pooled_beats
-                                             else "no")
-        print(f"{c:10} {br:>10} {pc['rr_real']:>12.1f}% vs {pc['rr_rand']:>7.1f}%"
-              f"{'':7}[{pc['ci_lo']:+.1f},{pc['ci_hi']:+.1f}]{'':4}  {verdict}")
+        verdict = "SOPRAVVIVE" if surv else ("(pool>0 ma breadth<50%)" if pooled_beats else "no")
+        print(f"{c:10} breadth {breadth[c]}/{tested[c]:<3}  "
+              f"pooled reale {pc['rr_real']:.1f}% vs rand {pc['rr_rand']:.1f}%  "
+              f"CI[{pc['ci_lo']:+.1f},{pc['ci_hi']:+.1f}]  -> {verdict}")
 
     # ---- molteplicita' (DSR/PBO) --------------------------------------------
-    T = len([1 for c in CONCEPTS for _ in ASSETS])
+    T = len(concepts) * len(ASSETS)
     print("\n--- Molteplicita' (DSR/PBO) ---")
-    print(f"  trial totali T = {len(CONCEPTS)} concetti x {len(ASSETS)} asset = {T}")
-    print(f"  'batte' falsi attesi a CI95 (per puro caso): ~{0.05*T:.0f}")
+    print(f"  trial = {len(concepts)} concetti x {len(ASSETS)} asset = {T}  "
+          f"(falsi attesi a CI95 ~ {0.05*T:.1f})")
     print(f"  'batte' osservati (train, celle con evidenza): {total_beats} su {total_tested} testate")
     if total_beats <= 0.05 * T:
         print("  -> osservati <= attesi per caso: nessun segnale robusto alla molteplicita'.")
@@ -122,8 +120,11 @@ def main() -> int:
     print("=" * 92)
     if not survivors:
         print("  Nessun concetto sopravvive su TRAIN (breadth>=50% + pool CI>0).")
-        print("  => Regola di decisione pre-registrata: nessun criterio batte il random con")
-        print("     breadth. Mercato efficiente a questa risoluzione -> pivot (niente edge forzato).")
+        if mode == "volume":
+            print("  => Anche il VOLUME (tick-proxy) non batte il random. Chiuso il libro")
+            print("     'livelli come zona di reazione' -> pivot (ortogonalita'/passivo).")
+        else:
+            print("  => Regola pre-registrata: mercato efficiente a questa risoluzione -> pivot.")
     else:
         for c in survivors:
             pc = summarize_cell(test_pool[c], boot_rate=4000, boot_med=1500)
@@ -132,9 +133,11 @@ def main() -> int:
                   f"diff={pc['diff']:+.1f} [{pc['ci_lo']:+.1f},{pc['ci_hi']:+.1f}]  "
                   f"-> {'TIENE (out-of-sample)' if hold else 'NON tiene'}")
 
-    print("\nNOTE: soglia evidenza per-cella n_touch>=%d, giorni>=%d. Random distance-matched." %
+    print(f"\nNOTE: soglia evidenza per-cella n_touch>=%d, giorni>=%d. Random distance-matched." %
           (MIN_TOUCH, MIN_DAYS))
-    print("Volume/tick-proxy escluso (v1 OHLC-puri). Definizioni/soglie = pre-registrazione.")
+    if mode == "volume":
+        print("Volume = tick_volume (PROXY su tutti gli asset): confidenza inferiore, "
+              "un eventuale segnale va riconfermato con volume reale.")
     return 0
 
 

@@ -19,7 +19,7 @@ from collections import defaultdict
 
 import numpy as np
 
-from detectors import detect_all
+from detectors import OHLC_CONCEPTS, VOLUME_CONCEPTS, detect_all  # noqa: F401
 from reaction import (INSUFF, REACTION, TESTED, boot_rate_diff_ci,
                       bootstrap_diff_by_day, classify, TOUCH_WINDOW, N_REACT)
 
@@ -33,7 +33,7 @@ DEDUP_ATR = 0.10
 TRAIN_FRAC = 0.70
 SEED = 42
 
-CONCEPTS = ["swing", "pdh_pdl", "ob", "fvg", "round", "eqh_eql"]
+CONCEPTS = OHLC_CONCEPTS   # default; l'orchestratore puo' passare VOLUME_CONCEPTS
 
 
 # ---- IO --------------------------------------------------------------------
@@ -47,7 +47,8 @@ def load_bars(prefix, tf):
             try:
                 out.append({"t": r["time"][:19],
                             "open": float(r["open"]), "high": float(r["high"]),
-                            "low": float(r["low"]), "close": float(r["close"])})
+                            "low": float(r["low"]), "close": float(r["close"]),
+                            "volume": float(r.get("volume", 0) or 0)})
             except (ValueError, KeyError):
                 continue
     out.sort(key=lambda x: x["t"])
@@ -78,7 +79,7 @@ def _dedup(levels, atr):
     return kept
 
 
-def build_decisions(asset):
+def build_decisions(asset, concepts=CONCEPTS):
     """Ritorna (h1, lista di decisioni). Ogni decisione:
     {day, di, P0, atr, levels=[(price, side, concept, dist_atr)]}."""
     h1 = load_bars(asset, "H1")
@@ -106,7 +107,7 @@ def build_decisions(asset):
         window = h1[di - H1_WINDOW:di]
         pos = bisect.bisect_left(d1_dates, day)
         prev_d1 = d1_by_date[d1_dates[pos - 1]] if pos > 0 else None
-        raw = detect_all(window, prev_d1, P0, a, asset)
+        raw = detect_all(window, prev_d1, P0, a, asset, concepts)
         # geometria valida
         geo = []
         for pr, side, con in raw:
@@ -125,7 +126,7 @@ def build_decisions(asset):
 
 
 # ---- misura reale + random distance-matched --------------------------------
-def measure_core(h1, decisions):
+def measure_core(h1, decisions, concepts=CONCEPTS):
     """Cuore della misura: dato h1 + lista decisioni gia' filtrate, ritorna per concetto gli
     item (day,val) per rate-diff e per net-median, reale/random distance-matched."""
     if not decisions:
@@ -140,7 +141,7 @@ def measure_core(h1, decisions):
     pool = {k: np.array(v) for k, v in pool.items()}
 
     acc = {c: {"real": [], "rand": [], "net_real": [], "net_rand": [],
-               "n_levels": 0, "n_touch": 0} for c in CONCEPTS}
+               "n_levels": 0, "n_touch": 0} for c in concepts}
 
     for dec in decisions:
         di, P0, a, day = dec["di"], dec["P0"], dec["atr"], dec["day"]
@@ -185,12 +186,12 @@ def split_days(decisions):
     return set(days[:cut]), set(days[cut:])
 
 
-def measure_asset(asset, days_keep=None):
+def measure_asset(asset, days_keep=None, concepts=CONCEPTS):
     """Comodita' standalone: build + (filtro giorni) + measure_core."""
-    h1, decisions = build_decisions(asset)
+    h1, decisions = build_decisions(asset, concepts)
     if days_keep is not None:
         decisions = [d for d in decisions if d["day"] in days_keep]
-    return measure_core(h1, decisions)
+    return measure_core(h1, decisions, concepts)
 
 
 # ---- sommario per cella (concetto x asset) ---------------------------------

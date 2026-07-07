@@ -98,14 +98,103 @@ def eqh_eql(bars, atr, tol_atr=0.10):
     return out
 
 
-def detect_all(bars, prev_d1, price, atr, asset):
-    """Tutti i concetti -> lista di (price, side, concept). Grezzi, non filtrati."""
-    step = ROUND_STEP.get(asset)
+# ─── VOLUME (v2, tick-volume proxy) ──────────────────────────────────────
+def _side(pr, price):
+    return "SUPPORT" if pr <= price else "RESISTANCE"
+
+
+def volume_profile(bars, price, atr, va_frac=0.70, bin_atr=0.20):
+    """POC/VAH/VAL sul volume profile delle barre. Volume di ogni barra distribuito
+    uniformemente sul suo range [low,high]; bin di ampiezza bin_atr*ATR."""
+    if atr <= 0 or len(bars) < 5:
+        return []
+    lo = min(b["low"] for b in bars)
+    hi = max(b["high"] for b in bars)
+    if hi <= lo:
+        return []
+    binw = bin_atr * atr
+    nb = max(1, int((hi - lo) / binw) + 1)
+    vol = [0.0] * nb
+    for b in bars:
+        v = b.get("volume", 0.0) or 0.0
+        if v <= 0:
+            continue
+        if b["high"] <= b["low"]:
+            k = min(nb - 1, max(0, int((b["close"] - lo) / binw)))
+            vol[k] += v
+            continue
+        k0 = max(0, int((b["low"] - lo) / binw))
+        k1 = min(nb - 1, int((b["high"] - lo) / binw))
+        share = v / (k1 - k0 + 1)
+        for k in range(k0, k1 + 1):
+            vol[k] += share
+    total = sum(vol)
+    if total <= 0:
+        return []
+    poc_k = max(range(nb), key=lambda k: vol[k])
+    inc, acc = {poc_k}, vol[poc_k]
+    left, right = poc_k - 1, poc_k + 1
+    while acc < va_frac * total and (left >= 0 or right < nb):
+        lv = vol[left] if left >= 0 else -1.0
+        rv = vol[right] if right < nb else -1.0
+        if lv >= rv:
+            acc += vol[left]; inc.add(left); left -= 1
+        else:
+            acc += vol[right]; inc.add(right); right += 1
+    center = lambda k: lo + (k + 0.5) * binw  # noqa: E731
+    poc, vah, val = center(poc_k), center(max(inc)), center(min(inc))
+    return [(poc, _side(poc, price), "poc"),
+            (vah, _side(vah, price), "poc"),
+            (val, _side(val, price), "poc")]
+
+
+def _typ_vwap(bars):
+    num = den = 0.0
+    for b in bars:
+        v = b.get("volume", 0.0) or 0.0
+        num += (b["high"] + b["low"] + b["close"]) / 3 * v
+        den += v
+    return num / den if den > 0 else None
+
+
+def vwap_level(bars, price):
+    vw = _typ_vwap(bars)
+    return [(vw, _side(vw, price), "vwap")] if vw and vw > 0 else []
+
+
+def avwap_levels(bars, price):
+    """2 AVWAP ancorate agli estremi della finestra (max-high e min-low) fino a 'ora'."""
+    if len(bars) < 5:
+        return []
+    hi_i = max(range(len(bars)), key=lambda i: bars[i]["high"])
+    lo_i = min(range(len(bars)), key=lambda i: bars[i]["low"])
+    out = []
+    for anchor in {hi_i, lo_i}:
+        vw = _typ_vwap(bars[anchor:])
+        if vw and vw > 0:
+            out.append((vw, _side(vw, price), "avwap"))
+    return out
+
+
+# ─── dispatch ────────────────────────────────────────────────────────────
+DISPATCH = {
+    "swing": lambda bars, prev_d1, price, atr, asset: swing_sr(bars),
+    "pdh_pdl": lambda bars, prev_d1, price, atr, asset: pdh_pdl(prev_d1),
+    "ob": lambda bars, prev_d1, price, atr, asset: order_block(bars),
+    "fvg": lambda bars, prev_d1, price, atr, asset: fvg(bars),
+    "round": lambda bars, prev_d1, price, atr, asset: round_number(price, ROUND_STEP.get(asset)),
+    "eqh_eql": lambda bars, prev_d1, price, atr, asset: eqh_eql(bars, atr),
+    "poc": lambda bars, prev_d1, price, atr, asset: volume_profile(bars, price, atr),
+    "vwap": lambda bars, prev_d1, price, atr, asset: vwap_level(bars, price),
+    "avwap": lambda bars, prev_d1, price, atr, asset: avwap_levels(bars, price),
+}
+OHLC_CONCEPTS = ["swing", "pdh_pdl", "ob", "fvg", "round", "eqh_eql"]
+VOLUME_CONCEPTS = ["poc", "vwap", "avwap"]
+
+
+def detect_all(bars, prev_d1, price, atr, asset, concepts):
+    """Concetti richiesti -> lista di (price, side, concept). Grezzi, non filtrati."""
     lv = []
-    lv += swing_sr(bars)
-    lv += pdh_pdl(prev_d1)
-    lv += order_block(bars)
-    lv += fvg(bars)
-    lv += round_number(price, step)
-    lv += eqh_eql(bars, atr)
+    for c in concepts:
+        lv += DISPATCH[c](bars, prev_d1, price, atr, asset)
     return lv
