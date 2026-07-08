@@ -11,6 +11,35 @@
 
 ---
 
+## 2026-07-08 — TSMOM multi-asset (primo edge del pivot): NO-GO pulito. Kill-switch → mean-reversion vol.
+
+Primo edge dopo la chiusura livelli. Test **pre-registrato** ([docs/TSMOM_PREREGISTRATION.md](docs/TSMOM_PREREGISTRATION.md)),
+motore di portafoglio [strategies/tsmom/backtest.py](strategies/tsmom/backtest.py) sulle **serie di
+rendimenti** (non le sintesi MT5 del tentativo 2026-05), 16 asset D1 2003-2026, spec canonica MOP
+(sign 252g, vol-target 60g, media portafoglio, mensile, costi, look-ahead-safe). Verdetto completo:
+[docs/reviews/tsmom-portfolio-2026-07-08.md](docs/reviews/tsmom-portfolio-2026-07-08.md).
+
+**Esito: NO-GO.** Primario (252,mensile) Sharpe **+0.21**, ma **BCa CI [−0.18,+0.59]** (lower≤0),
+**DSR 0.33 n.s.**, MC-perm **p=0.51**, **PBO 0.58**, White's RC **p=0.53**, walk-forward OOS +0.12
+(degrado 51%). 5 test indipendenti concordi: **edge non distinguibile dal caso**. Overlay prop: maxDD
+−40% → non avviabile.
+
+**Novità vs 2026-05-29:** il multi-asset ha **risolto i difetti** del vecchio NO-GO (mono-asset/mono-anno):
+breadth 12/16, top asset 16%, 13/23 anni positivi. Il problema non è più il campione — l'edge è
+**semplicemente troppo debole** (~0.2) in questo universo USD-pesante / epoca decaduta post-2009
+(atteso a priori: Baltas-Kosowski, SG Trend 0.3-0.5). Nessun curve-fit: verdetto per BCa+DSR+PBO+MC+WRC.
+
+**Ipotesi (NON risultato):** trend concentrato negli asset che trendano (XAU +1.44, US100 +1.19, US500
++1.13, BTC +0.63) vs cross FX negativi (USDCHF −0.27, EURGBP.r −0.69). Un TSMOM "trending-universe"
+*potrebbe* reggere, ma è **post-hoc** → va pre-registrato come nuovo trial e validato OOS, non rivendicato.
+
+**Decisione:** kill-switch pre-registrato → **archiviare TSMOM canonico**, passare al prossimo edge del
+backlog ortogonale (**mean-reversion vol non-level**), salvo scelta utente di pre-registrare prima la
+variante trending-universe. La **macchina di validazione** (`core/quant_metrics` + backtester portafoglio)
+è l'asset riusabile per gli edge successivi.
+
+---
+
 ## 2026-07-07 (v3) — Livelli HTF fatti bene: confermato NULL. Libro CHIUSO davvero (384 trial).
 
 Dopo l'audit delle tolleranze (la `0.10·ATR` era una costante ereditata/tarata su XAU-H1, applicata a
