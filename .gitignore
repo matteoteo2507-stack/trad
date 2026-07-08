@@ -71,3 +71,10 @@ level_analyzer/trade_records.csv
 
 # Dati OHLC esportati (rigenerabili da export_mt5_spot.py / fetch_ohlc.py — fuori da git)
 analysis/trading-bot-eval/data/
+
+# Export chat mentore (dati di terzi/personali — MAI su git) + segnali parsati
+Dati su segnali mentore/
+analysis/mentor_signals/signals.csv
+
+# Repo del socio clonato (codice di terzi, ha un proprio .git)
+socio-trading-bot/

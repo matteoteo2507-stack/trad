@@ -11,6 +11,33 @@
 
 ---
 
+## 2026-07-08 — Segnali mentore XAUUSD: edge direzionale REALE (primo positivo). → forward paper-validation.
+
+Track A del pivot (priorità-1 utente). Parser + replay dei suoi segnali sul prezzo oro REALE (M5,
+Gen-Giu 2026): **non un backtest disegnato, ma l'audit del suo track record live**. Codice
+[analysis/mentor_signals/](analysis/mentor_signals/); verdetto [docs/reviews/mentor-signals-2026-07-08.md](docs/reviews/mentor-signals-2026-07-08.md).
+
+**Riconciliazione**: i suoi entry stanno nei range intraday dell'oro reale (range 2026 mentore 3964-5553
+vs reale 3999-5415) → è XAUUSD vero. Il mio flag "4670 vs 4155" era errore di allineamento (segnale di
+metà 2026, oro in discesa) — CHIUSO.
+
+**Esito (477 segnali replayati, dopo costo):** win-rate simmetrica **67-72%** vs **32%** del side casuale
+(stessa geometria/tempi) → la sua direzione è giusta ~2/3 (non è drift dell'oro). Exit TP1 **E[R] +0.20/
++0.32**; TP1-hit reale ~85% (il suo claim "~100%" è ottimista). **Robusto al ritardo di copia manuale**
+(E[R] +0.32→+0.12 da 0 a 60 min) e **stabile su tutti i 6 mesi** (60-77%). 5 angoli indipendenti concordi.
+
+**Caveat vincolanti:** è una **COPIA** (key-man risk, non generatore nostro); 6 mesi/1 asset/1 regime
+(oro in discesa); esecuzione idealizzata; survivorship non escludibile del tutto (ma baseline 32% +
+"Sl hit"/"Running loss" nel canale remano contro). **Le prop vietano l'auto** → è la traccia **manuale**
+(utilizzabile col telefono, ORA non disponibile), NON il milestone "1 mese demo non supervisionato".
+
+**Decisione:** primo edge che **merita di proseguire**. → **forward paper-validation live** (~4-6 sett.,
+out-of-sample vero, con esecuzione reale) via il parser; se tiene, è l'edge da operare **a mano** sulle
+prop. In parallelo la traccia "sistema nostro" continua col prossimo edge del backlog. Nessuna promozione
+a capitale senza forward.
+
+---
+
 ## 2026-07-08 — TSMOM multi-asset (primo edge del pivot): NO-GO pulito. Kill-switch → mean-reversion vol.
 
 Primo edge dopo la chiusura livelli. Test **pre-registrato** ([docs/TSMOM_PREREGISTRATION.md](docs/TSMOM_PREREGISTRATION.md)),
