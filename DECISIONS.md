@@ -11,6 +11,27 @@
 
 ---
 
+## 2026-07-08 — Mean-reversion vol (secondo edge): NO-GO. Ma emerge la complementarità momentum⟂reversione.
+
+Secondo edge del pivot (dopo TSMOM NO-GO). Test **pre-registrato** ([docs/MEANREV_PREREGISTRATION.md](docs/MEANREV_PREREGISTRATION.md)),
+motore [strategies/meanrev/backtest.py](strategies/meanrev/backtest.py) (riusa la struttura TSMOM),
+16 asset D1 2003-2026, z-score N=10 Z=1. Verdetto: [docs/reviews/meanrev-portfolio-2026-07-08.md](docs/reviews/meanrev-portfolio-2026-07-08.md).
+
+**Esito: NO-GO.** Primario Sharpe **−0.21**, BCa lower −0.63, DSR 0.011 n.s., MC p=0.50, PBO 0.80,
+White's RC p=0.94, walk-forward OOS −0.02. Tutte le varianti ≤ 0. Coerente col decay documentato.
+
+**Rivelazione (il lead più forte finora):** Sharpe standalone MR **positivo sui RANGER** (EURGBP.r +0.56,
+USDCAD +0.32, cross FX, indici) e **negativo sui TRENDER** (XAU −0.76, BTC −0.38) → **specchio esatto di
+TSMOM** (XAU +1.44, US100 +1.19, cross FX negativi). Momentum e reversione, **deboli da soli**, sono
+**anti-correlati per carattere dell'asset**. → Ipotesi (da PRE-REGISTRARE, non rivendicare): **sistema
+combinato momentum+reversione / router trendiness** look-ahead-safe (efficiency ratio/Hurst su dati
+passati, MAI gli Sharpe in-sample) validato OOS. È la materializzazione della tesi "portafoglio ortogonale".
+
+**Decisione:** kill-switch → archiviare MR standalone. **Bivio (scelta utente):** (a) il combinato
+momentum+reversione (lead forte, thesis-aligned) o (b) prossimo backlog (stagionalità/calendario).
+
+---
+
 ## 2026-07-08 — Segnali mentore XAUUSD: edge direzionale REALE (primo positivo). → forward paper-validation.
 
 Track A del pivot (priorità-1 utente). Parser + replay dei suoi segnali sul prezzo oro REALE (M5,
