@@ -11,6 +11,31 @@
 
 ---
 
+## 2026-07-08 — Stagionalità TOM: NO-GO. Chiusa la ricerca di edge sistematici own → pivot al passivo.
+
+Terzo e **ultimo** edge sistematico. Test pre-registrato ([docs/SEASONALITY_PREREGISTRATION.md](docs/SEASONALITY_PREREGISTRATION.md)),
+motore [strategies/seasonality/backtest.py](strategies/seasonality/backtest.py). Verdetto:
+[docs/reviews/seasonality-tom-2026-07-08.md](docs/reviews/seasonality-tom-2026-07-08.md).
+
+**Esito: NO-GO.** La finestra Turn-of-Month **non batte finestre di giorni casuali** (pooled +3.47 bps/g,
+**p=0.238**); effetto **assente/negativo sugli indici** (US500 −1.0%, US100 −2.6%/anno) → anomalia
+decaduta. Strategia long-TOM Sharpe −0.28 (BCa lower −0.69, DSR 0.008 n.s., MC p=0.48, OOS −0.21); il
+buy&hold (+0.40) la batte. I positivi (ETH +118%/anno) = rumore small-sample.
+
+**BILANCIO del pivot post-livelli (patto con l'utente attivato):** livelli null (384) · TSMOM NO-GO
+(=beta, B&H batte, short perde) · mean-reversion NO-GO · router momentum+MR **refutato** (beta-trap) ·
+stagionalità NO-GO. **Nessun edge sistematico *own* robusto** su questo universo/epoca/accesso retail.
+L'**unico edge reale** è il **mentore** (discrezionale, manuale, external-dependent). Ciò che è robusto e
+automatizzabile è **raccogliere beta** (long diversificato vol-managed) = il **pilastro passivo**.
+
+**Decisione:** si **chiude la ricerca di edge sistematici own** (si smette l'edge-hunting a treadmill).
+Due binari: **reddito = mentore manuale** (quando l'utente può), **ricchezza = pilastro passivo**
+(automatizzabile, robusto). **Prossimo lavoro di più alto valore = costruire bene il pilastro passivo**
+("strutturato e protetto"), in sospeso in attesa degli input personali utente (INVESTING_PILLAR_PLAN.md).
+La macchina rigorosa (`core/quant_metrics` + backtester riusabili) resta per opportunità future.
+
+---
+
 ## 2026-07-08 — Mean-reversion vol (secondo edge): NO-GO. Ma emerge la complementarità momentum⟂reversione.
 
 Secondo edge del pivot (dopo TSMOM NO-GO). Test **pre-registrato** ([docs/MEANREV_PREREGISTRATION.md](docs/MEANREV_PREREGISTRATION.md)),
