@@ -29,8 +29,15 @@ Anche il filone scalping single-asset, testato bene, è null → coerente col re
 own robusto). Dati Dukascopy M5 14.5y NAS100/SPX500 e motore ORB **riusabili** per varianti pre-registrate
 future. Confermati i due binari: reddito=mentore manuale, ricchezza=passivo.
 
+**Iterazioni (utente+socio), stesso verdetto:** (1) **filtro news** = peggiora (breakout serve vol; giorni
+calmi = chop). (2) **filtro volatilità ADX** = leva GIUSTA (E[R] sale monotòno con ADX) ma tetto ~zero su
+NAS, negativo su SPX. (3) **v2 completa** (SL su OR+10, RR 1:3, BE a 2R, expiry 12:00 ET, ADX): **NO-GO** —
+l'**holdout** è decisivo: 2012-2019 negativo su entrambi (NAS −0.08, SPX −0.27), positivo solo nel recente
+2020-2026 (non-significativo) → **non-stazionaria/regime-dipendente**, non edge persistente (stesso inganno
+del campione 1.4y). Chiuso il filone ORB. `backtest_v2.py` riusabile.
+
 **Infra nuova:** `dukascopy-python` per storico M5 lungo e gratuito su indici (2012+); backtester ORB
-tz-safe (UTC/EET → US-open). Utile per qualunque futuro test intraday su indici.
+tz-safe (UTC/EET → US-open) + ADX + holdout. Utile per qualunque futuro test intraday su indici.
 
 ---
 

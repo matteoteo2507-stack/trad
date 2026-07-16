@@ -42,5 +42,23 @@ superficie di overfitting), ma **anch'essa null** una volta testata su tutti i r
 niente edge meccanico *own* robusto. Motore/dati riusabili (Dukascopy M5 14.5y di NAS100/SPX500 in
 `data/`) per eventuali varianti pre-registrate future. Reddito = mentore manuale; ricchezza = passivo.
 
+## v2 (ADX + SL su OR+10 + RR 1:3 + BE a 2R + expiry 12:00 ET) — anch'essa NO-GO
+Iterazione utente+socio ([analysis/opening_range/backtest_v2.py](../../analysis/opening_range/backtest_v2.py)).
+Filtro volatilità ADX = **leva giusta** (E[R] sale monotòno con ADX), ma tetto ~zero:
+
+| ADX≥25 | NAS100 | SPX500 |
+|---|---|---|
+| tutto | −0.012 (CI −0.10/+0.08) | −0.094 (CI −0.19/+0.00) |
+| **TRAIN 2012-2019** | **−0.076** | **−0.267** |
+| **TEST 2020-2026** | +0.057 (n.s.) | +0.066 (n.s.) |
+| DSR (4 soglie) | 0.096 n.s. | 0.002 n.s. |
+
+**L'holdout è decisivo:** negativo su entrambi gli indici in **2012-2019**; il positivo sta solo nel
+**recente 2020-2026** (non significativo, CI include 0) → **non-stazionaria/regime-dipendente**, non edge
+persistente. Stesso inganno del campione 1.4y (regime recente favorevole: post-COVID/AI/alta-vol). Win
+~23% con 1:3 = sotto break-even. **NO-GO.** Nota: se si *credesse* a un regime post-2020 strutturalmente
+nuovo servirebbe **forward** vero; ma 8 anni negativi + non-significatività = non ci si mette capitale.
+
 ### Riproducibilità
-`python analysis/opening_range/backtest.py NAS100` (e `SPX500`). Spec: [OPENING_RANGE_PREREGISTRATION.md](../OPENING_RANGE_PREREGISTRATION.md).
+`python analysis/opening_range/backtest.py NAS100|SPX500` (v1 + ADX/news); `backtest_v2.py [ADX_MIN]` (v2).
+Spec: [OPENING_RANGE_PREREGISTRATION.md](../OPENING_RANGE_PREREGISTRATION.md).
