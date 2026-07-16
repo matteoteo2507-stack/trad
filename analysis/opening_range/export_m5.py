@@ -15,7 +15,26 @@ import pandas as pd
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "trading-bot-eval", "data")
 SYMBOLS = [("US100", "US100"), ("US500", "US500")]
-COUNT = 500_000   # M5: ~500k barre ≈ diversi anni; il broker può darne meno
+CHUNK = 50_000        # barre per chiamata (COUNT grande -> 'Invalid params')
+MAX_BARS = 1_500_000  # tetto totale (M5 ~ diversi anni)
+
+
+def fetch_all(mt5, sym, tf):
+    """Scarica a blocchi da copy_rates_from_pos finché ci sono dati."""
+    frames, start = [], 0
+    while start < MAX_BARS:
+        r = mt5.copy_rates_from_pos(sym, tf, start, CHUNK)
+        if r is None or len(r) == 0:
+            break
+        frames.append(pd.DataFrame(r))
+        if len(r) < CHUNK:
+            break
+        start += CHUNK
+    if not frames:
+        return None
+    df = pd.concat(frames, ignore_index=True)
+    df = df.drop_duplicates(subset="time").sort_values("time")
+    return df
 
 
 def main() -> int:
@@ -31,10 +50,9 @@ def main() -> int:
             if not mt5.symbol_select(sym, True):
                 print(f"[SKIP] symbol_select({sym}) fallito: {mt5.last_error()} "
                       f"-> aggiusta il nome per il tuo broker"); continue
-            rates = mt5.copy_rates_from_pos(sym, mt5.TIMEFRAME_M5, 0, COUNT)
-            if rates is None or len(rates) == 0:
+            df = fetch_all(mt5, sym, mt5.TIMEFRAME_M5)
+            if df is None or len(df) == 0:
                 print(f"  {sym} M5: nessun dato ({mt5.last_error()})"); continue
-            df = pd.DataFrame(rates)
             df["time"] = pd.to_datetime(df["time"], unit="s", utc=True).dt.tz_localize(None)
             df = df.set_index("time")
             df["volume"] = df["tick_volume"]
