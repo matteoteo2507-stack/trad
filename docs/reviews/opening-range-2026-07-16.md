@@ -28,10 +28,13 @@ entrambi gli indici USA. Estendere lo storico (richiesta utente) ha **corretto u
 prova del valore del multi-regime. Feed-consistency: il segno si ribalta tra broker e Dukascopy su un anno
 marginale (2025) = firma di edge **inesistente** (E[R]≈0 → domina il rumore di feed).
 
-## Sul filtro news (v2 pre-pianificato)
-Improbabile che ribalti il verdetto: i giorni FOMC/CPI/NFP sono ~12% dei trade; per portare un base di
-−0.06/−0.14R a un positivo robusto quei giorni dovrebbero essere massicciamente peggiori del resto — non
-plausibile su 2600 trade. Testabile per completezza, ma la lettura disciplinata è **NO-GO**.
+## Filtro news (v2) — TESTATO: non aiuta, peggiora
+Escludendo NFP (primo venerdì, esatto) + giorni con gap di apertura >0.6% (proxy shock/CPI/FOMC,
+look-ahead-safe): NAS100 −0.056 → −0.065 → **−0.070**; SPX500 −0.137 → −0.139 → **−0.154**. Togliere i
+giorni-news/shock **peggiora** l'E[R] (i breakout hanno bisogno di volatilità; i giorni calmi = chop =
+più falsi break). **Le news non stavano sporcando nulla** — la strategia perde anche nei giorni tranquilli.
+Ipotesi "filtro news lo salva" **refutata**. (RR/expiry: cambiarli ora = parameter-mining su una base
+negativa; farlo solo con grid pre-registrata + DSR/White's RC + holdout train/test + cross-index NAS↔SPX.)
 
 ## Bilancio filone scalping single-asset (1° test)
 L'idea "meccaniche nascoste di un singolo asset" era ben posta (evento reale = apertura USA, poca

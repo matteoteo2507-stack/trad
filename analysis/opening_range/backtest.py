@@ -30,6 +30,14 @@ SPREAD = 1.5          # costo round-trip in punti (assunzione v1)
 OR_START, OR_END = 9 * 60 + 30, 10 * 60      # 09:30-10:00 ET (minuti)
 SESS_END = 16 * 60                            # 16:00 ET
 MAX_HOLD = 288 * 5    # barre M5 di holding max (~5 giorni)
+GAP_THRESH = 0.6      # % gap di apertura oltre cui = giorno "shock" (proxy news)
+
+
+def _is_nfp(dstr):
+    """NFP = primo venerdì del mese (release 8:30 ET, gappa l'apertura). Deterministico."""
+    import datetime as _dt
+    d = _dt.date.fromisoformat(dstr)
+    return d.weekday() == 4 and d.day <= 7
 
 
 # fuso del file: broker MT5 = ora server (EET); Dukascopy = UTC
@@ -52,7 +60,7 @@ def load(sym):
 
 def run(sym):
     d = load(sym)
-    H, L, C = d["high"].values, d["low"].values, d["close"].values
+    O, H, L, C = d["open"].values, d["high"].values, d["low"].values, d["close"].values
     etmin, etdate, year = d["etmin"].values, d["etdate"].values, d["year"].values
     dayrows = defaultdict(list)
     for i, dd in enumerate(etdate):
@@ -60,9 +68,18 @@ def run(sym):
 
     trades = []
     stats = defaultdict(int)
-    for dd, rows in dayrows.items():
+    prev_close = None
+    for dd in sorted(dayrows):
+        rows = dayrows[dd]
         orr = [i for i in rows if OR_START <= etmin[i] < OR_END]
         sess = [i for i in rows if OR_END <= etmin[i] < SESS_END]
+        # gap di apertura vs chiusura giorno prec (proxy shock/news, look-ahead-safe)
+        gap_pct = 0.0
+        if orr and prev_close:
+            gap_pct = (O[orr[0]] - prev_close) / prev_close * 100
+        if rows:
+            prev_close = C[rows[-1]]
+        nfp = _is_nfp(dd)
         if len(orr) < 3 or len(sess) < 3:
             continue
         stats["days"] += 1
@@ -137,7 +154,8 @@ def run(sym):
             return (RR - cR) if o == "TP" else (-1.0 - cR)
         trades.append({"date": dd, "year": int(year[f]), "side": side, "risk": risk,
                        "hold": hold, "R_pess": toR(o_p), "R_opt": toR(o_o),
-                       "tp_pess": o_p == "TP", "tp_opt": o_o == "TP"})
+                       "tp_pess": o_p == "TP", "tp_opt": o_o == "TP",
+                       "nfp": nfp, "gap_pct": abs(gap_pct)})
     return trades, stats
 
 
@@ -159,6 +177,18 @@ def report(sym, trades, stats):
               f"PF={pf:.2f}  BCa E[R] CI95=[{bca['low']:+.3f},{bca['high']:+.3f}]  "
               f"(lower>0? {'SI' if bca['low']>0 else 'NO'})")
     print(f"  break-even win-rate per 1:2 (dopo costi) ≈ 34%")
+    print("  --- FILTRO NEWS (E[R] pess) ---")
+    for label, mask in (("tutti", pd.Series(True, index=df.index)),
+                        ("no NFP", ~df["nfp"]),
+                        (f"no NFP & no gap>{GAP_THRESH}%", ~df["nfp"] & (df["gap_pct"] <= GAP_THRESH))):
+        g = df[mask]
+        if len(g) < 30:
+            print(f"    {label:26} n={len(g)} (troppo pochi)"); continue
+        R = g["R_pess"].values
+        bca = qm.bca_bootstrap_ci(R, metric=lambda x: float(np.mean(x)), conf=0.95, n_boot=2000, seed=42)
+        print(f"    {label:26} n={len(g):4}  win%={100*g['tp_pess'].mean():4.1f}  "
+              f"E[R]={R.mean():+.3f}  BCa CI=[{bca['low']:+.3f},{bca['high']:+.3f}]"
+              f"{'  <-- lower>0' if bca['low']>0 else ''}")
     print(f"  hold mediano={int(df['hold'].median())} barre M5 ({int(df['hold'].median())*5} min)  "
           f"| side: BUY={int((df.side=='BUY').sum())} SELL={int((df.side=='SELL').sum())}")
     print("  E[R] pess per anno:")
