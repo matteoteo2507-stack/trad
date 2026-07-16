@@ -40,6 +40,26 @@ def _is_nfp(dstr):
     return d.weekday() == 4 and d.day <= 7
 
 
+def adx_series(H, L, C, n=14):
+    """ADX(14) di Wilder, allineato alle barre (NaN nei primi ~2n). Vettoriale."""
+    H, L, C = np.asarray(H, float), np.asarray(L, float), np.asarray(C, float)
+    up = H[1:] - H[:-1]
+    dn = L[:-1] - L[1:]
+    plus_dm = np.where((up > dn) & (up > 0), up, 0.0)
+    minus_dm = np.where((dn > up) & (dn > 0), dn, 0.0)
+    tr = np.maximum(H[1:] - L[1:], np.maximum(np.abs(H[1:] - C[:-1]), np.abs(L[1:] - C[:-1])))
+
+    def wilder(x):
+        s = pd.Series(x).ewm(alpha=1.0 / n, adjust=False).mean().values
+        return s
+    atr = wilder(tr)
+    pdi = 100.0 * wilder(plus_dm) / np.where(atr == 0, np.nan, atr)
+    mdi = 100.0 * wilder(minus_dm) / np.where(atr == 0, np.nan, atr)
+    dx = 100.0 * np.abs(pdi - mdi) / np.where((pdi + mdi) == 0, np.nan, pdi + mdi)
+    adx = wilder(np.nan_to_num(dx))
+    return np.concatenate([[np.nan], adx])   # riallinea (perso 1 bar sul diff)
+
+
 # fuso del file: broker MT5 = ora server (EET); Dukascopy = UTC
 TZMAP = {"US100": "Europe/Bucharest", "US500": "Europe/Bucharest",
          "NAS100": "UTC", "SPX500": "UTC"}
@@ -61,6 +81,7 @@ def load(sym):
 def run(sym):
     d = load(sym)
     O, H, L, C = d["open"].values, d["high"].values, d["low"].values, d["close"].values
+    ADX = adx_series(H, L, C)
     etmin, etdate, year = d["etmin"].values, d["etdate"].values, d["year"].values
     dayrows = defaultdict(list)
     for i, dd in enumerate(etdate):
@@ -155,7 +176,8 @@ def run(sym):
         trades.append({"date": dd, "year": int(year[f]), "side": side, "risk": risk,
                        "hold": hold, "R_pess": toR(o_p), "R_opt": toR(o_o),
                        "tp_pess": o_p == "TP", "tp_opt": o_o == "TP",
-                       "nfp": nfp, "gap_pct": abs(gap_pct)})
+                       "nfp": nfp, "gap_pct": abs(gap_pct),
+                       "adx": float(ADX[sess[jbk]]) if np.isfinite(ADX[sess[jbk]]) else 0.0})
     return trades, stats
 
 
@@ -189,6 +211,22 @@ def report(sym, trades, stats):
         print(f"    {label:26} n={len(g):4}  win%={100*g['tp_pess'].mean():4.1f}  "
               f"E[R]={R.mean():+.3f}  BCa CI=[{bca['low']:+.3f},{bca['high']:+.3f}]"
               f"{'  <-- lower>0' if bca['low']>0 else ''}")
+    print("  --- FILTRO VOLATILITA' ADX(14)@conferma (E[R] pess) ---")
+
+    def _stat(g):
+        if len(g) < 30:
+            return f"n={len(g):4} (pochi)"
+        R = g["R_pess"].values
+        b = qm.bca_bootstrap_ci(R, metric=lambda x: float(np.mean(x)), conf=0.95, n_boot=1500, seed=42)
+        flag = " *" if b["low"] > 0 else ""
+        return f"n={len(g):4} win%={100*g['tp_pess'].mean():4.1f} E[R]={R.mean():+.3f} CI=[{b['low']:+.3f},{b['high']:+.3f}]{flag}"
+    news_ok = ~df["nfp"] & (df["gap_pct"] <= GAP_THRESH)
+    for thr in (0, 20, 25, 30, 35):
+        sub = df[df["adx"] >= thr]
+        print(f"    ADX>={thr:2d}  | tutti:  {_stat(sub)}")
+        print(f"             | no-news:{_stat(sub[news_ok.loc[sub.index]])}")
+    print(f"  distribuzione ADX@conferma: mediana={df['adx'].median():.0f} "
+          f"q25={df['adx'].quantile(.25):.0f} q75={df['adx'].quantile(.75):.0f}")
     print(f"  hold mediano={int(df['hold'].median())} barre M5 ({int(df['hold'].median())*5} min)  "
           f"| side: BUY={int((df.side=='BUY').sum())} SELL={int((df.side=='SELL').sum())}")
     print("  E[R] pess per anno:")
