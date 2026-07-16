@@ -11,6 +11,29 @@
 
 ---
 
+## 2026-07-16 — Opening-Range Breakout (scalping single-asset, idea utente+socio): NO-GO su 14.5y.
+
+Primo test del filone **scalping intraday single-asset**. ORB dell'apertura cash USA (09:30 ET) + retest,
+US100/US500 M5, 1:2, pre-registrato ([docs/OPENING_RANGE_PREREGISTRATION.md](docs/OPENING_RANGE_PREREGISTRATION.md)),
+motore [analysis/opening_range/](analysis/opening_range/). Verdetto: [docs/reviews/opening-range-2026-07-16.md](docs/reviews/opening-range-2026-07-16.md).
+
+**Lezione del campione:** sul broker (1.4y, 2025-26) sembrava debole-positivo (E[R]+0.073, entrambi lati+),
+ma su **Dukascopy 14.5y (2012-2026, tutti i regimi)** — richiesta utente di allungare lo storico — è
+**NEGATIVO**: NAS100 E[R] −0.056 (BCa CI [−0.11, 0.00]), SPX500 −0.137 (CI [−0.19,−0.08]). Per-anno quasi
+tutti rossi; positivi solo 2021/2026 = outlier di regime. Il +0.073 recente era **fortuna di regime**.
+Entrambi i lati negativi. Il segno si ribalta tra broker e Dukascopy sul 2025 marginale = firma di edge
+**inesistente** (E[R]≈0 → domina il rumore di feed). Filtro news (v2) improbabile che ribalti −0.1R base.
+
+**Decisione: NO-GO.** Estendere lo storico ha **corretto un falso positivo** (valore del multi-regime).
+Anche il filone scalping single-asset, testato bene, è null → coerente col resto (niente edge meccanico
+own robusto). Dati Dukascopy M5 14.5y NAS100/SPX500 e motore ORB **riusabili** per varianti pre-registrate
+future. Confermati i due binari: reddito=mentore manuale, ricchezza=passivo.
+
+**Infra nuova:** `dukascopy-python` per storico M5 lungo e gratuito su indici (2012+); backtester ORB
+tz-safe (UTC/EET → US-open). Utile per qualunque futuro test intraday su indici.
+
+---
+
 ## 2026-07-08 — Stagionalità TOM: NO-GO. Chiusa la ricerca di edge sistematici own → pivot al passivo.
 
 Terzo e **ultimo** edge sistematico. Test pre-registrato ([docs/SEASONALITY_PREREGISTRATION.md](docs/SEASONALITY_PREREGISTRATION.md)),

@@ -32,10 +32,16 @@ SESS_END = 16 * 60                            # 16:00 ET
 MAX_HOLD = 288 * 5    # barre M5 di holding max (~5 giorni)
 
 
+# fuso del file: broker MT5 = ora server (EET); Dukascopy = UTC
+TZMAP = {"US100": "Europe/Bucharest", "US500": "Europe/Bucharest",
+         "NAS100": "UTC", "SPX500": "UTC"}
+
+
 def load(sym):
     d = pd.read_csv(os.path.join(DATA, f"{sym}_M5.csv"), parse_dates=["time"]).set_index("time")
     d = d[~d.index.duplicated(keep="last")].sort_index()
-    et = d.index.tz_localize("Europe/Bucharest", ambiguous="NaT", nonexistent="NaT").tz_convert("America/New_York")
+    et = d.index.tz_localize(TZMAP.get(sym, "UTC"), ambiguous="NaT",
+                             nonexistent="NaT").tz_convert("America/New_York")
     keep = et.notna()
     d = d[keep]; et = et[keep]
     d["etdate"] = et.strftime("%Y-%m-%d")
