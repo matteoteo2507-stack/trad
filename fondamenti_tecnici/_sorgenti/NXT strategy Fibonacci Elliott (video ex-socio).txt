@@ -1,0 +1,93 @@
+FONTE: estratto video di un ex-socio dell'utente che spiega la strategia "NXT".
+Catturato lossless 2026-07-17. Presentatore dichiara 7 anni di esperienza.
+Triage/verdetto in strategie_candidate/nxt_fib_trend_pullback.md.
+
+====================================================================
+
+# Simplified Trading Strategy Using Fibonacci and Elliott Waves for Consistent Profitability
+
+This video explains a **mechanical, time-efficient trading strategy** designed to overcome common beginner hurdles: complexity and the need for advanced skills. The presenter, with 7 years of market experience, shares a systematic approach combining Fibonacci retracements/extensions and Elliott Wave theory to trade primarily on trend direction with a clear risk-to-reward setup.
+
+## 1. Key Challenges in Trading Addressed by the Strategy
+
+The strategy is developed to solve two main problems traders face:
+
+- Trading is often perceived as too complicated and time-consuming, requiring constant chart monitoring.
+- Trading demands extensive knowledge of complex market terms and techniques, discouraging many beginners.
+
+**This system aims to be both simple and systematic**, using clearly defined steps and mechanical rules that reduce discretionary errors and time spent watching screens.
+
+## 2. Core Tools and Concepts of the Strategy
+
+The approach revolves around three main technical tools integrated into a strategic workflow:
+
+- **Fibonacci Retracement:** Used to identify key price reaction zones between $0.5$ and $0.66$ levels (with important sub-levels at $0.382$, $0.5$, $0.618$, and $0.786$).
+- **Fibonacci Extension:** Used to project probable price targets (point C) beyond the retracement, mainly focusing on extension levels like $1.618$, $1.89$, and $2.0$.
+- **Elliott Waves:** Applied as a conceptual framework where the market moves in waves of expansion, retracement, and further expansion, helping to visualize price sequences and trend direction without complex wave counting.
+
+**The market's movement in waves allows the trader to identify specific "checkpoints" for entries and exits.**
+
+## 3. Understanding Market Movement and Trends
+
+- The market moves in cycles of expansions and retracements.
+- Trends are identified by observing **higher highs and higher lows in uptrends** or **lower highs and lower lows in downtrends**.
+- Trading aligns with the prevailing trend to avoid difficulties associated with counter-trend trades.
+- Important price levels are treated as psychological zones controlled by trader behavior.
+
+## 4. Step-by-Step Commandments of the Strategy
+
+Seven systematic steps form the checklist for trade setups, plus one bonus step related to trade management:
+
+| Step | Action                                                                                   |
+|-------|----------------------------------------------------------------------------------------|
+| 1     | Identify a significant starting point: a major swing low for long trades or high for shorts (point $0$). |
+| 2     | Draw Fibonacci retracement from point $0$ to the point where the retracement ends (point B). Set key levels between $0.5$ and $0.66$. |
+| 3     | Wait for breakout of point A (retracement level) to confirm bullish/bearish continuation. Break of point A signals trade eligibility. |
+| 4     | Use Fibonacci extension from points $0$, A, and B to identify potential target zone (point C) around key levels $1.618$, $1.89$, $2.0$. |
+| 5     | Upon breakout confirmation, draw a new retracement from point B to the next retracement (forming BC zone). |
+| 6     | Plan trade entry around the $0.5$ retracement within BC zone. Set stop-loss below $0.786$ retracement level to minimize losses. |
+| 7     | Target a risk-reward ratio of **1:3** to maximize profitability and allow room for multiple trades even with some losses. |
+| 8 (Bonus) | Move stop-loss to break-even once price reaches 1:2 reward level to protect capital and avoid drawdowns. |
+
+**The strategy emphasizes mechanical rules and statistical probabilities without reliance on guesswork.**
+
+## 5. Trading Timeframes and Execution Practicalities
+
+- Strategy can be applied to any timeframe: weekly, daily, 4-hour, hourly, or even 1-minute charts depending on trader availability and preferred trade speed.
+- Longer timeframes require less monitoring but longer waits; shorter timeframes are more active but require closer attention.
+- Typically, the presenter uses the **hourly (H1) timeframe** for examples due to balance between frequency and clarity.
+
+## 6. Real Chart Examples and Observations
+
+- Start with a daily or higher timeframe to find a major pivot (swing high or low).
+- Drop down to H1 or M30 for precise retracement identification.
+- Identify valid retracement areas (point B) using Fibonacci levels.
+- Confirm trade when price breaks point A.
+- Define target with Fibonacci extension (point C).
+- Draw subsequent retracements for new BC zones to place trades following the checklist.
+- Monitor weekly market closes and avoid trading on Fridays due to the risk of unpredictable Monday openings.
+- Acknowledge that not all sequences will develop or lead to valid entries; only proceed when the checklist criteria are fully met.
+
+## 7. Advantages and Risk Management of the Strategy
+
+- **Mechanical and low time commitment:** Trades take time to develop, so daily monitoring suffices.
+- **Risk Reward Ratio:** 1:3 setup allows recovery from multiple losing trades.
+- **High win rate potential:** Around **60-70% profitable trades out of 10**, based on adherence to rules.
+- **Drawdown control:** Use of trailing stop loss to break-even after partial profit improves capital preservation.
+- **Flexibility:** Applicable across multiple markets and adaptable timeframes.
+- **No dependency on signals or external groups:** Entire process is self-managed based on objective technical criteria.
+
+## 8. Limitations and Considerations
+
+- Requires **consistent practice and discipline** to apply the full checklist.
+- Not every price movement will produce a valid sequence or trade opportunity.
+- Losses are expected but controlled by risk management.
+- Avoid trading near week's end; market gaps can invalidate positions.
+- Statistical edge means some trades fail; consistent application is key.
+
+## Summary Table of Key Fibonacci Levels
+
+| Type                | Important Levels                   | Purpose                        |
+|---------------------|----------------------------------|-------------------------------|
+| Fibonacci Retracement| $0.382$, $0.5$, $0.559$, $0.618$, $0.66$, $0.786$ | Identify reaction zones and potential entry areas (Point B, BC) |
+| Fibonacci Extension | $1.618$, $1.89$, $2.0$           | Define realistic target zones (Point C) for trade exits          |
