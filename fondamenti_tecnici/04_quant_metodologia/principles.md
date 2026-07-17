@@ -63,6 +63,12 @@ Procedura raccomandata contro l'overfitting:
 
 Riduce la probabilità di overfitting e produce set di parametri più robusti. Implementato in [`walk_forward`](../../core/quant_metrics.py) (anchored e rolling); il protocollo richiede OOS **mai sotto il 20%** del sample e misura il **degrado** IS→OOS come metrica di verdict.
 
+**Dominio di validità (mappa dei modelli).** Il walk-forward valida la **persistenza di un edge** su regimi già visti; **non** predice il **timing di un evento di coda inedito** (il 2008 non era nel walk-forward del 2007). Sono due domande diverse e non vanno confuse:
+- *"Questa strategia regge fuori campione / cambia regime?"* → sì, è il lavoro del walk-forward (e dell'holdout: vedi [[feedback_backtest_long_history_falsification|storico=laboratorio di falsificazione]]).
+- *"Sopravvivrò al prossimo crash?"* → **no backtest lo certifica**; è una questione di **posizionamento per la sopravvivenza** (hedge/optionality), non di predizione (vedi [[05_portfolio_rischio]] §Tail risk).
+
+Non è "il walk-forward è inutile" (falso, ci ha appena salvati sull'ORB): è che lo storico serve a **falsificare** un edge, non a promettere immunità dai tail. Domìni separati, entrambi necessari.
+
 ### 5. Costi di transazione, spread, slippage (secondari)
 
 Considerazioni reali ma **non bias core**: costi di transazione, impatto bid-ask spread, slippage di mercato. Erodono l'equity curve. Ma sono **secondari**: se una strategia non è viabile dopo aver corretto i 3 bias, aggiungere i costi non fa che peggiorare il quadro. Vanno comunque modellati (lo Step 5 del protocollo verifica spread variabile, slippage 2× su stop, commissioni, swap, lot rounding).
@@ -102,6 +108,14 @@ stride-sampled (non sovrapposta)** e confrontala con quella overlapping; tratta 
 non-sovrapposta. Si lega al nostro **`n_eff` via block-bootstrap** (skill backtest): N osservazioni
 clusterate ≠ N indipendenti.
 
+### 8. CAGR come test di plausibilità (BS-test) + Rule of 72
+
+Il **CAGR** (crescita composta annua: il tasso costante che replica il valore finale da quello iniziale) non predice il futuro, ma è un potente **test di plausibilità** su claim di performance. Comprimendo la crescita composta su decadi, smaschera i numeri impossibili: molti claim di day-trading ("+X% al mese"), composti per anni, producono ricchezze terminali che **superano la ricchezza globale** — quindi sono esagerati o fabbricati. È il cugino long-horizon del nostro "Sharpe retail > 3 = quasi certo errore".
+
+- Benchmark di realtà: l'**S&P 500** ha un CAGR reale (inflation-adjusted) storico di **~7.5%/anno**. Un edge che implica CAGR molto sopra questo, sostenuto per anni, richiede prove straordinarie.
+- **Rule of 72**: anni per raddoppiare $\approx 72/\text{CAGR}\%$. A 7.5% → ~9.6 anni per il ×2, ~19 per il ×4, ~29 per il ×8. Modello mentale rapido per sentire se un claim di raddoppio è realistico.
+- Caveat: il CAGR **liscia la volatilità** e assume reinvestimento allo stesso tasso → misura crescita passata, non rischio né garanzia futura. Da leggere sempre col volatility drag e il drawdown accanto (vedi [[05_portfolio_rischio]]).
+
 ## Regole operative
 
 - **Sharpe primario, max drawdown secondario.** Lo Sharpe è la metrica di test principale; il max DD è di contorno. Ma lo Sharpe assume return normali — affianca sempre Sortino/Calmar/CVaR/Ulcer e, per leggere code e asimmetria senza assumere normalità, **Omega** ([`omega_ratio`](../../core/quant_metrics.py)) e **Tail ratio** ([`tail_ratio`](../../core/quant_metrics.py)). Quando esiste un benchmark di riferimento (es. buy&hold dell'asset), usa le metriche relative — alpha, beta, information ratio, tracking error, R² ([`benchmark_metrics`](../../core/quant_metrics.py)) — per distinguere edge reale da semplice esposizione direzionale.
@@ -112,6 +126,7 @@ clusterate ≠ N indipendenti.
 - **Instabilità parametrica = NO-GO.** Se piccole variazioni dei parametri ribaltano la performance, il modello è overfit.
 - **Universo dinamico per equity**: includi delisted/falliti al timestep T.
 - **Onere della prova sulla strategia**: in caso di verdict ambiguo, default a NO-GO.
+- **CAGR come BS-test**: prima di credere a un claim, componilo su anni con la Rule of 72; se implica CAGR ≫ ~7.5% reale sostenuto a lungo, pretendi prove straordinarie. Il walk-forward valida la persistenza dell'edge, **non** immunizza dai tail (posizionati per sopravvivere, non predici).
 - **Soglie operative** (vedi protocollo): PBO < 15% accettabile, > 30% sospetto, > 50% random; DSR significativo al 95%; degrado OOS < 30% per GO; < 50 trade IS = INSUFFICIENT DATA.
 
 ## Collegamenti
@@ -127,3 +142,4 @@ clusterate ≠ N indipendenti.
 ## Fonti
 
 - `_sorgenti/Quant backtest notes.txt` (~95 righe) — distillato fedele: i 3 bias cardinali, esempi (Sharpe ~3→crollo per look-ahead; MA (7,12) IS positivo / OOS ~ -1.8; aerei WWII per survivorship), walk-forward, costi secondari, metafora "scena del crimine".
+- `_sorgenti/Nuove nozioni teoriche 2026-07-16.txt` (Quant Guild) — tasselli distillati qui: **CAGR come BS-test + Rule of 72** (§8) e il **caveat sul dominio del walk-forward** (valida persistenza edge, non predice tail; §4). Il grosso del file (portfolio/rischio/tail) è distillato in [[05_portfolio_rischio]]. Tracciato in [`_INTAKE.md`](../_INTAKE.md).

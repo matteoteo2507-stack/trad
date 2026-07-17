@@ -64,6 +64,12 @@ La diversificazione classica (più titoli, più settori) fallisce nelle crisi pe
 - **Indipendenza fisica**: il payoff si determina per un meccanismo causale diverso (es. l'esito di un prediction market politico non dipende dal ciclo macro; il trend-following su futures non dipende dalla direzione spot dell'azionario).
 - **Indipendenza stocastica**: $R^2 \approx 0$ regredendo uno stream sull'altro (CAPM cross-stream).
 
+**Perché $\rho<1$ aiuta, meccanicamente** (senza backtest). Per due asset $A,B$ con pesi $W$ e $Q=1-W$, la varianza di portafoglio si decompone in tre termini:
+
+$$\mathrm{Var}(R_P) = W^2\sigma_A^2 + Q^2\sigma_B^2 + 2WQ\,\rho_{AB}\,\sigma_A\sigma_B$$
+
+Finché $\rho_{AB}<1$ il terzo termine è **sub-additivo**: la varianza combinata è **minore** della somma pesata delle varianze individuali → $\sigma_P$ scende → lo Sharpe $\mathbb E[R_P]/\sigma_P$ sale **per pura algebra**, senza toccare i rendimenti. Ridurre la correlazione è la **leva meccanica** sul rischio (più facile e affidabile che inseguire rendimento). Ma il termine è affidabile solo se $\rho$ è **stabile**: l'indipendenza *fisica* garantisce $\rho\approx 0$ anche in crisi; quella solo *stocastica* può saltare proprio quando serve (correlazioni→1). È la giustificazione formale della preferenza per stream fisicamente indipendenti.
+
 Esempio canonico (managed futures): il beta azionario (SPY) e il trend-following su futures gestiti (DBMF/KMLM) hanno $R^2 \approx 0$ tra loro. Da solo il trend-following ha Sharpe e crescita molto inferiori; ma **combinato** abbassa il max drawdown del portafoglio in modo marcato. E qui si chiude il cerchio col volatility drag: **drawdown più basso = meno variance drain = miglior crescita geometrica**, anche a parità (o lieve calo) di media aritmetica. Una "sleeve" perfino a crescita geometrica **negativa**, se anti-correlata nei momenti giusti (convexity/hedge), può **alzare** la crescita geometrica del combinato — risultato controintuitivo ma corretto.
 
 ⚠️ **Caveat di evidenza** (coerente con la nota in [[08_asset_allocation_passiva]]): il **concetto** è solido e ben fondato; le **ricette commerciali** che lo accompagnano ("leva + hedge leg che batte SPY con meno drawdown") sono tipicamente supportate da **un singolo backtest in-sample a 5 anni, senza walk-forward né out-of-sample** → trattare l'idea come **principio di costruzione**, non i numeri come evidenza robusta. Il modo corretto di usarla: misurare la correlazione/$R^2$ tra i propri stream **reali** (forward, non backtest curve-fit) e chiedersi se aggiungere uno stream **abbassa il drawdown combinato**.
@@ -85,6 +91,20 @@ regime/timing**:
 Non è una contraddizione: è la stessa cosa vista in regimi diversi → caso scuola della dottrina
 [Mappa dei modelli](../../DECISIONS.md). Per noi: **reference, non operativo**. Fonte in
 `_sorgenti/NOZIONI AGGIUNTIVE.txt`.
+
+### Tail risk: regime-condizionale, non-predicibile → posizionamento per la sopravvivenza
+
+Chiude il cerchio di volatility drag + convexity dal lato del **rischio di coda**, e si aggancia direttamente alla non-stazionarietà (vedi [[03_regimi_macro]] e il principio [[feedback_backtest_long_history_falsification|storico=laboratorio di falsificazione]]).
+
+1. **I modelli parametrici statici sottostimano le code di ordini di grandezza.** Assumere rendimenti normali è l'errore cardinale: le distribuzioni reali sono **leptocurtiche** (fat tails, excess kurtosis). Su 25 anni di SPY ci sono ~19 "black swan"; un modello normale ne predirebbe **uno ogni ~7.000 anni**. La distanza tra "1 ogni 7.000 anni" e "19 in 25 anni" è la misura del fallimento del modello — ed è il motivo per cui lo Sharpe (che assume normalità) va sempre affiancato da metriche di coda (CVaR, Omega, tail ratio — vedi [[04_quant_metodologia]]).
+
+2. **La probabilità di coda è condizionale al regime, non costante.** Con un modello di volatilità tipo **GARCH(1,1)** che segmenta il mercato in regimi (bassa/media/alta vol, volatility clustering), la stessa "coda" che in regime calmo pare 1-ogni-7.000-anni diventa **~1 ogni 12 giorni** in regime ad alta volatilità. Il rischio non è spalmato uniformemente: si **addensa nei regimi agitati**. Questo è coerente con la nostra [[03_regimi_macro|logica di gating per regime]] e con il volatility drag (le code sono ciò che gonfia $\sigma^2$).
+
+3. **Predire *quando* arriva il crash è impossibile; il walk-forward non salva dai tail inediti.** Ogni black swan è strutturalmente nuovo (il 2008 non era nel walk-forward del 2007). Il walk-forward valida la **persistenza di un edge**, non predice il **timing di un evento di coda** — sono due domande diverse (vedi il caveat in [[04_quant_metodologia]]). Corollario onesto: nessun backtest, per quanto lungo, "certifica" la sopravvivenza alla prossima crisi.
+
+4. **Quindi l'obiettivo è posizionarsi per sopravvivere, non prevedere.** Metafora dell'assicurazione auto: non ti aspetti l'incidente, ma paghi la copertura perché l'evento è inevitabile su orizzonte lungo. Un portafoglio **hedgiato** conserva capitale nel drawdown → non è forzato a vendere sui minimi → mantiene **optionality per comprare a saldo** post-crash. E qui si richiude col volatility drag: **meno drawdown = meno variance drain = miglior crescita geometrica**, anche sacrificando un po' di upside. È lo stesso motore della convexity sleeve (§Orthogonal streams / VRP), letto dal lato survival.
+
+⚠️ **Caveat coerente col resto del modulo**: il **principio** (code fat, regime-condizionali, survival-over-prediction, hedge che alza il geometrico) è solido; le **ricette** di hedging vendute con esso vanno passate dagli stessi gate di evidenza (walk-forward, OOS, no singolo backtest in-sample). Concetto = principio di costruzione; numeri = non evidenza robusta finché non validati forward.
 
 ### PCA / spectral decomposition
 
@@ -150,6 +170,8 @@ L'obiettivo non è "battere il mercato" ma **targettizzare le esposizioni ai fat
 - **Dimensiona con consapevolezza del drag**: Kelly frazionario, e ricorda che trade correlati/clusterati (stessa sessione, stesso regime) riducono la frazione ottimale **sotto** il Kelly calcolato come iid.
 - **Per abbassare il drawdown (e quindi alzare il geometrico) cerca stream ortogonali** ($R^2\approx 0$), non più asset della stessa famiglia. Valuta una strategia per il suo **contributo marginale** al drawdown/crescita del book combinato, non per lo Sharpe standalone.
 - **Non confondere il concetto valido (drag, ortogonalità) con le ricette levered-hedge da singolo backtest**: il primo è principio, le seconde non sono evidenza robusta.
+- **Mai assumere code normali.** Lo Sharpe presuppone normalità → affianca sempre metriche di coda (CVaR/Omega/tail ratio). La probabilità di tail è condizionale al regime: alta-vol ≠ calma di ordini di grandezza.
+- **Posizionati per sopravvivere, non per prevedere.** Il timing dei crash non è predicibile e nessun backtest lo certifica; progetta perché un tail non ti forzi a vendere sui minimi (hedge/optionality → meno drawdown → miglior geometrico).
 
 ## Collegamenti
 
@@ -163,3 +185,4 @@ L'obiettivo non è "battere il mercato" ma **targettizzare le esposizioni ai fat
 
 - `_sorgenti/quantportfolio managernotes.txt` (~righe 1-152) — note da video "Quant Portfolio Manager" (materiali Quant Guild / quantguild.com). La parte successiva del file (gamma exposure / Argo) non è inclusa in questo documento.
 - `_sorgenti/NOZIONI AGGIUNTIVE.txt` — trascrizioni Roman Paolucci / Quant Guild su **volatility drag** (derivazione $R_G \approx \bar R - \sigma^2/2$), **orthogonal return streams** (game-vs-players, SPY+DBMF, convexity sleeve) e **volatility risk premium** (IV vs RV, smile, vendi-vs-compra assicurazione). Stessa scuola del file sopra. Tracciato in [`_INTAKE.md`](../_INTAKE.md).
+- `_sorgenti/Nuove nozioni teoriche 2026-07-16.txt` — stessa scuola (Quant Guild). **Nuovi tasselli distillati qui**: decomposizione algebrica della varianza a 2 asset ($\mathrm{Var}(R_P)=W^2\sigma_A^2+Q^2\sigma_B^2+2WQ\rho\sigma_A\sigma_B$, sub-additività per $\rho<1$) e **tail risk regime-condizionale + survival-over-prediction** (fat tails, normale sottostima ~7.000×, GARCH(1,1)→coda ~1/12gg in alta-vol, hedge/optionality). Blocchi CAGR/EMH/CAPM del file = **rinforzo** di materiale già presente (non ri-distillato). Blocco 1 (market update semiconduttori) = **parcheggiato** (tattico). Tracciato in [`_INTAKE.md`](../_INTAKE.md).
