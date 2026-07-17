@@ -128,6 +128,7 @@ Linguaggio principale **Python 3.11+**; TS solo se imposto da repo esterni (es. 
 | `tradingview-mcp` | MCP TradingView — **valutato e rimandato** (legge solo Pine, non drawings) |
 | `second-brain` / `claudian` | Knowledge base Obsidian + Claude (collegabile al vault) |
 | `deep-research` / `GenericAgent` / `ml-intern` / `skills` / `andrej-karpathy-skills` / `context-mode` / `GitNexus` | Tooling AI/agent generico (riferimento) |
+| `data-science-ipython-notebooks` (donnemartin) | Notebook didattici pandas/numpy/scikit-learn — base per analisi dati / backtest / stock scanner. **Non clonata** (107 MB, ri-clonabile al bisogno). Aggiunta 2026-06-22. |
 
 Repo non pertinenti al trading: `uBlock`, `awesome`, `actual-backend-app`, `app1`, `Fix-Your-Errors`.
 
