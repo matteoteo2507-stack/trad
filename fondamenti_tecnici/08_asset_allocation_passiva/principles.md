@@ -189,6 +189,26 @@ La fonte include una sezione che propone l'uso di un ETF alternativo (KMLM, tren
 
 ---
 
+### Decenni persi, sequence risk e aspettative valuation-aware
+
+I **decenni persi** (10+ anni a rendimento reale ~0 o negativo) sono reali e ricorrenti: US reale ~0% nel 1929-1954 (25y), 1966-1982 (16y), 2000-2013 (13y); Italia e Giappone peggio e più spesso. Non cambiano il **meccanismo** del PAC passivo — ne cambiano **aspettative** e **parametri**, e sono un argomento **contro** il market timing, non a favore.
+
+**1. "Decennio perso" è una statistica da *lump sum*; il DCA la riscrive.** Il numero spaventoso ("2000-2013: ~0% reale") misura *entri tutto al picco e tieni*. Un PAC compra **durante** il decennio perso a prezzi decrescenti: in fase di **accumulo** un decennio perso è un **regalo** (acquisti a saldo, prezzo medio di carico più basso), non una minaccia. Rovescio: vale all'inizio (portafoglio piccolo vs contributi); **alla fine** (portafoglio grande, contributi trascurabili) il decennio perso ridiventa rischio lump-sum — è il **sequence risk** in decumulo, che è esattamente ciò che il **glide-path** indirizza.
+
+**2. Diversificazione globale = mitigazione diretta (anti-home-bias).** I decenni persi di Italia e Giappone furono **locali**. L'**All-World** annega il rischio-paese: è un argomento forte contro il "solo S&P500" e contro l'home bias. Conferma la scelta core già nel piano.
+
+**3. Aspettative di rendimento reale conservative.** CAPE oggi in area 99° percentile → **non estrapolare** i double-digit recenti. Pianifica contributi/orizzonte/ricchezza terminale con un **reale atteso basso (≈3-4%, non 7%)**. Il CAPE ha correlazione debole coi rendimenti a 10-15y (~0.24-0.33): sposta le **aspettative**, **non** permette il **timing** (la fonte stessa lo dice).
+
+**4. Il market timing (uscita sotto MM200) va RIFIUTATO nel pilastro passivo.** Motivi, coerenti col resto del repo:
+- **Regime-dependent** (stessa trappola di non-stazionarietà dell'ORB): la fonte ammette che il timing vince 1950-80, buy&hold vince 2006-2023 — vincitore che dipende dal campione = non è edge.
+- **Velenoso fiscalmente per un PAC italiano**: ogni uscita/rientro realizza plus al **26%** + spread + whipsaw; il timing 200-MA è marginale-o-negativo **dopo costi e tasse** OOS.
+- **La fonte si auto-confuta**: giorni migliori e peggiori sono **clusterati** nei bear (90% dei 20 migliori sotto la MM200) → uscire ti fa perdere i rimbalzi. È un argomento *contro* il timing.
+- **Principio**: al rischio di coda/decennio perso si risponde con **posizionamento, non predizione** ([[05_portfolio_rischio]] §Tail risk, survival-over-prediction). Allocazione + buffer + glide-path + diversificazione geografica = posizionamento. Il pilastro passivo **è già** la risposta.
+
+**5. Take-away comportamentale = input personale (cat. A).** Scegli una quota azionaria che reggi *attraverso* un −50% / 10 anni piatti. Il decennio perso è lo stress-test mentale con cui tarare quel numero — non un motivo per fare 100% equity per default né per uscire nei ribassi.
+
+---
+
 ## Regole operative
 
 - Scegli il domicilio Irlanda per ETF UCITS con esposizione USA: WHT al 15% invece del 30%.
@@ -202,6 +222,9 @@ La fonte include una sezione che propone l'uso di un ETF alternativo (KMLM, tren
 - Il petrodollaro non e un rischio operativo per l'investitore passivo: la dominanza USD dipende da fattori strutturali profondi, non dal pricing del petrolio.
 - DCA: investi solo quello che puoi mantenere anche in un anno di perdite. Il buffer non si tocca.
 - Riduci il rischio progressivamente con il glide-path, non bruscamente a ridosso dell'obiettivo.
+- **Pianifica con rendimenti reali conservativi** (≈3-4%, non 7%): CAPE alto → non estrapolare i double-digit recenti. Il decennio perso è lo scenario da mettere in conto, non da ignorare.
+- **No market timing sul pilastro passivo** (MM200 & simili): regime-dependent, tasse IT 26% su ogni rientro, e i giorni migliori sono clusterati coi peggiori. Rispondi al rischio con posizionamento (allocazione/buffer/glide-path/All-World), non con predizione.
+- **In accumulo un decennio perso è un vantaggio** (DCA a saldo): non fermare i versamenti. Il sequence risk vero è a fine corsa → lo copre il glide-path.
 
 ## Collegamenti
 
@@ -214,3 +237,4 @@ La fonte include una sezione che propone l'uso di un ETF alternativo (KMLM, tren
 ## Fonti
 
 - `_sorgenti/Petrodollar ed ETF.txt` — trascrizione di piu video su ETF (scelta issuer, replicazione, UCITS, domicilio, fiscalita IT, All-World vs USA vs EM, bond, glide-path), sezione portfolio engineering con hedge leg (KMLM/SPY), e debunk del petrodollaro (accordi 1974 FOIA, Eurodollari, scala mercati FX vs petrolio).
+- `_sorgenti/Lost Decades PAC (video).txt` — decenni persi (US 1929-54/1966-82/2000-13 reale ~0%; Italia/Giappone peggio), matematica del recupero, CAPE (corr. debole 0.24-0.33), fallacia dei "best days" (clusterati coi worst sotto MM200), timing MM200 vs buy&hold. Distillato nella sez. "Decenni persi": rinforza il PAC (All-World/buffer/glide-path), aggiunge tarature real-return conservative, RIFIUTA il market timing per il PAC italiano. Tracciato in [`_INTAKE.md`](../_INTAKE.md).

@@ -1,0 +1,107 @@
+FONTE: estratto video divulgativo su "lost decades" (decenni persi) nel mercato azionario.
+Catturato lossless 2026-07-18. Rilevante per il pilastro investing passivo (PAC).
+Triage/distillazione: fondamenti_tecnici/08_asset_allocation_passiva/principles.md (sez. "Decenni persi").
+Verdetto d'impatto: RINFORZA il PAC passivo (All-World, buffer, glide-path); la proposta di
+market timing 200-MA e' da RIFIUTARE per un PAC italiano tassabile (vedi distillazione).
+
+====================================================================
+
+# Understanding Lost Decades in Stock Market Investing
+
+the concept of "lost decades"—periods where investors face near-zero or negative real returns over 10 years despite careful investing. It highlights historical occurrences, market mechanics behind these phenomena, and practical implications for today's investors. The analysis combines historical data, financial theory, and pragmatic guidance, challenging common assumptions about market behavior and risk tolerance.
+
+## 1. Introduction to Lost Decades [00:00:00]
+
+A new investor's typical journey starts with confidence: an opened brokerage account, an asset allocation crafted with extensive research, and funds ready to invest. However, markets may crash soon after, wiping out 10-50% of value, and recovery can be agonizingly slow.
+
+- Lost decades refer to 10-year periods with zero or negative nominal returns, sometimes even longer.
+- These periods are not hypothetical—they have occurred repeatedly throughout history across global markets.
+- Many retail investors, especially recent entrants who haven't experienced such downturns, may be unprepared for these realities.
+
+## 2. What Defines a Lost Decade? [00:03:37]
+
+To objectively define a lost decade:
+- Investing at a given point and holding for 10 years results in cumulative returns near zero or less.
+- Analysis should consider multiple markets globally to understand scope and frequency.
+
+## 3. Historical Evidence of Lost Decades [00:04:08]
+
+Indici: MSCI Global Equity Index, MSCI USA, MSCI Italy, MSCI Japan.
+- Global & USA: some lost decades, but relatively fewer and milder.
+- Italy & Japan: multiple prolonged periods of near-zero or negative returns, more frequent and severe.
+
+## 4. Real vs. Nominal Returns: The Inflation Effect [00:06:02]
+
+Real zero-return periods (US): 1929-1954 (25y), 1966-1982 (16y), 2000-2013 (13y).
+Misurare solo i nominali sottostima l'impatto dei decenni persi.
+
+## 5. Market Psychology and Early Success [00:07:02]
+
+Guadagni rapidi iniziali -> overconfidence. Bias emotivo e fraintendimento dei cicli.
+Cautela contro servizi di trading inaffidabili. (Endorsement Fineco.)
+
+## 6. Why Do Lost Decades Occur? Mathematical Explanation [00:08:58]
+
+- Perdita 50% richiede +100% per pareggiare; 60% -> +150%; 70% -> ~+200%.
+- Con rendimenti medi ~5-7%, recuperare grandi drawdown richiede molti anni.
+  30% -> +43% (~7y a 5%); 50% -> +100% (~10y a 7%); 60% -> +150% (15+y).
+- I mercati scendono piu velocemente di quanto salgano -> lunghe stagnazioni.
+
+## 7. Role of Valuations and Their Limitations [00:10:30]
+
+- Valutazioni alte (CAPE 99° percentile) spesso precedono i decenni persi.
+- Correlazione CAPE vs rendimenti a 10-15 anni positiva ma bassa (~0.24-0.33): potere predittivo debole.
+- Le valutazioni contano ma non permettono di fare timing da sole.
+
+## 8. The Fallacy of Missing Best Market Days [00:11:59]
+
+- Argomento comune: restare investiti batte il perdere i migliori 5 giorni.
+- Verita': i giorni migliori e peggiori si CLUSTERANO nei bear market.
+  - 90% dei 20 giorni migliori: indice sotto la media mobile 200.
+  - 95%+ dei 20 giorni peggiori: anch'essi in fasi di ribasso.
+- Provare a fare timing per evitare i bear rischia di perdere i giorni di rimbalzo migliori.
+
+## 9. Market Timing Strategy and Its Pros & Cons [00:16:33]
+
+Confronto dal 1950:
+- Buy & Hold: passivo; rendimenti superiori nei lunghi bull (specie post-2008), ma esposto a tutti i drawdown.
+- Market Timing (uscita sotto MM200): drawdown/rischio minori, ma rendimenti ridotti (specie nei lunghi bull); costi di transazione e tasse aggiuntivi.
+- Timing ha ridotto le perdite nelle crisi anni 70-80; il bull post-2006 ha favorito buy&hold.
+
+## 10. Role of Market Breadth Indicators [00:20:13]
+
+- Breadth = % di titoli sopra/sotto la MM200.
+- Combinare valutazioni + breadth puo segnalare cambi di regime meglio della sola valutazione.
+- Nonostante i falsi segnali, agire su segnali combinati puo aiutare a evitare i decenni persi con un margine d'errore.
+
+## 11. Implications for Modern Investors [00:22:03]
+
+- Valutazioni attuali molto alte -> consapevolezza del rischio di decenni persi.
+- La mentalita' "10 anni di doppia cifra = norma" e' fuorviante.
+- Investire con consapevolezza della propria tolleranza al rischio e preparazione mentale a stagnazione/drawdown.
+- 100% equity per default sulla base della performance passata puo portare a distress nei decenni persi.
+
+## 12. Final Reflection and Call to Action [00:23:56]
+
+- Valutare seriamente la possibilita' di vivere un decennio perso.
+- Esame consapevole dell'approccio e della capacita' emotiva di resistere ai mercati difficili.
+
+# Key Insights
+- I decenni persi sono reali, documentati, ricorrenti.
+- Recuperare da grandi ribassi e' matematicamente lento (anni/decenni).
+- Valutazioni alte aumentano il rischio ma non garantiscono l'esito; nessun predittore e' perfetto.
+- Il market timing riduce il rischio ma a costo di guadagni persi e complessita'.
+- Gli indicatori di breadth completano le valutazioni.
+- Mindset e tolleranza al rischio sono critici.
+- La performance recente non deve creare compiacenza.
+
+# Timeline (U.S., real terms)
+1929-1954: Grande Depressione e recupero lento, 25y, ~0% reale.
+1966-1982: Stagflazione, 16y, ~0% reale.
+2000-2013: Dot-com bust + GFC, 13y, ~0% reale.
+
+# Strategy Performance Over 20-Year Windows [00:18:19]
+1950-1970: Market Timing rendimenti piu alti.
+1970s-80s: Market Timing outperformed (crisi).
+2006-2023: Buy & Hold rendimenti piu alti (lungo bull).
+Rischio: Timing drawdown consistentemente minori (dimezzati o piu); Buy&Hold piu volatile.
