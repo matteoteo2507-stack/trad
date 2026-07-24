@@ -68,6 +68,10 @@ Se il live arriva **molto sotto** questi numeri (es. win < 25%, E[R] ≤ 0), il 
 3. **Registrare OGNI setup** (anche quelli saltati e i perdenti) con: strumento, data, direzione, entrata, esito in R. Serve per calcolare win rate ed E[R] reali e confrontarli col backtest.
 4. **Coerenza nel marcare gli swing**: la parte più soggettiva è l'identificazione della gamba. Attenersi rigidamente alla regola delle 5 barre per non introdurre discrezionalità (è ciò che rende il test onesto).
 
+## Raccolta automatica (preferita) — EA MQL5
+
+Per evitare il journaling manuale (tempo + precisione), la strategia è codificata come Expert Advisor: [`mql5/nxt_fade.mq5`](../../mql5/nxt_fade.mq5). Gira su MT5 (demo, VPS), esegue meccanicamente e **lo storico MT5 È la raccolta** — nessun log a mano, nessuna deriva discrezionale nel marcaggio degli swing. Setup e cross-check obbligatorio in [`mql5/README.md`](../../mql5/README.md). Questo documento resta la spec leggibile/di riferimento; l'EA è l'esecuzione.
+
 ## Status onesto (perché lo testiamo così)
 
 Questa variante è stata **trovata analizzando i dati** (invertendo una strategia che perdeva). Ha superato l'holdout interno e lo stress sui costi, ma **non** una validazione indipendente in avanti — ed è esattamente ciò a cui serve questo walk-forward live. Finché non regge in forward reale, resta un'**ipotesi**, non un edge da capitalizzare. Nessuna promessa: solo un test pulito.

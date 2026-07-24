@@ -16,12 +16,65 @@ sezione "PIVOT ARCHITETTURALE". In sintesi:
 
 ```
 mql5/
-├── london_breakout.mq5         # EA principale (Stage 2.5)
+├── london_breakout.mq5         # EA London Breakout (Stage 2.5) — NO-GO, storico
+├── tsmom_jpy.mq5               # EA TSMOM JPY — NO-GO, storico
+├── nxt_fade.mq5                # EA fade mean-reversion — WALK-FORWARD LIVE (attivo)
 ├── include/
 │   ├── telegram.mqh            # Helper WebRequest per inviare messaggi Telegram
 │   └── helpers.mqh             # Sessioni UTC, blackout NFP/FOMC, ATR, range Asia
 └── README.md                   # questo file
 ```
+
+---
+
+## `nxt_fade.mq5` — walk-forward live della variante fade
+
+> **STATUS: lead DATA-DERIVED, NON un edge dimostrato.** Questo EA raccoglie trade
+> **forward OOS su DEMO** per validare (o archiviare) il fade emerso da NXT. Regole
+> **congelate**: non toccare i parametri strategia durante il test. Derivazione e verdetto
+> interni: [`../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md`](../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md) §4;
+> spec eseguibile: [`../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md`](../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md).
+> Motore Python di riferimento: [`../analysis/nxt/closure.py`](../analysis/nxt/closure.py) (config A1).
+
+**Cosa fa.** Su H1, rileva l'ultima gamba impulsiva (swing ZigZag fractale k=5, filtro trend
+HH&HL/LH&LL, ampiezza ≥ 1×ATR) e apre una posizione **contro il trend** (fade) al 50% di
+ritracciamento: R = 28.6% dell'ampiezza, SL 1R, TP 3R, break-even a +2R, pending valido 48 barre.
+
+**Attach.** È **per-simbolo**: aggancia una istanza dell'EA a **ogni grafico H1** dei 6 strumenti
+testati (`EURUSD, GBPUSD, USDJPY, XAUUSD, US100, US500`). Ogni istanza usa lo stesso `InpMagicNumber`
+(26071) e scrive `nxt_fade` nel comment → i trade si isolano per magic/comment nello storico MT5.
+
+**Input strategia (CONGELATI — non modificare durante il test):**
+
+| Input | Default | Note |
+|---|---|---|
+| `InpTimeframe` | `PERIOD_H1` | timeframe operativo |
+| `InpFractalK` | 5 | semi-finestra swing |
+| `InpMinLegAtr` | 1.0 | ampiezza minima gamba (× ATR14) |
+| `InpEntryFib` | 0.5 | ritracciamento d'ingresso |
+| `InpRiskLegFrac` | 0.286 | R in frazione d'ampiezza (mirror A1) |
+| `InpRR` | 3.0 | take-profit 1:3 |
+| `InpBeAtR` | 2.0 | break-even a +2R |
+| `InpFillWindowBars` | 48 | scadenza pending dallo swing di fine |
+| `InpMaxHoldBars` | 480 | max hold (~20 giorni H1) |
+| `InpRiskPerTradePct` | 0.01 | 1% equity per trade |
+| `InpMagicNumber` | 26071 | distinto da london (26050) |
+
+**⚠️ Cross-check OBBLIGATORIO prima della demo (gate anti-bug del port).**
+1. F7 in MetaEditor: deve compilare senza errori.
+2. Strategy Tester su un singolo simbolo (es. `EURUSD`, `PERIOD_H1`), `Every tick based on real ticks`,
+   sullo **stesso periodo** del backtest Python (~2012→oggi se hai i tick).
+3. Confronta con l'atteso Python (pool): **win ~31% @1:3, E[R] ~+0.35R pessimistico**. Il singolo
+   simbolo può variare, ma l'ordine di grandezza e il segno devono tornare.
+4. **Se EA e Python divergono in modo netto, il port ha un bug → NON deployare.** Verifica prima con
+   `Open prices only` che la logica sia corretta, poi alza la qualità del tick model.
+
+Solo dopo il cross-check + 1-2 settimane demo locale → `Migrate to virtual server` (VPS), come sotto.
+
+> **Nota fedeltà.** L'EA impone **un solo setup attivo per volta** per simbolo (safety live), mentre il
+> backtest Python tratta le gambe come indipendenti: possibili piccole differenze nel conteggio trade.
+> Inoltre i fill demo tendono a essere ottimistici vs live sui costi — il fade è cost-fragile, quindi
+> imposta spread/commissioni realistici nel Tester e monitora i fill reali.
 
 ## Setup terminale MT5 (una tantum)
 
