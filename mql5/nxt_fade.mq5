@@ -6,12 +6,12 @@
 //|  (mean-reversion) emersa dall'analisi di NXT. Porta fedele della  |
 //|  config A1 di analysis/nxt/closure.py.                            |
 //|                                                                   |
-//|  ⚠️ STATUS: LEAD DATA-DERIVED, NON un edge dimostrato. Questo EA  |
+//|  ! STATUS: LEAD DATA-DERIVED, NON un edge dimostrato. Questo EA  |
 //|  serve a RACCOGLIERE trade forward OOS su DEMO. Regole CONGELATE:  |
 //|  non modificare i parametri della strategia durante il test.      |
 //|  Spec: fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md
 //|                                                                   |
-//|  LOGICA (H1, per-simbolo — aggancia l'EA a ogni grafico H1):      |
+//|  LOGICA (H1, per-simbolo - aggancia l'EA a ogni grafico H1):      |
 //|   1. Swing via fractale k=5 (uno swing e' confermato k barre dopo).|
 //|   2. Gamba impulsiva = ultima L->H (up) / H->L (down) con filtro   |
 //|      trend HH&HL (up) / LH&LL (down) e ampiezza >= 1*ATR(14).      |
@@ -36,11 +36,11 @@
 //+------------------------------------------------------------------+
 //| Inputs                                                           |
 //+------------------------------------------------------------------+
-input group "=== Strategia (fade / mean-reversion) — CONGELATA ==="
+input group "=== Strategia (fade / mean-reversion) - CONGELATA ==="
 input ENUM_TIMEFRAMES InpTimeframe   = PERIOD_H1;  // timeframe operativo
 input int    InpFractalK             = 5;          // semi-finestra fractale swing
 input int    InpAtrPeriod            = 14;         // periodo ATR (H1)
-input double InpMinLegAtr            = 1.0;        // ampiezza minima gamba (× ATR)
+input double InpMinLegAtr            = 1.0;        // ampiezza minima gamba (x ATR)
 input double InpEntryFib             = 0.5;        // ritracciamento d'ingresso
 input double InpRiskLegFrac          = 0.286;      // R in frazione di ampiezza (mirror A1)
 input double InpRR                   = 3.0;        // take-profit in R
@@ -93,7 +93,7 @@ int OnInit()
 
    PrintFormat("[%s] EA avviato. Magic=%I64u Symbol=%s TF=%d",
                InpStrategyName, InpMagicNumber, _Symbol, (int)InpTimeframe);
-   NotifyTelegram(StringFormat("🚀 [%s] avviato su %s (forward fade, DEMO)",
+   NotifyTelegram(StringFormat("[START] [%s] avviato su %s (forward fade, DEMO)",
                                InpStrategyName, _Symbol));
    return INIT_SUCCEEDED;
 }
@@ -103,7 +103,7 @@ void OnDeinit(const int reason)
 {
    if(g_atr_handle != INVALID_HANDLE) IndicatorRelease(g_atr_handle);
    PrintFormat("[%s] EA fermato (reason=%d)", InpStrategyName, reason);
-   NotifyTelegram(StringFormat("🛑 [%s] fermato su %s (reason=%d)",
+   NotifyTelegram(StringFormat("[STOP] [%s] fermato su %s (reason=%d)",
                                InpStrategyName, _Symbol, reason));
 }
 
@@ -148,12 +148,12 @@ void ManageOpenPosition()
       if(g_pos_open)  // era aperta, ora chiusa (TP/SL/hold)
       {
          g_pos_open = false; g_pos_be_done = false;
-         NotifyTelegram(StringFormat("✅ [%s] %s posizione chiusa", InpStrategyName, _Symbol));
+         NotifyTelegram(StringFormat("[OK] [%s] %s posizione chiusa", InpStrategyName, _Symbol));
       }
       return;
    }
 
-   // Fill appena avvenuto → cattura stato iniziale.
+   // Fill appena avvenuto -> cattura stato iniziale.
    if(!g_pos_open)
    {
       g_pos_open   = true;
@@ -162,7 +162,7 @@ void ManageOpenPosition()
       g_pos_risk   = MathAbs(entry - sl);
       g_pos_be_done= false;
       g_pos_fill_t = TimeCurrent();
-      NotifyTelegram(StringFormat("🎯 [%s] %s FILL %s @ %s (R=%s)",
+      NotifyTelegram(StringFormat("[FILL] [%s] %s FILL %s @ %s (R=%s)",
          InpStrategyName, _Symbol, (g_pos_short ? "SHORT" : "LONG"),
          DoubleToString(entry, _Digits), DoubleToString(g_pos_risk, _Digits)));
    }
@@ -181,7 +181,7 @@ void ManageOpenPosition()
          if(g_trade.PositionModify(pt, be, tp))
          {
             g_pos_be_done = true;
-            NotifyTelegram(StringFormat("🔒 [%s] %s SL→BE (%s @ +%.1fR)",
+            NotifyTelegram(StringFormat("[BE] [%s] %s SL->BE (%s @ +%.1fR)",
                InpStrategyName, _Symbol, DoubleToString(be, _Digits), InpBeAtR));
          }
       }
@@ -192,7 +192,7 @@ void ManageOpenPosition()
    if(held > InpMaxHoldBars)
    {
       if(g_trade.PositionClose(pt))
-         NotifyTelegram(StringFormat("⏳ [%s] %s chiusa per max-hold (%d barre)",
+         NotifyTelegram(StringFormat("[HOLD] [%s] %s chiusa per max-hold (%d barre)",
             InpStrategyName, _Symbol, InpMaxHoldBars));
    }
 }
@@ -209,7 +209,7 @@ void OnNewBar()
       if(iBarShift(_Symbol, InpTimeframe, g_pending_swingend) > InpFillWindowBars)
       {
          if(g_trade.OrderDelete(pend))
-            NotifyTelegram(StringFormat("🗑 [%s] %s pending scaduto (no fill in %d barre)",
+            NotifyTelegram(StringFormat("[EXPIRE] [%s] %s pending scaduto (no fill in %d barre)",
                InpStrategyName, _Symbol, InpFillWindowBars));
       }
       return;  // un solo setup attivo per volta
@@ -226,7 +226,7 @@ void OnNewBar()
 }
 
 //+------------------------------------------------------------------+
-//| Rilevа l'ultima gamba valida (ZigZag da fractali + filtro trend).|
+//| Rilev l'ultima gamba valida (ZigZag da fractali + filtro trend).|
 //| Ritorna true e i parametri del FADE se c'e' un setup.            |
 //+------------------------------------------------------------------+
 bool DetectLatestLeg(bool &is_short, double &hi, double &lo, double &rng, datetime &endtime)
@@ -270,7 +270,7 @@ bool DetectLatestLeg(bool &is_short, double &hi, double &lo, double &rng, dateti
       {
          pp[pc] = price; ptv[pc] = type; pidx[pc] = i; pc++;
       }
-      else if(ptv[pc-1] == type)   // stesso tipo → tieni il piu' estremo
+      else if(ptv[pc-1] == type)   // stesso tipo -> tieni il piu' estremo
       {
          if((type == 1 && price >= pp[pc-1]) || (type == 0 && price <= pp[pc-1]))
          { pp[pc-1] = price; pidx[pc-1] = i; }
@@ -290,7 +290,7 @@ bool DetectLatestLeg(bool &is_short, double &hi, double &lo, double &rng, dateti
    double atr_start = atrbuf[startIdx - aoff];
    if(atr_start <= 0) return false;
 
-   // Pattern L,H,L,H → BUY leg (uptrend) → FADE SHORT.
+   // Pattern L,H,L,H -> BUY leg (uptrend) -> FADE SHORT.
    if(ptv[i0]==0 && ptv[i1]==1 && ptv[i2]==0 && ptv[i3]==1)
    {
       double s_lo = pp[i2], e_hi = pp[i3];
@@ -301,7 +301,7 @@ bool DetectLatestLeg(bool &is_short, double &hi, double &lo, double &rng, dateti
       return true;
    }
 
-   // Pattern H,L,H,L → SELL leg (downtrend) → FADE LONG.
+   // Pattern H,L,H,L -> SELL leg (downtrend) -> FADE LONG.
    if(ptv[i0]==1 && ptv[i1]==0 && ptv[i2]==1 && ptv[i3]==0)
    {
       double s_hi = pp[i2], e_lo = pp[i3];
@@ -339,12 +339,12 @@ void ArmSetup(const bool is_short, const double hi, const double lo,
 
    if(is_short)
    {
-      // Fill quando il prezzo SCENDE all'entry (retrace) → SELL STOP sotto il mercato.
+      // Fill quando il prezzo SCENDE all'entry (retrace) -> SELL STOP sotto il mercato.
       double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
       if(bid > entry + stops)
          ok = g_trade.SellStop(vol, entry, _Symbol, sl, tp, ORDER_TIME_GTC, 0, cm);
       else
-         ok = g_trade.Sell(vol, _Symbol, 0.0, sl, tp, cm);   // prezzo gia' oltre → market
+         ok = g_trade.Sell(vol, _Symbol, 0.0, sl, tp, cm);   // prezzo gia' oltre -> market
    }
    else
    {
@@ -359,7 +359,7 @@ void ArmSetup(const bool is_short, const double hi, const double lo,
    {
       g_pending_swingend = endtime;
       g_last_armed_leg   = endtime;
-      NotifyTelegram(StringFormat("📌 [%s] %s ARM %s | entry %s SL %s TP %s (R=%s) vol %.2f",
+      NotifyTelegram(StringFormat("[ORDER] [%s] %s ARM %s | entry %s SL %s TP %s (R=%s) vol %.2f",
          InpStrategyName, _Symbol, (is_short ? "SHORT-fade" : "LONG-fade"),
          DoubleToString(entry,_Digits), DoubleToString(sl,_Digits),
          DoubleToString(tp,_Digits), DoubleToString(risk,_Digits), vol));

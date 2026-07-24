@@ -6,7 +6,7 @@
 //|  Breakout v2 su NAS100 ("strategia socio", criteri utente 1:3).   |
 //|  Port fedele di analysis/opening_range/backtest_v2.py.            |
 //|                                                                   |
-//|  ⚠️ STATUS: NO-GO sui 14.5y di backtest. Il forward serve SOLO a  |
+//|  ! STATUS: NO-GO sui 14.5y di backtest. Il forward serve SOLO a  |
 //|  risolvere la domanda aperta: il marginale-positivo 2020-2026 e'  |
 //|  rumore o vero cambio di microstruttura post-COVID? Aspettativa   |
 //|  pre-registrata: ~0/negativa. Regole CONGELATE.                   |
@@ -21,7 +21,7 @@
 //|   5. Filtro ADX(14) >= 25 alla conferma. Pending scade 12:00 ET.  |
 //|      Un solo trade al giorno.                                     |
 //|                                                                   |
-//|  ⚠️ TIMEZONE: l'OR e' ancorato all'ora di NEW YORK (ET) con DST   |
+//|  ! TIMEZONE: l'OR e' ancorato all'ora di NEW YORK (ET) con DST   |
 //|  USA, calcolata da TimeGMT(). VERIFICA nel cross-check che l'OR    |
 //|  catturi davvero le 09:30-10:00 ET sul tuo broker (in Strategy     |
 //|  Tester TimeGMT puo' comportarsi diversamente dal live).          |
@@ -41,7 +41,7 @@
 //+------------------------------------------------------------------+
 //| Inputs                                                           |
 //+------------------------------------------------------------------+
-input group "=== Sessione (ora di New York, ET) — CONGELATA ==="
+input group "=== Sessione (ora di New York, ET) - CONGELATA ==="
 input ENUM_TIMEFRAMES InpTimeframe = PERIOD_M5;
 input int    InpOrStartEtH   = 9;    // OR start 09:30 ET
 input int    InpOrStartEtM   = 30;
@@ -50,7 +50,7 @@ input int    InpOrEndEtM      = 0;
 input int    InpExpiryEtH     = 12;   // scadenza pending 12:00 ET
 input int    InpExpiryEtM     = 0;
 
-input group "=== Soglie — CONGELATE ==="
+input group "=== Soglie - CONGELATE ==="
 input double InpBufferPoints  = 10.0; // SL = ORL+buffer (SELL) / ORH-buffer (BUY), in punti indice (prezzo)
 input double InpRR            = 3.0;  // TP = 1:3 dallo SL
 input double InpBeAtR         = 2.0;  // break-even a +2R
@@ -81,7 +81,7 @@ struct DayState
    bool     broke;         // primo break avvenuto
    int      side;          // +1 BUY, -1 SELL, 0 nessuno
    double   level;         // livello trailato (low/high del break)
-   bool     confirmed;     // conferma (chiusura oltre level) → pending piazzato
+   bool     confirmed;     // conferma (chiusura oltre level) -> pending piazzato
    bool     done;          // giornata conclusa (trade piazzato o skip)
    ulong    pend_ticket;   // pending retest
    bool     filled;        // posizione aperta
@@ -110,7 +110,7 @@ int OnInit()
    }
    ResetDay("");
    PrintFormat("[%s] EA avviato. Magic=%I64u Symbol=%s", InpStrategyName, InpMagicNumber, _Symbol);
-   NotifyTelegram(StringFormat("🚀 [%s] avviato su %s (ORB v2 forward, DEMO)", InpStrategyName, _Symbol));
+   NotifyTelegram(StringFormat("[START] [%s] avviato su %s (ORB v2 forward, DEMO)", InpStrategyName, _Symbol));
    return INIT_SUCCEEDED;
 }
 
@@ -118,7 +118,7 @@ void OnDeinit(const int reason)
 {
    if(g_adx_handle != INVALID_HANDLE) IndicatorRelease(g_adx_handle);
    PrintFormat("[%s] EA fermato (reason=%d)", InpStrategyName, reason);
-   NotifyTelegram(StringFormat("🛑 [%s] fermato su %s (reason=%d)", InpStrategyName, _Symbol, reason));
+   NotifyTelegram(StringFormat("[STOP] [%s] fermato su %s (reason=%d)", InpStrategyName, _Symbol, reason));
 }
 
 void ResetDay(const string et_date)
@@ -139,7 +139,7 @@ void ResetDay(const string et_date)
 }
 
 //+------------------------------------------------------------------+
-//| US Eastern DST attivo al tempo GMT dato? (2a dom mar → 1a dom nov)|
+//| US Eastern DST attivo al tempo GMT dato? (2a dom mar -> 1a dom nov)|
 //+------------------------------------------------------------------+
 bool UsEastDst(const datetime gmt)
 {
@@ -204,7 +204,7 @@ int ServerToEtMinutes(const datetime server)
 //+------------------------------------------------------------------+
 void OnTick()
 {
-   // Nuovo giorno ET → reset.
+   // Nuovo giorno ET -> reset.
    MqlDateTime et; NowEt(et);
    string etdate = StringFormat("%04d-%02d-%02d", et.year, et.mon, et.day);
    if(g_d.et_date != etdate) ResetDay(etdate);
@@ -236,7 +236,7 @@ void OnNewBar()
    if(g_d.pend_ticket > 0 && etmin >= expiry && !g_d.filled)
    {
       if(OrderSelect(g_d.pend_ticket) && g_trade.OrderDelete(g_d.pend_ticket))
-         NotifyTelegram(StringFormat("🗑 [%s] pending scaduto 12:00 ET", InpStrategyName));
+         NotifyTelegram(StringFormat("[EXPIRE] [%s] pending scaduto 12:00 ET", InpStrategyName));
       g_d.pend_ticket = 0;
       g_d.done = true;
    }
@@ -297,7 +297,7 @@ void ProcessBreak()
       return;
    }
 
-   // broke ma non confermato → trail finche' chiusura oltre level.
+   // broke ma non confermato -> trail finche' chiusura oltre level.
    if(g_d.side < 0)  // SELL
    {
       if(c < g_d.level) Confirm();
@@ -325,7 +325,7 @@ void Confirm()
    if(adxv < InpAdxMin)
    {
       g_d.done = true;
-      NotifyTelegram(StringFormat("⏭ [%s] %s skip: ADX %.1f < %.1f",
+      NotifyTelegram(StringFormat("[SKIP] [%s] %s skip: ADX %.1f < %.1f",
          InpStrategyName, g_d.et_date, adxv, InpAdxMin));
       return;
    }
@@ -354,12 +354,12 @@ void Confirm()
    bool ok = false;
    ulong ticket = 0;
 
-   // Entry = retest del level → LIMIT.
+   // Entry = retest del level -> LIMIT.
    if(g_d.side < 0)  // SELL LIMIT (fill quando il prezzo risale al level)
    {
       double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
       if(entry > bid + stops) { ok = g_trade.SellLimit(vol, entry, _Symbol, sl0, tp, ORDER_TIME_GTC, 0, cm); ticket = ok?g_trade.ResultOrder():0; }
-      else                    { ok = g_trade.Sell(vol, _Symbol, 0.0, sl0, tp, cm); }  // gia' oltre → market
+      else                    { ok = g_trade.Sell(vol, _Symbol, 0.0, sl0, tp, cm); }  // gia' oltre -> market
    }
    else              // BUY LIMIT
    {
@@ -372,7 +372,7 @@ void Confirm()
    {
       g_d.pend_ticket = ticket;   // 0 se market (verra' gestito come posizione)
       g_d.entry = entry; g_d.sl0 = sl0; g_d.tp = tp; g_d.be_trig = be_trig; g_d.risk = risk;
-      NotifyTelegram(StringFormat("📌 [%s] %s %s | entry %s SL %s TP %s (ADX %.0f) vol %.2f",
+      NotifyTelegram(StringFormat("[ORDER] [%s] %s %s | entry %s SL %s TP %s (ADX %.0f) vol %.2f",
          InpStrategyName, g_d.et_date, (g_d.side<0?"SELL":"BUY"),
          DoubleToString(entry,_Digits), DoubleToString(sl0,_Digits),
          DoubleToString(tp,_Digits), adxv, vol));
@@ -404,7 +404,7 @@ void ManageOpenPosition()
 
    if(pt == 0)
    {
-      if(g_d.filled) { g_d.filled = false; NotifyTelegram(StringFormat("✅ [%s] posizione chiusa", InpStrategyName)); }
+      if(g_d.filled) { g_d.filled = false; NotifyTelegram(StringFormat("[OK] [%s] posizione chiusa", InpStrategyName)); }
       return;
    }
 
@@ -412,8 +412,8 @@ void ManageOpenPosition()
    {
       g_d.filled = true; g_d.pend_ticket = 0; g_d.be_done = false;
       g_d.fill_time = TimeCurrent();
-      // usa i livelli calcolati alla conferma (be_trig/risk); se market, entry reale ≈ level
-      NotifyTelegram(StringFormat("🎯 [%s] FILL %s @ %s",
+      // usa i livelli calcolati alla conferma (be_trig/risk); se market, entry reale  level
+      NotifyTelegram(StringFormat("[FILL] [%s] FILL %s @ %s",
          InpStrategyName, (ptype==POSITION_TYPE_SELL?"SELL":"BUY"), DoubleToString(entry,_Digits)));
    }
 
@@ -429,7 +429,7 @@ void ManageOpenPosition()
          if(g_trade.PositionModify(pt, be, tp))
          {
             g_d.be_done = true;
-            NotifyTelegram(StringFormat("🔒 [%s] SL→BE (%s)", InpStrategyName, DoubleToString(be,_Digits)));
+            NotifyTelegram(StringFormat("[BE] [%s] SL->BE (%s)", InpStrategyName, DoubleToString(be,_Digits)));
          }
       }
    }
@@ -438,7 +438,7 @@ void ManageOpenPosition()
    if(iBarShift(_Symbol, InpTimeframe, g_d.fill_time) > InpMaxHoldBars)
    {
       if(g_trade.PositionClose(pt))
-         NotifyTelegram(StringFormat("⏳ [%s] chiusa per max-hold", InpStrategyName));
+         NotifyTelegram(StringFormat("[HOLD] [%s] chiusa per max-hold", InpStrategyName));
    }
 }
 
