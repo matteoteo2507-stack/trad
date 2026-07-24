@@ -76,6 +76,35 @@ Solo dopo il cross-check + 1-2 settimane demo locale → `Migrate to virtual ser
 > Inoltre i fill demo tendono a essere ottimistici vs live sui costi — il fade è cost-fragile, quindi
 > imposta spread/commissioni realistici nel Tester e monitora i fill reali.
 
+---
+
+## `orb_nasdaq.mq5` — walk-forward ORB v2 su NAS100
+
+> **STATUS: NO-GO sui 14.5y.** Il forward NON serve perché "speriamo funzioni": serve a
+> **risolvere la domanda aperta** — il marginale-positivo 2020-2026 è rumore o vero cambio di
+> microstruttura post-COVID? Aspettativa pre-registrata **~0/negativa**. Regole congelate.
+> Port di [`../analysis/opening_range/backtest_v2.py`](../analysis/opening_range/backtest_v2.py).
+
+**Cosa fa.** Opening range 09:30-10:00 **ET**; nella finestra 10:00-12:00 ET il primo bar M5 che
+CHIUDE oltre l'OR decide il lato, poi trail del level fino a una chiusura oltre → conferma. Filtro
+**ADX(14) ≥ 25**. Entry = retest del level (LIMIT), SL = ORL+10 / ORH−10, TP **1:3**, BE a +2R,
+pending scade 12:00 ET, un solo trade/giorno.
+
+**Attach.** Un'istanza su grafico **NAS100 M5**. Magic `26052`, comment `orb_nasdaq`.
+
+**⚠️ Timezone — la cosa #1 da verificare.** L'OR è ancorato all'ora di **New York (ET)** con DST USA,
+calcolata da `TimeGMT()`. Nel cross-check **controlla che l'OR catturi davvero le 09:30-10:00 ET** sul
+tuo broker (guarda ORH/ORL loggati vs il grafico). In Strategy Tester `TimeGMT()` può comportarsi
+diversamente dal live: se l'OR risulta spostato, è un problema di fuso, non di logica.
+
+**Cross-check.** Strategy Tester su NAS100 M5, `Every tick based on real ticks`, stesso periodo di
+`backtest_v2.py`. Attesa: **TRAIN '12-'19 negativo, TEST '20-'26 marginale** (E[R] ~+0.06). Verifica
+anche win% e conteggio trade. Divergenza netta = bug (probabilmente il fuso) → non deployare.
+
+> **Nota fedeltà.** Su market-fill (raro: prezzo già oltre il level alla conferma) l'entry reale
+> differisce dal level e il BE usa i livelli teorici — scostamento minimo. La quota del backtest usa
+> SL-prima-di-TP intrabar (pessimistico); i fill live possono differire leggermente.
+
 ## Setup terminale MT5 (una tantum)
 
 ### 1. Copia file nella cartella `MQL5/Experts/`
