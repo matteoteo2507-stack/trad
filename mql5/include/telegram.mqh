@@ -14,7 +14,7 @@
 #define __TRAD_TELEGRAM_MQH__
 
 //--- input dati: il token e chat id devono essere passati come input dell'EA
-//    chiamante. Questo file è solo helper, non li dichiara come input qui.
+//    chiamante. Questo file e' solo helper, non li dichiara come input qui.
 
 //+------------------------------------------------------------------+
 //| Encoding URL minimale per i caratteri che Telegram non accetta   |
@@ -121,11 +121,11 @@ string TG_FormatOrderPlaced(
    const double size
 )
 {
-   string emoji = (direction == "BUY") ? "🟢" : "🔴";
+   string emoji = (direction == "BUY") ? "[+]" : "[-]";
    int    digits = (int)SymbolInfoInteger(symbol, SYMBOL_DIGITS);
 
    return StringFormat(
-      "%s %s %s\nStrategia: %s\n\n📍 Entry: %s\n🛑 SL:    %s\n🎯 TP:    %s\n💰 Size: %.2f",
+      "%s %s %s\nStrategia: %s\n\n* Entry: %s\n* SL:    %s\n* TP:    %s\n* Size: %.2f",
       emoji, direction, symbol,
       strategy_name,
       DoubleToString(entry, digits),
@@ -147,7 +147,7 @@ string TG_FormatFill(
 {
    int digits = (int)SymbolInfoInteger(symbol, SYMBOL_DIGITS);
    return StringFormat(
-      "✅ FILL %s %s\nStrategia: %s\nPrezzo eseguito: %s",
+      "[OK] FILL %s %s\nStrategia: %s\nPrezzo eseguito: %s",
       direction, symbol,
       strategy_name,
       DoubleToString(fill_price, digits)
@@ -159,7 +159,7 @@ string TG_FormatFill(
 //+------------------------------------------------------------------+
 string TG_FormatInfo(const string strategy_name, const string symbol, const string detail)
 {
-   return StringFormat("ℹ️ %s %s\n%s", strategy_name, symbol, detail);
+   return StringFormat("[i] %s %s\n%s", strategy_name, symbol, detail);
 }
 
 #endif // __TRAD_TELEGRAM_MQH__

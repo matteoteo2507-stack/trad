@@ -1,8 +1,8 @@
 //+------------------------------------------------------------------+
 //|                                                     helpers.mqh  |
-//|  Funzioni di utilità per le EA del workspace:                    |
+//|  Funzioni di utilita' per le EA del workspace:                    |
 //|   - finestre temporali UTC                                       |
-//|   - giorni di blackout (NFP primo venerdì del mese, FOMC list)   |
+//|   - giorni di blackout (NFP primo venerdi' del mese, FOMC list)   |
 //|   - calcolo ATR su timeframe diverso                             |
 //+------------------------------------------------------------------+
 #property copyright "Trading System Workspace"
@@ -13,7 +13,7 @@
 
 //+------------------------------------------------------------------+
 //| Verifica se `now` cade nella finestra [start_h:start_m, end_h:end_m). |
-//| Tutti gli orari in UTC. La finestra è semi-aperta a destra.       |
+//| Tutti gli orari in UTC. La finestra e' semi-aperta a destra.       |
 //+------------------------------------------------------------------+
 bool H_InTimeWindow(const datetime now,
                     const int start_h, const int start_m,
@@ -28,7 +28,7 @@ bool H_InTimeWindow(const datetime now,
 }
 
 //+------------------------------------------------------------------+
-//| True se `now` è strettamente >= dell'orario `h:m`.               |
+//| True se `now` e' strettamente >= dell'orario `h:m`.               |
 //+------------------------------------------------------------------+
 bool H_AfterTime(const datetime now, const int h, const int m)
 {
@@ -40,14 +40,14 @@ bool H_AfterTime(const datetime now, const int h, const int m)
 }
 
 //+------------------------------------------------------------------+
-//| True se `d` è il primo venerdì del mese (NFP day classico).      |
+//| True se `d` e' il primo venerdi' del mese (NFP day classico).      |
 //+------------------------------------------------------------------+
 bool H_IsFirstFridayOfMonth(const datetime d)
 {
    MqlDateTime t;
    TimeToStruct(d, t);
-   if(t.day_of_week != 5) return false;  // 5 = Venerdì in MQL5
-   // Calcola il primo venerdì del mese.
+   if(t.day_of_week != 5) return false;  // 5 = Venerdi' in MQL5
+   // Calcola il primo venerdi' del mese.
    MqlDateTime first;
    first.year       = t.year;
    first.mon        = t.mon;
@@ -64,7 +64,7 @@ bool H_IsFirstFridayOfMonth(const datetime d)
 }
 
 //+------------------------------------------------------------------+
-//| True se la stringa "YYYY-MM-DD" è in `list[]`.                   |
+//| True se la stringa "YYYY-MM-DD" e' in `list[]`.                   |
 //+------------------------------------------------------------------+
 bool H_IsoDateInList(const string iso_date, const string &list[])
 {
