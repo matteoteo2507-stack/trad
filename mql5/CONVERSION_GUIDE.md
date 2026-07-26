@@ -18,10 +18,13 @@ Estratte dagli EA esistenti (`orb_nasdaq.mq5`, `nxt_fade.mq5`,
 
 - `#property strict` sempre. Header a blocco `//+---...` che documenta:
   logica, timezone, status (GO/NO-GO/LEAD), e istruzione di cross-check.
-- Include: `#include <Trade\Trade.mqh>`, poi
-  `#include <TradingSystemWorkspace/telegram.mqh>` e
-  `<TradingSystemWorkspace/helpers.mqh>` (path virtuale della cartella
-  `MQL5/Include/TradingSystemWorkspace/`).
+- Include: **preferisci EA AUTOCONTENUTI** -> `#include <Trade\Trade.mqh>` (standard)
+  e nient'altro. Le funzioni condivise piccole (`TG_SendMessage`/`TG_UrlEncode`,
+  singoli helper) vanno **inlinate** nel `.mq5`. NON dipendere da
+  `<TradingSystemWorkspace/*.mqh>` a meno che non usi molte funzioni: quegli include
+  virtuali si risolvono in modo fragile (sezione 1b) e sono la causa dell'errore
+  "undeclared identifier". `london_breakout`/`tsmom_jpy` usano ancora gli include
+  (storico); `nxt_fade`/`orb_nasdaq` sono autocontenuti (modello da seguire).
 - **Registro magic number** (uno per strategia, mai riusarli):
   - `london_breakout` = 26050
   - `tsmom_jpy`        = 26060
@@ -55,11 +58,37 @@ Regole:
   `ShortToString`/codici, non come letterali nel sorgente.
 - Verifica prima di consegnare: nessun byte > 0x7E nel file. Comando di check:
   `grep -nP '[^\x00-\x7E]' file.mq5` (deve restituire vuoto).
-- Nota debito tecnico: `include/helpers.mqh` contiene ancora accenti nei
-  commenti — se lo tocchi, bonificalo.
+- **Anche gli `.mqh` inclusi vengono compilati col `.mq5`**: un emoji/accento in
+  `telegram.mqh` o `helpers.mqh` rompe la compilazione dell'EA anche se l'EA e' ASCII.
+  Fai il grep ASCII su OGNI file toccato, include compresi. (`telegram.mqh` e
+  `helpers.mqh` sono stati bonificati ad ASCII il 2026-07-24.)
 
 Fonti: [UTF-8 encoding in MetaEditor](https://www.mql5.com/en/forum/453883),
 [Feature request UTF-8](https://www.mql5.com/en/forum/149488).
+
+---
+
+## 1b. Include-path fragility -> EA autocontenuti (errore "undeclared identifier")
+
+Trappola scoperta portando `nxt_fade`/`orb_nasdaq` (2026-07-24). Sintomo:
+compilazione che fallisce con **`undeclared identifier 'TG_SendMessage'`** (+ cascata
+di "some operator expected" / "unexpected token" sulla riga della chiamata), pur
+avendo il file ASCII.
+
+Causa: `#include <TradingSystemWorkspace/telegram.mqh>` usa il **path virtuale**
+degli Include e si risolve **diversamente a seconda di dove apri il file e a quale
+terminale/data-folder e' agganciato MetaEditor**. Se il terminale attivo non ha
+`MQL5/Include/TradingSystemWorkspace/telegram.mqh`, o ne ha una **copia vecchia**
+priva della funzione, il simbolo risulta non dichiarato -> errore al primo uso. Con
+piu' terminali installati (qui: due) e file aperti dal repo sul Desktop, e' quasi
+garantito che prima o poi punti alla copia sbagliata.
+
+Fix (adottato): **rendere l'EA autocontenuto**. Inlina nel `.mq5` le poche funzioni
+che usi davvero (verifica con `grep -oE '\bTG_[A-Za-z]+|\bH_[A-Za-z]+' file.mq5`) e
+**rimuovi gli include workspace**; tieni solo `<Trade\Trade.mqh>`. Cosi' l'EA compila
+da qualsiasi cartella e qualsiasi terminale, senza dipendere dal path degli Include.
+Regola: se usi <= 2-3 helper piccoli, inlinali; non introdurre un include workspace
+solo per una funzione.
 
 ---
 
@@ -194,7 +223,9 @@ Il port non e' "finito" finche' non riproduce il backtest.
 
 ## 8. Checklist finale prima di consegnare
 
-- [ ] Solo ASCII (`grep -nP '[^\x00-\x7E]'` vuoto su .mq5 e .mqh toccati).
+- [ ] Solo ASCII (`grep -nP '[^\x00-\x7E]'` vuoto su .mq5 **e ogni .mqh incluso**).
+- [ ] EA autocontenuto: solo `#include <Trade\Trade.mqh>`; helper piccoli inlinati,
+      niente include `<TradingSystemWorkspace/*>` (sezione 1b).
 - [ ] `#property strict`, header con logica + status + timezone + cross-check.
 - [ ] Magic number nuovo e registrato (sezione 0).
 - [ ] Handle indicatori in OnInit (check INVALID_HANDLE) + IndicatorRelease in OnDeinit.
@@ -220,7 +251,12 @@ Se MetaEditor e' installato, compila headless e leggi il log:
 
 - Il path esatto di `metaeditor64.exe` varia (spesso sotto `C:\Program Files\`
   o la cartella del broker in `%APPDATA%`). Cerca l'eseguibile prima.
-- Il log e' UTF-16; leggilo e itera finche' `0 errors, 0 warnings`.
-- Il file `.mq5` deve stare nella struttura `MQL5/Experts/...` con gli Include
-  disponibili in `MQL5/Include/TradingSystemWorkspace/` perche' gli `#include`
-  virtuali risolvano.
+- Invocazione da Git Bash: **prefissa `MSYS_NO_PATHCONV=1`** o il path dopo
+  `/compile:` viene mangiato dalla conversione path di MSYS e la compilazione non
+  parte. L'`.ex5` prodotto (timestamp aggiornato) e' la conferma di successo;
+  l'exit code puo' essere != 0 anche con 0 errori.
+- Il log e' UTF-16; leggilo (`iconv -f UTF-16LE -t UTF-8`) e itera finche'
+  `Result: 0 errors, 0 warnings`.
+- Un EA **autocontenuto** (sezione 1b) compila da qualsiasi path. Se invece usi
+  ancora include workspace, il `.mq5` deve stare in `MQL5/Experts/...` con gli
+  Include in `MQL5/Include/TradingSystemWorkspace/` perche' risolvano.
