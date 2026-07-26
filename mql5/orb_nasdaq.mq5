@@ -42,8 +42,53 @@
 #property strict
 
 #include <Trade\Trade.mqh>
-#include <TradingSystemWorkspace/telegram.mqh>
-#include <TradingSystemWorkspace/helpers.mqh>
+// --- Telegram inline (self-contained: nessun include esterno oltre Trade.mqh,
+//     cosi' l'EA compila da qualsiasi cartella senza dipendere dal path include) ---
+string TG_UrlEncode(const string text)
+{
+   string out = "";
+   int n = StringLen(text);
+   for(int i=0; i<n; i++)
+   {
+      ushort c = StringGetCharacter(text, i);
+      if((c>='A' && c<='Z') || (c>='a' && c<='z') || (c>='0' && c<='9')
+         || c=='-' || c=='_' || c=='.' || c=='~')
+         out += ShortToString(c);
+      else if(c == ' ')
+         out += "+";
+      else
+      {
+         string ch = ShortToString(c);
+         uchar bytes[];
+         StringToCharArray(ch, bytes, 0, WHOLE_ARRAY, CP_UTF8);
+         int blen = ArraySize(bytes) - 1;
+         for(int b=0; b<blen; b++) out += StringFormat("%%%02X", bytes[b]);
+      }
+   }
+   return out;
+}
+
+bool TG_SendMessage(const string bot_token, const string chat_id, const string text)
+{
+   if(StringLen(bot_token) == 0 || StringLen(chat_id) == 0) return false;
+   string url  = "https://api.telegram.org/bot" + bot_token + "/sendMessage";
+   string body = "chat_id=" + chat_id + "&text=" + TG_UrlEncode(text);
+   uchar post[];
+   StringToCharArray(body, post, 0, WHOLE_ARRAY, CP_UTF8);
+   ArrayResize(post, ArraySize(post) - 1);
+   uchar result[];
+   string result_headers;
+   ResetLastError();
+   int http_status = WebRequest("POST", url,
+      "Content-Type: application/x-www-form-urlencoded\r\n", 5000, post, result, result_headers);
+   if(http_status == -1)
+   {
+      Print("TG_SendMessage: WebRequest err=", GetLastError(),
+            " (abilita https://api.telegram.org in Tools->Options->Expert Advisors->WebRequest)");
+      return false;
+   }
+   return (http_status == 200);
+}
 
 //+------------------------------------------------------------------+
 //| Inputs                                                           |
