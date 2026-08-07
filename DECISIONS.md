@@ -11,6 +11,54 @@
 
 ---
 
+## 2026-08-07 — Segnali mentore XAUUSD: **CONFERMATO fuori campione**. Primo OOS pre-registrato superato.
+
+**Decisione.** L'edge direzionale del mentore **regge OOS**. È il **primo verdetto positivo su un
+test pre-registrato** in questo workspace. Pre-registrazione:
+[docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md](docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md) (scritta e
+committata **prima** dell'esecuzione, commit `21df57b`). Motore:
+[`analysis/mentor_signals/oos_validation.py`](analysis/mentor_signals/oos_validation.py).
+
+**Finestra**: 131 segnali completi dal 15/06 al 07/08/2026 — **mai replayati** dall'audit dell'8
+luglio, che si fermava al 12/06 per copertura prezzi. 121 eseguiti (fill entro 6h dall'entry).
+Serie M5 estesa col feed MT5 e validata sulla sovrapposizione (8.063 barre, corr 1.000000, offset
+mediano +$0.060 sottratto).
+
+**Esito (soglie fissate prima):**
+| Metrica | OOS | Audit luglio |
+|---|---|---|
+| Win-rate simmetrica mentore | **63,0%** | 67-72% |
+| Win-rate side casuale | 35,0% | 32% |
+| **Differenza appaiata** | **+0.277** · BCa95 **[+0.193, +0.353]** | — |
+| **E[R] TP1 dopo costi** | **+0.194** · BCa95 **[+0.079, +0.289]** | +0.20/+0.32 |
+| TP1 hit | 81,8% | ~85% |
+| Stabilità mensile | 57,1% / 65,2% / 66,7% | 60-77% |
+
+Entrambe le condizioni pre-registrate soddisfatte (lower bound della differenza > 0; E[R] > 0) →
+**CONFERMATO**.
+
+**BUG TROVATO E CORRETTO — allineamento orario.** Il sanity-check di riconciliazione, imposto dalla
+pre-registrazione, è scattato. Test di shift sui timestamp (criterio **indipendente dagli esiti**:
+minimizzare lo scarto mediano |entry dichiarato − prezzo al timestamp|): −1h → $16.34; **0h → $10.53**;
+**+1h → $3.16 (minimo)**; +2h → $7.15. I timestamp Telegram sono **UTC+01:00**, la serie prezzi è in
+**ora server broker (~UTC+2)**: serve **+1h**. Su stop da ~$10 uno scarto di $10.53 non è
+trascurabile. Correzione di **bug**, non ritaratura → non conta come trial
+([STRATEGY_LIFECYCLE §3](docs/STRATEGY_LIFECYCLE.md)). **Il verdetto regge in entrambi gli
+allineamenti** (senza fix: 69,0% e E[R] +0.243); i numeri corretti sono più conservativi.
+
+⚠️ **Conseguenza sull'audit di luglio**: usava lo stesso confronto naive → i suoi numeri (67-72%,
+E[R] +0.20/+0.32) sono probabilmente **leggermente ottimistici**. Il valore realistico è quello OOS:
+**~63% e E[R] ~+0.19**. Da ri-eseguire con il fix per allineare il record.
+
+**Cosa NON autorizza.** (1) **Non** è un test di esecuzione: il forward reale del copier (2-8 giugno)
+ha rifiutato **5 segnali su 12** perché il prezzo si era mosso oltre 20 pip — questo misura l'edge del
+**segnale**, non quello **catturabile**. (2) **Non** cambia il divieto prop sui segnali di terzi
+([PROP_FIRM_CRITERIA.md §4](docs/PROP_FIRM_CRITERIA.md)): resta capitale proprio. (3) Restano key-man
+risk, un solo asset, un solo regime, e **survivorship confermata allo ~0,2%** (1 segnale cancellato
+dal canale tra i due export).
+
+---
+
 ## 2026-08-07 — Prop: copy-trading CHIUSO definitivamente + criteri nostri + consistency rule misurata
 
 **1. Copy trading di segnali terzi: CASO CHIUSO.** Sesta e ultima verifica (catalogo
