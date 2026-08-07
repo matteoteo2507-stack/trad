@@ -11,6 +11,54 @@
 
 ---
 
+## 2026-08-07 — Prop: copy-trading CHIUSO definitivamente + criteri nostri + consistency rule misurata
+
+**1. Copy trading di segnali terzi: CASO CHIUSO.** Sesta e ultima verifica (catalogo
+`propfirmtrader.com`, 18 firm, via browser dell'utente): **nessuna firm permette la copia esterna**.
+La distinzione universale è **interno vs esterno** — copiare la *propria* strategia su *propri*
+account è ammesso quasi ovunque, seguire segnali di terzi è vietato **anche in funded**, dove anzi è
+più severo perché i programmi funded richiedono decisioni di trading indipendenti.
+
+**Il divieto è strutturale, non commerciale**: decine di account che aprono la stessa posizione nello
+stesso minuto sono il rischio concentrato che il modello prop esiste per evitare. Non è una policy
+che cambia da firm a firm per marketing. → **L'edge mentore va su capitale proprio, o non va.**
+Riapertura solo con evidenza esterna nuova ([docs/STRATEGY_LIFECYCLE.md](docs/STRATEGY_LIFECYCLE.md) §7).
+
+*Nota metodologica*: `propfirmtrader.com` espone i regolamenti per **1 firm su 18** → **non
+utilizzabile a livello di rulebook**, buono solo per censire il perimetro. Conferma la regola: si
+lavora sui **regolamenti primari**. L'unico frammento recuperato (Alpha Capital, *"Group hedging or
+prohibited copy trading"*) sta nella sezione **Trading Activity & Risk Review legata alle richieste
+di payout** → conferma che l'enforcement scatta al **payout review**, non all'apertura.
+
+**2. Criteri nostri prima delle firm** → [docs/PROP_FIRM_CRITERIA.md](docs/PROP_FIRM_CRITERIA.md).
+Otto eliminatori derivati da cosa tradiamo davvero. I due che nessun comparatore espone e che ci
+ucciderebbero in silenzio: **(a) daily drawdown su balance, NON su equity flottante** — `nxt_fade`
+tiene posizioni fino a **20 giorni di borsa** su **6 strumenti in parallelo**, quindi un flottante
+negativo (che poi gira a TP) farebbe scattare la violazione; **(b) holding overnight e weekend
+consentito** — `nxt_fade` è **swing, non intraday**: le firm che obbligano a chiudere il venerdì lo
+rendono ineseguibile. Nel ranking il **profit split è ultimo**, il **rischio di controparte** primo.
+
+**3. Consistency rule: MISURATA, non stimata** — motore
+[`analysis/nxt/consistency.py`](analysis/nxt/consistency.py) (riproduce esattamente i numeri
+pre-registrati: E[R] +0.354, win 31.3%, n=10.280). Quota del giorno migliore sul profitto della
+finestra, sole finestre in utile: **14 giorni → mediana 57,2%, sfora il 40% nel 74,7% dei casi**;
+30 giorni → 41,9%; 60 giorni → **15,7%**.
+
+**Alpha Capital (payout il 14 e il 28, regola 40% best-day): SQUALIFICATA** per questa strategia —
+violeremmo 3 payout su 4, e sfora già il caso mediano.
+
+**Mitigazione trovata**: allungando la finestra la violazione crolla (75%→42%→16%) → se la regola si
+calcola **dall'ultimo payout** e l'accumulo è libero, richiedere il payout ogni ~60 giorni la rende
+gestibile. Nuova domanda da porre a ogni firm: *dall'ultimo payout o dall'intera storia? Payout
+obbligatorio a scadenza o accumulo libero?*
+
+**Il risultato dura più della strategia**: non dipende dall'avere edge, dipende dalla **forma** della
+distribuzione (payoff 1:3, trade sparsi). **Payoff 1:3 + payout bi-settimanale + consistency 40% =
+incompatibili** per qualunque strategia di questa forma, anche futura. È un vincolo di
+**progettazione**.
+
+---
+
 ## 2026-08-07 — Pilastro investing OPERATIVO: Trade Republic + VWCE, 100 €/mese da fine settembre
 
 **Decisione.** Il PAC passa da pianificato a **esecutivo**. Piano completo in
