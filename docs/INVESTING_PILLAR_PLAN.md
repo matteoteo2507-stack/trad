@@ -1,18 +1,101 @@
-# Pilastro Investing — Piano GREZZO (pre-studio) — 2026-06-02
+# Pilastro Investing — Piano OPERATIVO — agg. 2026-08-07
 
-> **Stato: BOZZA grezza, non esecutiva.** Scaturisce dal pivot dello Stock Selector
-> ([DECISIONS.md 2026-06-02](../DECISIONS.md), [INVESTMENT_ALGO_DESIGN.md](INVESTMENT_ALGO_DESIGN.md)):
-> niente algoritmo custom, niente selezione titoli, niente market-timing. Il pilastro investing
-> diventa **due secchi passivi**. L'utente tornerà a costruire gli step esecutivi DOPO essersi
-> informato sulle incognite elencate in §4. Qui c'è solo lo scheletro + i guardrail del quant.
->
-> **▶ NEXT SESSION — START HERE.** Questo è il documento vivo del pilastro investing. Per produrre
-> il piano NUMERICO concreto serve la **categoria A (input personali)** in §5c: chiedi all'utente
-> età (e quando compie 30), orizzonte di decumulo, spese mensili, rata DCA sostenibile, target di
-> capitale, equity floor finale, view sugli Emergenti, uso del buffer. Con quelli → allocazione
-> iniziale, sizing buffer, tabella glide-path, step esecutivi (broker→PAC→ribilancio). Da chiudere
-> con l'utente anche il bivio **DIY vs LifeStrategy all-in-one** (§5b). NON costruire esecuzione/
-> codice prima di avere la categoria A.
+> **Stato: ESECUTIVO.** La categoria A (input personali) è stata chiusa il 2026-08-04/07 e il piano
+> operativo è in **§0**. Il resto del documento resta come traccia del percorso: architettura (§1),
+> glide-path (§2), guardrail del quant (§3), ricerca esecutiva (§5b). Origine: pivot dello Stock
+> Selector ([DECISIONS.md 2026-06-02](../DECISIONS.md),
+> [INVESTMENT_ALGO_DESIGN.md](INVESTMENT_ALGO_DESIGN.md)) — niente algoritmo custom, niente
+> selezione titoli, niente market timing.
+
+---
+
+## §0 — PIANO OPERATIVO (attivo da fine settembre 2026)
+
+### Input personali (categoria A — chiusi)
+
+| Voce | Valore |
+|---|---|
+| Età | **21 anni** (finestra under-30 sui canoni broker fino al 2035) |
+| Rata DCA | **100 €/mese** — l'utente aveva calcolato 150 sostenibili, sceglie 100 per garantire di non saltare mai |
+| Obiettivo | **Capitale più alto possibile per smettere di lavorare quando vuole.** Nessuna data d'uso → orizzonte indefinito |
+| Fase glide-path | **Fase 1 — accumulo**, 100% azionario |
+| Buffer e spese mensili | **Fuori perimetro**: li gestisce l'utente. Pianifichiamo solo il Secchio B |
+
+### Il modello di finanziamento: serbatoio, non flusso
+
+Le entrate sono **2-3 stipendi estivi** che devono coprire ~10 mesi fino all'estate successiva
+(situazione stabile fino alla laurea, target 2 anni). Il PAC **non è alimentato da un flusso
+mensile: è un prelievo a rate da un serbatoio**. Il rischio non è "un mese guadagno meno" ma "a
+marzo il serbatoio è basso e il PAC salta".
+
+**Contromisura vincolante:** a fine settembre, quando il budget è pieno, si **vincolano
+€1.200** (12 × 100) separati dai soldi di spesa. Da quel momento il PAC è garantito per l'anno a
+prescindere da come va, e non dipende più dalla disciplina mese per mese.
+
+### Il piano
+
+| Voce | Decisione |
+|---|---|
+| **Broker** | **Trade Republic** — regime amministrato (post-migrazione succursale italiana), PAC senza commissioni, frazionario, canone €0 |
+| **Strumento** | **VWCE** — Vanguard FTSE All-World UCITS ETF (USD) **Accumulating**, `IE00BK5BQT80`, TER 0,22%, domicilio Irlanda. **Verificato presente nel PAC dell'app** |
+| **Rata** | **100 €/mese**, data fissa del mese, mai spostata |
+| **Esecuzione** | XETRA, 09:00-17:30. Frazionario → i €100 entrano interi ogni mese |
+| **Partenza** | **Fine settembre 2026** |
+| **Ribilancio** | **Nessuno.** Un solo strumento, 100% azionario, fase 1: non c'è niente da ribilanciare |
+
+### Regola dei top-up
+
+I €50/mese di differenza tra i 100 scelti e i 150 sostenibili **non entrano nella rata ricorrente** —
+si versano come **top-up discrezionali** quando il mese lo permette. Si ottiene la media da 150 senza
+assumersi l'impegno da 150 (coerente con lump-sum > DCA sugli importi straordinari).
+
+**Vincolo di costo:** l'ordine manuale costa **€1 di regolamento**. Un top-up da €50 pagherebbe il
+2%. → **mai top-up manuali sotto ~€150**: si accumulano e si fa un ordine solo.
+
+Gli **interessi sulla liquidità vincolata** (~€9/anno netti al 2% ordinario; ~€13 se si applica la
+promo 3% per nuovi clienti) si versano come top-up di fine ciclo. **Non sono una leva**: sono lo
+0,75% dei versamenti annui e in termini reali il parcheggio è circa a pareggio o leggermente
+negativo. Il loro senso è pagare pochissimo per un'opzione di liquidità che ha valore vero.
+
+### Revisione: una volta l'anno, a settembre
+
+La revisione si aggancia al **ciclo di reddito** (settembre = nuovo budget), non all'anno solare.
+
+**Si rivede:** la rata (sulla base del surplus **verificato**, non stimato), la tenuta del vincolo dei
+€1.200, eventuali cambi nelle condizioni del broker.
+**Non si rivede:** la scelta dell'ETF, l'allocazione, le prospettive di mercato.
+
+**Trigger di aumento della rata** — solo per reddito, mai per performance di mercato, e
+preferibilmente come **% del netto** così si auto-aggiorna. ⚠️ **La laurea NON è un trigger**: il
+reddito sale ma salgono anche le spese (vita da solo). Il trigger corretto è **6-12 mesi dopo che la
+nuova struttura di spesa si è stabilizzata**, quando esistono dati veri sul surplus.
+
+### Cosa NON fare nei primi due anni
+
+- Non cambiare ETF, non aggiungerne un secondo.
+- Non fermare i versamenti in un ribasso — è esattamente quando il DCA sta lavorando ([08 §Decenni persi](../fondamenti_tecnici/08_asset_allocation_passiva/principles.md): in accumulo il drawdown è un alleato).
+- Non guardare il saldo più della revisione annuale.
+- Non spostare i soldi su "opportunità migliori".
+- Non alzare la rata alla laurea (vedi sopra).
+
+### Quando finisce la fase 1
+
+Non per età, ma per **rapporto**: quando i versamenti annui scendono sotto il ~5-10% del saldo. A
+rata costante servirebbero ~8-9 anni per arrivare a ~€12.000; con i versamenti in crescita
+post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide-path attivo.**
+
+### Verifiche residue prima dell'attivazione
+
+- [ ] Conto effettivamente **migrato alla succursale italiana**: IBAN italiano, deposito italiano, certificazione fiscale italiana.
+- [ ] Verificare se si applica la **promo 3%** per nuovi clienti e la sua data di scadenza (tasso ordinario: 2%, legato BCE, accredito mensile, senza tetto per IBAN IT).
+- [ ] Verificare come viene applicata l'**imposta di bollo 0,2%/anno** sul dossier e che compaia nella certificazione fiscale.
+- [ ] Schermata costi ex-ante e sede di esecuzione al primo ordine.
+
+> ⚠️ **Commissione zero ≠ costo zero.** I costi reali del piano sono: **TER 0,22%**, **spread** in
+> esecuzione, **bollo 0,2%/anno**. Nessuno dei tre si evita cambiando broker — il bollo è una tassa,
+> non una tariffa.
+
+---
 
 ## 1. Architettura: due secchi separati
 
