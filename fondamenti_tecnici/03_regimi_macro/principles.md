@@ -92,6 +92,37 @@ Sono **complementari, non alternativi**:
 
 Il deterministico (descritto in [`../../TRADING_PRINCIPLES.md`](../../TRADING_PRINCIPLES.md) §1) risponde a "in quale stato siamo *ora*"; il Markov aggiunge "con quale probabilità ci spostiamo *dopo*". Il Markov in repo è un'idea non committata (vedi blueprint).
 
+### 6. Canali di trasmissione cross-asset (meccanismi, NON previsioni)
+
+Le sezioni precedenti dicono *in che regime siamo*. Questa registra **come uno shock si propaga da un
+mercato all'altro** — utile perché i sistemi attivi sono intraday su **XAUUSD e NASDAQ**, cioè
+proprio gli strumenti che assorbono questi shock come gap e picchi di volatilità.
+
+> ⚠️ **Statuto epistemico**: sono **meccanismi causali documentati**, non segnali. Non danno
+> direzione né timing e non sono stati validati come edge. L'uso legittimo è **event-risk /
+> calendario** (ridurre o azzerare esposizione, allargare gli stop attesi, non fidarsi delle
+> assunzioni di mean-reversion intraday in quelle finestre) — coerente con
+> *survival-over-prediction* ([[05_portfolio_rischio]] §Tail risk). L'uso illegittimo è farne una
+> view direzionale sul pilastro passivo ([[08_asset_allocation_passiva]]).
+
+**Yen carry trade → tassi USA → risk-off globale.** Il meccanismo: ci si finanzia in **JPY** a costo
+quasi nullo, si converte in dollari e si comprano asset USA (Treasury, azionario). Finché lo yen è
+debole e stabile il carry funziona. Quando la BoJ alza, lo yen si apprezza o esplode la volatilità,
+la posizione diventa insostenibile e i capitali vengono **rimpatriati**: si vendono asset USA e si
+ricompra yen **contemporaneamente** → rendimenti USA in salita, azionario giù, movimento FX violento.
+È un canale **riflessivo** (l'unwind alimenta se stesso via margin call), quindi si manifesta come
+pochi giorni di volatilità estrema, non come deriva lenta. Precedente reale: l'unwind di **agosto
+2024**, con impatto marcato su oro e FX. Tell da monitorare: USD/JPY che rompe al ribasso mentre la
+volatilità azionaria sale, yield JGB in salita, riunioni BoJ in calendario.
+
+**Chokepoint energetici → shock inflattivo → repricing.** Circa il **20% del petrolio mondiale**
+transita dallo **Stretto di Hormuz**; una disruption regionale colpisce simultaneamente energia e
+noli marittimi, si trasmette a CPI/PPI e da lì alle aspettative sui tassi. Per noi conta come
+**rischio di gap overnight** su oro e indici, non come previsione sul prezzo del greggio. Nota
+strutturale collegata: le riserve strategiche USA hanno un **pavimento fisico** (sotto una certa
+soglia le caverne di stoccaggio non sono più utilizzabili), quindi la capacità di calmierare uno
+shock attingendo alle riserve non è illimitata.
+
 ## Collegamenti
 
 - [[markov_regime_skill]] — blueprint implementativo della skill Markov (modulo `regime.py`, HMM, PineScript). STATO: idea non committata.
@@ -104,3 +135,4 @@ Il deterministico (descritto in [`../../TRADING_PRINCIPLES.md`](../../TRADING_PR
 
 - **"Markov regime skill for claude.txt"** — framework di Roan (@RohOnChain), installato come skill Claude Code da Lewis Jackson. Parte teorica: catena di Markov osservabile a 3 stati, matrice di transizione MLE, distribuzione stazionaria, Chapman-Kolmogorov, walk-forward senza look-ahead.
 - **"Stock conceps from defiantmentor.txt"** — solo la parte macro: framework Fed (2 leve, 4 quadranti), 5-metric market timing (empirico, era post-2008 QE), lettura degli indicatori macro leading (jobless claims, PPI, PMI). La parte di stock-selection è curata da un altro agente.
+- `_sorgenti/Appunti misti 2026-08-04.txt` — blocco 4 (outlook macro 4-ago-2026). Il grosso è uno **snapshot tattico datato** → **parcheggiato**, non distillato (obsoleto in settimane, e non deve contaminare il pilastro passivo). Estratti qui solo i **meccanismi durevoli** di §6: yen carry trade e chokepoint energetici come canali di trasmissione. Tracciato in [`_INTAKE.md`](../_INTAKE.md).

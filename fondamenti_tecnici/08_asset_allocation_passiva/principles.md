@@ -77,6 +77,8 @@ ETF USA = esposizione quasi totale al dollaro. All-World = ancora molto legato a
 
 All-World come base, USA come sovrappeso opzionale, Emergenti solo in quota aggiuntiva se si tolera la volatilita extra.
 
+> **RIFIUTATO — il template "70-80% S&P 500 + 10-20% internazionale"** (ricorrente nella divulgazione finanziaria USA, ultima occorrenza: appunti 2026-08-04). Per uno speaker americano è **home bias**; **importato** da un investitore italiano diventa **concentrazione geografica pura** su un singolo paese, per giunta quello oggi a valutazioni estreme (CAPE > 40 ad agosto 2026 vs mediana storica ~16, livello superato solo nel 2000). Confligge frontalmente con la scelta core All-World, che è giustificata proprio dall'argomento dei decenni persi: quelli di **Italia e Giappone furono locali** (vedi sezione dedicata). Nota: la fonte stessa si auto-contraddice — sostiene la diversificazione globale contro i decenni persi in un blocco e l'80% monopaese in un altro. Vale anche per il resto di quel pacchetto: allocazioni in metalli espresse in valore assoluto (~$200k) provengono dal bilancio e dal profilo di rischio di qualcun altro e non sono trasferibili.
+
 ---
 
 ### Bond: governativi, duration e lezione 2022
@@ -169,6 +171,10 @@ La cadenza giusta del DCA non e "quanto si vorrebbe investire" ma "quanto si puo
 
 Va tenuto separato dal portafoglio investito. Deve coprire spese vive e imprevisti senza forzare vendite in perdita. Se il reddito e variabile o se si e vicini alla fase di decumulo, il buffer deve essere piu ampio. Non e una quota del portafoglio: e una riserva pre-investimento.
 
+**Come si dimensiona (logica, non numero magico).** Il buffer copre il rischio dominante di un lavoratore: la **durata della disoccupazione**, non la sua probabilità. Ancora empirica citata dalla fonte: circa il **27% dei disoccupati resta senza lavoro oltre 27 settimane** — cioè oltre metà anno — il che rende **6 mesi di spese vive il pavimento** coerente, non un numero scelto a sentimento. ⚠️ È un dato **USA e time-varying**: prima di fissarlo va ri-verificato sulla durata media/mediana della disoccupazione **Istat** per il mercato del lavoro italiano, e alzato se il reddito è autonomo o concentrato su un cliente.
+
+Sui **prodotti**, la fonte è US-centrica (CD, conti FDIC-insured, high-yield savings ~4%): il **principio** si trasferisce — buffer in strumenti **liquidi, a capitale protetto e con garanzia di sistema** — gli strumenti no. L'equivalente italiano è conti deposito / liquidità in regime amministrato, garanzia **FITD fino a 100k€ per depositante per banca**, e rendimento da valutare **al netto del 26%**. Il buffer non è lì per rendere: è lì per non dover vendere.
+
 **Struttura pratica per residente italiano**
 
 - Core azionario: ETF UCITS globale ad accumulazione, domicilio Irlanda.
@@ -203,9 +209,16 @@ I **decenni persi** (10+ anni a rendimento reale ~0 o negativo) sono reali e ric
 - **Regime-dependent** (stessa trappola di non-stazionarietà dell'ORB): la fonte ammette che il timing vince 1950-80, buy&hold vince 2006-2023 — vincitore che dipende dal campione = non è edge.
 - **Velenoso fiscalmente per un PAC italiano**: ogni uscita/rientro realizza plus al **26%** + spread + whipsaw; il timing 200-MA è marginale-o-negativo **dopo costi e tasse** OOS.
 - **La fonte si auto-confuta**: giorni migliori e peggiori sono **clusterati** nei bear (90% dei 20 migliori sotto la MM200) → uscire ti fa perdere i rimbalzi. È un argomento *contro* il timing.
+- **Non funziona nemmeno prima di costi e tasse.** Falsificazione indipendente (studio 2017): una regola di timing sul CAPE testata **1958-2015 non batte il buy&hold** — ~**0,5%/anno** di premio azionario lasciato sul tavolo e Sharpe sostanzialmente uguale (~0,37 entrambi), *prima* di considerare fiscalità e frizioni. Le tasse IT al 26% sono quindi il secondo chiodo, non il primo.
 - **Principio**: al rischio di coda/decennio perso si risponde con **posizionamento, non predizione** ([[05_portfolio_rischio]] §Tail risk, survival-over-prediction). Allocazione + buffer + glide-path + diversificazione geografica = posizionamento. Il pilastro passivo **è già** la risposta.
 
 **5. Take-away comportamentale = input personale (cat. A).** Scegli una quota azionaria che reggi *attraverso* un −50% / 10 anni piatti. Il decennio perso è lo stress-test mentale con cui tarare quel numero — non un motivo per fare 100% equity per default né per uscire nei ribassi.
+
+**6. Il contrappeso: il costo del NON investire è *certo*, il decennio perso è *probabilistico*.** Il rischio del decennio perso è **visibile e discusso**; l'erosione del potere d'acquisto della liquidità ferma è **silenziosa e continua**, e non finisce mai. Con inflazione poco sotto il 2% il potere d'acquisto si dimezza in ~**35 anni** (regola del 70). Questo è ciò che impedisce al buffer di gonfiarsi "per prudenza": tenere liquidità oltre la funzione di buffer non è la scelta prudente, è una **perdita reale garantita** scambiata per sicurezza.
+
+Il dato citato dalla fonte (16 paesi, 1900-2011) va nella stessa direzione: rendimento reale mediano **negativo sul cash** e positivo sull'azionario, al punto che **il peggior mercato azionario del campione batte il miglior caso del cash**.
+
+> ⚠️ **CAVEAT sui numeri** (stesso trattamento della sezione petrodollaro). La fonte riporta: cash mediana **−4,1%/anno** reale, miglior caso −2,3%; azioni mediana **+4,6%**, peggior mercato **+2,0%**. Il dataset è quasi certamente **Dimson-Marsh-Staunton** (*Triumph of the Optimists* / Global Investment Returns Yearbook, 16 paesi). Ma **−4,1%/anno come *mediana* secolare è implausibile**: in DMS i T-bill USA rendono ~+0,9% reale. −4,1% e +2,0% assomigliano molto ai valori **dell'Italia** (peggior mercato del campione) → sospetto che la riga "cash" sia un valore **country-specific spacciato per mediana**. **Usare il concetto, non i numeri**, finché non verificati sulla fonte primaria DMS.
 
 ---
 
@@ -225,6 +238,8 @@ I **decenni persi** (10+ anni a rendimento reale ~0 o negativo) sono reali e ric
 - **Pianifica con rendimenti reali conservativi** (≈3-4%, non 7%): CAPE alto → non estrapolare i double-digit recenti. Il decennio perso è lo scenario da mettere in conto, non da ignorare.
 - **No market timing sul pilastro passivo** (MM200 & simili): regime-dependent, tasse IT 26% su ogni rientro, e i giorni migliori sono clusterati coi peggiori. Rispondi al rischio con posizionamento (allocazione/buffer/glide-path/All-World), non con predizione.
 - **In accumulo un decennio perso è un vantaggio** (DCA a saldo): non fermare i versamenti. Il sequence risk vero è a fine corsa → lo copre il glide-path.
+- **Non gonfiare il buffer "per prudenza".** Oltre la sua funzione, la liquidità ferma è una perdita reale **certa** (potere d'acquisto dimezzato in ~35 anni al 2%), mentre il decennio perso è **probabilistico**. Dimensiona il buffer sulla **durata** della disoccupazione (pavimento 6 mesi, da tarare su dati Istat), non sulla paura.
+- **Rifiuta i template di allocazione USA-centrici** (70-80% S&P 500, metalli in valore assoluto): per un residente italiano sono concentrazione geografica e allocazioni prese dal bilancio di qualcun altro. Il core resta **All-World**.
 
 ## Collegamenti
 
@@ -237,4 +252,5 @@ I **decenni persi** (10+ anni a rendimento reale ~0 o negativo) sono reali e ric
 ## Fonti
 
 - `_sorgenti/Petrodollar ed ETF.txt` — trascrizione di piu video su ETF (scelta issuer, replicazione, UCITS, domicilio, fiscalita IT, All-World vs USA vs EM, bond, glide-path), sezione portfolio engineering con hedge leg (KMLM/SPY), e debunk del petrodollaro (accordi 1974 FOIA, Eurodollari, scala mercati FX vs petrolio).
+- `_sorgenti/Appunti misti 2026-08-04.txt` — blocchi 1 e 4. Il blocco 1 (lost decades) è **rinforzo**: ~tutto già distillato dalla fonte sotto. Tasselli **nuovi** distillati qui: **costo reale del cash** (§Decenni persi punto 6, numeri con caveat DMS), **falsificazione indipendente del timing su CAPE 1958-2015** (punto 4) e **ancora di sizing del buffer** (§Buffer). Dal blocco 4 nessuna distillazione — solo i **rifiuti espliciti** (template 70-80% S&P 500, metalli in valore assoluto, prodotti cash US) annotati in §All-World e §Buffer. Tracciato in [`_INTAKE.md`](../_INTAKE.md).
 - `_sorgenti/Lost Decades PAC (video).txt` — decenni persi (US 1929-54/1966-82/2000-13 reale ~0%; Italia/Giappone peggio), matematica del recupero, CAPE (corr. debole 0.24-0.33), fallacia dei "best days" (clusterati coi worst sotto MM200), timing MM200 vs buy&hold. Distillato nella sez. "Decenni persi": rinforza il PAC (All-World/buffer/glide-path), aggiunge tarature real-return conservative, RIFIUTA il market timing per il PAC italiano. Tracciato in [`_INTAKE.md`](../_INTAKE.md).

@@ -116,8 +116,67 @@ Il **CAGR** (crescita composta annua: il tasso costante che replica il valore fi
 - **Rule of 72**: anni per raddoppiare $\approx 72/\text{CAGR}\%$. A 7.5% → ~9.6 anni per il ×2, ~19 per il ×4, ~29 per il ×8. Modello mentale rapido per sentire se un claim di raddoppio è realistico.
 - Caveat: il CAGR **liscia la volatilità** e assume reinvestimento allo stesso tasso → misura crescita passata, non rischio né garanzia futura. Da leggere sempre col volatility drag e il drawdown accanto (vedi [[05_portfolio_rischio]]).
 
+### 9. Pre-mortem: le direzioni principali di rischio (il complemento qualitativo)
+
+Tutto ciò che precede è **ex-post e statistico**: misura un edge su un campione. Ma i modi in cui una
+strategia muore live sono spesso **fuori dal campione per costruzione** — non perché siano tail rari,
+ma perché **non sono grandezze di mercato**. Nessun DSR, PBO o walk-forward vede il mentore che
+smette di postare.
+
+**Direzioni principali di rischio** = l'elenco, scritto **prima** di impegnare capitale, dei fattori
+che possono uccidere la tesi. È un **pre-mortem**: si assume che fra un anno il sistema sia morto e si
+enumerano le cause plausibili, ordinandole per (probabilità × danno). Serve a rendere esplicito ciò
+che il backtest non può nemmeno interrogare.
+
+**Esempio svolto — segnali mentore XAUUSD** (l'unico edge positivo misurato, vedi
+[`DECISIONS.md`](../../DECISIONS.md)). L'edge statistico è robusto (direzione ~2/3, stabile 6 mesi,
+tollerante al ritardo fino a 60'), ma le direzioni principali di rischio sono **quasi tutte
+non-statistiche**:
+
+| Direzione di rischio | Natura | Il backtest la vede? |
+|---|---|---|
+| **Key-man**: il mentore smette, cambia stile o inizia a sbagliare | strutturale | no — la serie storica assume che continui |
+| **Compliance**: le prop vietano copy-trading | regolamentare | no |
+| **Rottura del canale/parser**: formato messaggi cambia, account chiuso | tecnica | no |
+| **Degrado dell'esecuzione**: slippage/latenza erodono la tolleranza al ritardo | operativa | parzialmente (solo se modellata) |
+| **Cambio di regime sull'oro** | di mercato | **sì** — questa è l'unica che il walk-forward interroga |
+
+Il valore dell'esercizio è proprio la sproporzione: **una riga su cinque è misurabile dal backtest**.
+Un sistema validato solo statisticamente è validato su un quinto delle sue cause di morte.
+
+**Dominio di validità (mappa dei modelli).** La fonte da cui viene questo concetto sostiene la tesi
+più forte — *"i modelli quantitativi e i dati storici non misurano il rischio forward; vince la
+profondità qualitativa/esperienza"*. Presa alla lettera è una **licenza a scavalcare un NO-GO
+pre-registrato con l'intuito**, cioè esattamente il fallimento contro cui è costruito questo repo
+(NXT, ricerca livelli, ORB). Il conflitto si risolve per **domini**, non eleggendo un vincitore
+(dettaglio in [`DECISIONS.md`](../../DECISIONS.md) §Mappa dei modelli):
+
+- Dominio della fonte: **scommessa discrezionale concentrata** su una singola entità analizzabile
+  fondamentalmente. $n=1$, non esiste campione da backtestare, e l'edge **è** la profondità informativa.
+- Dominio nostro: **regole sistematiche ripetibili** su strumenti liquidi. Il campione esiste e il
+  fallimento dominante è l'**overfitting**, non la superficialità.
+
+Regola che ne deriva: **il qualitativo genera ipotesi ed enumera rischi; non valida mai.** Un
+pre-mortem non promuove una strategia bocciata dai gate §1-§4, e un'ipotesi nata dalla profondità
+qualitativa passa comunque dalla pre-registrazione.
+
+Corollario sul **Bayesian updating** (pure dalla fonte): "itera e aggiorna le credenze" è sano in
+fase di generazione, ma applicato ingenuamente **a valle di un test** diventa razionalizzazione
+post-hoc di un risultato negativo. L'aggiornamento su un edge pre-registrato si fa con **nuovi dati
+forward**, non rileggendo gli stessi.
+
+> ⚠️ **Nota sulla fonte**: il materiale si chiude con un lead magnet (corso/research note gratuita).
+> "I modelli non funzionano, l'esperienza sì" è anche l'argomento di vendita di un corso di
+> esperienza. Non è un motivo per scartare il concetto — è un motivo per non concedergli autorità
+> **contro** risultati misurati.
+
 ## Regole operative
 
+- **Scrivi il pre-mortem prima del capitale.** Per ogni sistema, elenca le direzioni principali di
+  rischio ordinate per (probabilità × danno) e marca quali il backtest può interrogare. Se la
+  maggioranza è non-statistica, la validazione quant **non basta** come gate d'accensione.
+- **Il qualitativo genera ipotesi, non valida.** Nessuna profondità di ragionamento promuove una
+  strategia bocciata dai gate statistici; nessun aggiornamento bayesiano su dati già usati.
 - **Sharpe primario, max drawdown secondario.** Lo Sharpe è la metrica di test principale; il max DD è di contorno. Ma lo Sharpe assume return normali — affianca sempre Sortino/Calmar/CVaR/Ulcer e, per leggere code e asimmetria senza assumere normalità, **Omega** ([`omega_ratio`](../../core/quant_metrics.py)) e **Tail ratio** ([`tail_ratio`](../../core/quant_metrics.py)). Quando esiste un benchmark di riferimento (es. buy&hold dell'asset), usa le metriche relative — alpha, beta, information ratio, tracking error, R² ([`benchmark_metrics`](../../core/quant_metrics.py)) — per distinguere edge reale da semplice esposizione direzionale.
 - **Prima i 3 bias, poi i costi.** Non perdere tempo a raffinare spread/slippage su una strategia che non sopravvive a look-ahead/overfitting/survivorship.
 - **Filtration sempre**: nessun dato futuro nella decisione. Regime timeline solo con lag ≥1 giorno per intraday.
@@ -143,3 +202,4 @@ Il **CAGR** (crescita composta annua: il tasso costante che replica il valore fi
 
 - `_sorgenti/Quant backtest notes.txt` (~95 righe) — distillato fedele: i 3 bias cardinali, esempi (Sharpe ~3→crollo per look-ahead; MA (7,12) IS positivo / OOS ~ -1.8; aerei WWII per survivorship), walk-forward, costi secondari, metafora "scena del crimine".
 - `_sorgenti/Nuove nozioni teoriche 2026-07-16.txt` (Quant Guild) — tasselli distillati qui: **CAGR come BS-test + Rule of 72** (§8) e il **caveat sul dominio del walk-forward** (valida persistenza edge, non predice tail; §4). Il grosso del file (portfolio/rischio/tail) è distillato in [[05_portfolio_rischio]]. Tracciato in [`_INTAKE.md`](../_INTAKE.md).
+- `_sorgenti/Appunti misti 2026-08-04.txt` — blocco 2 ("Understanding and Evaluating Risk in Financial Markets"). Distillato in §9: **direzioni principali di rischio / pre-mortem**, con esempio svolto sui segnali mentore. La tesi forte della fonte ("i modelli quantitativi non misurano il rischio forward") è **mappata come conflitto per domìni**, non assorbita: vedi [`DECISIONS.md`](../../DECISIONS.md) §Mappa dei modelli. Blocchi 1/3/4 dello stesso file: vedi [[08_asset_allocation_passiva]], [[03_regimi_macro]] e [`_INTAKE.md`](../_INTAKE.md).
