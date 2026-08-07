@@ -11,6 +11,180 @@
 
 ---
 
+## 2026-08-07 — Pilastro investing OPERATIVO: Trade Republic + VWCE, 100 €/mese da fine settembre
+
+**Decisione.** Il PAC passa da pianificato a **esecutivo**. Piano completo in
+[docs/INVESTING_PILLAR_PLAN.md §0](docs/INVESTING_PILLAR_PLAN.md). **Broker: Trade Republic.
+Strumento: VWCE** (`IE00BK5BQT80`, Vanguard FTSE All-World UCITS **Acc**, TER 0,22%, Irlanda),
+verificato presente nel piano di accumulo dell'app. **Rata 100 €/mese**, data fissa, partenza **fine
+settembre 2026**. **Nessun ribilancio** (uno strumento, 100% azionario, fase 1).
+
+**Input personali (categoria A, chiusi):** 21 anni · rata 100 €/mese (l'utente aveva calcolato 150
+sostenibili e sceglie 100 per garantire di non saltare mai) · obiettivo = capitale massimo per
+smettere di lavorare quando vuole, **nessuna data d'uso** → orizzonte indefinito → **fase 1, 100%
+azionario** · buffer e spese mensili **fuori perimetro** (li gestisce l'utente).
+
+**Il vincolo strutturale che governa tutto: è un serbatoio, non un flusso.** Le entrate sono 2-3
+stipendi estivi che coprono ~10 mesi (fino alla laurea, target 2 anni). Il PAC è un **prelievo a rate
+da un serbatoio** → contromisura: a fine settembre si **vincolano €1.200** separati dai soldi di
+spesa, e il PAC è garantito per l'anno a prescindere.
+
+**Selezione broker (deep research 2026-08-04/07, 5 candidati).** Discriminante = **regime fiscale**,
+non costo. **Esclusi per regime dichiarativo**: **Revolut** (ETF restano dichiarativi anche con IBAN
+IT → quadro RT+RW ogni anno) e **IBKR** (nessuna stabile organizzazione in Italia → RT+RW+IVAFE; un
+commercialista per il solo RW costerebbe >10% dei versamenti annui a questa scala). **Escluso per
+frazionario**: **Directa** (arrotonda per difetto → a 100 €/mese alcuni mesi comprerebbe zero quote;
+sarebbe ottimo a 500 €/mese). **Alternativa valida**: **Fineco** (Replay gratis under-30, ma il
+vantaggio scade a 30 anni). **IBKR è rimandato, non escluso**: da rivalutare a portafoglio grande o
+quando esisterà già un commercialista per il lato trading.
+
+**Correzioni rispetto alla prima ricerca** (verifica utente su fonti ufficiali, 2026-08-07): il tasso
+sulla liquidità è **2% ordinario** (BCE-linked, accredito mensile, **senza tetto** per IBAN IT), non
+3% — il 3% è una **promo per nuovi clienti** fino a 50k. Il "niente RW/IVAFE" **non è dichiarato in
+modo generale** nella documentazione ufficiale: il regime amministrato si applica **dopo la
+migrazione alla succursale italiana**, non per data di apertura → verificare sulla certificazione
+fiscale annuale. **Custodia e trasferimento titoli in uscita: NON PUBBLICATI** nel listino.
+
+**Interessi sul vincolo: non sono una leva.** Saldo medio ~€600 → ~**€9/anno netti** al 2%
+(~€13 con promo 3%), cioè lo 0,75% dei versamenti annui, e in termini **reali** circa a pareggio o
+leggermente negativo. Non giustificano un aumento della rata: servono a pagare pochissimo
+un'**opzione di liquidità** che nella situazione dell'utente ha valore vero.
+
+**⚠️ La laurea NON è un trigger di aumento della rata**: il reddito sale ma salgono anche le spese
+(vita da solo). Trigger corretto = **6-12 mesi dopo che la nuova struttura di spesa si è
+stabilizzata**, su surplus verificato. Revisione **una volta l'anno a settembre**, agganciata al
+ciclo di reddito, non all'anno solare.
+
+---
+
+## 2026-08-04 — Rituale di aggiornamento: dopo OGNI verdetto si allinea il repo
+
+**Decisione.** Ogni verdetto (GO / LEAD / NO-GO / CLOSED / INSUFFICIENT DATA) chiude con
+l'aggiornamento di **DECISIONS.md + memoria di lavoro + documenti impattati**, nella stessa
+sessione. Non è un'attività opzionale di fine progetto: è parte del verdetto.
+
+**Razionale.** Il buco trovato oggi lo dimostra: il **NO-GO NXT del 2026-07-17** e il lead fade
+esistevano in memoria, in `strategie_candidate/` e in `_INTAKE.md`, ma **non in questo file** — cioè
+non erano visibili a una sessione pulita che sfoglia il repo. Un decision log con dei buchi produce
+esattamente ciò che esiste per impedire: riproporre cose già chiuse.
+
+---
+
+## 2026-08-04 — Ciclo di vita delle strategie: loop di ricerca formalizzato + criteri di bocciatura
+
+**Decisione.** Adottato il loop `ricerca → formulazione → [G1] pre-registrazione → backtest (train) →
+rifinitura (train) → walk-forward (train) → [G2] holdout sigillato → verdetto`, con criteri di kill
+espliciti. Documento: [docs/STRATEGY_LIFECYCLE.md](docs/STRATEGY_LIFECYCLE.md).
+
+**Razionale.** Un loop di miglioramento su dataset storico fisso è una **macchina per falsi
+positivi** se non ha contabilità dei tentativi, dati sigillati e criteri di morte dichiarati prima.
+Tre meccanismi rendono il loop non-tossico: (1) **contatore trial persistente** attraverso le
+iterazioni (il DSR si applica al cumulato); (2) **holdout sigillato**, apribile **una volta per
+famiglia** — se il budget si esaurisce prima, la famiglia muore senza averlo mai aperto;
+(3) test operativo anti-p-hacking: *"avresti fatto questa modifica se il backtest fosse stato
+positivo?"*.
+
+**Criteri di kill.** Sei **kill duri** (difetto metodologico · non batte il random matched ·
+fallimento di breadth · muore sui costi · instabilità parametrica · razionale economico falsificato)
+e i **kill di budget**: **max 3 round di rifinitura per famiglia**, budget trial esaurito, e la
+**regola di futilità DSR** (se il miglior risultato osservato è sotto la soglia di significatività
+per il numero cumulato di trial, iterare è matematicamente inutile → kill immediato).
+**Riapertura di una famiglia CLOSED solo con evidenza esterna nuova**, mai con un ritocco.
+
+**Costo dimostrato:** la ricerca livelli è arrivata a **384 trial su 3 round** prima di chiudere il
+libro; con un budget dichiarato in partenza sarebbe morta a v2.
+
+---
+
+## 2026-08-04 — Forward test FADE: pre-registrato a DUE STADI (50 boccia, 200 conferma)
+
+**Decisione.** Il forward del fade — **già in corso da ~2026-07-24 senza pre-registrazione** — è
+regolato da [docs/NXT_FADE_FORWARD_PREREGISTRATION.md](docs/NXT_FADE_FORWARD_PREREGISTRATION.md).
+**Stadio 1 · N=50**: se E[R] ≤ 0 o win < 25% → **KILL** senza estensione; altrimenti prosegue.
+**Nessun GO dichiarabile a 50, in nessun caso.** **Stadio 2 · N=200**: GO solo se il **lower bound
+BCa 95%** su E[R] è > 0. Backstop 2026-10-31 e 2027-03-31; vale il primo evento.
+
+**Razionale.** Il quant reviewer impone un *pavimento di sufficienza* (`n<50` → INSUFFICIENT DATA)
+ma **non è una regola di stop**: è un gate a valle e non può sapere quante volte hai guardato prima
+di sottoporgli i dati. L'asimmetria "negativo → raccogliamo ancora / positivo → chiudiamo" è
+l'optional stopping, e il DSR penalizza le **varianti**, non le **sbirciate**.
+Inoltre **N=50 è sottodimensionato per confermare**: con SD ~1,8R per trade l'errore standard su 50
+trade è ~0,26R, quindi un E[R] vero di +0,35R darebbe un CI 95% **che attraversa lo zero** — per una
+conferma a potenza 80% servono ~200-220 trade. Da qui i due stadi, entrambi fissati **prima** dei
+dati. Il fade è **trial #2 di 3** della famiglia NXT e **non ha diritto a rifinitura** (è già nato
+come rifinitura).
+
+---
+
+## 2026-08-04 — Prop firm: la traccia segnali-mentore NON è finanziabile su capitale prop
+
+**Decisione.** L'assunto della roadmap *"prop anticipata dai segnali"* (2026-05-30) è **superato**.
+Le prop non vietano solo l'automazione: vietano il **trading basato su segnali di terzi**. Verificato
+su quattro firm indipendenti — FTMO, FundedNext, The5ers e Alpha Capital Group — che consentono la
+copia **solo tra account di proprietà** e classificano il signal-following da canali Telegram come
+*Group Trading* proibito. Se l'edge mentore va operato, va operato su **capitale proprio**.
+
+**Perché morde davvero.** L'enforcement scatta al **payout review**, non all'apertura: si tradano
+mesi e i profitti vengono negati quando si chiedono. Il rilevamento è per **pattern identici tra
+account** — cioè esattamente la firma di più follower dello stesso mentore.
+
+**Corollario.** La traccia **EA** resta compatibile (FTMO/FundedNext/The5ers/Alpha permettono EA su
+MT5; vietati HFT, latency arbitrage, copy di terzi), ma oggi **non abbiamo nulla di finanziabile**:
+ORB è NO-GO e il fade è un LEAD in forward. Scelta della prop **rimandata**, a valle di un GO.
+Fattori da tenere presenti quando si riapre: **ESMA/MiFID II** in movimento sulle prop che si
+rivolgono all'UE, avviso **CONSOB** del luglio 2024, 80-100 firm chiuse nel 2024 → il **rischio di
+controparte è il criterio dominante**, non lo split. Alpha Capital: EA solo MT5 **con consegna del
+sorgente `.mq5`** e **consistency rule del 40% best-day** — quest'ultima è testabile sulla
+distribuzione del P&L giornaliero delle nostre strategie.
+
+---
+
+## 2026-08-04 — Fonti esterne: si raccolgono le regole, si scartano le statistiche dichiarate
+
+**Decisione.** I canali/video di terzi entrano da [`_INTAKE.md`](fondamenti_tecnici/_INTAKE.md) e
+alimentano **solo la fase RICERCA**. Due vincoli: (1) **mai importare le statistiche dichiarate nel
+prior**; (2) **budget di max 2-3 pre-registrazioni per trimestre** da fonti esterne.
+
+**Razionale.** Il track record dei claim esterni misurati da noi o da terzi: NXT ex-soci 60-70%
+dichiarato → **13,3%**; bot VELTRIX 80-90% → **~53%**; ricerca livelli → **NULL** su 384 trial;
+playbook Chart Fanatics 90% → **~20%** (test indipendente di terzi). Il collo di bottiglia non è mai
+stata la fornitura di idee — è la **capacità di validazione**: ogni ipotesi in più alza
+meccanicamente la soglia DSR per tutte le altre.
+
+**Fonte valutata (2026-08-04):** *Chart Fanatics* / *Words of Rizdom* (Riz Iqbal) — stesso
+ecosistema, monetizzato via Chart Academy e affiliazione con **Apex Trader Funding**; il metodo di
+verifica dei trader non è pubblicato. **Uso approvato**: layer **operativo e di rischio** (pre-mortem
+[04 §9](fondamenti_tecnici/04_quant_metodologia/principles.md)) + raccolta regole con filtro
+d'ingresso (strumenti che tradiamo, regole codificabili senza discrezionalità, timeframe coperti dai
+nostri dati).
+
+---
+
+## 2026-07-17 — NXT (Fibonacci/Elliott, ex-soci): continuazione NO-GO. Il FADE resta un LEAD.
+
+> *Voce ricostruita il 2026-08-04: la decisione era tracciata in memoria, in
+> [`strategie_candidate/nxt_fib_trend_pullback.md`](fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md)
+> e in `_INTAKE.md`, ma mancava da questo log.*
+
+**Decisione.** La strategia **NXT** degli ex-soci (continuazione: entry al ritracciamento 0.5,
+SL 0.786, target 1:3) è **NO-GO**. Test **pre-registrato** su 6 asset H1 (EURUSD, GBPUSD, USDJPY,
+XAUUSD, US100, US500), ~14 anni, ~10.000 setup — motori
+[`analysis/nxt/backtest.py`](analysis/nxt/backtest.py) e [`closure.py`](analysis/nxt/closure.py).
+
+**Esito.** Win rate **13,3%** contro il 60-70% dichiarato; **E[R] = −0,44R**; negativa in **14/14
+anni** e **6/6 strumenti**; l'holdout conferma; le varianti wide-stop non salvano. È un **kill duro
+per fallimento di breadth** — nessun set di parametri ripara un effetto che non esiste.
+
+**Sottoprodotto.** Il **lato opposto** (FADE / mean-reversion: stessa entrata, posizione invertita,
+R = 28,6% della gamba, TP 3R, BE a +2R) è **+0,35R** base e **+0,24R** a 3× i costi, positivo in
+14/14 anni e 6/6 strumenti. **Ma è un'ipotesi data-derived** — nata invertendo una strategia che
+perdeva, sugli stessi dati. → **LEAD**, non edge: richiede pre-registrazione nuova e forward OOS
+indipendente. Spec eseguibile:
+[`fade_mr_walkforward_socio.md`](fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md);
+EA [`mql5/nxt_fade.mq5`](mql5/nxt_fade.mq5). Forward pre-registrato il 2026-08-04 (voce sopra).
+
+---
+
 ## 2026-07-16 — Opening-Range Breakout (scalping single-asset, idea utente+socio): NO-GO su 14.5y.
 
 Primo test del filone **scalping intraday single-asset**. ORB dell'apertura cash USA (09:30 ET) + retest,
@@ -481,6 +655,18 @@ che calza il contesto. È l'estensione naturale del principio "edge condizionato
 - *"Vendi il volatility risk premium"* (IV sovrastima RV in media) **vs** *"compra convexity /
   long-vol"* (mitiga il drag nei crash). Entrambe vere secondo **regime/timing**: vendi il premio
   in mercato normale, l'assicurazione paga nei tail.
+- *"Il rischio forward non è misurabile con modelli e dati storici: vince la profondità
+  qualitativa/esperienza"* (fonte: appunti 2026-08-04, blocco risk-mispricing) **vs** la nostra
+  **pre-registrazione + gate statistici**. Si separa per **dominio**, non per merito:
+  la fonte parla di **scommesse discrezionali concentrate** su singola entità ($n=1$, nessun
+  campione disponibile, l'edge *è* la profondità informativa); noi facciamo **regole sistematiche
+  ripetibili** su strumenti liquidi (il campione esiste, il fallimento dominante è l'overfitting).
+  **Condizione operativa: il qualitativo genera ipotesi ed enumera direzioni di rischio — non
+  valida mai.** Nessun ragionamento qualitativo promuove una strategia bocciata dai gate; nessun
+  "aggiornamento bayesiano" sugli stessi dati già usati per il test. Il tassello **utile** della
+  fonte (pre-mortem sulle direzioni principali di rischio) è distillato in
+  [fondamenti_tecnici/04_quant_metodologia/](fondamenti_tecnici/04_quant_metodologia/) §9 — copre
+  proprio ciò che il backtest non può interrogare (key-man, compliance, rottura tecnica).
 
 Operativamente la mappa vive in due posti: il **registro di intake**
 ([fondamenti_tecnici/_INTAKE.md](fondamenti_tecnici/_INTAKE.md)) traccia stato e destinazione di
