@@ -38,6 +38,17 @@ Stati: `grezzo` · `distillato` · `parcheggiato`
 | `_sorgenti/Appunti misti 2026-08-04.txt` — blocco 4: outlook macro 4-ago-2026 | video divulgativo (snapshot) | **parcheggiato** + 2 estratti **distillati** | [[03_regimi_macro]] §6 (canali cross-asset), [[08_asset_allocation_passiva]] §Buffer | Il grosso (CPI/Fed/labour/sentiment) è **fotografia datata** → obsoleta in settimane, e **non deve contaminare il pilastro passivo** (posizionamento, non predizione). Distillati solo i **meccanismi durevoli**: **yen carry trade** (unwind riflessivo → yield USA su + risk-off; precedente ago-2024, rilevante perché operiamo XAUUSD/NASDAQ intraday) e **chokepoint energetici** (Hormuz ~20% del greggio → gap overnight), entrambi come **event-risk, NON segnali**. **RIFIUTATI**: template **70-80% S&P 500 + 10-20% intl** (home bias USA importato = concentrazione geografica; la fonte **si auto-contraddice** col blocco 1 che invoca la diversificazione globale contro i decenni persi locali di Italia/Giappone), ~$200k in metalli (bilancio altrui), prodotti cash US (CD/FDIC → l'equivalente IT è conto deposito/FITD 100k, al netto del 26%). ⚠️ Il blocco riporta "GDP Q3 2026 **+5,0%**" accanto a Q2 1,5% e leading indicator negativo → probabile errore di trascrizione, **non riportato da nessuna parte** |
 | `_sorgenti/Lost Decades PAC (video).txt` — decenni persi nel mercato azionario | video divulgativo | **distillato** | [[08_asset_allocation_passiva]] (sez. "Decenni persi") | RINFORZA il PAC passivo (All-World anti-home-bias, buffer, glide-path) + 2 tarature (real-return conservativi vs CAPE alto; allocazione "sopportabile"). La proposta market timing 200-MA = RIFIUTATA (regime-dependent + tasse IT 26%; survival-over-prediction [[05_portfolio_rischio]]). Il "lost decade" è statistica lump-sum, il DCA la riscrive |
 
+## Insight da YouTube — cartella dedicata
+
+Il materiale estratto dai canali video vive in [`_sorgenti/insight_da_yt/`](_sorgenti/insight_da_yt/),
+**separato** dalle altre fonti perché ha uno statuto diverso: non è conoscenza da distillare, è
+**segnalazione di punti da verificare**. Il video illumina uno spot; sta a noi testarlo e
+contestualizzarlo. Solo ciò che sopravvive alla verifica migra nelle sezioni proprie del workspace.
+
+| Fonte | Esito |
+|---|---|
+| `insight_da_yt/okala_80-20_nasdaq_ChartFanatics.md` — strategia "80/20" mean-reversion su Nasdaq futures | **Strategia NON testabile** (entrate = descrizioni visive, timeframe d'ingresso a 200s non ricostruibile). **Primitivo isolato e testato**: griglia .80/.20 vs griglia sfasata → **NULL** su 28.745 touch, diff +0,08 pt, CI [−0,56, +0,74] → famiglia **CLOSED** ([DECISIONS.md](../DECISIONS.md) 2026-08-09, prereg `docs/ROUND_NUMBER_GRID_PREREGISTRATION.md`). **Trattenuto il layer operativo**: spec drift come modo di morte dei sistemi discrezionali, overtrading, rischio fisso/size variabile, non rincorrere le entrate mancate. **Rifiutato**: "più contratti quando sei caldo" (anti-Kelly). Statistiche dichiarate (70% win) scartate: falliscono il BS-test |
+
 ## Fonti ricorrenti (mandato permanente)
 
 | Fonte | Natura | Mandato | Vincoli |

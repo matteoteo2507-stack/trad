@@ -11,6 +11,63 @@
 
 ---
 
+## 2026-08-09 — Griglia a numero tondo .80/.20 sul Nasdaq: **NULL**. Famiglia CLOSED al primo trial.
+
+**Decisione.** Prima ipotesi estratta dal mandato "insight da YouTube" (fonte: *Okala 80/20*, canale
+Chart Fanatics). Pre-registrata in
+[docs/ROUND_NUMBER_GRID_PREREGISTRATION.md](docs/ROUND_NUMBER_GRID_PREREGISTRATION.md), eseguita da
+[`analysis/round_grid/test_80_20.py`](analysis/round_grid/test_80_20.py). **Esito: NULL** →
+famiglia **CLOSED**, nessuna rifinitura.
+
+**Cosa è stato testato.** Solo il **primitivo oggettivo**, non la strategia: la strategia non è
+testabile (entrate *fork/H/cross-section/repair* sono **descrizioni visive**, non regole; grafico
+d'ingresso a **200 secondi**, non ricostruibile da M5 e senza M1 in repo). Ipotesi isolata: i prezzi
+con finale **.80/.20** (`P mod 100 ∈ {20,80}`) reagiscono più di una griglia **identica per geometria
+ma sfasata**.
+
+**Perché il null era il giusto null.** Con griglia fissa il *random distance-matched* dell'engine
+originale non è applicabile — la distanza determina la posizione, quindi un livello "alla stessa
+distanza" sarebbe lo stesso prezzo. Baseline usata: **sfasamento di fase**, $\{20+\delta, 80+\delta\}
+\bmod 100$, che preserva esattamente la spaziatura 60/40 e cambia solo la fase.
+
+**Risultato** (NAS100 M5, 949.241 barre 2012-2026, TRAIN 70%, `classify()` della ricerca livelli con
+costanti invariate, block-bootstrap sui giorni):
+
+| | reale | random sfasato | differenza | CI 95% |
+|---|---|---|---|---|
+| **POOL** | **27,5%** | **27,5%** | **+0,08 pt** | **[−0,56, +0,74]** |
+| SUPPORT | 29,2% | 28,5% | +0,70 pt | [−0,19, +1,65] |
+| RESISTANCE | 25,9% | 26,5% | −0,54 pt | [−1,48, +0,36] |
+
+n = **28.745 touch reali** su **2.903 giorni**. Il CI è largo ±0,65 punti percentuali: avremmo
+rilevato un effetto di ~1 punto. **Non è un null per mancanza di potenza — è un null stretto.**
+
+**L'holdout NON è stato aperto** (TRAIN negativo → si chiude prima), quindi il 30% finale della serie
+resta **sigillato** per ipotesi future. È il meccanismo di
+[STRATEGY_LIFECYCLE §2](docs/STRATEGY_LIFECYCLE.md) che fa il suo lavoro.
+
+**Correzione a una mia stima a priori.** Avevo calcolato che i livelli .80/.20 coprono il ~40% del
+territorio di prezzo, deducendone scarsa selettività. Vero **rispetto allo stop di Okala** (10 punti),
+ma il test usa la tolleranza pre-registrata di **0,10 ATR**, molto più stretta: la distanza mediana dal
+livello più vicino è **4,92 ATR** e solo l'**1,4%** dei punti orari è già "al livello". La critica vale
+per l'uso operativo, non per il test.
+
+**Cosa resta della fonte** (l'uso primario previsto dal mandato — il layer operativo, non le regole):
+*spec drift* come modo di morte dominante di un sistema discrezionale (*"è facile prendere entrate che
+**quasi** rientrano nel modello"*), overtrading auto-identificato, rischio fisso per trade con size
+variabile, non rincorrere le entrate mancate — quest'ultima **converge indipendentemente** col nostro
+gate anti-ritardo sui segnali mentore. **Rifiutato**: *"più contratti quando sei caldo"* — anti-Kelly,
+alza la varianza proprio quando la stima dell'edge è più gonfiata dalla fortuna recente.
+
+**Statistiche dichiarate scartate**, come da mandato: 70% win a 1,5:1 implica **+0,75R per trade**;
+con "multiple entries per day" e rischio 0,25% sono **>+140% l'anno sostenuto**. Fallisce il BS-test
+di [04 §8](fondamenti_tecnici/04_quant_metodologia/principles.md). Quarta occorrenza dopo NXT,
+VELTRIX e il playbook Chart Fanatics.
+
+**Budget**: trial **1 di 3** della famiglia, e **1 delle 2-3 pre-registrazioni esterne del trimestre**.
+
+---
+
 ## 2026-08-07 — Segnali mentore XAUUSD: **CONFERMATO fuori campione**. Primo OOS pre-registrato superato.
 
 **Decisione.** L'edge direzionale del mentore **regge OOS**. È il **primo verdetto positivo su un
