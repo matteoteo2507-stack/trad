@@ -78,3 +78,7 @@ analysis/mentor_signals/signals.csv
 
 # Repo del socio clonato (codice di terzi, ha un proprio .git)
 socio-trading-bot/
+
+# Export Telegram grezzi (pesanti, fuori repo per scelta 2026-08-09)
+/Messaggi tg aggiornati*/
+/Dati su segnali mentore/
