@@ -125,3 +125,43 @@ Obbligatorie, indipendentemente dall'esito:
 | Data | Modifica | Motivo |
 |---|---|---|
 | 2026-08-04 | Creazione. N=50 (Stadio 1) e N=200 (Stadio 2), backstop e impegni fissati | Test già in corso da ~2026-07-24 senza pre-registrazione |
+| 2026-08-12 | **Anomalia di deployment rilevata e corretta — vedi §9** | Il deployment non implementava l'universo pre-registrato |
+
+## 9. Anomalia di deployment (2026-08-12) — bug fix, NON modifica di spec
+
+Alla terza settimana l'utente segnala l'assenza di trade sui cambi. Diagnosi sui log del VPS
+(`hosting.6876289.experts` e `.terminal`, conto 7396683 @ FirstPrudentialMarkets-Demo):
+
+**1. I tre cambi non hanno mai potuto operare.** L'EA *è* agganciato a EURUSD, GBPUSD, USDJPY — ma
+ai simboli **senza suffisso**, che su questo broker esistono nell'albero e sono **disabilitati alla
+negoziazione**. Il set tradabile è quello raw-spread con suffisso **`.r`**. Esito: **171 ordini
+rifiutati con `[Trade disabled]`** (USDJPY 67, EURUSD 64, GBPUSD 40), loggati dall'EA come
+`arm fallito, err=4756` (`ERR_TRADE_SEND_FAILED`, generico). Non è un difetto della strategia: la
+logica genera i segnali correttamente, non riesce a inviarli. ⚠️ I 171 rifiuti **non** sono 171
+segnali: l'EA non marca la gamba come armata quando l'invio fallisce, quindi ritenta a ogni barra.
+
+**2. Uno strumento fuori universo.** `nxt_fade` era agganciato anche a **BTCUSD**, che non è nei sei
+pre-registrati → **2 trade chiusi da escludere** dal conteggio e dal verdetto. Su BTCUSD si osservano
+anche `No money` (x12) e **`Invalid stops` (x7)**: quest'ultimo è un modo di fallimento reale da
+sorvegliare — se comparisse sui `.r` dopo il fix, sarebbe un problema di **geometria** (R = 28,6%
+della gamba troppo stretto su un cambio a bassa volatilità), non di deployment.
+
+**3. Pressione di margine.** Cinque ordini scartati con `[No money]` (BTCUSD x12 e US100 x2 nello
+storico ordini). Il sizing risk-based con stop stretti genera volumi elevati; con **sei** strumenti in
+parallelo il margine peggiora. **Mitigazione: ridurre il rischio per trade.** La **size NON è un
+parametro pre-registrato** — §3 congela la geometria, e il verdetto è su **E[R]**, in multipli di R:
+ridurre i lotti non altera alcuna statistica misurata.
+
+**Qualificazione**: **bug fix**, non modifica di spec — il deployment non implementava l'universo
+pre-registrato. Per [STRATEGY_LIFECYCLE §3](STRATEGY_LIFECYCLE.md) **non conta come trial** e non
+azzera il test.
+
+**Azioni**: (a) riagganciare l'EA a `EURUSD.r`, `GBPUSD.r`, `USDJPY.r`; (b) staccare BTCUSD;
+(c) ridurre il rischio per trade; (d) **escludere i 2 trade BTCUSD** dal conteggio → N corretto al
+2026-08-12 = **14 trade chiusi in universo** (US100 9, XAUUSD 5), non 16.
+
+> ⚠️ **CAVEAT DI COMPOSIZIONE — obbligatorio nel verdetto finale.** Le prime tre settimane del
+> forward hanno operato su **2 strumenti su 6** (US100 e XAUUSD). Anche dopo il fix il campione non
+> sarà un'estrazione omogenea dall'universo: la prima parte è sbilanciata su due strumenti, la
+> seconda sarà mista. L'E[R] resta misurato per trade, ma il report finale **deve** includere il
+> **breakdown per strumento** e dichiarare questa asimmetria.
