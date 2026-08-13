@@ -103,7 +103,14 @@ input int    InpMaxHoldBars          = 480;        // barre max holding, ~20 gio
 input int    InpLookbackBars         = 600;        // finestra barre per la detection swing
 
 input group "=== Sizing (fixed fractional) ==="
-input double InpRiskPerTradePct      = 0.01;       // % equity rischiata per trade (1%)
+// ATTENZIONE: e' una FRAZIONE, non una percentuale. 0.0025 = 0.25%, 0.01 = 1%.
+// Ridotto da 0.01 a 0.0025 il 2026-08-12: con 6 strumenti in parallelo e stop stretti
+// (R = 28.6% della gamba) il sizing risk-based generava volumi che il margine non regge
+// -> ordini scartati con [No money]. Il dropout NON e' casuale: colpisce i setup con lo
+// stop piu' stretto, quindi il volume piu' grande. La size NON e' un parametro
+// pre-registrato (il verdetto e' su E[R], in multipli di R) -> modificarla non altera
+// alcuna statistica misurata. Vedi docs/NXT_FADE_FORWARD_PREREGISTRATION.md §9.
+input double InpRiskPerTradePct      = 0.0025;     // FRAZIONE di equity per trade (0.25%)
 input double InpFallbackVolume       = 0.10;       // lotti di fallback se il sizing fallisce
 
 input group "=== Telegram (opzionale) ==="

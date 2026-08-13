@@ -156,9 +156,31 @@ ridurre i lotti non altera alcuna statistica misurata.
 pre-registrato. Per [STRATEGY_LIFECYCLE §3](STRATEGY_LIFECYCLE.md) **non conta come trial** e non
 azzera il test.
 
-**Azioni**: (a) riagganciare l'EA a `EURUSD.r`, `GBPUSD.r`, `USDJPY.r`; (b) staccare BTCUSD;
-(c) ridurre il rischio per trade; (d) **escludere i 2 trade BTCUSD** dal conteggio → N corretto al
-2026-08-12 = **14 trade chiusi in universo** (US100 9, XAUUSD 5), non 16.
+**Azioni**: (a) riagganciare l'EA a `EURUSD.r`, `GBPUSD.r`, `USDJPY.r`; (b) staccare **BTCUSD** e
+**EURGBP.r** (entrambi fuori universo); (c) ridurre il rischio per trade a **0,25%**
+(`InpRiskPerTradePct = 0.0025` — è una **frazione**, non una percentuale); (d) escludere i trade
+fuori universo dal conteggio.
+
+**Conteggio corretto al 2026-08-12** — `nxt_fade` = magic **26071**:
+
+| Simbolo | Chiusi | |
+|---|---|---|
+| XAUUSD.cyr | 6 | in universo |
+| US100 | 3 | in universo |
+| BTCUSD | 2 | **escluso** (fuori universo) |
+| US500 | 0 | agganciato, 1 pendente attivo, nessun fill |
+| EURUSD.r / GBPUSD.r / USDJPY.r | 0 | mai potuti operare (`Trade disabled`) |
+
+→ **N valido = 9/50**, breadth **2/6**.
+
+> ⚠️ **Correzione di un mio errore di conteggio (2026-08-12).** In prima battuta avevo riportato
+> N = 14 attribuendo i trade per **commento**. È sbagliato: il commento `nxt_fade` sopravvive solo
+> sulla deal di **apertura**; la deal di **chiusura** porta un commento generato dal broker
+> (`[tp 28292.80]`, `[sl 4409.82]`). Attribuendo per commento avevo incluso le chiusure di
+> `orb_nasdaq` (magic 26052) dentro quelle di `nxt_fade`. **L'attribuzione corretta è per MAGIC**,
+> che invece sopravvive su entrambe le deal. Verificato in
+> [`analysis/ops/deployment_healthcheck.py`](../analysis/ops/deployment_healthcheck.py), che usa il
+> magic e va usato come fonte del conteggio da qui in avanti.
 
 > ⚠️ **CAVEAT DI COMPOSIZIONE — obbligatorio nel verdetto finale.** Le prime tre settimane del
 > forward hanno operato su **2 strumenti su 6** (US100 e XAUUSD). Anche dopo il fix il campione non
