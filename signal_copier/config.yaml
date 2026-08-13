@@ -15,6 +15,21 @@ channels:
 # MT5_DEMO3 = account MetaQuotes 10685251 (hedge), usato anche per London.
 broker_account: "MT5_DEMO3"
 
+# Installazione MT5 DEDICATA al copier (percorso di terminal64.exe).
+# ⚠️ CRITICO: se lasciato vuoto, mt5.initialize() usa il terminale PREDEFINITO e vi
+# esegue il login con broker_account -> slogga il conto attivo. Sul terminale
+# principale gira il forward test degli EA (conto 7396683 @ FirstPrudentialMarkets):
+# sloggarlo = fermare il test senza alcun errore visibile.
+# Il copier deve avere la SUA installazione e il SUO conto (margine separato).
+terminal_path: ""
+
+# Mappatura simboli: il canale posta "XAUUSD", il broker puo' esporlo diversamente.
+# Su demo MetaQuotes i nomi sono puliti -> lasciare vuoti.
+# Su First Prudential servirebbe: symbol_overrides: {XAUUSD: "XAUUSD.cyr"}
+# (stessa classe del bug [Trade disabled] del 2026-08-12).
+symbol_suffix: ""
+symbol_overrides: {}
+
 # Trade journal append-only (JSONL): ogni evento del copier (segnale, gambe,
 # gestione) viene loggato qui per analisi/quant-review. Sostituisce il Notion
 # manuale. Il dryrun su esempi offline scrive su <stem>_dryrun.jsonl.

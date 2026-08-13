@@ -234,7 +234,18 @@ def cmd_live(args: argparse.Namespace) -> int:
 
 
 def _build_broker(prefix: str, copier_cfg: dict) -> Any:
-    """Costruisce un MT5Broker dalle env MT5_<prefix>_LOGIN/PASSWORD/SERVER."""
+    """Costruisce un MT5Broker dalle env MT5_<prefix>_LOGIN/PASSWORD/SERVER.
+
+    Due parametri sono CRITICI e vanno da config.yaml (2026-08-12):
+
+    - `terminal_path`: senza, `mt5.initialize()` punta al terminale PREDEFINITO e vi
+      esegue il login con queste credenziali -> **slogga il conto attualmente attivo**.
+      Se su quel terminale gira un forward test, lo si ferma senza accorgersene.
+      Va indicata l'installazione MT5 DEDICATA al copier.
+    - `symbol_suffix` / `symbol_overrides`: il canale posta "XAUUSD", ma il broker puo'
+      esporre "XAUUSD.cyr". Senza mappatura ogni ordine viene rifiutato dal broker.
+      Stessa classe del bug [Trade disabled] del 2026-08-12.
+    """
     from brokers.mt5 import MT5Broker
 
     login = os.getenv(f"{prefix}_LOGIN")
@@ -242,7 +253,24 @@ def _build_broker(prefix: str, copier_cfg: dict) -> Any:
     server = os.getenv(f"{prefix}_SERVER")
     if not (login and password and server):
         raise RuntimeError(f"Credenziali {prefix}_* mancanti in .env")
-    return MT5Broker(login=int(login), password=password, server=server, magic=27050)
+
+    terminal_path = copier_cfg.get("terminal_path") or None
+    if not terminal_path:
+        logger.warning(
+            "terminal_path non impostato in config.yaml: mt5.initialize() usera' il "
+            "terminale PREDEFINITO e vi fara' il login con %s_*. Se su quel terminale "
+            "gira altro (EA/forward test), verra' sloggato. Imposta terminal_path.",
+            prefix,
+        )
+    return MT5Broker(
+        login=int(login),
+        password=password,
+        server=server,
+        terminal_path=terminal_path,
+        symbol_suffix=copier_cfg.get("symbol_suffix", "") or "",
+        symbol_overrides=copier_cfg.get("symbol_overrides") or {},
+        magic=27050,
+    )
 
 
 # ---------------------------------------------------------------------------
