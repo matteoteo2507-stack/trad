@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import collections
 import datetime as dt
+import os
 import sys
 
 try:
@@ -27,6 +28,9 @@ except ImportError:
 # universo PRE-REGISTRATO (docs/NXT_FADE_FORWARD_PREREGISTRATION.md §2), coi suffissi del broker
 UNIVERSE = {"EURUSD.r", "GBPUSD.r", "USDJPY.r", "XAUUSD.cyr", "US100", "US500"}
 MAGIC = {26071: "nxt_fade", 26052: "orb_nasdaq"}
+# Conto su cui gira il forward test. Se ne troviamo un altro, i numeri sono
+# di un conto diverso e "tutto zero" NON significa "tutto fermo".
+EXPECTED_LOGIN = 7396683
 RISK_ATTESO_PCT = 0.25          # frazione*100 attesa da InpRiskPerTradePct
 N_TARGET = 50                   # Stadio 1 della pre-registrazione
 
@@ -53,6 +57,11 @@ def main():
     print(f"HEALTH-CHECK DEPLOYMENT — {ai.login} @ {ai.server} — ultimi {days} giorni")
     print(f"equity {ai.equity:,.2f} {ai.currency}")
     print("=" * 84)
+    if ai.login != EXPECTED_LOGIN:
+        print(f"\n  *** CONTO SBAGLIATO: atteso {EXPECTED_LOGIN}, collegato a {ai.login}.")
+        print("      mt5.initialize() si aggancia al terminale in esecuzione. Apri il")
+        print("      terminale del forward test (First Prudential) e rilancia.")
+        print("      I numeri qui sotto NON sono quelli del forward.\n")
 
     # ---- 1. copertura dell'universo -------------------------------------------------
     # NB: history_orders_get() NON contiene i pendenti ancora attivi -> vanno sommati,
@@ -126,7 +135,46 @@ def main():
     print(f"\n  N valido = {n_in}/{N_TARGET}" + (f"   (esclusi {n_out} fuori universo)" if n_out else ""))
     print(f"  breadth: {sum(1 for s in UNIVERSE if closed.get(s,0)>0)}/{len(UNIVERSE)} strumenti con trade chiusi")
 
+    experts_log_scan(days)
     mt5.shutdown()
+
+
+def experts_log_scan(days: int) -> None:
+    """Scansiona il log Experts sincronizzato dal VPS.
+
+    Necessario perche' un OrderSend FALLITO **non lascia traccia nello storico**: ne'
+    negli ordini, ne' nei deal. Il bug [Trade disabled] del 2026-08-12 e' rimasto
+    invisibile tre settimane proprio per questo. Il log Experts e' l'unico posto dove
+    i fallimenti compaiono (l'EA li scrive con PrintFormat, non via Telegram).
+    """
+    import glob
+    import re
+
+    base = os.path.expandvars(
+        r"%APPDATA%\MetaQuotes\Terminal\*\logs\hosting.*.experts\*.log")
+    files = sorted(glob.glob(base))
+    print("\n[6] LOG EXPERTS DEL VPS (ordini falliti — invisibili allo storico)")
+    if not files:
+        print("  nessun log trovato (VPS non sincronizzato di recente?)")
+        return
+    cutoff = (dt.datetime.now() - dt.timedelta(days=days)).strftime("%Y%m%d")
+    recent = [f for f in files if os.path.basename(f)[:8] >= cutoff]
+    errs: collections.Counter = collections.Counter()
+    for f in recent:
+        raw = open(f, "rb").read()
+        txt = raw.decode("utf-16-le" if raw[:2] == b"\xff\xfe" else "utf-8",
+                         errors="replace")
+        for line in txt.splitlines():
+            m = re.search(r"\[(\w+)\]\s+(\S+)\s+arm fallito, err=(\d+)", line)
+            if m:
+                errs[(m.group(1), m.group(2), m.group(3))] += 1
+    if not errs:
+        print(f"  nessun 'arm fallito' negli ultimi {days} giorni ({len(recent)} file letti)")
+        return
+    for (ea, sym, code), n in sorted(errs.items(), key=lambda x: -x[1]):
+        print(f"  !! {ea:12} {sym:14} err={code}  x{n}")
+    print("  err=4756 = ERR_TRADE_SEND_FAILED (generico): il motivo vero sta nel log")
+    print("  del TERMINALE, riga 'failed ... [motivo]'. Controllalo prima di ipotizzare.")
 
 
 if __name__ == "__main__":
