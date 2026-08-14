@@ -47,9 +47,10 @@ def _sl_is_coherent(signal: ParsedSignal) -> bool:
     return signal.sl < signal.entry
 
 
-def _reject(signal: ParsedSignal, reason: str) -> TradePlan:
+def _reject(signal: ParsedSignal, reason: str, slip_pips: float | None = None) -> TradePlan:
     logger.warning("Segnale scartato [%s]: %s", signal.channel, reason)
-    return TradePlan(signal=signal, legs=[], accepted=False, reason=reason)
+    return TradePlan(signal=signal, legs=[], accepted=False, reason=reason,
+                     slip_pips=slip_pips)
 
 
 def build_plan(
@@ -91,14 +92,17 @@ def build_plan(
         return _reject(signal, "nessun TP coerente con la direzione")
 
     # 4. Gate anti-ritardo: se il prezzo si è già mosso troppo, non rincorriamo.
+    _slip_measured: float | None = None
     anti = config.get("anti_late", {})
     if anti.get("enabled", True) and current_price is not None:
         max_slip = float(anti.get("max_slippage_pips", 20))
         slip = price_delta_pips(signal.symbol, signal.entry, current_price)
+        _slip_measured = slip
         if slip > max_slip:
             return _reject(
                 signal,
                 f"prezzo mosso {slip:.1f} pip dall'entry > {max_slip} (segnale tardivo)",
+                slip_pips=slip,
             )
         # Prezzo già oltre il primo TP → trade di fatto già concluso.
         first_tp = tps[0]
@@ -106,7 +110,7 @@ def build_plan(
             current_price <= first_tp if signal.side == "SELL" else current_price >= first_tp
         )
         if already_done:
-            return _reject(signal, "prezzo già oltre TP1: segnale concluso")
+            return _reject(signal, "prezzo già oltre TP1: segnale concluso", slip_pips=slip)
 
     # 5. Sizing: rischio totale splittato sulle N gambe.
     risk_total_pct = float(risk_cfg.get("risk_per_signal_pct", 0.01))
@@ -148,7 +152,8 @@ def build_plan(
             blended_rr,
         )
 
-    return TradePlan(signal=signal, legs=legs, accepted=True, reason="ok")
+    return TradePlan(signal=signal, legs=legs, accepted=True, reason="ok",
+                     slip_pips=_slip_measured)
 
 
 def build_market_plan(

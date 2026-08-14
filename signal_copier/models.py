@@ -111,6 +111,11 @@ class TradePlan:
     reconciled: bool = False  # True dopo che i livelli esatti sono stati applicati (canali trigger)
     be_armed: bool = False  # True dopo che lo SL è stato portato a break-even (idempotenza BE)
     trailed: bool = False  # True dopo lo step di trailing (SL portato a un TP): non si torna più a BE
+    # Scarto in pip tra l'entry pubblicato dal mentore e il prezzo al momento del gate.
+    # Registrato SEMPRE, anche sui segnali scartati: permette di ricostruire a posteriori
+    # cosa sarebbe successo con una soglia anti-ritardo diversa, SENZA doverla toccare
+    # durante il test (cioe' senza p-hacking). None = non misurabile (prezzo assente).
+    slip_pips: float | None = None
 
     @property
     def total_size(self) -> float:
