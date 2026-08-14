@@ -21,7 +21,7 @@ broker_account: "MT5_DEMO3"
 # principale gira il forward test degli EA (conto 7396683 @ FirstPrudentialMarkets):
 # sloggarlo = fermare il test senza alcun errore visibile.
 # Il copier deve avere la SUA installazione e il SUO conto (margine separato).
-terminal_path: ""
+terminal_path: "C:\\Program Files\\MetaTrader 5\\terminal64.exe"
 
 # Mappatura simboli: il canale posta "XAUUSD", il broker puo' esporlo diversamente.
 # Su demo MetaQuotes i nomi sono puliti -> lasciare vuoti.
