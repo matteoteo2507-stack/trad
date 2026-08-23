@@ -88,11 +88,19 @@ automatica.
 2. In PowerShell:
 
 ```powershell
-pip install MetaTrader5 telethon python-dotenv pyyaml pandas notifiers yfinance
+pip install MetaTrader5 telethon python-dotenv pyyaml pandas yfinance
 ```
 
 > Sono le dipendenze **effettive** del copier, non l'intero `pyproject.toml` (che tira dentro scipy,
 > ib-insync e altro inutile qui). `pandas`/`yfinance` entrano dalla catena di import di `brokers/`.
+
+> ⚠️ **NON installare il pacchetto PyPI `notifiers`** (era in questo elenco fino al 2026-08-22, ed è
+> un errore che rompe l'avvio). `notifiers` è un **package locale del repo** (`notifiers/_pip_table.py`,
+> importato da `signal_copier/planner.py`) e **non ha `__init__.py`**: è un namespace package PEP 420.
+> Un package regolare con lo stesso nome in `site-packages` ha la **precedenza** su un namespace
+> package, quindi installandolo l'import si risolve su quello sbagliato e fallisce con
+> `ModuleNotFoundError: No module named 'notifiers._pip_table'`. Se è già installato:
+> `pip uninstall -y notifiers`.
 
 **Verifica**:
 
