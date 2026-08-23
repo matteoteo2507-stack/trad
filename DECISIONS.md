@@ -11,6 +11,59 @@
 
 ---
 
+## 2026-08-24 — Bucket A verificato voce per voce. Il forward FADE **gira ma il campione è contaminato**; il test mentore era **già superato**; il forward ORB **non esiste**
+
+**Origine.** Dopo aver scoperto il 23/08 che il forward ORB era citato come "in corso" senza essere
+mai stato implementato, ho verificato **uno per uno** gli altri binari del bucket A invece di
+fidarmi del registro. Due voci su sei erano descritte male, in direzioni opposte.
+
+**A4 — segnali mentore: era GIÀ CHIUSA e SUPERATA.** Il mio backlog diceva *"da verificare se il
+forward è partito"*. Falso: il test OOS pre-registrato è stato **eseguito e superato il 2026-08-07**
+(131 segnali 15/06→07/08, win-rate 63,0% vs 35,0% del lato casuale, differenza appaiata +0,277
+BCa95 [+0,193; +0,353], E[R] +0,194 BCa95 [+0,079; +0,289]). È il **primo verdetto positivo su un
+test pre-registrato** del workspace.
+
+**A2 — forward FADE: gira davvero, ma il campione non è pulito.** Health-check eseguito
+([review](docs/reviews/forward-fade-healthcheck-2026-08-24.md)). **N valido 29/50** allo Stadio 1,
+breadth 4/6. Quattro difetti, tutti di **esecuzione**, nessuno di strategia → per
+[§3](docs/STRATEGY_LIFECYCLE.md) **non consumano trial**:
+
+1. **197 ordini non inviati** fra il 2 e il 21 agosto — `[nxt_fade] <SIMBOLO> arm fallito, err=4756`,
+   su chart a **nome semplice** (`EURUSD`, `USDJPY`, `GBPUSD`) mentre il conto negozia i simboli
+   **con suffisso** (`.r`), a cadenza **oraria esatta**. EURUSD ha **1 ordine storico contro 64
+   tentativi falliti**. È la **recidiva del bug che ha generato lo script stesso** (tre settimane su
+   simboli non negoziabili, agosto). Effetto: il campione perde in modo **sistematico** i segnali dei
+   **major FX**, cioè — per il lead del playground — proprio il gruppo con l'aspettativa peggiore →
+   il campione superstite è spostato verso gli strumenti **più volatili**, che è la direzione che
+   **gonfia** l'E[R].
+2. **Strumenti fuori universo**: BTCUSD (7 ordini, 2 chiusi) ed EURGBP.r (2). Esclusi dal conteggio,
+   ma continuano a generare ordini e consumare margine.
+3. **Dropout per margine non casuale**: 8 su 92 (8,7%), `deleted [no money]`. Colpisce i setup con lo
+   **stop più stretto** (a rischio costante = volume maggiore = margine maggiore), che sono anche
+   quelli col miglior payoff potenziale.
+4. **Rischio fuori specifica**: GBPUSD.r a **0,63% contro 0,25%** atteso. Multipli di R non
+   confrontabili fra loro.
+
+**Non guardato di proposito: il P&L.** La regola di stop è **N e data**, mai il cumulato: guardarlo
+adesso sarebbe optional stopping.
+
+**Decisione aperta (dell'utente).** Riparare è obbligatorio e gratuito in termini di trial. Resta da
+scegliere cosa fare dei **29 trade già raccolti**: tenerli e dichiarare la contaminazione nel report
+finale, oppure **azzerare lo Stadio 1** e ripartire pulito (~30 trade e ~un mese di costo).
+La seconda è quella coerente col protocollo — il forward è l'**unica fonte rinnovabile di dati
+puliti** ([§2](docs/STRATEGY_LIFECYCLE.md)) — ma non la decido io.
+
+**C2 non è più una decisione.** *"Reinserire BTCUSD nel FADE?"* era formulata come scelta aperta:
+sta **già operando fuori universo**. Non c'è da decidere, c'è da staccare l'EA.
+
+**Debito confermato, secondo caso in due giorni.** Lo strumento esisteva e ha trovato tutto in dieci
+secondi — **ma nessuno lo eseguiva**. Come per l'ORB, il problema non è la mancanza dello strumento:
+è che **lo stato reale dei binari non è osservabile senza cercarlo a mano**. Minimo indispensabile:
+health-check **settimanale**, con output datato e versionato, così che N e anomalie abbiano una serie
+storica invece di una fotografia.
+
+---
+
 ## 2026-08-22 — Funnel Chart Fanatics **chiuso**: 45 video letti per intero, **zero strategie importabili**, cinque caselle vuote identificate, quattro conferme esterne del lead playground. Nessuna pre-registrazione nuova.
 
 **Cosa è stato fatto.** Tutti i **45 video** del canale (74,7 h, ~608.000 parole) sono stati letti
