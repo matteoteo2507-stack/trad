@@ -11,6 +11,352 @@
 
 ---
 
+## 2026-08-22 — Funnel Chart Fanatics **chiuso**: 45 video letti per intero, **zero strategie importabili**, cinque caselle vuote identificate, quattro conferme esterne del lead playground. Nessuna pre-registrazione nuova.
+
+**Cosa è stato fatto.** Tutti i **45 video** del canale (74,7 h, ~608.000 parole) sono stati letti
+**per intero, uno alla volta**, senza compressione automatica — la scelta di metodo presa il
+2026-08-17 dopo che il compressore lessicale aveva perso 4 regole numeriche su 5 su una trascrizione
+reale. Schede per video in
+[`_triage/blocco-A1/A2/B1/B2/C1/C2/C3/C4/D.md`](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/),
+consuntivo in [`_triage/SINTESI.md`](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/SINTESI.md),
+riga di registro in [`_INTAKE.md`](fondamenti_tecnici/_INTAKE.md).
+
+**Esito complessivo.** **Nessun candidato nuovo.** Ripartizione: **19** video in famiglie già
+falsificate (livelli/zone, FVG, order block, sweep, Fibonacci, numeri tondi, VWAP/POC, ORB,
+stagionalità), **12** non testabili con i nostri dati (order flow = tick + book; oppure universo
+small cap USA), **11** reference (metodo, rischio, contesto), **1** già testato → NULL (Okala
+80/20 → round grid), **2** già distillati.
+
+**CINQUE OGGETTI NUOVI — identificati, non proposti.**
+1. **Condizione di STRUTTURA sull'estensione estrema.** Due fonti indipendenti — Marius Stamatiou
+   (+291% alle US Investing Championships) e Kyle Williams (7 M$ verificati) — concordano, senza
+   essersi mai parlate, che **conta la forma più dell'ampiezza**: pochi grandi movimenti con
+   **range in espansione** e **volume in espansione** si invertono; tanti piccoli movimenti con
+   volume calante no. Entrambe aggiungono una **finestra di invalidazione temporale** (2 giorni /
+   3 tentativi). **Misurabile sui nostri dati** — servono solo range e volume — e specifica il
+   candidato "estensione estrema → inversione" che avevamo dal blocco A.
+2. **Le due spec mancanti di Kichev**, emerse solo dalla lettura integrale: *breakout = espansione
+   di volatilità* (~2x la media delle ultime 5) con **uscita a tempo** 2-5 giorni; *mean reversion
+   = scostamento dalla media a 5 giorni* con uscita a tempo 1-4 giorni. La seconda è la **forma
+   canonica del nostro lead FADE**, scritta da una fonte esterna **prima** che la trovassimo — cioè
+   esattamente ciò che serve per ri-pre-registrare una regola data-derived.
+3. **La domanda conferma-sì / conferma-no sul FADE.** Kichev è l'unica voce del funnel, contro
+   sette, a dire di **non** aspettare la conferma su una mean reversion. Non è una famiglia nuova:
+   è una **variante di esecuzione** su un lead già in forward test.
+4. **Casella vuota LVN, verificata nel codice.** `analysis/level_research/detectors.py:107-148` +
+   `VOLUME_CONCEPTS = ["poc","vwap","avwap"]`: la ricerca v2 (48 celle, NULL) ha testato i nodi ad
+   **alto** volume (POC/VAH/VAL). I **low volume node non sono mai stati testati**, e non sono una
+   variante ma **l'ipotesi complementare con meccanismo opposto**. Tre fonti indipendenti (Carmine
+   Rosato, Fabio Valentini, Yush).
+5. **Casella vuota trend line inclinate.** I 384 trial hanno testato **solo livelli orizzontali**.
+   3 fonti ci costruiscono sopra il metodo; **1 (Ariel) le rifiuta con la nostra stessa
+   motivazione** — l'ambiguità del tracciamento. Buco reale, prior basso.
+
+**DUE PORTE CHE RESTANO CHIUSE — deciso adesso.**
+- **Livelli condizionati** (a un evento macro in calendario, al regime, alla struttura di timeframe
+  alto): 3 fonti lo sostengono. **Non si riapre**: condizionare moltiplica lo spazio di ricerca su
+  una famiglia con **384 trial di NULL**, e il calendario macro è il posto **più pubblico e più
+  affollato** del mercato, cioè l'opposto del playground. Serve evidenza esterna **quantitativa**;
+  aneddoti scelti a posteriori non lo sono.
+- **ORB.** Andrea Cimbali afferma che *"funziona da 20 anni"* sugli indici USA — **esattamente** il
+  nostro filone (`analysis/opening_range/`, apertura cash 09:30 ET, M5, 14,5 anni, NAS100/SPX500 →
+  NO-GO). Non riapre nulla: nessun campione, nessun baseline, e lui lo opera **con l'order flow
+  sopra**, dichiarandolo (*"non ho bisogno di aspettare il breakout"*). **Ma il suo razionale
+  economico** — flusso strutturale d'acquisto sugli indici + market maker obbligati a fornire
+  liquidità — **va allegato al forward ORB già in corso** come ipotesi dichiarata, a costo zero: se
+  il forward risulta positivo sappiamo *perché* potrebbe esserlo; se negativo abbiamo falsificato
+  anche il meccanismo, non solo il pattern.
+
+**QUATTRO CONFERME ESTERNE INDIPENDENTI DEL LEAD PLAYGROUND** (nostro ρ = +0,857, p=0,006): Kichev
+(classifica per liquidità decrescente: forex → commodities → small cap → crypto), Desi Trades
+(*"funziona solo nei pochi mesi in cui il VIX è alto"*), Carmine Rosato (*"opero dove non c'è molta
+liquidità, è lì che sta l'edge"*), Fabio Valentini — **top 3 Robbins Cup, +500%/12 mesi** — (*"il
+breakout fallisce dentro la balance area e funziona fuori"*). Quattro vocabolari diversi, **una sola
+forma**. ⚠️ Nessuna delle quattro è evidenza statistica: **spostano il prior, non i dati**. La
+nostra resta l'unica con un numero.
+
+**LE FONTI CONVERGONO SUL FADE, MAI SULLA CONTINUAZIONE.** Quattro fonti descrivono meccanismi che
+coincidono con la direzione che abbiamo misurato **+0,31R**. L'unica che descrive la continuazione
+(Omar / MBB Trader, 30 M$ di funding dichiarato) descrive **livello per livello — 0,62 / 0,705 /
+0,79** — la strategia che abbiamo pre-registrato e misurato a **−0,44R** su 6 asset e 14 anni, con
+win rate **13,3%** contro il 60-70% dichiarato dalla fonte originale.
+
+**DISTRIBUZIONE DEI CLAIM** (raccolta prevista dal mandato d'intake, ora completa). I claim alti
+(>80%, 85-90%, 74%, 70-80%, 65-70%) **non sono mai accompagnati** da campione, periodo, baseline o
+taglia del rischio. I claim bassi spesso lo sono: Trader Mayne *"sono fortunato se ne vinco metà"*
+con minimo 2:1 come vincolo d'ingresso; Z *"l'élite sta fra 50 e 55%"*; Desi **65% con 5-6 perdite
+di fila più volte l'anno**; Carmine **30-33% con R:R 7-8:1 e rischio fisso** — l'unico caso in cui i
+tre numeri necessari a verificare il conto sono pubblicati insieme. **Quattro su quattro dei claim
+alti che abbiamo potuto misurare sono collassati** (60-70%→13,3%; 80-90%→~53%; 90%→~20%;
+65-70%→NULL). Correlazione netta e riutilizzabile: **onestà statistica e qualità del razionale
+economico vanno insieme.**
+
+**CORREZIONE a un conteggio intermedio.** La convergenza "stop largo" registrata nei consuntivi B2
+e C2 vale **2-3 fonti indipendenti, non 5-6**: tre delle occorrenze erano trader di **opzioni** che
+descrivevano la **stessa** causa — la non-linearità del premio (delta + gamma + IV), spiegata nel
+corso di Usman Ashraf — non tre osservazioni distinte. Il fatto resta coerente col nostro **12,7%
+di stop NXT che aprono oltre il livello**, ma non ha il peso che sembrava avere sommando fonti con
+causa comune.
+
+**Nota trasversale sul formato.** Le 6 sessioni **in diretta** (~216.000 parole, il 36% del corpus)
+**non hanno prodotto una sola regola** che non fosse già enunciata sulla lavagna prima
+dell'apertura. La diretta mostra esecuzione e gestione, mai la formazione di una regola — che per un
+processo dove le regole si scrivono **prima** di vedere i dati è la parte meno informativa in
+assoluto.
+
+**BUDGET E CHIUSURA.** Nessuna pre-registrazione nuova aperta. Il tetto di **1** previsto dal piano
+di lettura resta speso dal playground; il budget esterno trimestrale resta a **2 di 2-3**.
+**Il funnel è chiuso**: non si riparte su altri canali prima che i binari attivi (FADE forward, ORB
+forward, copier, PAC) producano un verdetto. La prossima decisione — quali binari paralleli
+configurare o avviare — è **da prendere insieme**, non implicita in questa voce.
+
+---
+
+## 2026-08-17 — Fonte "algo senza codice" (StrategyQuant X): **1 tassello distillato, metodo rifiutato**. Colmato il buco post-capitale del ciclo di vita.
+
+**Fonte.** *Noel T.*, portafoglio di ~150 algoritmi costruiti con **StrategyQuant X** senza scrivere
+codice — di fatto una **demo del software**. Grezzo in
+[`insight_da_yt/noel_t_strategyquant_no-code_algo_2026-08-17.md`](fondamenti_tecnici/_sorgenti/insight_da_yt/),
+triage in [`_INTAKE.md`](fondamenti_tecnici/_INTAKE.md). Statistiche dichiarate (≈$1M di profitti)
+**non entrate nel prior**, come da mandato.
+
+**DISTILLATO — il buco che colma (l'unico tassello).** Il nostro
+[STRATEGY_LIFECYCLE.md](docs/STRATEGY_LIFECYCLE.md) copriva **solo nascita e morte prima del
+capitale**: il loop finiva al verdetto e non diceva nulla su *cosa fare con una strategia già
+operativa che peggiora*. Serve **adesso** (fade in forward, copier mentore verso il live) → nuovo
+**§8bis: ritiro, incubazione, riattivazione**.
+
+**Adattamento obbligatorio, non copia.** Il trigger della fonte è discrezionale — *"se perde per
+qualche mese, riduci o spegni"* — ed è **optional stopping applicato al capitale**: la performance
+di qualunque edge reale è rumorosa, quindi un criterio a sensazione spegne **sistematicamente dopo
+il drawdown, cioè al minimo**, e riaccende dopo il recupero. Sostituito con una soglia **dichiarata
+nella pre-registrazione prima del capitale**, ancorata al **percentile del maxDD della simulazione
+Monte Carlo**: si ritira quando la strategia **esce dalla distribuzione attesa**, non quando "va
+male". Stati: LIVE → INCUBAZIONE (gira in simulazione, continua a raccogliere dati) → rientro con
+criterio dichiarato, oppure RITIRATA definitiva alla **seconda** uscita. Ritiro **immediato senza
+incubazione** per razionale falsificato o difetto metodologico. **Vietato ritarare in incubazione**:
+sarebbe p-hacking col capitale già in gioco.
+
+**RIFIUTATO — il metodo.** Generare milioni di combinazioni e filtrare da **10.000 candidati a ~25**
+è **mass data mining senza deflazione**. Il conto che lo mostra: con una catena di filtri di
+stringenza plausibile (~0,25% di falsi passaggi complessivi) **il puro rumore produrrebbe ~25
+sopravvissuti su 10.000** — cioè esattamente il numero osservato. Non dimostra che le sue strategie
+siano rumore; dimostra che **il numero di superstiti, da solo, non porta informazione** se non si
+conosce il tasso di falso positivo. Il flusso descritto ha OOS singolo + reshuffle e **nessun
+controllo di molteplicità** (né DSR né PBO).
+
+**CORREZIONE TECNICA** → [04_quant_metodologia §2b](fondamenti_tecnici/04_quant_metodologia/principles.md):
+il "**Monte Carlo di robustezza**" che **rimescola l'ordine dei trade** conserva media, varianza e
+ogni momento, e cambia solo il **percorso**. Misura la distribuzione del **maxDD** — utile per il
+sizing e per le soglie di ritiro — e **non può rilevare l'overfitting**: se i trade sono il prodotto
+di una selezione overfittata, riordinarli restituisce le stesse statistiche. Distinzione da tenere
+ferma se mai valutassimo uno di questi tool.
+
+**Strategie mostrate: SCARTATE entrambe.** *"Gold Rush"* (compra oro il giovedì) è
+**calendario/stagionalità**, famiglia già **NO-GO** (TOM 2026-07-08, anomalia decaduta). La *"S&P
+mean reversion"* (sopra SMA200, RSI(2)<20 in entrata, RSI>70 in uscita) è la **RSI(2) di Larry
+Connors**, pubblicata intorno al 2008 e fra le più data-minate del retail — presentata come scoperta
+del software; è **long-only su indice in una finestra rialzista**, cioè lo stesso **beta-trap** che
+ha refutato il router momentum+MR. **Nessuna pre-registrazione**: il budget esterno resta a **2 di
+2-3** usate nel trimestre.
+
+**Tool: non adottato.** Il nostro collo di bottiglia non è "non sappiamo programmare" — abbiamo già
+lo stack di validazione. SQX darebbe **ricerca di massa**, che è precisamente ciò che la nostra
+dottrina evita, e senza le metriche che la renderebbero legittima.
+
+---
+
+## 2026-08-14 (3) — Rischio weekend sul fade: la regola "venerdì chiudo i profit" è **irrilevante**. Ma il fill dello stop era ottimista: E[R] **+0,354 → +0,308**
+
+**Origine.** Domanda dell'utente: la sua regola manuale — *venerdì sera chiudo le posizioni in
+profitto e lascio aperte solo quelle in perdita* — era mai stata analizzata sul fade? **No, mai**:
+nessuna gestione weekend esiste nei motori, nella spec o nell'EA. Misurata con
+[`analysis/nxt/weekend.py`](analysis/nxt/weekend.py). Diagnostica di esecuzione, **non** una variante
+di strategia → **non consuma trial** ([STRATEGY_LIFECYCLE §3](docs/STRATEGY_LIFECYCLE.md)).
+Riproduzione validata: n=10.290 ed E[R] assunto **+0,355** contro il +0,354 pre-registrato.
+
+**1. Il fade quasi non vive nel weekend.** Holding **mediano 5 barre H1** (cinque ore); solo il
+**10,5%** dei trade attraversa un fine settimana. Il `MAX_HOLD` di 20 giorni è un **tetto**, non il
+comportamento tipico.
+
+**2. I gap del weekend non sono avversi** (in R, col segno della posizione):
+
+| | n | media | mediana | BCa95 | P(gap<0) |
+|---|---|---|---|---|---|
+| tutti | 1.123 | **−0,008R** | 0,000 | **[−0,063, +0,046]** | 49,0% |
+| in profitto il venerdì | 872 | −0,043R | −0,004 | [−0,102, +0,018] | 51,0% |
+| in perdita il venerdì | 251 | +0,113R | +0,005 | [−0,033, +0,254] | 41,8% |
+
+Il gap medio è **indistinguibile da zero**. La separazione profitto/perdita *sembra* dare ragione
+alla regola, ma **nessuna delle due CI esclude lo zero** e il pattern è un **artefatto di
+condizionamento**: selezionare "le posizioni in profitto adesso" seleziona quelle già mosse a
+favore, e qualunque componente di ritorno alla media — o solo rumore — produce restituzione
+parziale. **Si vedrebbe identico condizionando su un martedì: non è un effetto del weekend.**
+
+**3. Verdetto sulla regola: irrilevante in aspettativa, controproducente se implementata.**
+Beneficio descrittivo: evitare −37,1R sui vincenti + tenere +28,3R sui perdenti su 10.290 trade =
+**+0,0036R per trade, ~1% dell'E[R]**, dentro CI che includono zero. Riaprire 872 posizioni allo
+spread della strategia (~0,058R a giro, dallo stress 1×/3× già in repo) costerebbe **~50R contro
+~37R di beneficio**. Ed è **strutturalmente rovesciata**: col BE a +2R un vincente ha già lo stop a
+pareggio (rischio weekend ~nullo) mentre un perdente ha 1R pieno esposto → la regola **chiude ciò
+che rischia meno e tiene ciò che rischia di più**, firma della *disposition effect*. Se la
+preoccupazione è il gap non copribile, la risposta coerente è "chiudo **tutto** il venerdì", non
+"chiudo i vincenti". **Ambito**: vale per QUESTA strategia (H1, mediana 5 ore, BE 2R, 6 strumenti
+liquidi); non si trasferisce a una strategia che tiene davvero per settimane.
+
+**4. IL PROBLEMA VERO, trovato altrove — correzione di un numero pre-registrato.** Il backtest
+assume che lo stop si riempia **esattamente** al livello. Nella realtà il **12,7% degli stop apre
+già oltre**: fill vero **−1,288R** contro **−0,752R** assunto (scarto −0,537R su quelli).
+→ **E[R] del fade: +0,355 → +0,308** (−0,047R, **taglio del 13%** sul numero pre-registrato).
+Ma solo il **4,8%** di quei salti avviene dopo un weekend: **il gap-attraverso-lo-stop è per il 95%
+un fenomeno infrasettimanale.** La preoccupazione era sul posto sbagliato.
+È un **fix di modellazione dell'esecuzione**, non una ritaratura: non consuma trial, e può solo
+peggiorare. **Il verdetto non cambia** (resta LEAD, resta positivo), ma **stringe il margine dello
+Stadio 2**, che richiede lower bound BCa > 0. Il forward va confrontato con **+0,31R, non +0,35R**.
+
+**5. Varianza sì, aspettativa no.** Un gap oltre **0,5R nel 26,9%** dei weekend e oltre **1R nel
+10,3%** — un weekend su dieci il salto supera l'intero stop. Rileva per il **daily drawdown** di una
+prop, non per l'expectancy.
+
+**6. Corretto un assunto operativo.** [PROP_FIRM_CRITERIA §1.3](docs/PROP_FIRM_CRITERIA.md)
+classificava il fade come **swing** per via del cap a 20 giorni: la distribuzione reale dice mediana
+5 ore e 10,5% di trade con weekend. Il criterio "holding weekend consentito" **resta valido ma pesa
+molto meno** — una firm che obbliga a chiudere il venerdì amputerebbe ~1 trade su 10, non la
+strategia. **Il forward in corso non è stato toccato**: nessun cambio di regola in corsa.
+
+---
+
+## 2026-08-14 (2) — Trend Donchian: coda aperta **NO-GO** · **playground = LEAD** (il campo era sbagliato)
+
+**Decisione.** Fonte esterna *Pavel Kichev*, pre-registrata in
+[docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md](docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md),
+motori [`analysis/trend/`](analysis/trend/), verdetto
+[docs/reviews/trend-exit-playground-2026-08-14.md](docs/reviews/trend-exit-playground-2026-08-14.md).
+Due domande in un solo esperimento: **Q1** la coda aperta (domanda dell'utente), **Q2** il claim
+"l'edge retail vive sugli asset meno liquidi e più volatili".
+
+**Dati nuovi (asset riusabile).** Feed **omogeneo** Dukascopy D1, **27 strumenti su 8 gruppi**:
+per la prima volta nel workspace entrano **bond, energia, agricoli e metalli industriali** — il buco
+che la pre-registrazione TSMOM aveva dichiarato ("USD-pesante, senza bond né commodities").
+
+**Q1 — coda aperta: NO-GO.** Quattro uscite sulle **identiche** entrate, 3 lookback:
+
+| lookback | **E1 trail SMA10** | E2 stop1R/3R | **E3 uscita a 20g** | E1 vs random |
+|---|---|---|---|---|
+| 50 | +0,015 | +0,067 | **+0,131** | −0,004 [−0,107, +0,098] |
+| **100** | **−0,038** | +0,045 | **+0,110** | −0,076 [−0,202, +0,053] |
+| 200 | −0,024 | +0,057 | **+0,137** | −0,125 [−0,269, +0,021] |
+
+**Il trail è l'uscita peggiore o quasi in tutte e tre; l'uscita a tempo — la più stupida possibile —
+è la migliore in tutte e tre.** A lookback 100 la differenza appaiata **E1 − E3 = −0,147, BCa95
+[−0,285, −0,014]**. E1 non batte il random in nessuna variante → **kill-switch pre-registrato**.
+Anni positivi 6/15; a 3× costi −0,100. **La risposta alla domanda sul trail non dipende dall'edge
+dell'entrata**: il confronto è appaiato sugli stessi ingressi.
+
+**W3 — il "post-2020" si ripresenta, COL SEGNO OPPOSTO.** pre-2020 E[R] +0,078 (vs random +0,010,
+nulla); post-2020 **−0,208**, vs random **−0,323 [−0,487, −0,157]**. L'ORB era *negativo pre-2020 e
+positivo post*; questo è *piatto pre-2020 e peggio del random post*. Due breakout della stessa
+famiglia che si spezzano in **direzioni opposte alla stessa data** sono più coerenti con **due
+estrazioni di rumore** che con una rottura di microstruttura → sposta il prior e **rafforza la
+scelta di lasciar correre il forward ORB**, unico modo di risolverlo.
+
+**Q2 — playground: SUPPORTATO → LEAD.** Spearman(vol di gruppo, E[R] di gruppo), n=8:
+**ρ = +0,857, p = 0,0060**. Ordinamento: fx_cross −0,52 · fx_major −0,40 · index −0,12 · agri +0,24 ·
+energy +0,40 · metal +0,46 · crypto +1,10. Controlli avversariali: il random da solo dà ρ +0,619
+(p 0,062) → **una parte è meccanica**, ma il test **controllato** sulla differenza reale−random
+tiene (**ρ +0,786, p 0,0135**); bootstrap sugli strumenti dentro i gruppi ρ mediano +0,786 CI
+[+0,476, +0,952] **P(ρ>0)=100%**; senza crypto ρ +0,786 p 0,023; senza crypto+energia ρ +0,771
+p 0,050 → **non trainato da un gruppo solo**.
+
+**Perché LEAD e non GO**: (1) solo **3/8 gruppi positivi su ENTRAMBI i lati** — è in larga parte
+lato lungo in una finestra di rialzo di commodities e crypto; (2) solo 2/8 gruppi individualmente
+significativi; (3) n=8 punti; (4) W2 è per ~2/3 post-2020, dove il livello assoluto è cattivo;
+(5) **la mia pre-registrazione non ha definito un holdout per Q2** — lacuna dichiarata, nessun gate
+G2 superato.
+
+**Cosa cambia davvero.** Non "abbiamo un edge su crypto e commodities": la regola Donchian è NO-GO.
+Ma **sui major FX la stessa regola fa −0,47R PEGGIO del random, sui gruppi volatili fa meglio** →
+il campo su cui abbiamo cercato per un anno (FX, indici, oro) è plausibilmente **il peggiore
+possibile**, e la spiegazione arriva da una fonte che i nostri dati non li ha mai visti. Vale come
+**direzione di ricerca**, non come strategia.
+
+**Due difetti dei dati trovati e corretti PRIMA del test.** (a) Il D1 grezzo Dukascopy contiene
+sessioni **parziali** di sabato/domenica (EURUSD: 761 barre domenicali a range mediano 0,137% contro
+0,65% dei feriali) → diluiscono l'ATR, gonfiano ogni multiplo di R e riducono il "Donchian 100
+giorni" a ~83 giorni reali; corretto fondendole nella barra feriale successiva (la crypto tratta
+davvero 7 giorni). (b) Un mio bug nel fix restituiva la serie **in ordine temporale inverso**,
+intercettato da un controllo di sanità. ⚠️ **Il feed broker legacy è invece PULITO** (258-260
+barre/anno, zero domeniche): questo difetto **non contamina** NXT, ricerca livelli e TSMOM.
+
+**Contabilità**: 12 trial dichiarati, famiglia trend **round 2 di 3**, **2ª di 2-3 pre-registrazioni
+esterne** del trimestre.
+
+---
+
+## 2026-08-14 — "Grandi RR, niente TP, uscita a medie mobili": **KILL**. L'entrata è peggio del random.
+
+**Decisione.** Idea dell'utente: individuare il minimo/massimo di un periodo (o di una sessione),
+piazzare un ordine limite a una distanza fissa dall'estremo, stop sotto l'estremo, **niente TP**,
+uscita all'incrocio di medie mobili. **KILL** senza arrivare alla pre-registrazione completa.
+Addendum pre-registrato [docs/NXT_EXIT_CEILING_ADDENDUM.md](docs/NXT_EXIT_CEILING_ADDENDUM.md),
+motore [`analysis/nxt/excursion.py`](analysis/nxt/excursion.py), verdetto
+[docs/reviews/nxt-exit-ceiling-2026-08-14.md](docs/reviews/nxt-exit-ceiling-2026-08-14.md).
+
+**Perché non è servito un test nuovo.** La meccanica d'entrata descritta è **già implementata** in
+[`analysis/nxt/backtest.py`](analysis/nxt/backtest.py): `zigzag()` k=5 è il "pivot confermato a N
+barre" (noto solo a `i+k`, look-ahead-safe), l'entry limite al 50% della gamba è l'ordine "a tot
+distanza dall'estremo", lo SL al 78.6% è lo "stop sotto il minimo". Già testata: **E[R] −0,44R,
+6/6 asset e 14/14 anni negativi** (2026-07-17). L'unico elemento nuovo era **l'uscita**.
+
+**Il test: si misura il soffitto, non una regola.** La MFE è il limite superiore invalicabile di
+qualunque exit rule — nessuna regola incassa più di quanto il prezzo si sia mosso a favore. Se il
+soffitto non basta, non serve costruire l'uscita a medie mobili.
+
+**Aritmetica dichiarata prima**: con win 13,3% a stop invariato, per ribaltare il segno i vincenti
+devono rendere in media **> 6,5R** invece di 3R.
+
+**Le soglie sono passate — ed erano sbagliate.** E[R] oracolo +1,709 (CI [+1,610, +1,816]),
+E[MFE | ≥3R] +10,10R, breadth 6/6 e 15/15. Ma con rischio = 0,286 × ampiezza gamba (≥1 ATR H1) e
+holding fino a 20 giorni, **una MFE a doppia cifra in R è garantita per costruzione** per qualunque
+geometria a stop stretto: 10R ≈ 2,9 ATR orari in 20 giorni. Zero potere discriminante. Errore di
+progettazione dell'addendum, corretto aggiungendo il baseline che discrimina davvero.
+
+**Il baseline random risk-matched ribalta il verdetto** (stesso asset, lato, rischio in unità di
+prezzo e anno; entrata a **istante casuale**; 3 controlli per setup, n=30.869):
+
+| | reale | random matched | diff | CI95 cluster |
+|---|---|---|---|---|
+| **E[R] oracolo** | +1,709 | **+3,149** | **−1,440** | **[−1,569, −1,314]** |
+| **R terminale** (tenere fino a stop/scadenza) | −0,405 | **−0,005** | **−0,399** | **[−0,493, −0,308]** |
+| P(MFE ≥ 3R) | 16,24% | 24,72% | −8,5 pt | — |
+| stop-out | 95,4% | 92,7% | +2,7 pt | — |
+
+**Breadth: 0/6 asset, 0/15 anni.** Ogni CI per asset esclude lo zero dal lato sbagliato.
+→ **kill duro n. 2** (non batte il random matched) **e n. 3** (breadth).
+
+**Le tre letture che contano.** (1) Il **soffitto** della struttura è più basso di quello del caso:
+nessuna uscita può invertire l'ordine, si ottimizzerebbe dentro uno spazio più povero di quello di
+partenza. (2) Il random terminale è **≈ 0** (−0,005R: una scommessa a caso con stop simmetrico rende
+zero, come deve) mentre il reale è **−0,405R** → l'entrata **distrugge ~0,4R rispetto alla moneta**;
+è alpha negativo misurato, non assenza di alpha. (3) **Converge col fade**: nel 2026-07-17 invertire
+la stessa entrata rendeva +0,35R. Due misure indipendenti dicono che a questo orizzonte, dopo il
+ritracciamento, il prezzo **prosegue nella direzione del ritracciamento**.
+
+**Contabilità: nessun trial consumato** — rianalisi descrittiva di un test già chiuso, nessuna regola
+modificata, holdout non aperto. La famiglia NXT conserva il round 3, senza nulla su cui spenderlo.
+
+**Scope onesto.** Non è coperta la variante a scala di sessione su M5 (es. minimo della sessione di
+Londra). Ma spostarsi lì sarebbe **shopping di timeframe** ([§4](docs/STRATEGY_LIFECYCLE.md)),
+costerebbe l'ultimo round, e il modo di morte è già misurato su due scale indipendenti (NXT H1;
+estremi di periodo su H4/D1/W1 nella ricerca livelli). **Non falsificata l'uscita a coda aperta in
+sé**: è falsificato il suo accoppiamento con questa entrata.
+
+**Lezione metodologica riusabile.** Per una geometria a stop stretto e holding lungo, le metriche di
+escursione in unità di R sono **gonfiate per costruzione**: vanno sempre lette contro un baseline
+risk-matched a entrata casuale, mai contro una soglia assoluta.
+
+---
+
 ## 2026-08-09 — Griglia a numero tondo .80/.20 sul Nasdaq: **NULL**. Famiglia CLOSED al primo trial.
 
 **Decisione.** Prima ipotesi estratta dal mandato "insight da YouTube" (fonte: *Okala 80/20*, canale
@@ -820,6 +1166,21 @@ che calza il contesto. È l'estensione naturale del principio "edge condizionato
   fonte (pre-mortem sulle direzioni principali di rischio) è distillato in
   [fondamenti_tecnici/04_quant_metodologia/](fondamenti_tecnici/04_quant_metodologia/) §9 — copre
   proprio ciò che il backtest non può interrogare (key-man, compliance, rottura tecnica).
+
+- *"Genera 10.000 strategie e tieni le 25 che sopravvivono"* (ricerca di massa, StrategyQuant e
+  affini) **vs** *"una ipotesi per volta, pre-registrata, con budget di trial"* (nostro
+  [STRATEGY_LIFECYCLE](docs/STRATEGY_LIFECYCLE.md)). **Non si elegge un vincitore**: le due scuole
+  pagano la **stessa** tassa di molteplicità in **posti diversi**. La ricerca di massa la paga in
+  **deflazione** — con N grande il DSR alza la soglia al punto che serve un effetto molto forte per
+  sopravvivere; la nostra la paga in **copertura**, perché esplorando poco possiamo semplicemente non
+  incontrare mai l'edge. Nessuna delle due è gratis.
+  **Condizione di validità**: la ricerca di massa è legittima **solo se** la molteplicità è
+  effettivamente contabilizzata (DSR sul numero **vero** di candidati, PBO/CSCV su best-IS vs
+  mediana-OOS) e l'holdout è aperto una volta sola. Senza quelle, "25 su 10.000" è indistinguibile
+  dal rumore. **Nota autocritica**: il nostro repo ha talvolta letto "il data mining è male" come
+  "non cercare". La formulazione corretta è **"cerca pure, ma deflaziona sul numero vero e non
+  toccare l'holdout"** — e gli strumenti per farlo li abbiamo già in
+  [`core/quant_metrics.py`](core/quant_metrics.py). Fonte del conflitto: Noel T./SQX, 2026-08-17.
 
 Operativamente la mappa vive in due posti: il **registro di intake**
 ([fondamenti_tecnici/_INTAKE.md](fondamenti_tecnici/_INTAKE.md)) traccia stato e destinazione di

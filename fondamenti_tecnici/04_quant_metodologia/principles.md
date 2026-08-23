@@ -43,6 +43,26 @@ Red flag di overfitting: **instabilità parametrica** — se un piccolo cambio (
 | Instabilità parametrica | Piccoli cambi → grandi cali di performance | Preferire modelli stabili/robusti |
 | Mancanza di razionale economico | Modelli senza giustificazione di mercato | Statistica + domain knowledge |
 
+#### 2b. Il Monte Carlo che NON testa l'overfitting (distinzione da tenere ferma)
+
+Molti strumenti commerciali offrono un **"Monte Carlo di robustezza"** che **rimescola l'ordine dei
+trade** migliaia di volte e mostra le curve di equity peggiori. È utile, ma **non misura ciò che il
+nome suggerisce**: riordinare gli stessi rendimenti ne conserva **media, varianza e ogni altro
+momento**, e cambia solo il **percorso**. Se i trade sono il prodotto di una selezione overfittata,
+rimescolarli restituisce le stesse identiche statistiche in ordine diverso.
+
+- **Cosa misura davvero**: la dipendenza dal percorso → distribuzione del **maxDD** e delle serie
+  negative. Serve per il **sizing** e per fissare le soglie di ritiro
+  ([STRATEGY_LIFECYCLE §8bis](../../docs/STRATEGY_LIFECYCLE.md)), non per validare un edge.
+- **Cosa NON misura**: se l'edge esiste. Per quello servono metriche che **penalizzino il numero di
+  tentativi** (DSR), che confrontino **best-IS vs mediana-OOS** (PBO/CSCV), o che permutino la
+  **serie dei prezzi** e non l'ordine dei trade ([`mc_permutation_test`](../../core/quant_metrics.py),
+  block bootstrap sui rendimenti).
+
+Regola: *rimescolare i trade risponde a "quanto può andare male il percorso", mai a "il segnale è
+reale".* Un flusso di validazione che ha solo l'OOS singolo e il reshuffle **non ha alcun controllo
+sulla molteplicità**.
+
 **Rimedi nel repo** (tutti in [`core/quant_metrics.py`](../../core/quant_metrics.py)): il numero di trial provati va penalizzato col **Deflated Sharpe Ratio** ([`deflated_sharpe_ratio`](../../core/quant_metrics.py)); la probabilità che il best IS sia sotto la mediana OOS è il **PBO via CSCV** ([`pbo_cscv`](../../core/quant_metrics.py)); il multiple-testing tra varianti si controlla col **White's Reality Check** ([`whites_reality_check`](../../core/quant_metrics.py)); la robustezza vs rumore col **Monte Carlo permutation test** ([`mc_permutation_test`](../../core/quant_metrics.py)).
 
 ### 3. Survivorship bias

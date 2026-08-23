@@ -201,6 +201,55 @@ mai le fasi successive. Due vincoli:
 
 ---
 
+## 8bis. Dopo il capitale — ritiro, incubazione, riattivazione
+
+> **Buco colmato il 2026-08-17.** Fino a qui il documento copre **nascita e morte prima del
+> capitale**: il loop finisce al verdetto. Non diceva nulla su *cosa succede a una strategia già
+> operativa che peggiora*. Serve adesso, non domani: il fade è in forward e il copier mentore va in
+> live. Innesco esterno: fonte *Noel T.* ([`_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md)), che
+> gestisce un parco di algoritmi con rotazione e incubazione.
+
+**Il problema.** Spegnere una strategia perché "ultimamente perde" è **optional stopping applicato
+al capitale**. La performance di qualunque edge reale è rumorosa: se il criterio è discrezionale, si
+spegne sistematicamente dopo il drawdown — cioè **al minimo** — e si riaccende dopo il recupero.
+È comprare caro e vendere a buon mercato sulle proprie strategie. La versione discrezionale della
+fonte (*"se perde per qualche mese, riduci o spegni"*) ha esattamente questo difetto.
+
+**La regola: si giudica contro la distribuzione, non contro l'umore.** Il backtest non fornisce solo
+un E[R]: fornisce la **distribuzione attesa dei drawdown e delle serie negative**. Una strategia va
+ritirata quando esce da quella distribuzione, non quando fa male.
+
+Da dichiarare **nella pre-registrazione, prima del capitale**, insieme alle soglie di verdetto:
+
+| Soglia | Come si fissa |
+|---|---|
+| **DD di ritiro** | percentile alto (es. 95°) del maxDD nella simulazione Monte Carlo del backtest. Sopra quello, la strategia è fuori distribuzione |
+| **Serie negativa di ritiro** | percentile alto delle perdite consecutive attese |
+| **Finestra minima** | numero di trade sotto il quale **non si valuta affatto** (stesso pavimento del §5: sotto, non è un verdetto) |
+
+**Stati dopo il capitale**, con le transizioni consentite:
+
+```
+   LIVE ──(fuori distribuzione)──► INCUBAZIONE ──(criterio di rientro)──► LIVE
+     │                                   │
+     │                                   └──(secondo fallimento)──► RITIRATA (definitiva)
+     └──(razionale economico falsificato / difetto metodologico)──► RITIRATA (subito)
+```
+
+- **INCUBAZIONE** = continua a girare in **simulazione**, con le stesse regole, e continua a
+  raccogliere dati. Non è un cestino: è l'unico modo di distinguere "rotta" da "sfortunata".
+- **Criterio di rientro dichiarato prima**, mai deciso guardando la curva. Una **seconda** uscita
+  dalla distribuzione dopo un rientro = **RITIRATA definitiva**: due fallimenti indipendenti non
+  sono sfortuna.
+- Il ritiro per **razionale falsificato** o **difetto metodologico** (kill duri §6a n. 1 e n. 6)
+  è **immediato e non passa dall'incubazione**: lì non c'è niente da incubare.
+
+**Cosa NON si fa.** Non si ritara la strategia durante l'incubazione — sarebbe rifinitura su dati
+che includono il periodo negativo, cioè il p-hacking del §4 con il capitale già in gioco. Se serve
+una modifica, è una **nuova specifica** e riparte dal gate [G1].
+
+---
+
 ## 9. Collegamenti
 
 - [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md) — come si misura (il *gate*, non la *regola di stop*).

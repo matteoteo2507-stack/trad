@@ -1,0 +1,89 @@
+# Backlog di ricerca — stato al 2026-08-22
+
+> Inventario di tutto ciò che è sul tavolo dopo la chiusura del funnel YouTube, diviso per **cosa
+> si può effettivamente farci oggi**. Non è un piano: è la base per decidere quali binari aprire.
+>
+> Ordine dei bucket: **A** ha un numero da confermare · **B** ha una specifica meccanica completa e
+> dati per testarla · **C** migliora qualcosa che già gira · **D** non ha un percorso di test oggi.
+>
+> **Vincoli di budget in vigore** — da tenere presenti in ogni decisione:
+> pre-registrazioni da fonte esterna **2 di 2-3 usate nel trimestre** · max **3 round di rifinitura**
+> per famiglia · **holdout: una apertura per famiglia**, non per variante.
+
+---
+
+## A — DA CONVALIDARE (esiste un numero, non è confermato)
+
+| # | oggetto | il numero | cosa manca | costo |
+|---|---|---|---|---|
+| **A1** | **Playground / gradiente di volatilità** | ρ **+0,857**, p=0,006, fra volatilità di gruppo ed E[R] su 8 gruppi | **pre-registrazione seria con holdout**. Oggi: n=8, solo **3/8 gruppi positivi su entrambi i lati**, nessun holdout, feed con **partenze scaglionate** (bond dal 2016-17) → confronto fra gruppi parzialmente confondato col periodo | 1 pre-reg |
+| **A2** | **FADE NXT** | **+0,31R** (corretto da +0,354 con il fill onesto), robusto a holdout e 3× costi | è **data-derived**: il forward pre-registrato è in corso, va lasciato chiudere | 0 — già in corso |
+| **A3** | **ORB v2** | post-2020 **−0,208** contro random **−0,323 [−0,487; −0,157]** → **non conclusivo**, per questo il forward gira | chiusura del forward. ⚠️ **Da allegare ora**: il razionale economico di Cimbali (flusso strutturale d'acquisto + market maker obbligati a fornire liquidità) come ipotesi dichiarata, così un esito positivo o negativo falsifica anche il *meccanismo*, non solo il pattern | 0 |
+| **A4** | **Segnali mentore XAUUSD** | direzione giusta **67-72%** vs 32% random, robusto al ritardo fino a 60′, stabile su 6 mesi | la pre-registrazione OOS esiste (`docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md`) e dichiara che il forward è "a costo zero". **Da verificare se è effettivamente partito** e da quando | 0 |
+| **A5** | **Audit dei risultati early-stage** | — | richiesto dall'utente e mai fatto: ricontrollare **come** sono stati ricavati i verdetti di livelli / NXT / ORB / TSMOM (look-ahead, finestre, baseline). È la fondazione su cui poggiano i NO-GO che usiamo per rifiutare cose nuove | 0 trial, tempo sì |
+| **A6** | **Sensibilità del verdetto Stage-2 del FADE** | il fill onesto ha ridotto il margine (+0,354 → **+0,308**) | non è un test nuovo: è **monitoraggio** di quanto il verdetto dipende dal margine residuo | 0 |
+
+---
+
+## B — DA BACKTESTARE (spec meccanica completa + dati disponibili)
+
+> Tutte e sei si eseguono sul feed **Dukascopy D1, 2012-2026, 27 strumenti su 8 gruppi**, già in
+> repo. Nessuna richiede dati che non abbiamo.
+
+| # | spec | fonte | perché è pronta | costo |
+|---|---|---|---|---|
+| **B1** | **Mean reversion Kichev** — `\|close − SMA5\|` oltre una soglia normalizzata sullo scostamento storico → entra **contro**; uscita **a tempo (1-4 giorni)** o al ritorno sulla media | Kichev (D.1) | entrata, uscita e invalidazione tutte specificate; **nessuna discrezionalità**. È la **forma canonica del FADE scritta da una fonte esterna prima che lo trovassimo** → è ciò che serve per ri-pre-registrare una regola data-derived | 1 pre-reg |
+| **B2** | **Breakout Kichev** — range della barra ≥ ~2× media range ultime 5 → entra in direzione; uscita **a tempo (2-5 giorni)** o quando il momentum svanisce | Kichev (D.1) | stessa cosa: completa e senza giudizio. ⚠️ Famiglia trend/momentum: **round 2 di 3 già speso** | 1 pre-reg + 1 round |
+| **B3** | **Condizione di struttura sull'estensione estrema** — N barre con **range in espansione** + **volume in espansione** → misura del comportamento successivo contro baseline random risk-matched | Marius (C3.4) + Kyle (C3.5), **indipendenti** | è una **misura descrittiva, non una regola** → nella forma corretta **non consuma trial** (stessa natura del lavoro sulle escursioni). ⚠️ Le soglie assolute delle fonti (200%/100%/80%) **non sono trasferibili**: vanno normalizzate sulla volatilità | **0 trial** |
+| **B4** | **Variante di esecuzione del FADE: conferma sì / conferma no** — entrata al tocco vs entrata dopo un segnale di rientro | Kichev, unico contro sette | non è una famiglia nuova, è una **variante di esecuzione** su un lead esistente, sugli stessi dati. ⚠️ Resta comunque un **round di rifinitura da contare** | basso, ma 1 round |
+| **B5** | **Casella vuota: low volume node** — detector LVN accanto a POC/VAH/VAL | Carmine, Fabio, Yush (3 fonti) | verificato nel codice: `analysis/level_research/detectors.py` testa i nodi ad **alto** volume, mai quelli a **basso**. È l'ipotesi **complementare, meccanismo opposto**. ⚠️ Costa poco tecnicamente **ed è proprio questo il rischio**: cella aggiunta a una griglia con **384 trial di NULL**, molteplicità pagata dove non l'abbiamo contata. E tutte e tre le fonti la usano **con conferma di flusso**, che non possiamo replicare → testeremmo una versione amputata | 1 pre-reg **esterna** (budget 2/2-3) |
+| **B6** | **Casella vuota: trend line inclinate** | Crooks, Silfrain, Tori (3 pro) — **Ariel contro** | i 384 trial erano **solo orizzontali**. Buco reale. ⚠️ Prior basso: 1 fonte su 4 le rifiuta **con la nostra stessa motivazione** (ambiguità del tracciamento) | 1 pre-reg **esterna** |
+
+---
+
+## C — DA IMPLEMENTARE IN COSE CHE GIÀ GIRANO
+
+| # | intervento | dove | nota |
+|---|---|---|---|
+| **C1** | Allegare il razionale economico di Cimbali al forward ORB | `docs/OPENING_RANGE_PREREGISTRATION.md` | **costo zero, nessuna decisione da prendere** — è solo scrivere l'ipotesi prima dell'esito |
+| **C2** | Decidere su **BTCUSD nel FADE live** | prereg FADE | domanda dell'utente rimasta aperta: era stato inserito e poi tolto perché fuori dall'universo dichiarato. Rientrare **dopo** aver visto i dati sarebbe asset-shopping → se rientra, va dichiarato e contato |
+| **C3** | **Soglie di ritiro dichiarate prima del capitale** | FADE e copier mentore | `STRATEGY_LIFECYCLE §8bis` le richiede ancorate a un percentile del maxDD Monte Carlo. **Non ancora scritte** per nessuna delle due — e il copier si avvicina al live |
+| **C4** | **Sizing: rischio fisso in valuta, size derivata dalla distanza dello stop** | motore di rischio | 3 fonti indipendenti (Carmine, Desi, Ortani). Da verificare se il nostro sizing è già così o se è size fissa |
+| **C5** | Soglia anti-ritardo del copier | copier | lo **shadow log dello scarto in pip** già registra il numero; manca la soglia |
+| **C6** | **Livello di portafoglio + ribilanciamento** | non esiste | Kichev: due strategie anticorrelate senza ribilanciamento chiudono a 20k, **con** ribilanciamento a 31,25k. **Non richiede un edge nuovo.** ⚠️ Ha senso solo con ≥2 strategie vive: oggi non le abbiamo |
+
+---
+
+## D — CONCETTO ISOLATO (nessun percorso di test oggi)
+
+| # | concetto | perché è bloccato | si sblocca se… |
+|---|---|---|---|
+| **D1** | **Order flow** (assorbimento, delta cumulato, big trades, book) | servono **tick + book**; 12 video del funnel ci poggiano sopra | mai, realisticamente: il dato costa e il vantaggio è di latenza |
+| **D2** | **Universo small cap USA** (first red day, parabolic short) | servono market cap, float, short interest, halt, e un broker con locate | non nel nostro perimetro |
+| **D3** | **PEAD / episodic pivot** | serve la **sorpresa su utili e fatturato** | è l'unico setup del funnel con supporto accademico indipendente: da ricordare se l'universo si allargasse |
+| **D4** | **Momentum cross-sectional di gruppo** (Ariel) | il feed 8 gruppi **c'è** — quindi non è bloccato dai dati, è bloccato dal **budget**: famiglia trend following con round 2/3 speso | se il playground (A1) chiude e libera il ramo |
+| **D5** | **Regime da VIX** | il VIX non è nel feed D1 attuale | aggiungendo la serie — ma vale la pena solo se A1 dà un segnale |
+| **D6** | **Livelli condizionati al calendario macro** | **porta chiusa per decisione** (2026-08-22): moltiplica la ricerca su 384 trial di NULL, e il calendario è il posto più pubblico del mercato | solo con evidenza esterna **quantitativa** nuova |
+| **D7** | **Riflessività / affollamento come misura** | servono open interest, positioning, short interest | dati non disponibili sul nostro perimetro |
+
+---
+
+## E — DEBITO DI PROTOCOLLO (emerso costruendo il guardiano)
+
+Non sono ricerca: sono le cose che rendono la ricerca affidabile, e oggi mancano.
+
+| # | debito | perché conta |
+|---|---|---|
+| **E1** | **Primitiva condivisa del baseline random risk-matched** | oggi è **reimplementata ad hoc in ~10 file**. È il singolo controllo che ha ribaltato il verdetto del 14/08 in KILL, e non esiste un posto da cui riusarlo → va ricordato a mano ogni volta |
+| **E2** | **Contatore trial persistente** | `STRATEGY_LIFECYCLE §3` lo dichiara necessario perché il DSR funzioni. **Non esiste nel codice**: va ricostruito a mano dai file di pre-registrazione |
+| **E3** | **Checklist dati/esecuzione come codice eseguibile** | monotonia temporale, barre/anno, duplicati, gap oltre lo stop, condizione di fill. Sono prosa; i tre errori di questa sessione sarebbero stati presi da tre assert |
+| **E4** | **Contaminazione da knowledge cutoff dell'LLM** | rischio **nuovo**, non previsto dal protocollo, ora scritto nel guardiano (checklist 5). Evidenza esterna: *Profit Mirage* (arXiv 2510.07920) — spostando la finestra oltre il cutoff, **quasi tutti** gli agenti LLM pubblicati **non battono un baseline random** |
+
+---
+
+## Collegamenti
+
+- [`STRATEGY_LIFECYCLE.md`](STRATEGY_LIFECYCLE.md) — gate, budget, verdetti
+- [`QUANT_REVIEW_PROTOCOL.md`](QUANT_REVIEW_PROTOCOL.md) — gli 8 step della review
+- [`../.claude/agents/quant-gatekeeper.md`](../.claude/agents/quant-gatekeeper.md) — il guardiano del protocollo
+- [`../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/SINTESI.md`](../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/SINTESI.md) — da dove vengono B1-B6
