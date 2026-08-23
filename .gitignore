@@ -82,3 +82,22 @@ socio-trading-bot/
 # Export Telegram grezzi (pesanti, fuori repo per scelta 2026-08-09)
 /Messaggi tg aggiornati*/
 /Dati su segnali mentore/
+
+# Sessioni Telethon del signal copier — SONO CREDENZIALI.
+# Chi ha questo file puo' autenticarsi come l'account Telegram: mai in un repo pubblico.
+*.session
+*.session-journal
+*.session.bak-*
+
+# Stato runtime dell'intake YouTube (ripartenza fetch, log)
+analysis/intake/_state.json
+analysis/intake/_fetch.log
+
+# Trascrizioni YouTube grezze: contenuto integrale di terzi (canale commerciale),
+# 4,3 MB su repo pubblico. Il triage in _triage/ e' analisi nostra e viene versionato;
+# il verbatim si rigenera con analysis/intake/yt_fetch.py
+fondamenti_tecnici/_sorgenti/insight_da_yt/_raw/
+
+# Output trade-level dei backtest (MB di CSV). I *_report.txt aggregati sono versionati.
+analysis/nxt/*_trades.csv
+analysis/trend/trades_*.csv
