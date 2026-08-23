@@ -335,3 +335,42 @@ Gli oggetti #5 e #6 sono **entrambi** pre-registrazioni esterne. Gli oggetti #1,
 - **Non** far ripartire il funnel su altri canali prima che i binari attuali abbiano prodotto un
   verdetto. Il tetto era **1 pre-registrazione** dal funnel; ne abbiamo speso 1 (playground) e ne
   abbiamo prodotta 1 in precedenza (round grid). **Il funnel e' chiuso.**
+
+---
+
+## 9. Appendice — video usciti DOPO la chiusura (aggiornata 2026-08-23)
+
+Il funnel e' chiuso, ma il canale continua a pubblicare. I video successivi al 22/08 stanno in
+[`blocco-E-postfunnel.md`](blocco-E-postfunnel.md).
+
+⚠️ **Questione di processo, aperta.** "Funnel chiuso" significava *non rileggiamo l'arretrato di
+altri canali*: non era stata scritta una regola per i **video nuovi dello stesso canale**. Vanno
+decise due cose — (a) li leggiamo tutti, a campione, o solo su segnalazione? (b) contano contro il
+tetto di **1 pre-registrazione** del funnel, gia' speso? Finche' non e' deciso, ogni video nuovo e'
+**segnalazione**, non intake corrente.
+
+**E.1 — Freddy Siento, market maker (23/08, 26.718 parole, il piu' lungo del canale).**
+**NON TESTABILE** (serve catena opzioni + superficie di volatilita' implicita intraday, piu' un
+abbonamento vendor), **zero pre-registrazioni aperte**, ma:
+
+- porta **il razionale economico piu' forte dei 46 video**: la copertura delta/gamma del market
+  maker e' un **obbligo**, non una scelta, ed e' meccanica verificabile indipendentemente. E'
+  l'unico caso del funnel che avrebbe passato a pieni voti il gate del razionale (§6a);
+- **seconda voce con esperienza di market making** (dopo Cimbali) a smentire lo *stop-hunting* —
+  coerente col nostro NULL sui livelli;
+- **fornisce il meccanismo mancante ai low volume node** (§4.4 / backlog B5): i picchi di
+  volatilita' implicita sono i nodi ad alto volume, le tasche quelli a basso. Non cambia il
+  verdetto su B5, ma spiega *perche'* tre fonti ci costruiscono sopra;
+- ⚠️ **le sue statistiche sono internamente incoerenti**, e si smonta senza avere alcun dato:
+  dichiara **75% di win rate** e insieme *"uno stop ogni due o tre settimane"* con **1-2 occasioni
+  al giorno** — che implica un win rate del **90-97%**. I due numeri differiscono di un fattore
+  3-10. Track record dei claim del funnel: **5 su 5** privi di campione, periodo, baseline e
+  taglia del rischio;
+- **conflitto dichiarato**: sconto 65% sulla piattaforma vendor indispensabile al metodo;
+- **effetto operativo, a costo zero**: e' il **secondo meccanismo in due giorni** proposto per
+  l'intraday sugli indici USA, cioe' il perimetro del nostro NO-GO ORB — e piu' preciso di quello
+  di Cimbali. ⚠️ **Non riapre nulla** (la coincidenza fra 0DTE dal 2021 e ORB "meno negativo"
+  post-2020 e' esattamente il tipo di lettura che
+  [[feedback_backtest_long_history_falsification]] vieta di fare sul backtest che l'ha generata).
+  Va **allegato al forward ORB gia' in corso** insieme a quello di Cimbali: due ipotesi dichiarate
+  prima dell'esito invece di una.
