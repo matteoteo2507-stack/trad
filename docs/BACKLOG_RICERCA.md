@@ -18,7 +18,7 @@
 |---|---|---|---|---|
 | **A1** | **Playground / gradiente di volatilità** | ρ **+0,857**, p=0,006, fra volatilità di gruppo ed E[R] su 8 gruppi | **pre-registrazione seria con holdout**. Oggi: n=8, solo **3/8 gruppi positivi su entrambi i lati**, nessun holdout, feed con **partenze scaglionate** (bond dal 2016-17) → confronto fra gruppi parzialmente confondato col periodo | 1 pre-reg |
 | **A2** | **FADE NXT** | **+0,31R** (corretto da +0,354 con il fill onesto), robusto a holdout e 3× costi | è **data-derived**: il forward pre-registrato è in corso, va lasciato chiudere | 0 — già in corso |
-| **A3** | **ORB v2** | post-2020 **−0,208** contro random **−0,323 [−0,487; −0,157]** → **non conclusivo**, per questo il forward gira | chiusura del forward. ⚠️ **Da allegare ora**: il razionale economico di Cimbali (flusso strutturale d'acquisto + market maker obbligati a fornire liquidità) come ipotesi dichiarata, così un esito positivo o negativo falsifica anche il *meccanismo*, non solo il pattern | 0 |
+| **A3** | **ORB v2** — ⚠️ **VOCE CORRETTA 2026-08-23** | **NO-GO su 14,5 anni**, entrambi gli indici, entrambi i lati, holdout gia' aperto, iterazioni v2 stesso verdetto | ⚠️ **il forward NON esiste**: nessun chiamante per `today.py`, nessun output persistito, nessun task pianificato. `today.py` dichiara in testa di essere *"diagnostico/manuale, non di produzione... non fa parte di alcuna strategia attiva"*. La voce DECISIONS del 14/08 diceva *"lasciar correre il forward"*: **decisione presa, mai implementata**. Vedi §F | — |
 | **A4** | **Segnali mentore XAUUSD** | direzione giusta **67-72%** vs 32% random, robusto al ritardo fino a 60′, stabile su 6 mesi | la pre-registrazione OOS esiste (`docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md`) e dichiara che il forward è "a costo zero". **Da verificare se è effettivamente partito** e da quando | 0 |
 | **A5** | **Audit dei risultati early-stage** | — | richiesto dall'utente e mai fatto: ricontrollare **come** sono stati ricavati i verdetti di livelli / NXT / ORB / TSMOM (look-ahead, finestre, baseline). È la fondazione su cui poggiano i NO-GO che usiamo per rifiutare cose nuove | 0 trial, tempo sì |
 | **A6** | **Sensibilità del verdetto Stage-2 del FADE** | il fill onesto ha ridotto il margine (+0,354 → **+0,308**) | non è un test nuovo: è **monitoraggio** di quanto il verdetto dipende dal margine residuo | 0 |
@@ -45,7 +45,7 @@
 
 | # | intervento | dove | nota |
 |---|---|---|---|
-| **C1** | Allegare il razionale economico di Cimbali al forward ORB | `docs/OPENING_RANGE_PREREGISTRATION.md` | **costo zero, nessuna decisione da prendere** — è solo scrivere l'ipotesi prima dell'esito |
+| **C1** | ~~Allegare il razionale al forward ORB~~ **BLOCCATA** | — | ⚠️ presupponeva un forward che **non esiste**. Non e' eseguibile come scritta: vedi §F per la scelta reale |
 | **C2** | Decidere su **BTCUSD nel FADE live** | prereg FADE | domanda dell'utente rimasta aperta: era stato inserito e poi tolto perché fuori dall'universo dichiarato. Rientrare **dopo** aver visto i dati sarebbe asset-shopping → se rientra, va dichiarato e contato |
 | **C3** | **Soglie di ritiro dichiarate prima del capitale** | FADE e copier mentore | `STRATEGY_LIFECYCLE §8bis` le richiede ancorate a un percentile del maxDD Monte Carlo. **Non ancora scritte** per nessuna delle due — e il copier si avvicina al live |
 | **C4** | **Sizing: rischio fisso in valuta, size derivata dalla distanza dello stop** | motore di rischio | 3 fonti indipendenti (Carmine, Desi, Ortani). Da verificare se il nostro sizing è già così o se è size fissa |
@@ -87,3 +87,61 @@ Non sono ricerca: sono le cose che rendono la ricerca affidabile, e oggi mancano
 - [`QUANT_REVIEW_PROTOCOL.md`](QUANT_REVIEW_PROTOCOL.md) — gli 8 step della review
 - [`../.claude/agents/quant-gatekeeper.md`](../.claude/agents/quant-gatekeeper.md) — il guardiano del protocollo
 - [`../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/SINTESI.md`](../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/SINTESI.md) — da dove vengono B1-B6
+
+---
+
+## F — Il caso ORB: decisione presa, mai implementata (aperto 2026-08-23)
+
+**I fatti, verificati.**
+
+| | |
+|---|---|
+| verdetto | **NO-GO** (2026-07-16): 14,5 anni Dukascopy M5, NAS100 **−0,056** [−0,11; 0,00] e SPX500 **−0,137** [−0,19; −0,08]. Entrambi i lati negativi, quasi tutti gli anni rossi |
+| iterazioni v2 | filtro news, ADX: **stesso verdetto** |
+| holdout | **gia' aperto** — e ha smascherato il "miglioramento" v2 come non-stazionario |
+| forward | ⚠️ **non esiste**. Nessun chiamante per `today.py`, nessun output persistito, nessun task pianificato. `today.py` si autodichiara *"diagnostico/manuale, non di produzione... non fa parte di alcuna strategia attiva"* |
+
+**Come si e' creata la contraddizione.** La voce DECISIONS del 2026-08-14 concludeva: *"sposta il
+prior e rafforza la scelta di lasciar correre il forward ORB, unico modo di risolverlo"*. Era una
+**decisione**, non una descrizione — ma non e' mai stata implementata, e da allora e' stata citata
+come se lo fosse (in questo backlog e nella discussione del 22-23/08). **L'errore e' mio**, ed e'
+la ragione per cui il debito **E2** (contatore/stato persistente) non e' un dettaglio: non esiste
+un posto dove lo stato reale di un binario sia registrato e verificabile.
+
+**Cosa dice il 14/08 che spesso viene letto male.** Il test trend/playground ha trovato lo stesso
+salto "pre/post-2020" **col segno opposto** su una strategia scorrelata. La conclusione fu che due
+breakout della stessa famiglia che si spezzano in direzioni opposte alla stessa data sono piu'
+coerenti con **due estrazioni di rumore** che con una rottura di microstruttura. ⚠️ **Quella e'
+gia' una risposta alla domanda che il forward avrebbe dovuto risolvere**, ottenuta a costo zero.
+
+**Le due ipotesi economiche arrivate dal funnel** (Cimbali, C4.6 · Siento, E.1) sono **aneddoti
+senza campione**, quindi per `STRATEGY_LIFECYCLE §7` **non sono evidenza esterna nuova** e non
+autorizzano a riaprire.
+
+### La scelta, che e' dell'utente
+
+| opzione | cosa comporta | costo |
+|---|---|---|
+| **F1 — lasciare chiuso** (raccomandata) | si registra che il forward non serviva: il 14/08 aveva gia' risposto. Le due ipotesi si archiviano come **condizioni di riapertura** gia' scritte, cosi' la prossima volta che qualcuno dice *"l'ORB funziona per via del gamma"* la risposta e' pronta | zero |
+| **F2 — implementare il forward davvero** | rendere `today.py` persistente e farlo girare. ⚠️ E' un forward su una famiglia **NO-GO con holdout gia' bruciato**: raccoglie dati su qualcosa che abbiamo deciso non funziona, e la domanda che doveva risolvere ha gia' una risposta piu' economica | lavoro reale + un binario in piu' da presidiare |
+
+### Se un giorno si riaprisse: le condizioni, scritte ORA
+
+Le due ipotesi fanno **predizioni diverse**, ed e' questo che le rende utili — non la narrativa.
+Vanno valutate su dati **mai visti**, non sul campione 2012-2026 gia' esaurito.
+
+| | **Cimbali** — flusso strutturale d'acquisto + market maker che forniscono liquidita' | **Siento** — copertura gamma obbligata delle 0DTE |
+|---|---|---|
+| lato | **bias long** (il flusso strutturale e' di acquisto) | **simmetrico** (dipende dal posizionamento in opzioni) |
+| epoca | effetto **stabile da ~20 anni**, quindi anche **pre-2020** | effetto **assente prima del 2021** (le 0DTE nascono li') |
+| ora | nessuna preferenza dichiarata | **concentrato nelle prime ore** (opera solo le prime due) |
+| calendario | nessuna dipendenza | **degrada dove non ci sono 0DTE**: triple witching (terzo venerdi' di mar/giu/set/dic), dove lui **non opera** |
+
+⚠️ **Due avvertenze che vanno lette insieme alla tabella.**
+1. Il nostro dato storico dice che l'ORB era **negativo pre-2020** — il che e' incompatibile con
+   Cimbali e superficialmente compatibile con Siento. **Non conta come conferma**: e' un dato
+   gia' visto, e il 14/08 ha mostrato che quello stesso split appare col segno opposto altrove.
+2. Il meccanismo di Siento, preso alla lettera, **non predice che l'ORB funzioni**: predice che il
+   prezzo venga attirato ai muri di gamma e li' **si inverta**. L'ORB e' una strategia di
+   **continuazione**. Il suo meccanismo semmai spiegherebbe perche' l'ORB **fallisce** quando un
+   muro sta davanti al target — cioe' e' piu' un argomento contro che a favore.
