@@ -1,0 +1,98 @@
+==============================================================================
+NXT — SOFFITTO DELL'USCITA (MFE/MAE, niente TP, niente BE)
+Soglie dichiarate prima: docs/NXT_EXIT_CEILING_ADDENDUM.md
+==============================================================================
+
+Setup riempiti (entry_fib=0.5): n=10290  asset=6  anni=15  [2012-2026]
+Stop-out senza TP: 95.4%   MAE mediana: 1.00R   holding mediano: 3 barre H1
+
+Distribuzione MFE (pessimistica, dopo costi), in R:
+  p10=-1.09  p25=-1.05  p50=+0.50  p75=+1.53  p90=+5.33  p95=+10.22  p99=+25.94
+  media=+1.709   max=+92.87
+  P(MFE >=    1R) = 34.81%   (n=3582)
+  P(MFE >=    2R) = 21.01%   (n=2162)
+  P(MFE >=    3R) = 16.24%   (n=1671)
+  P(MFE >=    5R) = 10.71%   (n=1102)
+  P(MFE >=  6.5R) =  8.33%   (n=857)
+  P(MFE >=   10R) =  5.14%   (n=529)
+
+------------------------------------------------------------------------------
+S1  E[R] ORACOLO (esce sempre al massimo) = +1.709R   CI95 cluster [+1.610, +1.816]   -> PASSA
+    confronto: E[R] del backtest originale (TP 1:3, BE 2R) = -0.44R
+    R terminale senza TP ne' BE (tenere fino a stop/MAX_HOLD) = -0.405R
+
+S2  Vincenti (MFE >= 3.0R): 16.2% (n=1671)
+    E[MFE | MFE >= 3R] = +10.10R   soglia dichiarata > 6.5R   -> PASSA
+    (soglia ricalcolata sul tasso osservato: servirebbe W > 5.16R)
+    mediana=6.62R   p90=20.27R
+
+------------------------------------------------------------------------------
+S3  BREADTH — per asset:
+    asset          n   stop%   E[R]orac  P(MFE>=3R)  E[MFE|>=3R]
+    EURUSD      2443   95.9%     +1.473       14.6%        +9.67  <--
+    GBPUSD      2390   95.7%     +1.543       16.4%        +9.19  <--
+    US100        987   95.9%     +1.421       15.7%        +8.97  <--
+    US500        996   95.6%     +1.371       15.3%        +8.87  <--
+    USDJPY      2489   94.5%     +2.148       17.7%       +11.36  <--
+    XAUUSD       985   94.6%     +2.215       17.9%       +11.86  <--
+    asset che superano S1+S2: 6/6
+
+    per anno:
+    2012  n= 476  E[R]orac=+1.666  E[MFE|>=3R]=+11.18  <--
+    2013  n= 501  E[R]orac=+1.345  E[MFE|>=3R]=+8.07  <--
+    2014  n= 482  E[R]orac=+2.016  E[MFE|>=3R]=+12.15  <--
+    2015  n= 511  E[R]orac=+2.210  E[MFE|>=3R]=+13.40  <--
+    2016  n= 508  E[R]orac=+1.595  E[MFE|>=3R]=+9.68  <--
+    2017  n= 495  E[R]orac=+1.489  E[MFE|>=3R]=+10.54  <--
+    2018  n= 529  E[R]orac=+1.879  E[MFE|>=3R]=+9.66  <--
+    2019  n= 497  E[R]orac=+1.248  E[MFE|>=3R]=+6.95  <--
+    2020  n= 905  E[R]orac=+1.984  E[MFE|>=3R]=+10.68  <--
+    2021  n= 965  E[R]orac=+1.177  E[MFE|>=3R]=+8.60  <--
+    2022  n= 971  E[R]orac=+1.990  E[MFE|>=3R]=+11.53  <--
+    2023  n= 970  E[R]orac=+1.512  E[MFE|>=3R]=+9.17  <--
+    2024  n= 951  E[R]orac=+1.810  E[MFE|>=3R]=+10.93  <--
+    2025  n=1007  E[R]orac=+1.907  E[MFE|>=3R]=+9.77  <--
+    2026  n= 522  E[R]orac=+1.687  E[MFE|>=3R]=+9.32  <--
+    anni (n>=20) che superano S1+S2: 15/15
+
+==============================================================================
+S4  BASELINE RANDOM risk-matched (stesso asset/lato/rischio, istante casuale)
+    Domanda: la STRUTTURA (pivot+gamba+ritracciamento) alza il soffitto,
+    o e' solo l'effetto 'stop stretto tenuto 20 giorni'?
+    n_random=30869 (3 controlli per setup reale)
+    E[R] oracolo           reale= +1.709  random= +3.149  diff=-1.440  CI95[-1.569,-1.314]  <-- reale < random
+    MFE media              reale= +1.709  random= +3.149  diff=-1.440  CI95[-1.569,-1.314]  <-- reale < random
+    R terminale (hold)     reale= -0.405  random= -0.005  diff=-0.399  CI95[-0.493,-0.308]  <-- reale < random
+    P(MFE>=3R)             reale= +16.24% random= +24.72%
+    E[MFE|>=3R]            reale= +10.10  random= +11.06
+    stop-out %             reale= +95.36% random= +92.65%
+
+    BREADTH del confronto (kill duro n.2 = non batte il random matched):
+    asset       orac reale  orac random     diff                 CI95
+    EURUSD          +1.473       +2.945   -1.473 [-1.727,-1.222]
+    GBPUSD          +1.543       +3.129   -1.587 [-1.838,-1.325]
+    US100           +1.421       +3.077   -1.656 [-2.012,-1.276]
+    US500           +1.371       +2.954   -1.583 [-1.941,-1.201]
+    USDJPY          +2.148       +3.299   -1.151 [-1.490,-0.824]
+    XAUUSD          +2.215       +3.592   -1.377 [-1.888,-0.837]
+    asset in cui il reale BATTE il random: 0/6
+
+    per anno (diff oracolo reale - random):
+    2012  diff=-1.905       2013  diff=-1.429
+    2014  diff=-1.338       2015  diff=-0.965       2016  diff=-1.397
+    2017  diff=-1.589       2018  diff=-1.320       2019  diff=-1.518
+    2020  diff=-1.214       2021  diff=-1.819       2022  diff=-1.673
+    2023  diff=-1.456       2024  diff=-1.323       2025  diff=-1.252
+    2026  diff=-1.345   
+    anni in cui il reale batte il random: 0/15
+
+------------------------------------------------------------------------------
+DESCRITTIVO — MFE per quintile di rischio (entry->SL in ATR-equivalenti).
+  NB: usare questo per selezionare il sottoinsieme che funziona = p-hacking (§4).
+    Q1  n= 2060  E[R]orac=+0.729  P(MFE>=3R)=  9.0%  E[MFE|>=3R]=+13.30
+    Q2  n= 2057  E[R]orac=+1.571  P(MFE>=3R)= 14.1%  E[MFE|>=3R]=+11.78
+    Q3  n= 2057  E[R]orac=+1.890  P(MFE>=3R)= 17.3%  E[MFE|>=3R]=+10.25
+    Q4  n= 2057  E[R]orac=+2.068  P(MFE>=3R)= 19.8%  E[MFE|>=3R]=+8.86
+    Q5  n= 2059  E[R]orac=+2.287  P(MFE>=3R)= 20.9%  E[MFE|>=3R]=+8.62
+
+Trade log -> C:\Users\mmbus\Desktop\lavoro\trad\analysis\nxt\excursion_trades.csv

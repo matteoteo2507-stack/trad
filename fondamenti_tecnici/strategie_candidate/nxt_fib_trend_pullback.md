@@ -84,12 +84,12 @@ Diagnosi del §3: lo stop a 0.786 vive dentro il rumore del ritracciamento. Due 
 | **B1** | continuazione, entry 0.5, **SL oltre l'origine**, TP 1:1 | −0.286 | negativo (6/6 asset) |
 | **B2** | continuazione, entry 0.5, SL oltre origine, TP 1:2 | −0.294 | negativo (6/6 asset) |
 | **B3** | continuazione, entry 0.786 deep, SL oltre origine, TP 1:2 | −0.314 | negativo (6/6 asset) |
-| **A1** | **FADE** (lato opposto), entry 0.5, mirror 1:3 | **+0.354** | positivo, robusto |
+| **A1** | **FADE** (lato opposto), entry 0.5, mirror 1:3 | **+0.354** → **+0.308** dopo fix fill | positivo, robusto |
 
 **Esito 1 — la mia ipotesi "wide-stop salva la continuazione" è FALSA.** B1/B2/B3 restano tutte negative su tutti gli asset: allargare lo stop non aiuta. **La continuazione non ha edge, con qualunque stop.** NXT (comprare il ritracciamento in trend) è definitivamente morta.
 
 **Esito 2 — il FADE (A1) è positivo e robusto, MA è un lead, non un GO.**
-- +0.354R, win 31.3% @ 1:3 (break-even 25%), BCa CI `[+0.320,+0.389]`.
+- +0.354R, win 31.3% @ 1:3 (break-even 25%), BCa CI `[+0.320,+0.389]`. **→ +0.308R** dopo il fix sui fill (2026-08-14, vedi nota in fondo).
 - Holdout 70/30: TRAIN +0.379 / TEST +0.296 (regge); **14/14 anni positivi** (+0.14…+0.50); **6/6 asset positivi** (+0.28…+0.52).
 - Net **mean-reversion** bilanciata long/short (fade delle gambe up *e* down) → non è beta del bull (EURUSD +0.36 lo conferma).
 - Sotto bound **pessimistico** (SL prima di TP) e **sopravvive a 3× i costi/slippage** (+0.238R, lower-bound > 0; cost_R medio ~0.058).
@@ -104,3 +104,7 @@ Diagnosi del §3: lo stop a 0.786 vive dentro il rumore del ritracciamento. Due 
 - [[project_level_research_v1_null_2026_07_06]] — precedente NULL sul meccanismo level-reaction.
 - [[project_veltrix_bot_eval_2026_06_12]] — nello stesso giro, claim gonfiati (53% vs 80-90%): "gli ex-soci lo usano" ≠ evidenza di profitto.
 - [`../_INTAKE.md`](../_INTAKE.md) — registro intake.
+
+---
+
+⚠️ **Corretto il 2026-08-14** (`analysis/nxt/weekend.py`): il backtest assumeva il fill dello stop *esattamente* al livello, ma il **12,7%** degli stop apre gia' oltre (fill vero −1,29R contro −0,75R assunto). **E[R] reale +0,308R**, non +0,354. Fix di modellazione dell'esecuzione → non consuma trial. Verdetto invariato (LEAD).

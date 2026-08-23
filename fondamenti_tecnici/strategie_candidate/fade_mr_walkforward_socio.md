@@ -56,7 +56,7 @@ Gamba da 100.00 (low) a 110.00 (high) → ampiezza = 10.00, R = 2,86.
 | Metrica | Valore backtest (14 anni, 6 mercati, ~10.000 setup) |
 |---|---|
 | Win rate @ 1:3 | ~**31%** (break-even a 1:3 = 25%) |
-| E[R] per trade | **+0,35R** base; **+0,24R** anche a 3× i costi |
+| E[R] per trade | **+0,31R** base (era +0,35 prima del fix sui fill, vedi nota); **+0,24R** a 3× i costi |
 | Robustezza | positivo in **14/14 anni** e **6/6 strumenti**; regge l'holdout |
 
 Se il live arriva **molto sotto** questi numeri (es. win < 25%, E[R] ≤ 0), il lead **non regge** e si archivia.
@@ -75,3 +75,7 @@ Per evitare il journaling manuale (tempo + precisione), la strategia è codifica
 ## Status onesto (perché lo testiamo così)
 
 Questa variante è stata **trovata analizzando i dati** (invertendo una strategia che perdeva). Ha superato l'holdout interno e lo stress sui costi, ma **non** una validazione indipendente in avanti — ed è esattamente ciò a cui serve questo walk-forward live. Finché non regge in forward reale, resta un'**ipotesi**, non un edge da capitalizzare. Nessuna promessa: solo un test pulito.
+
+---
+
+⚠️ **Corretto il 2026-08-14** (`analysis/nxt/weekend.py`): il backtest assumeva il fill dello stop *esattamente* al livello, ma il **12,7%** degli stop apre gia' oltre (fill vero −1,29R contro −0,75R assunto). **E[R] reale +0,308R**, non +0,354. Fix di modellazione dell'esecuzione → non consuma trial. Verdetto invariato (LEAD).

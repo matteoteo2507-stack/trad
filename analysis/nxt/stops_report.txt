@@ -1,0 +1,171 @@
+==============================================================================
+FADE (NXT A1) — AUTOPSIA DEGLI STOP. Descrittiva: non consuma trial.
+==============================================================================
+
+RIPRODUZIONE: n=10290  E[R]=+0.308  (fill assunti dal backtest: +0.355)
+  atteso da weekend.py: n=10290  E[R]=+0.308  (assunto +0.355)
+
+------------------------------------------------------------------------------
+A  MODI DI MORTE — quanto pesa ognuno sull'E[R]
+  esito         n   quota   R medio  contributo E[R]
+  TP         3213   31.2%    +2.934           +0.916
+  SL         5400   52.5%    -1.102           -0.578
+  BE         1667   16.2%    -0.190           -0.031
+  TIME         10    0.1%    +1.332           +0.001
+  TOTALE    10290  100.0%                     +0.308
+
+  win rate (TP) = 31.2%   break-even a 1:3 = 25.0%
+  perdite piene (-1R): 52.5%   salvate dal BE (0R): 16.2%
+  stop su barra AMBIGUA (tocca anche il TP, bound pessimistico): 202  = 2.9% degli stop
+     se quelle barre fossero TP invece che SL, E[R] passerebbe a +0.387 (tetto ottimistico, NON il verdetto)
+
+------------------------------------------------------------------------------
+B  QUANDO muoiono — barre H1 dal fill alla risoluzione
+  TUTTI      n=10290  p25=    1  mediana=    5  p75=   15  p95=    44  max=  479
+  stop -1R   n= 5400  p25=    1  mediana=    4  p75=   12  p95=    32  max=  335
+  stop a BE  n= 1667  p25=    2  mediana=   10  p75=   20  p95=    55  max=  292
+  TP         n= 3213  p25=    0  mediana=    6  p75=   18  p95=    51  max=  233
+
+  stop sulla BARRA DI INGRESSO (hold=0): 1278  = 23.7% degli stop pieni
+     -> entry e stop toccati nella STESSA ora: il livello di ingresso e lo stop distano meno dell'escursione di una singola barra
+  stop entro  1 barre:  23.7%
+  stop entro  2 barre:  33.0%
+  stop entro  3 barre:  41.1%
+  stop entro  6 barre:  56.8%
+  stop entro 12 barre:  74.3%
+  stop entro 24 barre:  91.3%
+
+------------------------------------------------------------------------------
+C  QUANTO FAVORE prima di morire — MFE dei perdenti (in R, netto costi esclusi)
+  perdenti n=7067   MFE mediana=+0.91R   media=+1.19R
+    mai a favore  (MFE<=0)       17     0.2%
+    0 - 0.25R                  1347    19.1%
+    0.25 - 0.5R                 953    13.5%
+    0.5 - 1R                   1396    19.8%
+    1R - 2R                    1687    23.9%
+    >= 2R (BE armato)          1667    23.6%
+
+  LETTURA: 'mai a favore' + '0-0.25R' = 19.3% dei perdenti muore senza che il prezzo si sia mai mosso a favore in modo apprezzabile.
+
+  specularmente, MAE dei VINCENTI: mediana=+0.00R  p10=-0.79R  quota di vincenti che ha sfiorato lo stop (MAE<=-0.75R): 12.5%
+
+------------------------------------------------------------------------------
+D  LO STOP VIVE DENTRO IL RUMORE? — ampiezza dello stop in ATR(14) H1
+  R (entry->SL) in ATR orari:  p10=0.70  p25=0.87  mediana=1.13  p75=1.61  p90=2.19
+  ampiezza GAMBA in ATR orari: mediana=3.97  (filtro: >= 1.0)
+  quota di trade con stop piu' STRETTO di 1 ATR orario: 38.2%
+
+  P(esito) per quintile di R/ATR  [DESCRITTIVO: selezionare qui = p-hacking, §4]
+    quintile       n  R/ATR med     SL%     BE%     TP%     E[R]
+    Q1          2058       0.70   22.5%   21.1%   56.2%   +1.314
+    Q2          2058       0.92   45.1%   21.3%   33.6%   +0.446
+    Q3          2058       1.13   55.5%   17.7%   26.8%   +0.130
+    Q4          2058       1.47   68.2%   10.4%   21.4%   -0.131
+    Q5          2058       2.19   71.0%   10.4%   18.1%   -0.217
+
+------------------------------------------------------------------------------
+E  ORE DEL GIORNO — stop normalizzati per ESPOSIZIONE (barre-posizione aperte)
+   NB: fuso del FEED (broker legacy), non necessariamente = fuso del conto live.
+    ora  esposiz.   stop  stop/esp  indice    TP  vol.med  range/ATR
+      0      4040    110    0.0272    0.51    38     1301       0.61
+      1      5636    146    0.0259    0.48    86     2303       0.63
+      2      5682    114    0.0201    0.37    74     2630       0.66
+      3      5789    217    0.0375    0.70    93     4018       0.83
+      4      5776    209    0.0362    0.67    91     4176       0.81
+      5      5691    123    0.0216    0.40    48     3307       0.70
+      6      5707     97    0.0170    0.32    54     2714       0.65
+      7      5746    121    0.0211    0.39    41     2595       0.73
+      8      5925    201    0.0339    0.63    87     3317       0.98
+      9      6077    381    0.0627    1.17   146     4759       1.36  <
+     10      6027    526    0.0873    1.62   182     6274       1.58  <<<
+     11      5693    398    0.0699    1.30   136     5700       1.42  <<<
+     12      5444    256    0.0470    0.87   112     4845       1.20
+     13      5413    265    0.0490    0.91   111     4569       1.16
+     14      5555    352    0.0634    1.18   167     5092       1.24  <
+     15      5909    770    0.1303    2.42   285     7373       1.62  <<<
+     16      5637    741    0.1315    2.45   301    10835       1.68  <<<
+     17      5204    710    0.1364    2.54   265    11961       1.63  <<<
+     18      4678    347    0.0742    1.38   184     9063       1.22  <<<
+     19      4614    174    0.0377    0.70   123     6910       0.96
+     20      4981    218    0.0438    0.81   207     6114       0.86
+     21      5292    292    0.0552    1.03   168     6192       0.83
+     22      5515    199    0.0361    0.67   153     6238       0.76
+     23      5427    100    0.0184    0.34    61     2574       0.57
+
+  ora a volume MINIMO del feed: h0 (vol medio 1301 contro 11961 del massimo, h17)
+  indice stop/esposizione a h0: 0.51
+
+------------------------------------------------------------------------------
+F  IL SALTO ATTRAVERSO LO STOP — quando la barra APRE gia' oltre
+  stop totali=7067  con salto=896 (12.7%)
+  su quelli col salto: R vero medio=-1.288 contro -0.752 assunto -> scarto -0.537R
+  costo sull'E[R] complessivo: -0.0467R
+
+  distribuzione dei salti per ORA di apertura barra:
+    h00  stop=  110  saltati=   36  quota= 32.7%
+    h01  stop=  146  saltati=   32  quota= 21.9%
+    h02  stop=  114  saltati=   22  quota= 19.3%
+    h03  stop=  217  saltati=   12  quota=  5.5%
+    h04  stop=  209  saltati=   18  quota=  8.6%
+    h05  stop=  123  saltati=   12  quota=  9.8%
+    h06  stop=   97  saltati=    5  quota=  5.2%
+    h07  stop=  121  saltati=   10  quota=  8.3%
+    h08  stop=  201  saltati=   15  quota=  7.5%
+    h09  stop=  381  saltati=   34  quota=  8.9%
+    h10  stop=  526  saltati=   67  quota= 12.7%
+    h11  stop=  398  saltati=   33  quota=  8.3%
+    h12  stop=  256  saltati=   16  quota=  6.2%
+    h13  stop=  265  saltati=   17  quota=  6.4%
+    h14  stop=  352  saltati=   32  quota=  9.1%
+    h15  stop=  770  saltati=  130  quota= 16.9%
+    h16  stop=  741  saltati=  117  quota= 15.8%
+    h17  stop=  710  saltati=  115  quota= 16.2%
+    h18  stop=  347  saltati=   45  quota= 13.0%
+    h19  stop=  174  saltati=   12  quota=  6.9%
+    h20  stop=  218  saltati=   28  quota= 12.8%
+    h21  stop=  292  saltati=   46  quota= 15.8%
+    h22  stop=  199  saltati=   30  quota= 15.1%
+    h23  stop=  100  saltati=   12  quota= 12.0%
+
+  per giorno della settimana (0=lun):
+    dow0  stop= 1191  saltati=  149  quota= 12.5%  scarto medio sul totale=-0.0710R
+    dow1  stop= 1585  saltati=  195  quota= 12.3%  scarto medio sul totale=-0.0592R
+    dow2  stop= 1576  saltati=  190  quota= 12.1%  scarto medio sul totale=-0.0729R
+    dow3  stop= 1431  saltati=  185  quota= 12.9%  scarto medio sul totale=-0.0644R
+    dow4  stop= 1279  saltati=  177  quota= 13.8%  scarto medio sul totale=-0.0744R
+
+------------------------------------------------------------------------------
+G  CONTROLLO — un'entrata CASUALE con lo STESSO stop muore allo stesso modo?
+  (stesso asset, stesso lato, stesso rischio in prezzo, istante casuale, stesse regole. n_random=30870)
+    metrica                      FADE reale  random matched
+    E[R]                              0.308          -0.172
+    quota TP                         31.224          18.468
+    quota SL piena                   52.478          66.071
+    quota BE (0R)                    16.200          15.361
+    holding mediano (barre)           5.000           6.000
+    MFE mediana dei perdenti          0.912           0.727
+    stop su barra d'ingresso %       23.667          17.704
+    stop col salto %                 12.679           3.405
+
+  differenza APPAIATA (reale - media dei suoi 3 controlli), n=10290:
+    +0.481R   BCa95 [+0.441, +0.518]   P(diff>0) empirica = 40.2%
+
+  Il gradiente R/ATR della sezione D vale anche per il RANDOM?
+    quintile   E[R] fade  E[R] random     diff  TP% fade  TP% random
+    Q1            +1.314       -0.338   +1.652     56.2%       13.9%
+    Q2            +0.446       -0.181   +0.627     33.6%       18.3%
+    Q3            +0.130       -0.152   +0.282     26.8%       19.0%
+    Q4            -0.131       -0.147   +0.015     21.4%       19.6%
+    Q5            -0.217       -0.053   -0.164     18.1%       21.5%
+
+------------------------------------------------------------------------------
+H  PER STRUMENTO
+  asset         n     SL%     BE%     TP%  hold med  R/ATR med   salti%     E[R]
+  EURUSD     2443   51.5%   17.6%   30.8%         5       1.12    11.5%   +0.311
+  GBPUSD     2390   52.8%   16.5%   30.7%         5       1.13    11.7%   +0.300
+  US100       987   49.7%   15.3%   35.0%         4       1.15    17.0%   +0.469
+  US500       996   49.3%   16.0%   34.6%         5       1.14    14.5%   +0.432
+  USDJPY     2489   54.5%   15.3%   30.1%         5       1.15    13.0%   +0.223
+  XAUUSD      985   54.8%   15.5%   29.2%         5       1.13    11.7%   +0.252
+
+Trade log -> C:\Users\mmbus\Desktop\lavoro\trad\analysis\nxt\stops_trades.csv

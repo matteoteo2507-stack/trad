@@ -109,8 +109,14 @@ Obbligatorie, indipendentemente dall'esito:
 - Distribuzione degli esiti (TP / SL / break-even / time-stop) — il BE a +2R sposta massa a 0R e
   **abbassa** l'E[R] rispetto al modello a due esiti
 - Breadth: E[R] per strumento (quanti dei 6 sono positivi)
-- Confronto col backtest: +0,35R base / +0,24R a 3× costi, win ~31%
-- Slippage e spread **reali** vs modellati
+- Confronto col backtest: **+0,31R** base / +0,24R a 3× costi, win ~31%
+  (⚠️ **corretto il 2026-08-14**, era +0,35R: il backtest assumeva il fill dello stop *esattamente*
+  al livello, ma il **12,7%** degli stop apre gia' oltre → fill vero −1,29R contro −0,75R assunto.
+  Modellazione piu' realistica dell'esecuzione = **fix, non ritaratura**, non consuma trial
+  ([STRATEGY_LIFECYCLE §3](STRATEGY_LIFECYCLE.md)). Motore `analysis/nxt/weekend.py`.
+  **Il confronto forward va fatto contro +0,31R, non +0,35R.**)
+- Slippage e spread **reali** vs modellati, **con il gap-attraverso-lo-stop separato**: e' la voce
+  che vale −0,047R nel backtest ed e' per il **95%** un fenomeno **infrasettimanale**, non del weekend
 - Trade saltati (setup validi non riempiti entro 48 barre) e motivo
 
 ## 6. Cosa NON è questo test

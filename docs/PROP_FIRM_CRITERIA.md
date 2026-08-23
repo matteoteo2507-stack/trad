@@ -14,7 +14,7 @@
 
 | Strategia | Profilo | Stato |
 |---|---|---|
-| **nxt_fade** | H1, 6 strumenti simultanei (EURUSD, GBPUSD, USDJPY, XAUUSD, US100, US500), contro-trend, 1:3, BE a +2R, **holding fino a ~20 giorni di borsa** | LEAD, forward in corso |
+| **nxt_fade** | H1, 6 strumenti simultanei (EURUSD, GBPUSD, USDJPY, XAUUSD, US100, US500), contro-trend, 1:3, BE a +2R, holding **mediano 5 ore**, cap a ~20 giorni (solo il **10,5%** dei trade vede un weekend) | LEAD, forward in corso |
 | **orb_nasdaq** | NAS100 intraday, apertura cash USA 09:30 ET, chiusura entro 12:00 ET | NO-GO su backtest, forward per la domanda post-COVID |
 | ~~segnali mentore~~ | XAUUSD manuale | ❌ **Fuori perimetro prop** — vedi §4 |
 
@@ -46,6 +46,8 @@ il floor si alza e un normale ritorno alla media diventa una violazione. Statico
 
 ### 1.3 Holding overnight e nel weekend consentito
 
+⚠️ **Ridimensionato il 2026-08-14 su misura diretta** (`analysis/nxt/weekend.py`): il fade era classificato come swing per via del cap a 20 giorni, ma la distribuzione reale dice altro — **holding mediano 5 barre H1** e solo il **10,5%** dei trade attraversa un fine settimana. Il criterio resta valido ma **pesa molto meno**: non e' una strategia che vive nel weekend, e una firm che obbliga a chiudere il venerdi' amputerebbe ~1 trade su 10, non la strategia. Nota di rischio opposta e confermata: quando il weekend c'e', la **varianza** e' reale — un gap oltre 0,5R nel **26,9%** dei weekend e oltre 1R nel **10,3%** (rileva per il daily DD, non per l'aspettativa: il gap medio e' **−0,008R, CI [−0,063, +0,046]**, indistinguibile da zero).
+
 `nxt_fade` è di fatto **swing**, non intraday. Le firm che obbligano a chiudere prima del weekend, o
 che azzerano i profitti delle posizioni tenute oltre il venerdì, lo rendono ineseguibile. Gli swap
 sono accettabili; il divieto no.
@@ -67,7 +69,7 @@ giorni fanno la maggior parte del risultato.
 
 → **MISURATO il 2026-08-07** — motore [`analysis/nxt/consistency.py`](../analysis/nxt/consistency.py)
 (rigioca la config A1 pre-registrata catturando la barra di uscita; riproduce esattamente i numeri di
-`closure.py`: E[R] +0.354, win 31.3%, n=10.280).
+`closure.py`: E[R] +0.354 → **+0.308 dopo il fix sui fill del 2026-08-14**, win 31.3%, n=10.280).
 
 Quota del giorno migliore sul profitto della finestra, **solo finestre in utile** (quelle in cui si
 chiede il payout):

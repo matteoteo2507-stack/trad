@@ -1,0 +1,149 @@
+Esclusi per copertura (start > 2018-01-01): USTBOND(2018-12-18), XPT(2021-12-01), XPD(2022-02-15)
+==============================================================================
+TREND - uscita a coda aperta x gradiente di liquidita'
+Pre-registrazione: docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md
+==============================================================================
+
+Universo: 27 strumenti, 8 gruppi. Lookback entrata = 50g
+  agri       5 | COCOA, COFFEE, COTTON, SOYBEAN, SUGAR | start max 2017-12-04
+  bond       2 | BUND, UKGILT | start max 2017-12-26
+  crypto     2 | BTCUSD, ETHUSD | start max 2017-12-11
+  energy     3 | BRENT, WTI, NATGAS | start max 2012-06-24
+  fx_cross   3 | EURJPY, GBPJPY, EURGBP | start max 2012-01-01
+  fx_major   7 | EURUSD, GBPUSD, USDJPY, AUDUSD, USDCAD, NZDUSD, USDCHF | start max 2012-01-01
+  index      2 | NAS100, SPX500 | start max 2012-01-19
+  metal      3 | XAUUSD, XAGUSD, COPPER | start max 2014-07-25
+
+W2 comune = 2017-12-26 -> fine (TUTTI gli strumenti)
+W1 lunga  = 2012+ (17 strumenti: energy, fx_cross, fx_major, index, metal)
+
+==============================================================================
+Q1 - LA CODA APERTA  [W1 2012+ | lookback 50]  n_segnali=1849  strumenti=17  anni=15
+==============================================================================
+uscita                          n      E[R]                BCa95    win%
+E1 trail SMA10 (tesi)        1849    +0.015 [-0.083,+0.117]   37.9%
+E1b trail + stop 1R          1849    +0.057 [-0.025,+0.143]   33.5%
+E2 stop1R/target3R           1849    +0.067 [-0.016,+0.149]   27.5%
+E3 uscita a tempo            1849    +0.131 [-0.025,+0.282]   49.9%
+B-oracolo (soffitto)         1849    +2.045
+holding mediano E1 = 7 giorni
+
+--- confronti appaiati (stesse entrate) ---
+  E1   - E2    diff=-0.052  BCa95[-0.132,+0.031]  <-- nullo
+  E1   - E3    diff=-0.116  BCa95[-0.227,+0.003]  <-- nullo
+  E1b  - E2    diff=-0.010  BCa95[-0.072,+0.057]  <-- nullo
+  E1   - E1b   diff=-0.042  BCa95[-0.090,+0.009]  <-- nullo
+
+--- vs BASELINE RANDOM risk-matched (stessa uscita) ---
+  E1       reale=+0.015  random=+0.019  diff=-0.004  CI95[-0.107,+0.098]  <-- indistinguibile
+  oracle   reale=+2.045  random=+1.211  diff=+0.834  CI95[+0.713,+0.950]  <-- reale > random
+
+--- breadth per GRUPPO ---
+  gruppo          n       E1       E2       E3   vs random
+  energy        313   +0.274   +0.204   +0.153      +0.236
+  fx_cross      295   -0.118   -0.162   +0.014      -0.116
+  fx_major      783   -0.144   -0.044   -0.045      -0.132
+  index         279   +0.000   +0.213   +0.478      -0.027
+  metal         179   +0.502   +0.460   +0.520      +0.355
+  gruppi con E1 > 0: 3/5
+
+--- breadth per ANNO (E[R] di E1) ---
+  2012:+0.72  2013:-0.20  2014:+0.27  2015:+0.40  2016:+0.14  2017:+0.14  2018:+0.09  2019:-0.26  2020:+0.45  2021:-0.14  2022:-0.25  2023:-0.11  2024:-0.16  2025:-0.26  2026:-0.33
+  anni positivi: 7/15
+
+--- stress 3x costi (E1): E[R]=-0.047 BCa95[-0.144,+0.054]
+
+==============================================================================
+Q1 - LA CODA APERTA  [W2 comune 2017-12-26+ | lookback 50]  n_segnali=1754  strumenti=27  anni=9
+==============================================================================
+uscita                          n      E[R]                BCa95    win%
+E1 trail SMA10 (tesi)        1754    +0.030 [-0.076,+0.144]   35.2%
+E1b trail + stop 1R          1754    +0.038 [-0.051,+0.137]   30.6%
+E2 stop1R/target3R           1754    +0.040 [-0.038,+0.123]   27.0%
+E3 uscita a tempo            1754    +0.105 [-0.059,+0.278]   48.5%
+B-oracolo (soffitto)         1754    +2.161
+holding mediano E1 = 7 giorni
+
+--- confronti appaiati (stesse entrate) ---
+  E1   - E2    diff=-0.009  BCa95[-0.102,+0.085]  <-- nullo
+  E1   - E3    diff=-0.075  BCa95[-0.196,+0.051]  <-- nullo
+  E1b  - E2    diff=-0.002  BCa95[-0.074,+0.073]  <-- nullo
+  E1   - E1b   diff=-0.007  BCa95[-0.057,+0.058]  <-- nullo
+
+--- vs BASELINE RANDOM risk-matched (stessa uscita) ---
+  E1       reale=+0.030  random=+0.028  diff=+0.002  CI95[-0.116,+0.116]  <-- indistinguibile
+  oracle   reale=+2.161  random=+1.220  diff=+0.941  CI95[+0.794,+1.084]  <-- reale > random
+
+--- breadth per GRUPPO ---
+  gruppo          n       E1       E2       E3   vs random
+  agri          307   +0.070   -0.131   -0.198      +0.082
+  bond          108   +0.154   +0.092   -0.184      +0.022
+  crypto        153   +0.864   +0.471   +1.496      +0.598
+  energy        187   +0.218   +0.224   +0.149      +0.193
+  fx_cross      181   -0.384   -0.296   -0.313      -0.306
+  fx_major      479   -0.297   -0.171   -0.319      -0.277
+  index         166   -0.019   +0.216   +0.552      -0.035
+  metal         173   +0.330   +0.496   +0.728      +0.248
+  gruppi con E1 > 0: 5/8
+
+--- breadth per ANNO (E[R] di E1) ---
+  2018:+0.05  2019:-0.02  2020:+0.65  2021:-0.12  2022:-0.19  2023:-0.04  2024:+0.11  2025:-0.16  2026:-0.06
+  anni positivi: 3/9
+
+--- stress 3x costi (E1): E[R]=-0.040 BCa95[-0.146,+0.074]
+
+==============================================================================
+Q2 - IL PLAYGROUND (claim: piu' volatile/illiquido = piu' edge)
+==============================================================================
+
+  strumento  gruppo     vol ann.     n   E[R] E1
+  EURGBP     fx_cross       6.2%    62    -0.659
+  USDCAD     fx_major       6.4%    57    -0.127
+  BUND       bond           6.8%    59    +0.250
+  EURUSD     fx_major       7.1%    67    -0.407
+  USDCHF     fx_major       7.4%    64    -0.017
+  EURJPY     fx_cross       8.3%    63    -0.419
+  GBPUSD     fx_major       8.6%    76    -0.397
+  USDJPY     fx_major       8.7%    71    -0.255
+  UKGILT     bond           9.5%    49    +0.039
+  GBPJPY     fx_cross       9.6%    56    -0.039
+  NZDUSD     fx_major      10.0%    72    -0.260
+  AUDUSD     fx_major      10.0%    72    -0.554
+  XAUUSD     metal         16.7%    57    +0.659
+  SPX500     index         18.6%    83    +0.114
+  SOYBEAN    agri          20.2%    51    +0.292
+  SUGAR      agri          23.1%    69    -0.372
+  NAS100     index         23.5%    83    -0.151
+  COPPER     metal         24.4%    55    +0.248
+  COTTON     agri          25.7%    56    +0.431
+  COFFEE     agri          34.6%    64    -0.025
+  XAGUSD     metal         35.5%    61    +0.097
+  COCOA      agri          40.8%    67    +0.144
+  BRENT      energy        41.5%    62    +0.405
+  WTI        energy        47.1%    56    +0.490
+  BTCUSD     crypto        54.6%    81    +0.730
+  NATGAS     energy        64.9%    69    -0.171
+  ETHUSD     crypto        72.5%    72    +1.015
+
+  --- PRIMARIO: n=8 gruppi ---
+  gruppo      vol media  E[R] medio  n segnali
+  fx_cross         8.1%      -0.372        181
+  bond             8.2%      +0.144        108
+  fx_major         8.3%      -0.288        479
+  index           21.0%      -0.019        166
+  metal           25.5%      +0.335        173
+  agri            28.9%      +0.094        307
+  energy          51.2%      +0.241        187
+  crypto          63.5%      +0.872        153
+
+  Spearman(vol, E[R]) sui GRUPPI: rho=+0.762  p(perm)=0.0189  -> SUPPORTATO
+  (secondario, pseudo-replicato, NON decisivo): rho=+0.586  p=0.0012
+  NB potenza: con n=8 serve rho ~0.74 per p<0.05. Un null = 'ordinamento forte non rilevato', NON 'claim falso'.
+
+==============================================================================
+W3 - STAZIONARIETA' (regola: se esiste SOLO post-2020, non e' un edge)
+==============================================================================
+  pre-2020   n=  951  E[R] E1=+0.130 BCa95[-0.006,+0.267]   vs random diff=+0.128 CI[-0.017,+0.282]
+  post-2020  n=  853  E[R] E1=-0.181 BCa95[-0.297,-0.048]   vs random diff=-0.172 CI[-0.292,-0.043]
+
+Trade log -> C:\Users\mmbus\Desktop\lavoro\trad\analysis\trend\trades_w2.csv
