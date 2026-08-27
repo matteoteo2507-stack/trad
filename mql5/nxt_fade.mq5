@@ -109,7 +109,7 @@ input group "=== Sizing (fixed fractional) ==="
 // -> ordini scartati con [No money]. Il dropout NON e' casuale: colpisce i setup con lo
 // stop piu' stretto, quindi il volume piu' grande. La size NON e' un parametro
 // pre-registrato (il verdetto e' su E[R], in multipli di R) -> modificarla non altera
-// alcuna statistica misurata. Vedi docs/NXT_FADE_FORWARD_PREREGISTRATION.md §9.
+// alcuna statistica misurata. Vedi docs/NXT_FADE_FORWARD_PREREGISTRATION.md sez.9.
 input double InpRiskPerTradePct      = 0.0025;     // FRAZIONE di equity per trade (0.25%)
 input double InpFallbackVolume       = 0.10;       // lotti di fallback se il sizing fallisce
 
@@ -142,6 +142,26 @@ int OnInit()
    g_trade.SetExpertMagicNumber(InpMagicNumber);
    g_trade.SetTypeFillingBySymbol(_Symbol);
    g_trade.SetDeviationInPoints(20);
+
+   // --- RECUPERO DI STATO DOPO UN RIAVVIO (fix 2026-08-27) ---------------------
+   // g_pending_swingend vive solo in RAM: dopo un riavvio dell'EA (ricompilazione,
+   // cambio di VPS, restart del terminale) tornava a 0. In OnNewBar() questo faceva
+   // valutare iBarShift(..., 1970-01-01), che ritorna -1: la condizione -1 > 48 e'
+   // FALSA, quindi il pending orfano NON scadeva mai -- e il "return" subito dopo
+   // impediva di armare qualunque nuovo setup. Effetto osservato: US500 congelato
+   // dal 2026-07-31 al 2026-08-27 (27 giorni, zero trade) e XAUUSD dal 2026-08-21.
+   // Ricostruiamo lo stato dall'ordine vivo usando ORDER_TIME_SETUP come proxy dello
+   // swing di fine: l'arm avviene sulla barra immediatamente successiva allo swing,
+   // quindi lo scarto e' <= 1-2 barre su 48 (il pending vive al piu' pochissimo in
+   // piu', mai in meno).
+   ulong pend0 = GetOwnPendingTicket();
+   if(pend0 > 0 && OrderSelect(pend0))
+   {
+      g_pending_swingend = (datetime)OrderGetInteger(ORDER_TIME_SETUP);
+      g_last_armed_leg   = g_pending_swingend;
+      PrintFormat("[%s] stato ripristinato da pending #%I64u (setup=%s)",
+                  InpStrategyName, pend0, TimeToString(g_pending_swingend));
+   }
 
    PrintFormat("[%s] EA avviato. Magic=%I64u Symbol=%s TF=%d",
                InpStrategyName, InpMagicNumber, _Symbol, (int)InpTimeframe);
@@ -257,11 +277,15 @@ void OnNewBar()
    if(pend > 0)
    {
       // Expiry: pending valido 48 barre H1 dallo swing di fine.
-      if(iBarShift(_Symbol, InpTimeframe, g_pending_swingend) > InpFillWindowBars)
+      // shift < 0 = eta' non calcolabile (data fuori storico / riferimento perso):
+      // deve valere SCADUTO, mai "tienilo per sempre". Era questo il ramo che
+      // congelava lo strumento dopo un riavvio (fix 2026-08-27).
+      int age = iBarShift(_Symbol, InpTimeframe, g_pending_swingend);
+      if(age < 0 || age > InpFillWindowBars)
       {
          if(g_trade.OrderDelete(pend))
-            NotifyTelegram(StringFormat("[EXPIRE] [%s] %s pending scaduto (no fill in %d barre)",
-               InpStrategyName, _Symbol, InpFillWindowBars));
+            NotifyTelegram(StringFormat("[EXPIRE] [%s] %s pending scaduto (age=%d, limite %d barre)",
+               InpStrategyName, _Symbol, age, InpFillWindowBars));
       }
       return;  // un solo setup attivo per volta
    }

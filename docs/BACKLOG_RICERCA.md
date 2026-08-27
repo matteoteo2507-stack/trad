@@ -1,4 +1,4 @@
-# Backlog di ricerca — stato al 2026-08-22
+# Backlog di ricerca — stato al 2026-08-27
 
 > Inventario di tutto ciò che è sul tavolo dopo la chiusura del funnel YouTube, diviso per **cosa
 > si può effettivamente farci oggi**. Non è un piano: è la base per decidere quali binari aprire.
@@ -17,8 +17,8 @@
 | # | oggetto | il numero | cosa manca | costo |
 |---|---|---|---|---|
 | **A1** | **Playground / gradiente di volatilità** | ρ **+0,857**, p=0,006, fra volatilità di gruppo ed E[R] su 8 gruppi | **pre-registrazione seria con holdout**. Oggi: n=8, solo **3/8 gruppi positivi su entrambi i lati**, nessun holdout, feed con **partenze scaglionate** (bond dal 2016-17) → confronto fra gruppi parzialmente confondato col periodo | 1 pre-reg |
-| **A2** | **FADE NXT** — ⚠️ **AGGIORNATA 2026-08-24** | **+0,31R** in backtest; forward **N valido 29/50** (Stadio 1) | ⚠️ il forward **gira ma il campione e' contaminato**: 197 ordini non inviati (`arm fallito, err=4756`, simboli senza suffisso, 2-21 ago), 2 strumenti **fuori universo** (BTCUSD, EURGBP), dropout per margine **non casuale**, rischio 0,63% vs 0,25% atteso su GBPUSD. Riparazioni = bug fix, **non consumano trial**. Da decidere: tenere i 29 o azzerare. Vedi [review 24/08](reviews/forward-fade-healthcheck-2026-08-24.md) | riparazione + 1 decisione |
-| **A3** | **ORB v2** — ⚠️ **CORRETTA DI NUOVO 2026-08-27** | **NO-GO su 14,5 anni**, holdout gia' aperto | ⚠️ **il forward ESISTE e sta girando**: EA `orb_nasdaq` (magic 26052) su US100, **primo ordine 2026-07-31**, 22 ordini, **10 trade chiusi**, ultimo il 25/08. La mia affermazione del 23/08 (*"il forward non esiste"*) era **sbagliata**: avevo cercato le prove nel repo (`today.py`, task pianificati, log) invece che in **MT5**, che e' la fonte autorevole. Ora e' tracciato in `docs/health/`. **La domanda F1/F2 cambia**: non e' *"lo avviamo?"* ma *"lo teniamo acceso su una famiglia NO-GO?"* | 1 decisione |
+| **A2** | **FADE NXT** — ⚠️ **AGGIORNATA 2026-08-27** | **+0,31R** in backtest; forward **N valido 36/50**, breadth **6/6** | il forward gira e il fix del 12/08 **ha funzionato** (3 cambi `.r` operativi, BTCUSD staccato, zero rifiuti per margine post-fix). ⚠️ **Difetto nuovo trovato il 27/08**: un riavvio dell'EA orfanava il pendente, che **non scadeva piu'** e **congelava lo strumento** — US500 spento **27 giorni**, XAUUSD **6**. Sottrae trade, non ne aggiunge di spuri (attesa di fill mediana 0,0h): **i 36 restano validi**. Corretto in `mql5/nxt_fade.mq5`, **serve ricompilare e riattaccare**. Vedi [prereg §10](NXT_FADE_FORWARD_PREREGISTRATION.md) e [health 27/08](health/2026-08-27.md) | bug fix, **0 trial** |
+| **A3** | **ORB v2** — ✅ **CHIUSA 2026-08-27** | **NO-GO su 14,5 anni**, holdout gia' aperto | ⚠️ **niente**: l'utente ha **spento l'EA**. Verificato: zero posizioni, zero pendenti, ultimo ordine 25/08. La scelta §F si risolve in **F1**. I 10 trade chiusi **non vengono letti** — n=10 non ha potere contro 14,5 anni, e un P&L positivo creerebbe solo pressione a riaprire una famiglia con l'holdout esaurito. Riapertura solo alle condizioni gia' scritte in §F | **0 — fatto** |
 | **A4** | **Segnali mentore XAUUSD** — ✅ **CHIUSA, voce corretta 2026-08-24** | OOS: win-rate **63,0%** vs 35,0% del lato casuale · differenza appaiata **+0,277** BCa95 [+0,193; +0,353] · **E[R] +0,194** BCa95 [+0,079; +0,289] | ⚠️ **niente**: il test e' **gia' stato eseguito e superato** il 2026-08-07 (131 segnali, 15/06→07/08, motore `analysis/mentor_signals/oos_validation.py`). E' il **primo verdetto positivo su un test pre-registrato** del workspace. La mia voce precedente (*"da verificare se e' partito"*) era sbagliata | **0 — fatto** |
 | **A5** | **Audit dei risultati early-stage** | — | richiesto dall'utente e mai fatto: ricontrollare **come** sono stati ricavati i verdetti di livelli / NXT / ORB / TSMOM (look-ahead, finestre, baseline). È la fondazione su cui poggiano i NO-GO che usiamo per rifiutare cose nuove | 0 trial, tempo sì |
 | **A6** | **Sensibilità del verdetto Stage-2 del FADE** | margine ridotto dal fill onesto (+0,354 → **+0,308**) | ⚠️ **assorbita da A2**: con un campione forward contaminato la domanda non e' quanto sia stretto il margine, ma se i trade raccolti misurino la strategia. Si riapre dopo la riparazione | 0 |
@@ -45,8 +45,8 @@
 
 | # | intervento | dove | nota |
 |---|---|---|---|
-| **C1** | ~~Allegare il razionale al forward ORB~~ **BLOCCATA** | — | ⚠️ presupponeva un forward che **non esiste**. Non e' eseguibile come scritta: vedi §F per la scelta reale |
-| **C2** | ~~Decidere su BTCUSD nel FADE live~~ ⚠️ **NON E' PIU' UNA DECISIONE** | prereg FADE | il health-check del 24/08 mostra che **BTCUSD sta gia' operando fuori universo** (7 ordini, 2 chiusi), insieme a EURGBP.r (2 ordini). Non c'e' nulla da decidere: c'e' da **staccare l'EA** |
+| **C1** | ~~Allegare il razionale al forward ORB~~ ✅ **DECADUTA 2026-08-27** | — | il forward **esisteva** ed e' stato **spento**. Non c'e' piu' un binario a cui allegare un razionale: vedi §A3 |
+| **C2** | ~~Decidere su BTCUSD nel FADE live~~ ✅ **RISOLTA** | prereg FADE | BTCUSD **staccato**: 0 ordini post-fix. Resta 1 solo ordine residuo EURGBP.r (0 trade chiusi, nessun effetto sul campione) |
 | **C3** | **Soglie di ritiro dichiarate prima del capitale** | FADE e copier mentore | `STRATEGY_LIFECYCLE §8bis` le richiede ancorate a un percentile del maxDD Monte Carlo. **Non ancora scritte** per nessuna delle due — e il copier si avvicina al live |
 | **C4** | **Sizing: rischio fisso in valuta, size derivata dalla distanza dello stop** | motore di rischio | 3 fonti indipendenti (Carmine, Desi, Ortani). Da verificare se il nostro sizing è già così o se è size fissa |
 | **C5** | Soglia anti-ritardo del copier | copier | lo **shadow log dello scarto in pip** già registra il numero; manca la soglia |
@@ -90,7 +90,12 @@ Non sono ricerca: sono le cose che rendono la ricerca affidabile, e oggi mancano
 
 ---
 
-## F — Il caso ORB: decisione presa, mai implementata (aperto 2026-08-23)
+## F — Il caso ORB: **CHIUSO 2026-08-27 in F1** (aperto 2026-08-23)
+
+> ✅ **Esito.** L'utente ha **spento l'EA** il 2026-08-27 (verificato: zero posizioni, zero
+> pendenti, ultimo ordine 25/08). Quanto segue resta come **motivazione registrata** della scelta e,
+> soprattutto, come **condizioni di riapertura** — l'unica porta d'ingresso se un giorno si
+> riproponesse.
 
 **I fatti, verificati.**
 
@@ -99,7 +104,7 @@ Non sono ricerca: sono le cose che rendono la ricerca affidabile, e oggi mancano
 | verdetto | **NO-GO** (2026-07-16): 14,5 anni Dukascopy M5, NAS100 **−0,056** [−0,11; 0,00] e SPX500 **−0,137** [−0,19; −0,08]. Entrambi i lati negativi, quasi tutti gli anni rossi |
 | iterazioni v2 | filtro news, ADX: **stesso verdetto** |
 | holdout | **gia' aperto** — e ha smascherato il "miglioramento" v2 come non-stazionario |
-| forward | ⚠️ **non esiste**. Nessun chiamante per `today.py`, nessun output persistito, nessun task pianificato. `today.py` si autodichiara *"diagnostico/manuale, non di produzione... non fa parte di alcuna strategia attiva"* |
+| forward | ⚠️ **esisteva** (EA `orb_nasdaq`, magic 26052, 22 ordini, 10 chiusi dal 31/07) — la mia affermazione del 23/08 era sbagliata: avevo cercato le prove nel repo invece che in **MT5**. **Spento dall'utente il 2026-08-27** |
 
 **Come si e' creata la contraddizione.** La voce DECISIONS del 2026-08-14 concludeva: *"sposta il
 prior e rafforza la scelta di lasciar correre il forward ORB, unico modo di risolverlo"*. Era una

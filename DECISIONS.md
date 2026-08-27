@@ -11,6 +11,83 @@
 
 ---
 
+## 2026-08-27 — **ORB spento** (A3 chiusa in F1) · e il difetto che teneva **US500 congelato da 27 giorni**
+
+### 1. ORB: spento dall'utente, A3 chiusa
+
+Verificato in MT5: **zero posizioni, zero pendenti** con magic 26052, ultimo ordine 2026-08-25
+20:33. Chiusura pulita. La scelta F1/F2 di [`BACKLOG_RICERCA §F`](docs/BACKLOG_RICERCA.md) si
+risolve in **F1 — lasciare chiuso**, per una via diversa da quella scritta: non *"non lo avviamo"*
+ma **"era acceso a nostra insaputa e lo spegniamo"**. Razionale invariato: famiglia **NO-GO su
+14,5 anni** (NAS100 −0,056, SPX500 −0,137), **holdout gia' bruciato**, e la domanda che il forward
+doveva risolvere ha ricevuto il 2026-08-14 una risposta piu' economica (lo stesso salto pre/post-2020
+compare **col segno opposto** su una strategia scorrelata).
+
+**I 10 trade chiusi non vengono letti, ed e' una scelta.** Il forward non era pre-registrato: non ha
+regola di stop, quindi non c'e' optional stopping da violare — ma non c'e' nemmeno nulla da
+imparare. **n=10 non ha potere contro un verdetto su 14,5 anni**; se il P&L fosse positivo
+produrrebbe solo pressione a riaprire una famiglia con l'holdout esaurito. Il numero non e' stato
+calcolato. Le **condizioni di riapertura** (Cimbali vs Siento, con predizioni divergenti su
+lato/epoca/ora/calendario) restano in `§F` e sono l'unica porta.
+
+### 2. Il difetto trovato mentre si spegneva l'ORB: **un riavvio dell'EA congela lo strumento**
+
+**Come e' emerso.** L'utente ha cancellato a mano un pendente US500 fermo dal 2026-07-31 per vedere
+se lo strumento si sbloccava: **si e' sbloccato**, l'EA ha piazzato un nuovo ordine tre minuti dopo.
+Non era una stranezza: era il sintomo.
+
+**Il meccanismo, verificato nel sorgente.** In [`mql5/nxt_fade.mq5`](mql5/nxt_fade.mq5) la scadenza
+del pending (**48 barre H1**, parametro CONGELATO della pre-registrazione) si calcola da
+`g_pending_swingend`, una variabile che **vive solo in RAM** e che `OnInit()` **non ripristinava**.
+Dopo ogni riavvio — ricompilazione, restart del terminale, **spostamento sul VPS Windows** — tornava
+a `0`. La catena:
+
+1. `iBarShift(symbol, H1, 1970-01-01)` ritorna **−1**;
+2. la condizione `-1 > 48` e' **falsa** -> il pending orfano **non scade mai**;
+3. la riga successiva e' `return;  // un solo setup attivo per volta` -> **nessun nuovo setup viene
+   mai armato su quel simbolo**.
+
+Un solo ordine non riempito, dopo un riavvio, **spegne lo strumento in modo permanente e silenzioso**.
+
+**Impatto misurato sul forward in corso.**
+
+| strumento | congelato da | a | durata | effetto |
+|---|---|---|---|---|
+| **US500** | 2026-07-31 20:00 | 2026-08-27 13:57 (sblocco manuale) | **27 giorni** | 0 trade: **non erano segnali mancanti, era lo strumento spento** |
+| **XAUUSD.cyr** | 2026-08-21 04:00 | **tuttora** | **6 giorni** | pendente vivo adesso, oro fermo |
+
+**Cosa NON tocca.** I riempimenti avvenuti restano dentro la finestra: su 72 ordini riempiti in
+universo, attesa **mediana 0,0h**, solo 3 oltre le 24h di calendario e tutti spiegati dal weekend
+(le 48 sono **barre**, non ore). Il difetto **sottrae** trade, non ne aggiunge di spuri: colpisce
+**breadth e composizione**, non i valori di R gia' raccolti. **N valido resta 36/50.**
+
+**Aggravante di metodo.** Il difetto si attiva **quando interveniamo** — ogni nostra riparazione
+(il riaggancio `.r` del 12-13/08, il trasloco sul VPS) creava un orfano. Il caveat di composizione
+gia' in prereg §9 va quindi letto piu' duro: la copertura non e' solo disomogenea, e' **correlata
+alle nostre manutenzioni**.
+
+**La correzione** (`mql5/nxt_fade.mq5`, 2026-08-27): `OnInit()` ricostruisce `g_pending_swingend`
+dall'ordine vivo usando `ORDER_TIME_SETUP` come proxy dello swing (scarto <= 1-2 barre su 48, mai in
+difetto); e il test di scadenza tratta `age < 0` come **scaduto**, mai come *"tienilo per sempre"*.
+Richiede **ricompilazione in MetaEditor e riattacco dell'EA**.
+
+**Trial consumati: zero.** Spegnere un forward su famiglia NO-GO non e' una modifica di regole; la
+correzione dell'EA e' un **bug fix** che riporta l'esecuzione **dentro** la spec congelata invece di
+allontanarla ([`LIFECYCLE §3`](docs/STRATEGY_LIFECYCLE.md)).
+
+### 3. Anche il mio health-check leggeva una fonte parziale
+
+`weekly_healthcheck.py` usava solo `history_orders_get()`, che **non vede i pendenti vivi**: US500
+risultava *"in universo ma senza alcun ordine"* mentre ne aveva uno attivo. Ora conta anche
+`orders_get()`/`positions_get()`, calcola la breadth includendoli e **segnala i pendenti fermi da
+oltre 3 giorni** — che e' esattamente la firma di questo difetto. **Breadth corretta: 6/6.**
+
+**Link:** [`docs/health/2026-08-27.md`](docs/health/2026-08-27.md) ·
+[`docs/NXT_FADE_FORWARD_PREREGISTRATION.md`](docs/NXT_FADE_FORWARD_PREREGISTRATION.md) §10 ·
+[`docs/BACKLOG_RICERCA.md`](docs/BACKLOG_RICERCA.md) §A2/§A3/§F
+
+---
+
 ## 2026-08-24 — Bucket A verificato voce per voce. Il forward FADE **gira ma il campione è contaminato**; il test mentore era **già superato**; il forward ORB **non esiste**
 
 **Origine.** Dopo aver scoperto il 23/08 che il forward ORB era citato come "in corso" senza essere

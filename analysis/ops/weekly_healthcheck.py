@@ -13,7 +13,11 @@ La differenza fra questo script e `deployment_healthcheck.py`:
     errore di lettura);
   - **persiste** un report datato, cosi' che N, breadth e anomalie abbiano una serie
     storica e la domanda "e' nuovo o e' il residuo di un problema vecchio?" si risponda
-    confrontando due file invece di rileggere un log cumulato.
+    confrontando due file invece di rileggere un log cumulato;
+  - conta anche i **pendenti VIVI** (`orders_get`), non solo lo storico. La prima versione di
+    questo script usava solo `history_orders_get`, che **non vede gli ordini ancora attivi**:
+    US500 risultava "senza alcun ordine" mentre aveva un pendente piazzato lo stesso giorno.
+    Terza variante dello stesso errore: leggere UNA fonte parziale e chiamarla stato.
 
 Uso:
     python analysis/ops/weekly_healthcheck.py            # scrive docs/health/YYYY-MM-DD.md
@@ -64,6 +68,10 @@ def _mt5():
     return mt5
 
 
+# un pendente fermo piu' di questi giorni e' sospetto: il setup che lo ha generato e' scaduto
+STALE_DAYS = 3
+
+
 def collect(mt5, magic: int):
     orders = [o for o in (mt5.history_orders_get(START, END) or []) if o.magic == magic]
     deals = [d for d in (mt5.history_deals_get(START, END) or []) if d.magic == magic]
@@ -83,7 +91,10 @@ def collect(mt5, magic: int):
         if d.entry == mt5.DEAL_ENTRY_OUT:
             t = dt.datetime.fromtimestamp(d.time)
             c_tab[d.symbol][0 if t < cut else 1] += 1
-    return o_tab, c_tab, rej
+
+    live = [o for o in (mt5.orders_get() or []) if o.magic == magic]
+    pos = [p for p in (mt5.positions_get() or []) if p.magic == magic]
+    return o_tab, c_tab, rej, live, pos
 
 
 def render(mt5) -> str:
@@ -102,8 +113,8 @@ def render(mt5) -> str:
     L.append("")
 
     for magic, name in MAGIC.items():
-        o_tab, c_tab, rej = collect(mt5, magic)
-        if not o_tab and not c_tab:
+        o_tab, c_tab, rej, live, pos = collect(mt5, magic)
+        if not o_tab and not c_tab and not live and not pos:
             L.append(f"## `{name}` (magic {magic})\n\n_nessun ordine nella finestra._\n")
             continue
         uni = UNIVERSE_FADE if name == "nxt_fade" else set()
@@ -120,7 +131,9 @@ def render(mt5) -> str:
         if uni:
             n_in = sum(sum(c_tab.get(s, [0, 0])) for s in uni)
             out = {s: sum(v) for s, v in c_tab.items() if s not in uni and sum(v)}
-            breadth = sum(1 for s in uni if sum(o_tab.get(s, [0, 0])) > 0)
+            live_sym = {o.symbol for o in live}
+            breadth = sum(1 for s in uni
+                          if sum(o_tab.get(s, [0, 0])) > 0 or s in live_sym)
             stage = "Stadio 1" if n_in < STAGE1_N else "Stadio 2"
             target = STAGE1_N if n_in < STAGE1_N else STAGE2_N
             L.append(f"**{stage}: N valido = {n_in} / {target}** · breadth "
@@ -137,6 +150,18 @@ def render(mt5) -> str:
             L.append("\n> ⚠️ **Il P&L non e' riportato di proposito.** La regola di stop e' "
                      "**N e data**, mai il cumulato: guardarlo sarebbe optional stopping "
                      "(prereg §5).\n")
+
+        L.append(f"**Pendenti vivi**: {len(live)} · **posizioni aperte**: {len(pos)}")
+        now = dt.datetime.now()
+        for o in sorted(live, key=lambda x: x.time_setup):
+            t = dt.datetime.fromtimestamp(o.time_setup)
+            age = (now - t).days
+            flag = f" ⚠️ **fermo da {age}g**" if age >= STALE_DAYS else ""
+            L.append(f"- pendente `{o.symbol}` dal {t:%Y-%m-%d %H:%M}{flag}")
+        for p_ in sorted(pos, key=lambda x: x.time):
+            L.append(f"- posizione `{p_.symbol}` vol {p_.volume} dal "
+                     f"{dt.datetime.fromtimestamp(p_.time):%Y-%m-%d %H:%M}")
+        L.append("")
 
         post_rej = {k: v[1] for k, v in rej.items() if v[1]}
         pre_rej = sum(v[0] for v in rej.values())

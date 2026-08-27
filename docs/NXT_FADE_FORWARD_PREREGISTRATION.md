@@ -132,6 +132,7 @@ Obbligatorie, indipendentemente dall'esito:
 |---|---|---|
 | 2026-08-04 | Creazione. N=50 (Stadio 1) e N=200 (Stadio 2), backstop e impegni fissati | Test già in corso da ~2026-07-24 senza pre-registrazione |
 | 2026-08-12 | **Anomalia di deployment rilevata e corretta — vedi §9** | Il deployment non implementava l'universo pre-registrato |
+| 2026-08-27 | **Pendenti orfani dopo un riavvio: strumento congelato — vedi §10** | La finestra di fill di 48 barre non sopravviveva al restart dell'EA (US500 spento 27 giorni) |
 
 ## 9. Anomalia di deployment (2026-08-12) — bug fix, NON modifica di spec
 
@@ -193,3 +194,58 @@ fuori universo dal conteggio.
 > sarà un'estrazione omogenea dall'universo: la prima parte è sbilanciata su due strumenti, la
 > seconda sarà mista. L'E[R] resta misurato per trade, ma il report finale **deve** includere il
 > **breakdown per strumento** e dichiarare questa asimmetria.
+
+---
+
+## 10. Anomalia di deployment (2026-08-27) — un riavvio dell'EA **congela lo strumento**. Bug fix, NON modifica di spec
+
+**Come è emersa.** L'utente ha cancellato a mano un pendente US500 fermo dal **2026-07-31** per
+vedere se lo strumento si sbloccasse. Si è sbloccato: l'EA ha armato un nuovo ordine **tre minuti
+dopo**, alle 14:00 del 27/08. Non era una stranezza dell'ordine — era il sintomo di un difetto.
+
+**Il meccanismo, verificato nel sorgente.** La finestra di fill di **48 barre H1** (parametro
+CONGELATO, §2) è calcolata in [`mql5/nxt_fade.mq5`](../mql5/nxt_fade.mq5) da `g_pending_swingend`,
+variabile che **vive solo in RAM** e che `OnInit()` **non ripristinava**. Dopo ogni riavvio
+dell'EA — ricompilazione, restart del terminale, **spostamento sul VPS Windows** — tornava a `0`:
+
+1. `iBarShift(symbol, H1, 1970-01-01)` ritorna **−1**;
+2. `-1 > 48` è **falso** → il pending orfano **non scade mai**;
+3. subito dopo c'è `return;  // un solo setup attivo per volta` → **nessun nuovo setup viene più
+   armato su quel simbolo**.
+
+Un singolo ordine non riempito, dopo un riavvio, **spegne lo strumento in modo permanente e
+silenzioso**. Nessun log di errore: l'EA sta facendo esattamente ciò che il codice gli dice.
+
+**Impatto misurato.**
+
+| strumento | congelato da | a | durata |
+|---|---|---|---|
+| **US500** | 2026-07-31 20:00 | 2026-08-27 13:57 (sblocco manuale) | **27 giorni** |
+| **XAUUSD.cyr** | 2026-08-21 04:00 | tuttora al momento della scrittura | **6 giorni** |
+
+→ **US500 non ha prodotto zero trade per assenza di segnali: era spento.** La riga *"US500:
+agganciato, 1 pendente attivo, nessun fill"* del §9 descriveva questo difetto senza riconoscerlo.
+
+**Cosa NON è toccato.** Il difetto **sottrae** trade, non ne aggiunge di spuri. Verifica sui
+riempimenti realmente avvenuti (72 ordini riempiti in universo): attesa **mediana 0,0h**, solo
+**3 oltre le 24h** di calendario e tutte spiegate dal weekend — le 48 sono **barre**, non ore.
+Nessun fill è avvenuto su un segnale scaduto. **I valori di R raccolti restano validi; N valido
+resta 36/50.**
+
+**La correzione** (2026-08-27, `mql5/nxt_fade.mq5`):
+- `OnInit()` ricostruisce `g_pending_swingend` dall'ordine vivo via `ORDER_TIME_SETUP` — proxy
+  dello swing di fine con scarto **≤ 1-2 barre su 48**, e mai in difetto (il pending può vivere
+  pochissimo in più, mai in meno);
+- il test di scadenza tratta `age < 0` come **SCADUTO**, mai come *"tienilo per sempre"*.
+
+Richiede **ricompilazione in MetaEditor + riattacco dell'EA**. Fino ad allora **XAUUSD resta
+congelato**: il pendente del 21/08 va cancellato a mano, come è stato fatto per US500.
+
+**Classificazione: BUG FIX.** Riporta l'esecuzione **dentro** la specifica congelata invece di
+allontanarla — la spec dice 48 barre, il codice ne applicava infinite. Nessun parametro cambia,
+nessun filtro aggiunto → **nessun trial consumato** ([`STRATEGY_LIFECYCLE §3`](STRATEGY_LIFECYCLE.md)).
+
+> ⚠️ **Il caveat di composizione del §9 va letto più duro.** Questo difetto si attiva **quando
+> interveniamo**: ogni manutenzione (riaggancio `.r` del 12-13/08, trasloco sul VPS) creava un
+> orfano. La copertura del campione non è solo disomogenea — è **correlata al calendario delle
+> nostre manutenzioni**. Il report finale deve dichiararlo insieme al breakdown per strumento.
