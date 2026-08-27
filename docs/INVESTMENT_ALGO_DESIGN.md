@@ -1,5 +1,13 @@
 # Investment Algo — Design & Research (evoluzione dello Stock Selector) — 2026-06-02
 
+> ## ⚠️ SUPERATO NELLE CONCLUSIONI — verificato 2026-08-27
+>
+> Nasce come evoluzione dello **Stock Selector**, che e' stato poi **ARCHIVIATO** (nessun edge
+> dimostrato: dati, backtest e MVP, 2026-06). Il pilastro investing e' oggi un **PAC passivo** su
+> ETF All-World: vedi [`INVESTING_PILLAR_PLAN.md`](INVESTING_PILLAR_PLAN.md).
+>
+> Conservato per la **research metodologica** (TAA, vendor dati point-in-time), non come piano.
+
 > Sintesi di: inventario knowledge base + deep research (TAA/edge, vendor dati PIT, mercati
 > mondiali) + prototipo Layer 1 (motore esposizione). Obiettivo dell'utente: **algoritmo di
 > investimento che legge le condizioni di mercato → determina l'esposizione (rischio vs

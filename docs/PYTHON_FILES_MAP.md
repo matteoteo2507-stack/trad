@@ -1,5 +1,12 @@
 # Mappa file Python del workspace
 
+> ## ⚠️ INCOMPLETO — verificato 2026-08-27
+>
+> Dichiara di coprire **ogni** file `.py`, ma e' fermo al 2026-06-02. Mancano almeno:
+> `analysis/intake/`, `analysis/trend/`, `analysis/nxt/{excursion,stops,weekend}.py`,
+> `analysis/ops/weekly_healthcheck.py`, `analysis/mentor_signals/oos_validation.py`.
+> Usalo per orientarti sul vecchio, **non** come inventario.
+
 > Spiegazione one-liner di OGNI file `.py`. Quando torni qui dopo giorni, parti da questo file per orientarti.
 
 ## 🎯 File "ENTRY POINT" (lanciati da CLI)

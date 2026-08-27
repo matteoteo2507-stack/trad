@@ -1,5 +1,17 @@
 # Guida operativa — Deploy e workflow weekly
 
+> ## ⚠️ PARZIALMENTE SUPERATO — verificato 2026-08-27
+>
+> Scritto per il deploy post-pivot del 2026-05-05. **Tre dei componenti descritti non esistono piu':**
+> - **Confluence su VPS Linux** — consegna notifiche **FERMATA** il 2026-06-04 (superata dal canale
+>   del socio); il VPS Hetzner e' in **decommissione**.
+> - **Workflow weekend con Stock Selector** — lo Stock Selector e' **ARCHIVIATO** (nessun edge,
+>   2026-06); il pilastro investing e' oggi un **PAC passivo** (`INVESTING_PILLAR_PLAN.md`).
+> - **OctoBot** — **DORMIENTE** dal 2026-06-14.
+>
+> **Cosa e' ancora valido**: la parte su EA MQL5 e MetaQuotes VPS. Per lo stato reale del
+> deployment usa `docs/health/` (report settimanale), non questo file.
+
 > Documento step-by-step per portare il workspace dal PC di casa al deploy ibrido cloud-native (post-pivot 2026-05-05). Include: deploy Componente 1 su VPS Linux, deploy Componente 2 (EA MQL5) su demo locale e poi MetaQuotes VPS, workflow weekend con Stock Selector.
 
 ## Indice

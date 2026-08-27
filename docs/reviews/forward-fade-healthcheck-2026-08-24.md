@@ -1,136 +1,99 @@
-# Forward FADE — health-check del 2026-08-24: il test gira, ma il campione è contaminato
+# Forward FADE — health-check: il fix del 12/08 ha funzionato
 
-> **Non è un verdetto sulla strategia.** È una diagnosi di **esecuzione**: nessuna di queste voci
-> tocca la regola pre-registrata, quindi per
-> [`STRATEGY_LIFECYCLE §3`](../STRATEGY_LIFECYCLE.md) **non consuma trial**. Ma tutte e quattro
-> incidono su *quali* trade finiscono nel campione — cioè sulla cosa che il forward doveva
-> proteggere.
+> ## ⚠️ CORREZIONE — questo documento è stato riscritto
 >
-> Origine: verifica dello stato reale dei binari attivi, dopo che il 23/08 si era scoperto che il
-> **forward ORB non era mai stato implementato** pur essendo citato come "in corso".
-> Strumento: [`analysis/ops/deployment_healthcheck.py`](../../analysis/ops/deployment_healthcheck.py) (40 giorni).
+> **La prima versione (commit `93d0f60`) era sbagliata nella sua tesi principale.** Sosteneva che il
+> forward fosse *"contaminato"* da 197 ordini non inviati "fra il 2 e il 21 agosto", presentandoli
+> come un problema **in corso** e come *"recidiva"* di un bug precedente.
+>
+> **Non è così.** Quei 197 errori sono **gli stessi** già diagnosticati e risolti nella
+> [pre-registrazione §9 del 2026-08-12](../NXT_FADE_FORWARD_PREREGISTRATION.md) — gli identici
+> conteggi per simbolo (USDJPY 67, EURUSD 64, GBPUSD 40/41). Restano nei file di log perché i log
+> sono storici. **Il fix ha funzionato.**
+>
+> **Errore mio, di metodo**: ho letto un conteggio cumulato senza separarlo per data, e ho
+> pubblicato un allarme al posto di una verifica. È lo stesso errore del caso ORB di due giorni
+> prima — asserire uno stato senza controllarlo — commesso mentre lo stavo correggendo.
+>
+> Sotto, i dati verificati con finestra piena e separati pre/post fix.
 
-## Stato del conto
+---
 
-`7396683 @ FPMarkets-Demo` · equity **105.588 USD** · EA `nxt_fade` (magic 26071) avviato ~2026-07-24.
+## Metodo
 
-**Conteggio Stadio 1: N valido = 29 / 50** (2 esclusi perché fuori universo).
-Breadth: **4 strumenti su 6** hanno trade chiusi.
+Conteggio **autorevole per magic** (26071), non per commento — il commento `nxt_fade` sopravvive
+solo sulla deal di apertura. Finestra **1 luglio 2026 → nessun taglio superiore**: la prima query
+aveva usato `now + 1 giorno` come limite e **tagliava fuori i trade più recenti**, il che ha
+prodotto una seconda lettura sbagliata ("EURUSD.r non opera").
 
-| strumento | ordini storici | trade chiusi |
+⚠️ **Nota sull'orologio**: l'ora del server MT5 e quella locale della macchina indicano
+**2026-08-27**. Il nome di questo file resta `2026-08-24` per non rompere i riferimenti già
+committati.
+
+---
+
+## Lo stato reale, separato pre/post fix del 12-13 agosto
+
+| simbolo | in universo | ordini pre / post | chiusi pre / post | lettura |
+|---|---|---|---|---|
+| **EURUSD.r** | ✓ | 0 / **6** | 0 / **3** | ✅ riparato |
+| **GBPUSD.r** | ✓ | 0 / **14** | 0 / **7** | ✅ riparato |
+| **USDJPY.r** | ✓ | 0 / **11** | 0 / **5** | ✅ riparato |
+| **XAUUSD.cyr** | ✓ | 11 / 14 | 5 / 7 | ✅ ha sempre operato |
+| **US100** | ✓ | 8 / 11 | 3 / 6 | ✅ ha sempre operato |
+| **US500** | ✓ | 0 / 0 | 0 / 0 | ⚠️ pendente mai riempito |
+| BTCUSD | ✗ | 7 / **0** | 2 / **0** | ✅ staccato correttamente |
+| EURGBP.r | ✗ | 0 / **1** | 0 / **0** | ⚠️ 1 ordine residuo, nessun trade |
+
+**Conteggio Stadio 1: N valido = 36 / 50** (trade chiusi in universo).
+**Breadth: 5 strumenti su 6.**
+
+---
+
+## Le quattro voci di ieri, verificate una per una
+
+| voce della prima versione | verità |
+|---|---|
+| *"197 ordini non inviati, contaminazione in corso"* | ❌ **falso**. **196 su 197 sono precedenti al 13/08**, cioè pre-fix. Dopo il fix: **un solo errore**, il 21/08 su `XAUUSD.cyr` — simbolo **in universo**, quindi non un problema di mappatura simboli |
+| *"BTCUSD ed EURGBP operano fuori universo"* | ❌ **quasi del tutto falso**. BTCUSD: **0 ordini post-fix**, correttamente staccato. EURGBP.r: **1 ordine post-fix, 0 trade chiusi** → residuo reale ma senza effetto sul campione |
+| *"dropout per margine non casuale"* | ❌ **falso come problema attuale**. I 3 rifiuti `[no money]` sono **tutti pre-fix e tutti su BTCUSD** — cioè causati dallo strumento fuori universo, ora staccato. **Post-fix: zero rifiuti per margine** |
+| *"rischio 0,63% contro 0,25%"* | ⚠️ **osservazione reale ma superata**. Era una posizione aperta, ora chiusa; la riduzione del rischio a 0,25% era già l'**azione (c)** del piano del 12/08 |
+
+**Il ragionamento che ne avevo tratto — "il campione è spostato verso gli strumenti più volatili,
+cioè nella direzione che gonfia l'E[R]" — cade con le sue premesse.** Post-fix i tre cambi hanno
+**15 trade chiusi su 36** (EURUSD 3, GBPUSD 7, USDJPY 5): sono rappresentati.
+
+---
+
+## Cosa resta davvero aperto
+
+| # | voce | gravità |
 |---|---|---|
-| XAUUSD.cyr | 25 | 12 |
-| US100 | 36 | 7 |
-| GBPUSD.r | 13 | 6 |
-| USDJPY.r | 8 | 4 |
-| EURUSD.r | **1** | 0 |
-| US500 | **0** (+1 pendente) | 0 |
+| 1 | **US500 non ha mai riempito**: 0 ordini, 1 pendente attivo. Da capire se è normale (soglia di gamma raramente soddisfatta) o se è un secondo caso di simbolo/permessi | media — è 1 strumento su 6 della breadth |
+| 2 | **EURGBP.r: 1 ordine post-fix**. L'azione (b) del 12/08 prevedeva di staccarlo. Nessun trade chiuso, quindi nessun effetto sul campione, ma va staccato | bassa |
+| 3 | **1 errore `arm fallito` il 21/08 su XAUUSD.cyr**. Isolato, simbolo in universo. Da sorvegliare, non da diagnosticare adesso | bassa |
+| 4 | **Caveat di composizione** (già in prereg §9): le prime tre settimane hanno operato su 2 strumenti su 6. Il report finale **deve** includere il breakdown per strumento | resta valido |
 
 ---
 
-## I quattro difetti, in ordine di gravità per la validità del test
+## Decisioni dell'utente registrate (2026-08-27)
 
-### 1. ⚠️ Ordini non inviati — 197 fallimenti fra il 2 e il 21 agosto
+1. **I 36 trade si tengono.** Non si azzera lo Stadio 1. Vanno **pesati per quello che mostrano** —
+   cioè letti insieme al caveat di composizione, non come un campione omogeneo.
+2. **I trade fuori universo non contano per il raggiungimento dei 50.** Già così: BTCUSD (2 chiusi)
+   è escluso, e il conteggio autorevole è **36 in universo**.
 
-Il log Experts del VPS contiene 197 righe `[nxt_fade] <SIMBOLO> arm fallito, err=4756`
-(`ERR_TRADE_SEND_FAILED`), distribuite su **12 giornate operative**:
-
-| simbolo (come appare nel log) | fallimenti |
-|---|---|
-| USDJPY | 67 |
-| EURUSD | 64 |
-| GBPUSD | 41 |
-| BTCUSD | 20 |
-| XAUUSD.cyr | 5 |
-
-**Il dettaglio che spiega tutto**: i primi tre compaiono nel log **senza il suffisso del broker**
-(`nxt_fade (EURUSD,H1)`), mentre il conto negozia `EURUSD.r`, `GBPUSD.r`, `USDJPY.r`. I fallimenti
-sono a cadenza **oraria esatta** (23:00, 00:00, 01:00, 02:00…), cioè **uno per barra H1**.
-
-Confronto che rende la cosa concreta: **EURUSD ha 1 solo ordine storico e 64 tentativi falliti**.
-USDJPY: 8 ordini contro 67 fallimenti.
-
-⚠️ **È la recidiva del bug che ha generato questo stesso script**: nell'agosto precedente l'EA era
-rimasto **tre settimane** agganciato a simboli non negoziabili, con grafici attivi e log che
-scorreva, e **zero trade** — il segnale stava in ciò che mancava.
-
-**Perché è il difetto peggiore**: il campione del forward non è un sottoinsieme casuale dei segnali
-della strategia. Manca in modo **sistematico** la parte di segnali generata sulle istanze a nome
-semplice, e quelle sono concentrate sui **major FX** — cioè, secondo il lead del playground, proprio
-il gruppo con l'aspettativa peggiore. Il campione superstite è quindi **spostato verso gli strumenti
-più volatili** (XAU, US100), che è la direzione che gonfia l'E[R].
-
-⚠️ `err=4756` è generico. Il pattern (nome senza suffisso, cadenza oraria, esattamente i major)
-indica un disallineamento di simbolo, ma **la causa esatta va letta nel log del terminale**, riga
-`failed … [motivo]`, prima di scrivere la correzione.
-
-### 2. ⚠️ Strumenti fuori dall'universo pre-registrato
-
-| strumento | ordini |
-|---|---|
-| **BTCUSD** | 7 (2 trade chiusi) |
-| **EURGBP.r** | 2 |
-
-Nessuno dei due è nell'universo di [`NXT_FADE_FORWARD_PREREGISTRATION.md`](../NXT_FADE_FORWARD_PREREGISTRATION.md) §2.
-
-⚠️ Questo **chiude la voce C2 del backlog** — che era formulata come *"decidere se reinserire BTCUSD
-nel FADE live"*. **Non è una decisione aperta: sta già operando**, fuori universo, da settimane.
-Lo script li esclude correttamente dal conteggio (N valido 29 anziché 31), ma finché l'EA resta
-agganciato continuano a generare ordini e a consumare margine (vedi §3).
-
-### 3. ⚠️ Dropout per margine — e non è casuale
-
-**8 ordini non eseguiti su 92 (8,7%)**, di cui `BTCUSD ×3` e `US100 ×2` respinti con
-`deleted [no money]`.
-
-Il meccanismo, già annotato nello script: il rifiuto per margine **non colpisce a caso**. Colpisce i
-setup con lo **stop più stretto**, perché a rischio costante uno stop stretto significa **volume
-maggiore**, quindi margine maggiore. Sono anche i setup con il **miglior rapporto rischio/rendimento
-potenziale**. Il campione perde in modo selettivo proprio quelli.
-
-Aggravante: parte del margine è occupata da **strumenti fuori universo** (§2).
-
-### 4. ⚠️ Rischio per trade fuori specifica
-
-| posizione aperta | rischio | % equity | atteso |
-|---|---|---|---|
-| US100 | 264,98 | **0,25%** | ~0,25% ✓ |
-| GBPUSD.r | 668,64 | **0,63%** | ~0,25% ✗ |
-
-**2,5× il rischio previsto** su GBPUSD. Se il rischio per trade non è costante, i multipli di R
-**non sono confrontabili fra loro** e l'E[R] aggregato diventa una media pesata con pesi non voluti.
+Nessuna delle due tocca la regola pre-registrata → per
+[`LIFECYCLE §3`](../STRATEGY_LIFECYCLE.md) **nessun trial consumato**.
 
 ---
 
-## Cosa NON è cambiato
+## La lezione che resta valida
 
-- **La regola pre-registrata è intatta.** Nessuno dei quattro punti è una modifica di strategia.
-- **La regola di stop resta N e data** — mai il P&L cumulato
-  ([`prereg §5`](../NXT_FADE_FORWARD_PREREGISTRATION.md)). Questo report **non guarda il P&L** ed è
-  deliberato: guardarlo adesso sarebbe optional stopping.
-- **Il confronto resta contro +0,31R**, non +0,354R (fill onesto, correzione del 14/08).
+Il health-check **esisteva** e ha fatto il suo lavoro. Ciò che è mancato è che **nessuno lo
+eseguiva**, e che quando l'ho eseguito ho letto un aggregato senza separarlo per data.
 
-## Cosa va deciso
-
-Le riparazioni sono correzioni di bug e **non consumano trial**. La domanda vera è **cosa fare dei
-29 trade già raccolti**, e sono due opzioni con costi diversi:
-
-| opzione | conseguenza |
-|---|---|
-| **ripara e prosegui**, tenendo i 29 | il campione resta contaminato per la sua prima metà; il verdetto Stadio 1 sarà su dati misti. **Va dichiarato nel report finale** |
-| **ripara e azzera il contatore** | Stadio 1 riparte da 0 su un campione pulito. Costa ~30 trade e ~un mese, ma il verdetto diventa interpretabile |
-
-⚠️ **La seconda è quella coerente col protocollo.** Il forward è l'**unica fonte di dati puliti
-rinnovabile** che abbiamo ([`LIFECYCLE §2`](../STRATEGY_LIFECYCLE.md)): contaminarla è l'errore più
-caro possibile, e tenersi 29 trade con selezione nota è esattamente contaminarla. Ma è una scelta
-dell'utente, non mia.
-
-## Debito che questo episodio conferma
-
-Il health-check **esisteva già** e ha trovato tutto in dieci secondi — ma **nessuno lo eseguiva**.
-Come per il forward ORB (mai implementato pur essendo citato come attivo), il problema non è la
-mancanza dello strumento: è che **lo stato reale dei binari non è osservabile senza andarlo a
-cercare a mano**. È il debito **E2** del backlog, e questo è il secondo caso in due giorni.
-
-Minimo indispensabile: esecuzione **settimanale** del health-check con output datato e versionato,
-così che N, breadth e anomalie abbiano una serie storica invece di essere una fotografia estemporanea.
+Da qui in avanti l'esecuzione è **settimanale e persistita** — `analysis/ops/weekly_healthcheck.py`
+scrive un report datato in `docs/health/`, così N, breadth e anomalie hanno una **serie storica** e
+la domanda *"è un problema nuovo o è il residuo di uno vecchio?"* si risponde confrontando due file
+invece che rileggendo un log cumulato.

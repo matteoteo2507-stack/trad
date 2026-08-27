@@ -1,5 +1,14 @@
 # Architettura del workspace — v2 (post-pivot 2026-05-05)
 
+> ## ⚠️ DA RILEGGERE CON CAUTELA — verificato 2026-08-27
+>
+> Resta il riferimento architetturale, ma descrive lo stato del **maggio 2026**. Da allora:
+> Confluence **fermato** (2026-06-04), Hetzner in **decommissione**, Stock Selector **archiviato**,
+> OctoBot **dormiente**. I binari realmente attivi sono altri: forward FADE e ORB (EA su MT5 demo),
+> copier mentore, PAC.
+>
+> **Fonte di verita' sullo stato operativo**: `docs/health/` — non questo documento.
+
 > Questo documento sostituisce `STAGE2_TESTING_PLAN.md` come riferimento operativo.
 > Il file vecchio resta come archivio storico.
 
