@@ -11,6 +11,156 @@
 
 ---
 
+## 2026-08-27 (2) — **Il fill fantasma**: il +0,31R del FADE e il −0,44R della continuazione sono lo **stesso artefatto con due segni**. Forward **azzerato**, i 36 trade contano **0**
+
+> **La voce più importante del mese.** Non boccia una strategia: **invalida il modo in cui abbiamo
+> misurato un'intera famiglia per due mesi**, in entrambe le direzioni.
+
+### 1. Da dove è partito: un'osservazione dell'utente su un ordine live
+
+L'utente ha notato un ordine GBPUSD aperto con **RR rovesciato, 3:1 invece di 1:3**. Verificando
+tutti gli ingressi del forward in MT5:
+
+| tipo di ordine | n | rischio reale / inteso | RR reale |
+|---|---|---|---|
+| `BUY_STOP` / `SELL_STOP` | 26 | **1,00×** | **1:3** — corretto |
+| `BUY` / `SELL` a mercato | 17 | **1,3× – 4,0×** | da 1:2,1 fino a **1:0,00** |
+
+**17 su 43 ingressi in universo (40%).** Esposizione aperta misurata **2,00% dell'equity** contro
+l'1,00% da specifica. Causa in [`mql5/nxt_fade.mq5`](mql5/nxt_fade.mq5) (~430-450): se al momento
+dell'arm il livello è già stato superato, l'EA rinuncia al pending ed entra **a mercato**, ma
+mantiene SL/TP calcolati sull'entry **teorica** e il volume da `ComputeVolume(|entry - sl|)`.
+
+Nei casi peggiori il TP risulta **già praticamente toccato** (1:0,00): una vincita quasi certa con
+una perdita da 4R attaccata dietro. **Skew negativo che fabbrica un win-rate alto.** L'aritmetica
+che l'utente ha messo in chiaro: a 1:3 il break-even è **25%**, a 3:1 rovesciato serve **75%**.
+
+### 2. Perché succede: 6 ore di cecità obbligatoria
+
+Lo swing di fine è un **frattale a K=5 barre per lato**: è noto solo alla **chiusura** della barra
+`b+K`, quindi la prima barra azionabile è `b+K+1`. In quelle ~6 ore il prezzo fa **esattamente il
+ritracciamento al 50% che vogliamo tradare**. Misurato: **il 46,1% dei setup ha il livello già
+oltrepassato** quando abbiamo il diritto di guardarlo.
+
+### 3. Il difetto NON è dell'EA: è del backtest
+
+[`analysis/nxt/closure.py`](analysis/nxt/closure.py) concede il fill al prezzo `entry` ogni volta
+che una barra successiva lo **tocca**. Se il prezzo è già oltre, il fill viene concesso
+**comunque, al livello** — un prezzo che il mercato aveva lasciato indietro prima che potessimo
+agire.
+
+> **Non è look-ahead di INFORMAZIONE** (il pivot è confermato correttamente): **è look-ahead di
+> PREZZO.** Si transa a un livello disponibile solo *prima* di poter agire.
+
+Il ramo a mercato dell'EA è il **tentativo goffo di gestire un caso che il backtest cancellava**.
+Il backtest si regala il fill migliore esattamente dove il live prende il peggiore.
+
+### 4. La misura — [`analysis/nxt/entry_fill_audit.py`](analysis/nxt/entry_fill_audit.py)
+
+E[R] in unità di rischio **inteso**, **intervallo su 4 convenzioni** (pess/opt × la barra di fill
+può stoppare o no). Mai un punto: la terza convenzione vale più delle altre due insieme.
+
+| variante | n | E[R] intervallo | BCa95 agli estremi |
+|---|---|---|---|
+| **BASE** — com'è oggi | 10.218 | **[+0,409 ; +0,521]** | [+0,373;+0,444] · [+0,484;+0,558] |
+| **SKIP** — solo i riempibili | 5.506 | **[−0,250 ; −0,027]** | [−0,287;−0,209] · [−0,073;+0,017] |
+| **LIMIT** — aspetta il ritorno al livello | 9.189 | **[−0,191 ; −0,039]** | [−0,222;−0,160] · [−0,075;−0,002] |
+| **RECENTER** — a mercato, geometria ricentrata | 10.218 | [−0,241 ; −0,075] | |
+| **LIVE** — quello che fa l'EA | 10.218 | **[−0,319 ; −0,204]** | |
+
+Finestra comune 2020→ (i sei feed non partono insieme: FX dal 2012, indici e oro dal 2020):
+**identici**. Non è un effetto di periodo.
+
+**LIMIT è il maggiorante della famiglia ottenibile** — costruito apposta per dare alla strategia
+la sua occasione: se il livello è già passato, metti un limit e aspetti che il prezzo torni, fill
+esatto a `entry`, geometria 1:3 intatta, finestra più generosa della spec. **Negativo in tutte e
+quattro le convenzioni.**
+
+**La corroborazione decisiva**: BASE è positivo in **15 anni su 15** e **6 asset su 6**; SKIP è
+positivo in **0 su 15** e **0 su 6**. Un edge presente in ogni singolo anno e ogni singolo
+strumento, che sparisce togliendo i fill non ottenibili, è **meccanico** — nessuna anomalia di
+mercato rende lo stesso ammontare nel 2013 e nel 2020, su FX e su indici.
+
+### 5. Il riesame del 2026-08-14 — [`analysis/nxt/excursion_recheck.py`](analysis/nxt/excursion_recheck.py)
+
+`excursion.py` usa **lo stesso identico fill** nel braccio reale, ma il suo controllo random entra a
+`C[k]`, la chiusura di una barra: **un prezzo sempre disponibile**. Il fantasma sta da un solo lato
+del confronto. Seconda asimmetria indipendente: il reale cammina da `j = f` (la barra di fill può
+stopparlo col range **pre-ingresso**), il random da `k+1`.
+
+| | R terminale | gap vs random a convenzione omogenea |
+|---|---|---|
+| **BASE** (riproduce il −0,405 registrato) | **−0,410** [−0,484; −0,332] | −0,316 |
+| **SKIP** (solo fill ottenibili) | **−0,056** [−0,177; +0,072] | **+0,038** |
+| **SKIP+SYM** (entrambe le asimmetrie tolte) | **−0,006** [−0,137; +0,130] | **−0,027** |
+
+R terminale dei fill **non ottenibili**: **−0,824**. Dei fill **ottenibili**: **−0,056**.
+
+> **La lettura (2) del 14/08 è falsificata.** *"L'entrata distrugge ~0,4R rispetto alla moneta, è
+> alpha negativo misurato"*: no. Con fill ottenibili l'entrata è **indistinguibile dal random**.
+
+> **La lettura (3) è falsificata, ed è la più grave.** Il 14/08 presentava come *"due misure
+> indipendenti"* il −0,4R della continuazione e il +0,35R del fade. **Non sono indipendenti: sono lo
+> stesso artefatto visto dai due lati.** Il fade vende al livello dove la continuazione compra, quindi
+> il fill non ottenibile che penalizza l'una avvantaggia l'altra **per costruzione**. Invertire la
+> posizione inverte il segno del fantasma — non scopre un edge.
+
+### 6. La sintesi
+
+> Continuazione **−0,44R** (NO-GO 2026-07-17) e fade **+0,31R** (LEAD) sono **lo stesso fantasma con
+> due segni opposti**. Sotto, con fill ottenibili, ci sono **zero e zero**.
+
+Ne consegue che anche il NO-GO del 17/07 era **troppo pessimista**, per lo stesso motivo per cui il
+LEAD era troppo ottimista. Non è che avevamo un edge e l'abbiamo perso: **non abbiamo mai misurato
+l'entrata**, in nessuna delle due direzioni.
+
+### 7. Decisioni dell'utente (2026-08-27)
+
+1. **Forward AZZERATO.** Non "fermato per via del backtest": l'EA **non stava eseguendo la strategia
+   pre-registrata sul 40% dei trade** — il ramo a mercato viola simultaneamente i tre parametri
+   congelati del §2 (SL 1R, TP 3R, R=28,6%). È il caso previsto dal
+   [§4.3 della pre-registrazione](docs/NXT_FADE_FORWARD_PREREGISTRATION.md): *"qualunque modifica
+   azzera il test e ne apre uno nuovo"*. **Vincolo speculare**: riparare l'EA e proseguire lo stesso
+   contatore di Stadio 1 è **vietato dalla stessa clausola**.
+2. **I 36 trade contano 0.** Non entrano in nessun verdetto. Lo Stadio 1 non esiste più.
+3. **Trial annullato.**
+4. **La famiglia si chiama FADE**, non NXT: il forward live era a tutti gli effetti solo fade.
+   ⚠️ **Il rinominare non azzera il contatore**: il fade è nato **invertendo** la continuazione sugli
+   stessi dati, stesso albero di ricerca. Restano **2 trial su 3** e l'**holdout già aperto**.
+
+### 8. Contabilità e cosa resta aperto
+
+**Trial consumati: 0.** Entrambi gli audit sono verifiche di integrità dell'esecuzione
+([`LIFECYCLE §3`](docs/STRATEGY_LIFECYCLE.md), riga *"modellazione più realistica di
+costi/slippage/esecuzione → No"*), stessa classificazione che il 14/08 si era già dato.
+⚠️ **Clausola sospensiva**: nel momento in cui una variante venisse **scelta** per proseguire
+("mettiamo il LIMIT nell'EA"), quello sarebbe un cambio di regola dopo aver visto l'esito →
+**trial #3, l'ultimo del budget**.
+
+**Non rimisurato, e va detto**: (a) il confronto **oracolo/MFE** del 14/08 (+1,709 vs +3,149) usa lo
+stesso braccio reale contaminato — l'ho falsificato solo sull'R terminale; (b) **né +0,354 né
++0,308 sono verificati sotto una convenzione unica** — quattro motori (`backtest.py`, `closure.py`,
+`weekend.py`, `entry_fill_audit.py`) implementano quattro convenzioni diverse sullo stop; (c) l'EA
+gira ancora e continua a produrre trade che non contano.
+
+**Debito di protocollo aggiornato** (vedi [`BACKLOG_RICERCA §E`](docs/BACKLOG_RICERCA.md)): serve
+**una** primitiva `resolve_trade()` in `core/`, con la convenzione sulla barra di fill e sul gap
+oltre lo stop come **parametri espliciti**. La quadrupla reimplementazione è precisamente il
+meccanismo che ha generato questa ambiguità.
+
+**Metodo che ha funzionato, e va ripetuto**: la misura è stata sottoposta al
+[`quant-gatekeeper`](.claude/agents/quant-gatekeeper.md) **prima** di essere registrata. Ha emesso
+**BLOCCA** con 4 bloccanti — fill del gap oltre lo stop non modellato, asimmetria intrabar sulla
+barra di fill, look-ahead residuo di una barra, copertura confondata col periodo. Tutti e quattro
+fondati, tutti riparati. La **direzione** ha retto; la **magnitudo** no: la prima stesura diceva
+−0,246R, il valore onesto è un intervallo che arriva a −0,027.
+
+**Link:** [`analysis/nxt/entry_fill_audit.py`](analysis/nxt/entry_fill_audit.py) ·
+[`analysis/nxt/excursion_recheck.py`](analysis/nxt/excursion_recheck.py) ·
+[`docs/NXT_FADE_FORWARD_PREREGISTRATION.md`](docs/NXT_FADE_FORWARD_PREREGISTRATION.md) §11
+
+---
+
 ## 2026-08-27 — **ORB spento** (A3 chiusa in F1) · e il difetto che teneva **US500 congelato da 27 giorni**
 
 ### 1. ORB: spento dall'utente, A3 chiusa

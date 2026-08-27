@@ -249,3 +249,68 @@ nessun filtro aggiunto → **nessun trial consumato** ([`STRATEGY_LIFECYCLE §3`
 > interveniamo**: ogni manutenzione (riaggancio `.r` del 12-13/08, trasloco sul VPS) creava un
 > orfano. La copertura del campione non è solo disomogenea — è **correlata al calendario delle
 > nostre manutenzioni**. Il report finale deve dichiararlo insieme al breakdown per strumento.
+
+---
+
+## 11. TEST AZZERATO (2026-08-27) — l'EA non eseguiva la strategia congelata sul 40% dei trade
+
+> ## 🛑 QUESTO FORWARD È CHIUSO. I 36 TRADE RACCOLTI CONTANO **ZERO**.
+>
+> Non è una sospensione né una riparazione in corsa. Lo Stadio 1 **non esiste più**.
+
+### Il fatto
+
+Su **17 ingressi su 43 in universo (40%)** l'EA è entrato **a mercato** invece che con un ordine
+pendente, mantenendo SL/TP calcolati sull'entry **teorica** e il volume dimensionato sull'R
+**inteso**. Risultato misurato sui trade reali:
+
+| tipo di ordine | n | rischio reale / inteso | RR reale |
+|---|---|---|---|
+| `BUY_STOP` / `SELL_STOP` | 26 | 1,00× | 1:3 — conforme |
+| `BUY` / `SELL` a mercato | 17 | **1,3× – 4,0×** | da 1:2,1 a **1:0,00** |
+
+Esposizione aperta rilevata: **2,00% dell'equity** contro l'1,00% previsto.
+
+### Perché azzera invece di riparare
+
+Il §2 congela tre parametri: **SL 1R**, **TP 3R**, **R = 28,6% dell'ampiezza**. Il ramo a mercato di
+[`mql5/nxt_fade.mq5`](../mql5/nxt_fade.mq5) li viola **tutti e tre contemporaneamente**. Non è un
+difetto di contorno: su quel 40% dei trade **la strategia eseguita non è quella pre-registrata**.
+
+Si applica il **§4.3** — *"qualunque modifica azzera il test e ne apre uno nuovo, con nuovo N e
+nuova pre-registrazione"*. Il vincolo è **speculare e vale contro di noi**: riparare l'EA e
+riprendere lo stesso contatore di Stadio 1 sarebbe **vietato dalla stessa clausola** che qui usiamo
+per annullare.
+
+### E comunque il numero di partenza non c'era
+
+Indipendentemente dall'esecuzione, l'audit [`analysis/nxt/entry_fill_audit.py`](../analysis/nxt/entry_fill_audit.py)
+ha mostrato che il **+0,31R non è mai stato misurato**: `closure.py` concedeva il fill al prezzo
+`entry` anche sul **46,1%** dei setup in cui il mercato lo aveva già oltrepassato — un prezzo non
+ottenibile. Con qualunque esecuzione realmente ottenibile l'E[R] sta fra **−0,32 e −0,03**, mai
+vicino a +0,31. Vedi [`DECISIONS.md`](../DECISIONS.md), voce **2026-08-27 (2)**.
+
+Un forward serve a validare fuori campione un numero misurato dentro campione. **Qui il numero
+dentro campione non esisteva**, quindi non c'era nulla da validare.
+
+### Conseguenze registrate
+
+| | |
+|---|---|
+| N valido | **0** — i 36 trade non entrano in alcun verdetto |
+| Stadio 1 / Stadio 2 | **decaduti**, insieme ai backstop 2026-10-31 e 2027-03-31 |
+| trial consumati | **0** (integrità dell'esecuzione, `STRATEGY_LIFECYCLE §3`) |
+| budget famiglia | invariato: **2 di 3**, holdout **già aperto** |
+| nome | la famiglia è **FADE**; il rinominare **non** azzera il contatore (il fade è l'inversione della continuazione NXT sugli stessi dati) |
+
+### Cosa serve prima che esista un forward nuovo
+
+1. Una **primitiva unica** `resolve_trade()` in `core/`, con la convenzione sulla barra di fill e sul
+   gap oltre lo stop come parametri espliciti — oggi la stessa logica è reimplementata **quattro
+   volte con quattro convenzioni diverse**, ed è ciò che ha prodotto l'ambiguità +0,354 / +0,308 / +0,347.
+2. Un backtest che modelli **solo fill ottenibili**, e il cui E[R] risultante sia positivo. Oggi non
+   lo è per nessuna variante.
+3. Un EA che **rifiuti** il setup quando non può ottenere l'entrata pre-registrata, invece di
+   ripiegare su un ordine a mercato.
+4. Una **pre-registrazione nuova**, con N nuovo. ⚠️ Scegliere quale variante portare avanti **dopo**
+   averne visto l'esito costa **trial #3, l'ultimo del budget della famiglia**.
