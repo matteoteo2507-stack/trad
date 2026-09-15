@@ -11,6 +11,60 @@
 
 ---
 
+## 2026-09-15 — Ripresa dopo 19 giorni: il fade resta acceso **per scelta**, trade2sync **in prova**, secondo distillamento Quant Guild a **cattura ampia**
+
+**Stato trovato — verificato in MT5, non nel repo.**
+- L'EA fade ha continuato a girare: da 36 a **80 trade chiusi in universo**, tutti a valore **zero**
+  per la decisione del 27/08. Dopo il 27/08 **19 ingressi su 39 (49%)** sono entrati a mercato
+  (rischio fino a 3,84×, RR fino a 1:0,04): la patch del 27/08 aveva sistemato i pendenti orfani,
+  **non** il ramo a mercato.
+- `analysis/ops/weekly_healthcheck.py` riportava *"Stadio 2: N valido = 80/200"* per un test
+  **azzerato**. Corretto, insieme a due difetti: il blocco `silent` che la patch del 27/08 non aveva
+  mai toccato (lo `str.replace` senza `assert` era fallito in silenzio) e `--stdout` sulla console
+  cp1252. Report in [`docs/health/2026-09-15.md`](docs/health/2026-09-15.md).
+- Il copier del mentore (magic 27050) **non ha mai operato** sul conto 7396683: il deploy su VPS non è
+  andato a buon fine per problemi tecnici e di tempo. **Resta aperto.**
+
+**Decisione 1 — il fade resta acceso, per una ragione precisa.** Scelta dell'utente: VPS già pagato,
+e con l'holdout della famiglia bruciato **i trade live sono gli unici dati fuori campione** che il
+fade avrà mai. Il campione è in realtà **due campioni, separabili ex-ante dal tipo di ordine**:
+
+| | trade finora | misura | previsione già scritta il 27/08 |
+|---|---|---|---|
+| riempiti da pendente | ~46 | il fade onesto (variante SKIP) | E[R] fra −0,250 e −0,027 |
+| entrati a mercato | ~36 | il ramo rotto (variante LIVE) | E[R] fra −0,319 e −0,204 |
+
+Il secondo confronto verifica anche **il nostro modello del fill**, qualunque sia l'esito del primo.
+Per questo l'EA **non si ripara**: i pendenti arriverebbero allo stesso ritmo e si perderebbe il
+secondo test. Limite da dichiarare: una sola posizione per strumento, quindi un trade a mercato
+aperto blocca i setup successivi e assottiglia il campione onesto.
+
+⚠️ **Condizione**: la regola di valutazione va scritta **prima** di guardare gli esiti. **Nessuno ha
+guardato equity o P&L** (utente, 2026-09-15; da parte mia nessun esito mai calcolato) → la finestra
+pulita è ancora aperta. La rivalutazione è il **trial #3, l'ultimo** della famiglia: pre-registrazione
+da scrivere.
+
+**Decisione 2 — trade2sync in prova, non adottato.** Copier Telegram→MT5 interamente in cloud (niente
+VPS, EA o terminale). Rischi: tiene una **sessione Telegram completa** e la **password master MT5**;
+elimina il nostro gate anti-slippage e il registro dello scarto in pip; gestione dei messaggi
+successivi non documentata; versione cloud uscita a maggio 2026. Prova: **un mese di Basic mensile**
+($39,99) su **conto MT5 demo dedicato** (lo storico MT5 diventa il log autorevole e lo scarto lo
+calcoliamo noi) e **account Telegram dedicato**. Criteri fissati prima: quota di segnali copiati su
+quelli pubblicati · scarto in pip · gestione dei messaggi successivi · mappatura dei suffissi. Il
+nostro `signal_copier` resta il piano B.
+
+**Decisione 3 — Quant Guild: cattura ampia.** Principio dell'utente: nelle distillazioni **non si
+cerca solo ciò che serve a quello che abbiamo** — sarebbe superficiale, non sappiamo quali strumenti
+serviranno. L'output è un **catalogo** (definizione, domanda, assunzioni, limiti, stato nel repo,
+rilevanza), dove la rilevanza **classifica e non esclude**. Perimetro: 248 video + 2 live; **8 già
+distillati** (#14, #29, #31, #32, #41, #43, #44, #76); gruppo 1 (81 video, nucleo matematico)
+distillato; gruppo 2 (calcolo stocastico e opzioni, ~45) **scaricato, non distillato ora**; gruppo 3
+(programmazione) letto per strumenti; video personali e reaction esclusi.
+
+**WIP**: `docs/VPS_COPIER_SETUP.md` tolto dal repo (resta sul disco, aggiunto a `.gitignore`).
+
+---
+
 ## 2026-08-27 (2) — **Il fill fantasma**: il +0,31R del FADE e il −0,44R della continuazione sono lo **stesso artefatto con due segni**. Forward **azzerato**, i 36 trade contano **0**
 
 > **La voce più importante del mese.** Non boccia una strategia: **invalida il modo in cui abbiamo

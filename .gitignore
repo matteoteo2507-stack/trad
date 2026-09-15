@@ -101,3 +101,6 @@ fondamenti_tecnici/_sorgenti/insight_da_yt/_raw/
 # Output trade-level dei backtest (MB di CSV). I *_report.txt aggregati sono versionati.
 analysis/nxt/*_trades.csv
 analysis/trend/trades_*.csv
+
+# WIP utente non committabile (committato per errore il 2026-08-24 con git add -A docs/)
+docs/VPS_COPIER_SETUP.md

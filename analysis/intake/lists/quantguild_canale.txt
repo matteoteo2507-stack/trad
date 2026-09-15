@@ -1,0 +1,252 @@
+# Quant Guild (Roman Paolucci) - elenco completo al 2026-09-15: 248 video + 2 live (L1, L2)
+# formato: id|num|minuti|titolo  (num = posizione nel tab Videos, 1 = piu' recente)
+_U1fj5LF-D8|1|35.7|Deep Hedging for Quantitative Finance
+BRLG5EIXY98|2|6.1|Quant Makes a Market on His 1 Mile Run
+bWGxwLHpad4|3|20.1|The Resume That Got Me A Quant Job Without a Bachelor's Degree
+iYh1MvGAIxw|4|16.1|How I Became the Youngest Quant at Bloomberg LP
+Io_f4G7a_Eo|5|35.8|Rough Volatility for Quantitative Finance
+rQ6c_FmdbUk|6|8.0|Quant Destroys YouTube Day Trading Gurus (Ultimate Tier List)
+kv5cJDP-GGo|7|45.1|Path Signatures for Quantitative Finance
+i1HwENQG9cs|8|18.8|I Tried to Buy TJR's Indicators So You Don't Have To
+cAFocAbUYY4|9|36.0|The Math "Day Traders" Don't Want You to See
+BlazLxVCCKg|10|9.3|TJR Doesn't Understand Trading or Backtesting
+24DFxKF4hzs|11|11.2|You can never remove emotion from trading
+UYe9ygYIBZ0|12|11.1|Craig Percoco Doesn't Understand Statistics
+-h8hPIlMgvs|13|5.9|More like Situational Unawareness LP
+j4etk0HYKx4|14|14.3|Risk is always mispriced
+iMSUU_emIDQ|15|18.8|How to Derive the Black-Scholes Equation
+Z3w8TpH7kYw|16|14.0|How to Protect your Stock Portfolio from Market Crashes
+MvdP0b7zyQs|17|17.4|Projects to Help you Become a Quant (Advanced)
+pNRkxItN0qM|18|18.4|How Volatility Drag Destroys (and Creates) Wealth
+J23tj13WOK8|19|61.9|Arithmetic and Geometric Brownian Motion Masterclass
+uPHRS1NGikA|20|12.8|Financial Advice Fails (And AI Can't Help)
+ogZmSXD_56U|21|84.2|How to Build an AI Stock Trading Bot with Interactive Brokers
+yRDs4atfRB0|22|24.4|Live Capital Management: My 2025 Crisis Alpha
+swPOLhSIBHo|23|18.7|Projects to Help you Become a Quant (Intermediate)
+tmkkddOeAsM|24|18.4|Quant Explains Investing at 5 Different Levels
+EwRlKEjJcr0|25|17.0|Academia is wrong.  Markets aren't efficient.  Alpha is a homerun.
+secelDZAmWc|26|16.8|Projects to Help you Become a Quant (Beginner)
+GTVBT1SQKWY|27|18.2|Math to Increase your Sharpe Ratios
+A7zJARrdo3U|28|13.5|How to Calculate Portfolio Alpha & Beta (Python + Interactive Brokers)
+LX4Ugaxx9n0|29|57.2|The Ultimate Guide to Quant Portfolio Management
+bCg9Q-nnJKI|30|11.9|The Quant Case for Bitcoin: A Structural Analysis
+-sE1kz-fypI|31|20.0|Modeling Tail Risk: A Quantitative Survival Guide
+kOzvtRE_uX8|32|9.9|Compound Annual Growth Rate (CAGR) for Quant Finance
+A6QWWrhDJTc|33|20.1|How to Think About Stock Market Bubbles and Drawdowns
+WsEwKlr_1lA|34|19.9|When Does a Trading Strategy Actually Need to be Secret?
+37wRzGdC9w4|35|7.2|How a Quant would Invest $1,000,000
+Io49x7t0sZI|36|11.7|Why You Shouldn't Be a Quant (Unfiltered)
+xa5eSjASDWo|37|20.0|A REAL Quant Debunks the "Day Trading" Scam
+E2PuxT_SucA|38|17.5|Stock Picking is Worse than Gambling at a Casino (I Can Prove It)
+21SONVlvkDQ|39|18.1|What the F*ck is Alpha? (And How to Actually Find It)
+E73rL7Hex-k|40|14.8|I Met a Jane Street Quant at the Gym (He Got This Wrong)
+kmAE9ZhQ0jU|41|20.4|Volatility Risk Premium Explained: Implied vs Realized Volatility
+aoT3Zln2cak|42|13.7|I want the market to crash
+KD_fh_jA_iQ|43|25.2|No. You don't need to backtest a trading strategy.
+Soea_7rzkR8|44|23.3|How to Derive Volatility Drag
+YDjOBWb5iG8|45|16.1|Quant Portfolio Management and Volatility Drag
+sgbEkAYAdwk|46|6.4|The Mathematical Trap of "Just Buy SPY"
+1r39EGSm9fw|47|10.0|How Quants Engineer Portfolios
+QNYstoX0u1k|48|30.6|Why I Quit Being a Quant Researcher
+-CPUbalMh14|49|24.0|Modeling with the Law of Total Expectation
+mFovTf-TMvw|50|19.4|How to Trade the Cash Secured Put
+bX-mT1pZFho|51|9.7|The reason you want a Ferrari is why you don't have one
+8kBpVelo9Tg|52|5.1|Why your Trading Strategy Sucks
+RBfc8SkRwwU|53|13.2|The Mathematical Delusion of Retail Trading
+92dW2ZDTsJg|54|21.9|You Don't Find a Passion. You Build One.
+qKCjatq9CZM|55|52.5|Coding an AI Bot to Trade Nvidia (From Scratch)
+FdqvAuHOQeE|56|103.3|Vibe Coding an Options Trading System
+RO0OUfMqkfk|57|5.6|I Built a Social Network for Quantitative Traders
+-lQdlJh8cCE|58|61.9|Ultimate Options Trading Crash Course
+jzQSgTGWCIw|59|16.9|Will AI Replace Quants?
+1OByexsEJXc|60|18.7|How to Trade Options with the Black-Scholes Model
+hYNxlEKy5Hg|61|17.4|Math Proves the Journey Matters More than the Destination
+iPsPRQlDeTA|62|41.1|How to Trade the Covered Call
+RrRbz6oXwxE|63|13.7|How to Read an Options Chain
+AjxnxG2WsHk|64|12.8|How to Not Care What People Think with Math
+20PEEtXrqUI|65|12.1|The Math of "Burn the Boats": Why Hedging Ruins Everything
+Ok08aBwfeDY|66|8.1|Life's Downside Variance: Math vs. Drugs, Edge, Judgement
+MlUSlKD8JTg|67|15.3|Risk is Always Mispriced: Pretty Girls, Public Speaking, Quitting Your Job
+yuMKoXmjtNg|68|28.2|How to Live According to Math
+GyrcydIWJpo|69|6.0|The Gaussian Cookbook for Aspiring Quants
+2-gEfXQZFr0|70|4.0|Quant Finance in 3 Minutes
+Cr7kBSPqD8A|71|39.0|How Markovian Lifting Solves the Rough Volatility Problem
+NJ5PNfIQHrE|72|17.7|Stop Using the Sharpe Ratio Until You Watch This
+o1mCFVt79Y8|73|38.5|Black-Litterman vs. Mean-Variance Portfolio Optimization (MVO) in Python
+1mpNxBaBeOw|74|13.1|Quant Ranks Retail Trading Mistakes that Blow Up Your Account
+7hezNf49iKc|75|21.2|How to Get Historical Market Data with Interactive Brokers and Python
+sjq3toGtr0U|76|14.8|3 Backtesting Pitfalls That Ruin Your Trading Strategy
+UzTJHs3-eT0|77|9.3|I Bet You've Never Found Alpha (and I Can Prove It)
+BuPil7nXvMU|78|13.0|Trading Mean Reversion with Kalman Filters
+BotPHbWFRUA|79|28.2|Hawkes Processes for Quant Finance
+7nvjrgqKjJE|80|31.0|Non-Stationarity and Why Market Timing Fails
+zVJY_oaVh-0|81|48.7|Kalman Filters for Quant Finance
+24-wC8RI7BA|82|46.5|How Goldman Sachs Prices Variance Swaps
+CFqo-BMtKgY|83|12.9|Quant Responds to and Corrects YouTube Comments
+8CB22YhioRw|84|4.0|Black-Scholes Implied Volatility in 3 Minutes
+JjbBAyu0DmI|85|43.0|How a Quant Manages a Portfolio
+mZLNzqDZHbA|86|4.0|How to Quant Trade in 3 Minutes
+bTMSAEn0XW4|87|17.5|5 Projects that Made me a Quant
+ifwhZDCjAgo|88|51.0|Quant Derives Volterra Process Discretization and Simulation in Python
+5JEeAsQqlro|89|73.0|How to Build a Live Volatility Surface in Python (Interactive Brokers)
+wYpg0TGxvgM|90|41.2|Quant Explains Risk-Neutral Option Pricing
+oug0vzbwISQ|91|42.5|Poisson Processes for Quant Finance
+dryV1qJYUw8|92|12.9|Why Most Traders Lose: Ergodicity for Quant Trading
+ZwS1gMGegrM|93|24.8|The 5 Papers that Built Modern Quant Finance
+pyD-zXuP8Qo|94|23.1|My Approach to Solving Quant Interview Questions (Optiver Example)
+Ivz58kZLD2U|95|4.0|Trader Skill or Market Luck?  Quant Explains Alpha in 3 Minutes
+fzz22JNg9HE|96|31.5|Profitable vs Tradable: Why Most Strategies Fail Live
+kLJEXE5_7rI|97|43.2|I Made the Quant Roadmap
+xJJ1nWj9Rto|98|8.3|Quant Explains Backtesting with Poker
+CkXljL6eI5A|99|59.5|How to Build a Markov Chain Regime Switching Bot in Python with Interactive Brokers | Part 2
+2-VRYBKfoyE|100|23.7|How to Price Options with Monte Carlo Simulation
+GZnCiXMNZcQ|101|144.1|How to Build a Markov Chain Regime Switching Bot in Python with Interactive Brokers | Part 1
+w-EbZ6Xct_E|102|31.1|Why Your Backtests are Wrong | Markov Property for Quant Trading
+qBSrjoTdQpA|103|10.1|Non-Target to Quant: How to Get a Quant Job in 3 Steps
+aVzFKwyzwM0|104|24.3|Quant Explains Algorithmic Market-Making
+DL_mG-RUFlQ|105|11.8|I Ranked the Best College Majors for Becoming a Quant
+IIzGqL3ChEs|106|47.3|How Physics Accidentally Proved the Black-Scholes Model
+vygK0EXY8ZI|107|14.5|How I Cracked the Quant Interview
+6llKh4kQBYs|108|46.6|Natural Language Processing (NLP) for Quant Trading
+izuZqWz-Dpg|109|15.2|Books that Made Me a Quant
+n5acv8R-lN8|110|51.1|Neural Networks for Quant Finance
+n1Z90Iwc_co|111|12.9|My Life as a Quant
+q2era-4pnic|112|52.3|Central Limit Theorem for Quant Finance
+GvX8Ragl3ZU|113|36.0|Is Trading Gambling? Quant Proves It's Not With Math & Logic
+jiAdz9W4aDI|114|42.5|Brownian Motion for Quant Finance
+brdG1TmsPlw|115|30.1|Why Quant Models Break (Wall Street's Dirty Secret)
+gG9Xsvgqvp4|116|14.7|Banks are Just Casinos (Quant Explains Why)
+wJfIk3VnubE|117|33.0|Quant Busts 3 Trading Myths with Math
+Xtth2F1xm5Q|118|199.4|How to Build an Earnings Event Trading Dashboard in Python (Interactive Brokers API)
+3gblERSSHXI|119|61.8|Quant vs. Discretionary Trading
+915-fyEM9l8|120|79.9|Do Emojis Predict Stock Returns? | Quant Guild at UCSD's Triton Quantitative Trading
+uivlsPk0WLQ|121|55.5|Quant Proves Trading Can't Be Taught (But You CAN Learn This)
+Bru4Mkr601Q|122|56.4|Hidden Markov Models for Quant Finance
+JuD3KGQhofw|123|56.5|Why Poker Pros Make the Best Traders (It's NOT Luck)
+k8oQfd6M5sA|124|49.6|Markov Chains for Quant Finance
+K-aUu_M02-Y|125|35.1|Why Trading Metrics are Misleading (Unless This is True)
+iImtlBRcczA|126|48.1|Master Volatility with ARCH & GARCH Models
+czEyUZabE2U|127|28.5|Is Trading Luck or Skill? Quant Debunks Trading Gurus with Math
+_hFw36wfmds|128|179.1|How to Build an Options Volatility Trading Tool in Python with Interactive Brokers
+JwqjuUnR8OY|129|44.0|Time Series Analysis for Quant Finance
+jM7Zd6GU86Q|130|34.8|How to Trade Options: Implied Volatility Crush
+CKXp_sMwPuY|131|60.0|Quant on Trading and Investing
+19-rFVgJVkg|132|153.9|How to Build a Volatility Trading Dashboard in Python with Interactive Brokers
+j1XAcdEHzbU|133|29.9|Quant Trader on Retail vs. Institutional Trading
+2-oAlnZV6hA|134|37.2|Heston Stochastic Volatility Model and Fast Fourier Transforms
+uzbveN8n34U|135|43.8|Finite Differences Option Pricing for Quant Finance
+qDAeSC40ZJE|136|52.3|Stochastic Differential Equations for Quant Finance
+7tvW3NvRnPk|137|16.4|How to Trade with the Kelly Criterion
+tX7b2KT63WQ|138|29.0|What Does AI Actually Learn
+NlqpDB2BhxE|139|30.3|How to Trade with an Edge
+-4sf43SLL3A|140|22.9|Why Monte Carlo Simulation Works
+hsot26myYYM|141|29.3|How to Price Exotic Options
+dUvZ8m3QpeI|142|32.0|Ito Integration Clearly and Visually Explained
+YH0tWpBaKGs|143|31.1|Trading with the Black-Scholes Implied Volatility Surface
+TgBzqdN24fo|144|21.6|Ito's Lemma Clearly and Visually Explained
+YNvhjSr_nz0|145|29.8|Gambler's Ruin Problem in Quant Trading
+Nm0XXPhpEx8|146|60.0|A Quant Derives the Karhunen–Loève Expansion of the Brownian Bridge in Continuous-Time
+fI3UHYD389g|147|17.1|Is Quant Trading Gambling? Roulette, Poker, and Trading
+qQYgbIYz9i0|148|23.9|How to Simulate Fractional Brownian Motion (fBm) via Davies-Harte
+2ezWtM8J_os|149|27.0|Trading with Violated Model Assumptions
+kQPCTXxdptQ|150|38.3|How to Trade Option Implied Volatility
+NqOj__PaMec|151|17.7|How to Trade
+iXNSBn5xqrA|152|24.5|Expected Stock Returns Don't Exist
+eZIITtd3UfY|153|21.2|Why Portfolio Optimization Doesn’t Work
+-1RYvajksjQ|154|24.4|Monte Carlo Simulation and Black-Scholes for Pricing Options
+s0lVvYMA5OA|155|26.3|Why Quant Traders Care About Pricing
+muHL4mQhMZE|156|19.6|Normally Distributed Returns and Value of an Annuity Due
+oKJ5Rb3PI-o|157|29.4|Analyzing Stock Returns with Principal Component Analysis in Python
+Kkfu3uZbbwM|158|17.3|Fundamental Theorem of Calculus and Area of Bounded Regions
+df9arrckvL8|159|18.9|Information and Stock Price Prediction
+_87QHZXOOKA|160|89.3|How to Build an AI Trading Bot in Python
+7C72-fuccio|161|31.5|Uniform Probability and Binomial Random Variables
+aBfkf_0YsCY|162|24.4|Quant Investing for Beginners
+aRr3chiwkrI|163|38.0|Can AI Learn Black-Scholes?
+Yms19aI3eu4|164|12.3|Equity Trading and Tariffs
+Augr2c-PMc4|165|30.8|Managing Option Portfolios with Black-Scholes Greeks
+QBx-KCvNQBQ|166|20.1|A Quant's Visual Guide to Progress
+jDoLost28tE|167|17.5|Delta Hedging and Black-Scholes Prices
+CD8XYP4lq4g|168|11.9|Why is the Definition of a Derivative Useful?
+Q1lxVrLHrYE|169|14.9|Martingale Volatility Trading
+l2fX3jMC4h0|170|5.8|Watch a Quant (Try To) Do 2 Digit Mental Multiplication
+0x-Pc-Z3wu4|171|16.8|How to Trade with the Black-Scholes Model
+A9o2El2FN_M|172|5.3|I Made an Open-Source Market-Making Game to Practice Trading
+boh9JkGPG9U|173|20.9|Analyzing Trading Strategy Performance Over Time
+WP9fb7AMFsI|174|22.9|How to Make & Lose Money Trading
+Iu_gCD74Y70|175|20.8|Control Variates for Variance Reduction
+1WB8PtKnaqU|176|48.6|Inverse Transform Method for Generating Random Variables
+0SX_GAgMNkA|177|23.4|How Machines Learn: Gradient Descent, Stochastic Gradient Descent, Simulated Annealing
+cRN0rwWSXEw|178|23.3|Quant Guild's Macroeconomic Outlook (03/03/2024)
+oo4Ish9TW7U|179|29.7|Markovian Modeling using First Step Analysis
+b6yrn6FqTvs|180|41.5|Mastering Markov Chains for Quant Interviews
+L3FqYBDw9fE|181|37.4|Chapman-Kolmogorov Equations with Applications to Discrete Homogeneous Markov Chains
+GF2lJ-G2BYc|182|27.2|What Happens when the Expectation is Infinity?
+lGJ6z_jHFwM|183|36.1|Quant Interview Questions | Consecutive Coin Flip Payouts
+dGzsOXNRbQY|184|15.7|Quant Interview Questions | Probabilities of Minimum and Maximum Functions
+yFuZDac9fKo|185|23.0|Executive Compensation and Firm Performance
+1XeA-fkjppY|186|36.8|Simulating Brownian Motion in Python
+h_t46xlS-N8|187|34.4|Graduate Level Research at an Ivy League University
+ZE3Fi4ZH7f8|188|55.2|Moment Generating Functions and Normal Random Variables
+YyBG3IESj90|189|3.0|Critical Values in 3 Minutes
+2eQLnHiJJ7A|190|63.8|Expectation, Variance, Independence, Covariance, and Correlation
+ndou1b8NGQ0|191|41.8|Applied Statistics and Statistical Inference
+fbqNL9ae6yU|192|34.9|The Method of Maximum Likelihood Estimation
+q9lTerSyptI|193|21.0|StockTwits Social Sentiment and Analyst Recommendations to Optimize Trading Strategies
+AWTtDAl3i7E|194|21.2|Building a Contemporaneous Social Sentiment Trading Strategy using Financial Modeling Prep's API
+7h8MDB029MQ|195|9.1|Correcting the Interpretation of a Confidence Interval
+tb5gaJzVrlk|196|15.8|Intuition for Law of Large Numbers and Central Limit Theorem
+HDsa_9SeysE|197|2.8|C/C++ Pass by Value and Pass by Reference in 3 Minutes
+uzrri0lKGcA|198|2.8|C/C++ Pointers in 3 Minutes
+_c_P5TqiiTE|199|16.3|Stock Price Process Intuition for Equity Derivatives
+75NdmQ8ptqE|200|26.6|Building a Profitable Algorithmic Trading System in Java (Crypto & Equities) | Chapter 1: Connection
+xuykp2s3pfg|201|14.0|How to Build Fast Neural Networks with GPU using PyTorch
+-B3WduveTV0|202|12.9|People Publish Trading Strategies? | Tetlock 2007 Paper Review
+uKcbP6g2f18|203|15.6|Deep Learning (Rough) Volatility Paper Review
+jjoLCmXkv9E|204|2.5|Workshop Wednesday Check-In
+XFWxQJvwAus|205|7.6|Time Value of Money and Computing Compound Interest
+xh7HgsReYGk|206|11.1|Linear Regressions in Python
+HgjeDJVCHSo|207|16.6|What are European Options?
+YRCOHV27H6U|208|13.4|The Normal Distribution in Python
+mBXgdjlqSjc|209|13.2|The Normal Distribution
+hJmX1V5JlRs|210|23.5|Linear Algebra: Linear Independence | Math Mondays?
+pstj_4rV6yQ|211|16.0|Introduction to Python | Chapter IV: Multithreading
+0rnZ3yEu2y0|212|2.0|Introduction to Python
+4hNgWlUfp4w|213|9.3|Correlated Brownian Motions in Python
+AtJ2DLo8dKY|214|6.0|Top 5 Python Tricks in 5 Minutes
+VzieTIsBaHM|215|15.1|What is Market Implied Volatility?
+EnsWVUjpqDE|216|8.9|Monte Carlo Integration in Python
+2iClLEfXuqA|217|17.6|How to Find the Black-Scholes-Merton Partial Differential Equation
+y7tYH6Io0Y4|218|25.8|Linear Regression Clearly Explained with Matrices
+N0eWsviaXMQ|219|7.6|Forecasting my Subscribers for 2023
+ztyh4L6rSR8|220|17.9|Why is Portfolio Rebalancing Important?
+_ta4Hhox1Vc|221|15.6|Understanding and Calculating Option Greeks in Python
+lCwg599tCm4|222|12.8|Time Series Analysis: Why are Unit Roots Important?
+XiYnZ6Dy4v8|223|5.7|How to Build Interactive Python Web Apps in Seconds
+hkDmPbU3DsQ|224|1.2|Welcome to Quant Guild
+5BKmO7zNDkM|225|2.9|Python Bachelier Model Simulation in 3 Minutes
+J1sBj9K-BhE|226|17.8|Bachelier Model Call Option Price Derivation
+6yDsKwD9pzw|227|20.1|Intuitive Introduction to Brownian Motion
+i8-L9Aqm20c|228|10.8|Quant Paper Review: P (buy-side) versus Q (sell-side) Quants
+qup5fqDoKcg|229|13.2|Geometric Brownian Motion in Python
+y0s2GXREymI|230|13.3|Solving Geometric Brownian Motion
+ytMfmVDKJ7s|231|9.2|Quantitative Finance Episode 003 | Equity Options II
+hgerQvti_SU|232|13.2|Quantitative Finance Episode 002 | Equity Options I
+oqVAtacekr0|233|19.2|Backtesting Quant Strats in Python | Quantitative Research
+g9HIk8EQCzw|234|6.1|Quantitative Finance in Python | Q-Fin Python Library
+AGjDaoFMZsw|235|9.8|Quantitative Finance Episode 001 | Time Value of Money
+CfSq_fMx8fs|236|16.8|Algorithmic Multi-Greek Hedging using Python
+oAqNunJItcc|237|5.9|Black-Scholes European Option Pricing | Itô's Lemma
+B-ecgy17VtE|238|7.2|Building an Algorithmic Trading System in Python | Web Application Development
+v2TSTKlrPwo|239|16.9|Web Application Development in Python | Ajax and JavaScript
+RF1it3i9qzE|240|9.2|Web Application Development in Python | Intro to Flask and Jinja2
+FJpiY0bsQEI|241|5.5|Building an Algorithmic Trading System in Python | Data Caching
+9m1vGTG9Wqk|242|7.2|Building an Algorithmic Trading System in Python | Live Market Data Streams
+WcPtPHJatIo|243|10.6|Building an Algorithmic Trading System in Python | Connection and Structure
+aozWosFLAEY|244|16.2|Volatility Trading 101 with Python
+5OAj0vdyGNY|245|14.8|Monte Carlo Pricing Financial Derivatives in Python
+MpiJZ2hl8VQ|246|4.8|Monte Carlo Simulations in Python
+QIM12cvCu4c|247|11.0|Arithmetic Brownian Motion in Python
+NGLeprazvkM|248|3.2|Python Multithreading in 3 Minutes
+L7e4lGBncnM|L1|133.3|Quant Q&A while Building an Indie RPG
+gCZfO5bBDuc|L2|189.4|Building J.A.R.V.I.S. for Portfolio Management (from Scratch)

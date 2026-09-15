@@ -45,6 +45,7 @@ UNIVERSE_FADE = {"EURUSD.r", "GBPUSD.r", "USDJPY.r", "XAUUSD.cyr", "US100", "US5
 STAGE1_N = 50
 STAGE2_N = 200
 DEADLINE = dt.date(2027, 3, 31)
+ANNULLATO = dt.date(2026, 8, 27)         # forward FADE azzerato: prereg sez.11, DECISIONS 2026-08-27 (2)
 
 # date dei fix noti: il conteggio va SEMPRE spezzato qui, altrimenti si rilegge
 # un problema gia' risolto come se fosse in corso
@@ -134,22 +135,37 @@ def render(mt5) -> str:
             live_sym = {o.symbol for o in live}
             breadth = sum(1 for s in uni
                           if sum(o_tab.get(s, [0, 0])) > 0 or s in live_sym)
-            stage = "Stadio 1" if n_in < STAGE1_N else "Stadio 2"
-            target = STAGE1_N if n_in < STAGE1_N else STAGE2_N
-            L.append(f"**{stage}: N valido = {n_in} / {target}** · breadth "
+            L.append(f"> ## 🛑 FORWARD **AZZERATO** il {ANNULLATO:%Y-%m-%d}\n>\n"
+                     f"> Questi **{n_in} trade chiusi in universo contano ZERO** e non entrano in "
+                     f"alcun verdetto. Stadio 1 e Stadio 2 sono **decaduti**, insieme ai loro "
+                     f"backstop. Causa: l'EA entrava **a mercato** sul 40% dei trade violando i tre "
+                     f"parametri congelati (SL 1R, TP 3R, R=28,6%) -> prereg §4.3; e il +0,31R di "
+                     f"partenza era un **artefatto di fill** (vedi DECISIONS 2026-08-27 (2)).\n>\n"
+                     f"> Da qui in avanti il conteggio sotto e' **solo diagnostica di funzionamento "
+                     f"dell'EA**, mai avanzamento di un test.\n")
+            L.append(f"Trade chiusi in universo (NON validi): {n_in} · breadth "
                      f"**{breadth}/{len(uni)}** strumenti con ordini")
             if out:
                 L.append(f"\n⚠️ Chiusi **fuori universo** (esclusi dal conteggio, per decisione "
                          f"utente 2026-08-27): {out}")
-            silent = [s for s in uni if sum(o_tab.get(s, [0, 0])) == 0]
+            # un simbolo con SOLO pendenti vivi non e' "silenzioso": sta operando, non riempie.
+            # (la patch del 2026-08-27 non era mai atterrata qui: lo str.replace senza assert
+            # era fallito in silenzio. Riparata il 2026-09-15.)
+            silent = [s for s in uni
+                      if sum(o_tab.get(s, [0, 0])) == 0 and s not in live_sym]
             if silent:
-                L.append(f"\n⚠️ In universo ma **senza alcun ordine**: {silent} — "
+                L.append(f"\n⚠️ In universo, **nessun ordine ne' storico ne' vivo**: {silent} — "
                          f"da verificare che non sia un problema di simbolo o permessi")
-            days = (DEADLINE - dt.date.today()).days
-            L.append(f"\nScadenza pre-registrata: **{DEADLINE:%Y-%m-%d}** ({days} giorni).")
-            L.append("\n> ⚠️ **Il P&L non e' riportato di proposito.** La regola di stop e' "
-                     "**N e data**, mai il cumulato: guardarlo sarebbe optional stopping "
-                     "(prereg §5).\n")
+            only_live = [s for s in uni
+                         if sum(o_tab.get(s, [0, 0])) == 0 and s in live_sym]
+            if only_live:
+                L.append(f"\nℹ️ In universo **solo con pendenti vivi**: {only_live} — "
+                         f"l'EA opera, ma nessun fill finora")
+            L.append(f"\n~~Scadenza pre-registrata: {DEADLINE:%Y-%m-%d}~~ — **decaduta** con "
+                     f"l'azzeramento del {ANNULLATO:%Y-%m-%d}.")
+            L.append("\n> ⚠️ **Il P&L non e' riportato di proposito.** Non c'e' piu' una regola di "
+                     "stop da proteggere, ma il motivo resta: guardare il cumulato di un binario "
+                     "acceso e poi decidere e' optional stopping comunque.\n")
 
         L.append(f"**Pendenti vivi**: {len(live)} · **posizioni aperte**: {len(pos)}")
         now = dt.datetime.now()
@@ -175,6 +191,12 @@ def render(mt5) -> str:
 
 
 def main() -> int:
+    # la console Windows e' cp1252: senza questo `--stdout` esplode sui box-drawing
+    # e sulle emoji del report (rilevato il 2026-09-15)
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")   # type: ignore[union-attr]
+    except Exception:
+        pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--stdout", action="store_true", help="stampa senza scrivere il file")
     a = ap.parse_args()

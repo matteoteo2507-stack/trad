@@ -1,0 +1,92 @@
+# formato: id|num|minuti|titolo
+# Quant Guild - TIER 1: strumenti matematici direttamente usati dal nostro processo
+# ordine = priorita' di scaricamento/lettura. Esclusi i gia' distillati: #14 #29 #31 #32 #41 #43 #44 #76
+# --- A. statistica e inferenza (le fondamenta dei gate G1/G2) ---
+2eQLnHiJJ7A|190|63.8|Expectation, Variance, Independence, Covariance, and Correlation
+ndou1b8NGQ0|191|41.8|Applied Statistics and Statistical Inference
+fbqNL9ae6yU|192|34.9|The Method of Maximum Likelihood Estimation
+7h8MDB029MQ|195|9.1|Correcting the Interpretation of a Confidence Interval
+tb5gaJzVrlk|196|15.8|Intuition for Law of Large Numbers and Central Limit Theorem
+q2era-4pnic|112|52.3|Central Limit Theorem for Quant Finance
+-CPUbalMh14|49|24.0|Modeling with the Law of Total Expectation
+GF2lJ-G2BYc|182|27.2|What Happens when the Expectation is Infinity?
+ZE3Fi4ZH7f8|188|55.2|Moment Generating Functions and Normal Random Variables
+7C72-fuccio|161|31.5|Uniform Probability and Binomial Random Variables
+YyBG3IESj90|189|3.0|Critical Values in 3 Minutes
+y7tYH6Io0Y4|218|25.8|Linear Regression Clearly Explained with Matrices
+xh7HgsReYGk|206|11.1|Linear Regressions in Python
+hJmX1V5JlRs|210|23.5|Linear Algebra: Linear Independence
+# --- B. edge, fortuna vs abilita', validita' del backtest (il nostro protocollo) ---
+w-EbZ6Xct_E|102|31.1|Why Your Backtests are Wrong
+fzz22JNg9HE|96|31.5|Profitable vs Tradable: Why Most Strategies Fail Live
+K-aUu_M02-Y|125|35.1|Why Trading Metrics are Misleading (Unless This is True)
+NJ5PNfIQHrE|72|17.7|Stop Using the Sharpe Ratio Until You Watch This
+GTVBT1SQKWY|27|18.2|Math to Increase your Sharpe Ratios
+NlqpDB2BhxE|139|30.3|How to Trade with an Edge
+czEyUZabE2U|127|28.5|Is Trading Luck or Skill? Quant Debunks Trading Gurus with Math
+Ivz58kZLD2U|95|4.0|Trader Skill or Market Luck? Quant Explains Alpha in 3 Minutes
+UzTJHs3-eT0|77|9.3|I Bet You've Never Found Alpha (and I Can Prove It)
+21SONVlvkDQ|39|18.1|What the F*ck is Alpha? (And How to Actually Find It)
+cAFocAbUYY4|9|36.0|The Math "Day Traders" Don't Want You to See
+xJJ1nWj9Rto|98|8.3|Quant Explains Backtesting with Poker
+boh9JkGPG9U|173|20.9|Analyzing Trading Strategy Performance Over Time
+2ezWtM8J_os|149|27.0|Trading with Violated Model Assumptions
+brdG1TmsPlw|115|30.1|Why Quant Models Break (Wall Street's Dirty Secret)
+7nvjrgqKjJE|80|31.0|Non-Stationarity and Why Market Timing Fails
+iXNSBn5xqrA|152|24.5|Expected Stock Returns Don't Exist
+df9arrckvL8|159|18.9|Information and Stock Price Prediction
+wJfIk3VnubE|117|33.0|Quant Busts 3 Trading Myths with Math
+GvX8Ragl3ZU|113|36.0|Is Trading Gambling? Quant Proves It's Not With Math & Logic
+fI3UHYD389g|147|17.1|Is Quant Trading Gambling? Roulette, Poker, and Trading
+WP9fb7AMFsI|174|22.9|How to Make & Lose Money Trading
+RBfc8SkRwwU|53|13.2|The Mathematical Delusion of Retail Trading
+WsEwKlr_1lA|34|19.9|When Does a Trading Strategy Actually Need to be Secret?
+# --- C. sizing, rovina, ergodicita', dipendenza dal percorso ---
+7tvW3NvRnPk|137|16.4|How to Trade with the Kelly Criterion
+YNvhjSr_nz0|145|29.8|Gambler's Ruin Problem in Quant Trading
+dryV1qJYUw8|92|12.9|Why Most Traders Lose: Ergodicity for Quant Trading
+hYNxlEKy5Hg|61|17.4|Math Proves the Journey Matters More than the Destination
+pNRkxItN0qM|18|18.4|How Volatility Drag Destroys (and Creates) Wealth
+YDjOBWb5iG8|45|16.1|Quant Portfolio Management and Volatility Drag
+sgbEkAYAdwk|46|6.4|The Mathematical Trap of "Just Buy SPY"
+20PEEtXrqUI|65|12.1|The Math of "Burn the Boats": Why Hedging Ruins Everything
+Ok08aBwfeDY|66|8.1|Life's Downside Variance: Math vs. Drugs, Edge, Judgement
+A6QWWrhDJTc|33|20.1|How to Think About Stock Market Bubbles and Drawdowns
+Z3w8TpH7kYw|16|14.0|How to Protect your Stock Portfolio from Market Crashes
+# --- D. serie storiche, regimi, filtri, processi di punto ---
+JwqjuUnR8OY|129|44.0|Time Series Analysis for Quant Finance
+lCwg599tCm4|222|12.8|Time Series Analysis: Why are Unit Roots Important?
+iImtlBRcczA|126|48.1|Master Volatility with ARCH & GARCH Models
+k8oQfd6M5sA|124|49.6|Markov Chains for Quant Finance
+Bru4Mkr601Q|122|56.4|Hidden Markov Models for Quant Finance
+oo4Ish9TW7U|179|29.7|Markovian Modeling using First Step Analysis
+L3FqYBDw9fE|181|37.4|Chapman-Kolmogorov Equations with Applications to Discrete Homogeneous Markov Chains
+zVJY_oaVh-0|81|48.7|Kalman Filters for Quant Finance
+BuPil7nXvMU|78|13.0|Trading Mean Reversion with Kalman Filters
+BotPHbWFRUA|79|28.2|Hawkes Processes for Quant Finance
+oug0vzbwISQ|91|42.5|Poisson Processes for Quant Finance
+# --- E. costruzione di portafoglio (livello C6, playground) ---
+JjbBAyu0DmI|85|43.0|How a Quant Manages a Portfolio
+1r39EGSm9fw|47|10.0|How Quants Engineer Portfolios
+eZIITtd3UfY|153|21.2|Why Portfolio Optimization Doesn't Work
+o1mCFVt79Y8|73|38.5|Black-Litterman vs. Mean-Variance Portfolio Optimization (MVO) in Python
+oKJ5Rb3PI-o|157|29.4|Analyzing Stock Returns with Principal Component Analysis in Python
+ztyh4L6rSR8|220|17.9|Why is Portfolio Rebalancing Important?
+A7zJARrdo3U|28|13.5|How to Calculate Portfolio Alpha & Beta (Python + Interactive Brokers)
+yRDs4atfRB0|22|24.4|Live Capital Management: My 2025 Crisis Alpha
+# --- F. simulazione Monte Carlo ---
+-4sf43SLL3A|140|22.9|Why Monte Carlo Simulation Works
+Iu_gCD74Y70|175|20.8|Control Variates for Variance Reduction
+1WB8PtKnaqU|176|48.6|Inverse Transform Method for Generating Random Variables
+EnsWVUjpqDE|216|8.9|Monte Carlo Integration in Python
+# --- G. struttura di mercato e cornice ---
+aVzFKwyzwM0|104|24.3|Quant Explains Algorithmic Market-Making
+3gblERSSHXI|119|61.8|Quant vs. Discretionary Trading
+j1XAcdEHzbU|133|29.9|Quant Trader on Retail vs. Institutional Trading
+EwRlKEjJcr0|25|17.0|Academia is wrong. Markets aren't efficient. Alpha is a homerun.
+ZwS1gMGegrM|93|24.8|The 5 Papers that Built Modern Quant Finance
+E2PuxT_SucA|38|17.5|Stock Picking is Worse than Gambling at a Casino (I Can Prove It)
+# --- H. da verificare: candidati al blocco "Comprehensive Guide to Investing" gia' in _sorgenti ---
+tmkkddOeAsM|24|18.4|Quant Explains Investing at 5 Different Levels
+aBfkf_0YsCY|162|24.4|Quant Investing for Beginners
+CKXp_sMwPuY|131|60.0|Quant on Trading and Investing
