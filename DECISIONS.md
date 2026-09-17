@@ -11,6 +11,45 @@
 
 ---
 
+## 2026-09-17 (4) — **FADE: KILL della famiglia.** EA spento. Il +0,31R era per intero fill fantasma
+
+Decisione dell'utente dopo la misura onesta. Chiude la famiglia **NXT/FADE**, aperta a luglio.
+
+**Il numero che chiude la questione.** Con la primitiva unica
+[`core/resolve_trade.py`](core/resolve_trade.py) e soli **fill ottenibili**, su 10.218 setup / 14 anni / 6 asset:
+
+| campione | n | E[R] | BCa 95% |
+|---|---|---|---|
+| **fill ottenibili (SKIP)** | **5.506** | **−0,250** | **[−0,287 ; −0,210]** |
+| fill ottenibili, convenzione ottimista | 5.506 | −0,186 | [−0,226 ; −0,146] |
+| tutti i setup, col fill fantasma | 10.218 | +0,409 | [+0,370 ; +0,443] |
+
+**Il 46,1%** dei setup aveva il livello gia' oltrepassato. Il segno positivo del lead veniva **per
+intero** da quei fill: +0,409 col fantasma, **−0,250** senza. Non un aggiustamento, un ribaltamento —
+e misurato **sui dati da cui la strategia era stata derivata**, cioe' nelle condizioni piu'
+favorevoli possibili.
+
+**Base regolamentare**: kill duri [`STRATEGY_LIFECYCLE`](docs/STRATEGY_LIFECYCLE.md) §6a **n. 1**
+(difetto metodologico conclamato: i vecchi numeri sono **nulli**, rifatti da zero danno −0,25) e
+**n. 3** (fallimento di breadth). Nessun ramo di rifinitura disponibile (§4.4 della pre-registrazione).
+
+**Contabilita' finale della famiglia**: trial **2 di 3**. La riparazione dell'EA e la ri-misura con
+la primitiva **non hanno consumato trial** (§3: bug fix + esecuzione piu' realistica). **Il trial #3
+non e' stato speso e resta disponibile** per un'ipotesi con razionale indipendente.
+
+**Cosa succede all'infrastruttura.**
+- **EA spento** dall'utente. Il fix v1.10 (`bbea38e`) resta in repo: e' codice corretto, se un giorno
+  servira' quella meccanica e' gia' giusta.
+- I **90 ingressi live** valgono **zero**, come i 36 del 27/08: l'audit di esecuzione aveva gia'
+  stabilito che non erano la strategia pre-registrata.
+- La famiglia e' **CLOSED**: si riapre solo con evidenza esterna nuova (§7), non con un parametro.
+
+**Cosa resta, e vale.** La primitiva `resolve_trade` con le **cinque** convenzioni esplicite e la
+prova di equivalenza con le quattro implementazioni storiche. E' il pezzo che sopravvive alla
+strategia: qualunque backtest futuro parte da li' invece di reimplementare la logica una quinta volta.
+
+---
+
 ## 2026-09-17 (3) — FADE: il motivo per cui l'EA era lasciato rotto **non sopravvive a un calcolo di potenza**
 
 Primo lavoro fatto **applicando** i buchi del distillamento invece di catalogarli. Documento vincolante:
