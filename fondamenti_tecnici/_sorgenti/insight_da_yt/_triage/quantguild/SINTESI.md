@@ -351,8 +351,8 @@ negano. La distinzione che tiene insieme le due cose — e che la fonte non enun
 
 ## Dopo la sintesi (checklist di chiusura)
 
-- [ ] `fondamenti_tecnici/_INTAKE.md`: righe per le fonti Quant Guild lette (gruppo 1) con stato e destinazione.
-- [ ] `DECISIONS.md`: voce di chiusura del distillamento + conflitti nella mappa dei modelli.
-- [ ] Memoria: aggiornare [[project_quantguild_distill_2026_09_15]] (chiuso) e le memorie toccate.
-- [ ] Commit.
-- [ ] **Avviso all'utente** (richiesta esplicita).
+- [x] `fondamenti_tecnici/_INTAKE.md`: riga per il gruppo 1 con esito, buchi, conflitti e attribuzione risolta.
+- [x] `DECISIONS.md`: voce **2026-09-17** di chiusura + **3 conflitti nuovi** nella Mappa dei modelli.
+- [x] Memoria: [[project_quantguild_distill_2026_09_15]] portata a **CHIUSO**, riga di MEMORY.md riscritta.
+- [x] Commit (`5f6513f`, ramo `docs/metodo-pac-2026-08-07`).
+- [x] **Avviso all'utente** (richiesta esplicita).
