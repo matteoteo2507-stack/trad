@@ -11,6 +11,62 @@
 
 ---
 
+## 2026-09-17 (5) — B1 (mean reversion Kichev): la fonte dice **molto meno** di quanto le attribuivamo, e la misura descrittiva e' **nulla**
+
+Misura descrittiva, **0 trial**: [`analysis/meanrev/descriptive.py`](analysis/meanrev/descriptive.py),
+dichiarata come descrittiva **nel commit precedente all'esecuzione**. Nessuna soglia, nessuno stop,
+nessun GO/NO-GO. Output in [`docs/health/b1_meanrev_descriptive_2026-09-17.txt`](docs/health/b1_meanrev_descriptive_2026-09-17.txt).
+
+### 1. La fonte e' molto piu' sottile di come l'avevamo registrata
+
+Il backlog attribuiva a B1 una spec precisa: *"|close − SMA5| oltre una soglia normalizzata sullo
+scostamento storico"*. Andando a leggere la trascrizione, Kichev dice **esattamente questo**:
+
+| Mean Reversion | Price deviates significantly far from mean | Exit after reversion or fixed period (1-4 days) | Days |
+
+**Tutto qui.** Nessun periodo della media, nessuna soglia, nessuno stop. **`SMA5` e la
+normalizzazione erano nostri**, non suoi. Quindi B1 non era *"la forma canonica del FADE scritta da
+una fonte esterna"*: la fonte fornisce una **famiglia** e un **orizzonte**, e ogni parametro in piu'
+lo scegliamo noi — cioe' e' li' che entrerebbe la molteplicita' che credevamo di aver evitato.
+⚠️ Riga del backlog **corretta**.
+
+### 2. La misura: nessun ritorno alla media su D1
+
+Pendenza di (rendimento a h giorni / ATR) sullo scostamento normalizzato z, su **30 strumenti,
+8 gruppi, 2012-2026**, per periodi di media 3/5/10/20 e orizzonti 1-4 giorni (l'unico numero che la
+fonte fornisce). Negativa = ritorno alla media.
+
+- L'intera mappa sta fra **−0,02 e +0,008** in unita' di ATR: livello rumore.
+- **16 strumenti su 30** e **4 gruppi su 8** hanno pendenza negativa: testa o croce.
+- Correlazioni |r| quasi tutte sotto **0,03**.
+
+**Non c'e' niente da pre-registrare.** Raccomandazione: **non spendere il trial su B1** cosi' com'e'.
+
+### 3. Le due cose che valgono, e non erano la domanda
+
+| gruppo | pendenza | lettura |
+|---|---|---|
+| **crypto** | **+0,0796** (corr +0,069) | **continuazione netta**, il segnale piu' forte della tabella |
+| agri, bond, metal | +0,013 / +0,008 / +0,005 | continuazione debole |
+| fx_major | −0,007 | ritorno alla media debolissimo |
+| index, fx_cross | −0,036 / −0,021 | ritorno alla media, ma **2 e 3 strumenti** |
+
+1. **Il crypto va nella direzione opposta**, e con il segnale piu' forte: contraddice la stessa fonte,
+   che al §7 raccomanda *"mean reversion on crypto"*. Registrato come **claim della fonte falsificato
+   sui nostri dati**.
+2. 🔧 **Corroborazione indipendente del lead playground**: la continuazione e' forte dove la
+   volatilita' e' alta (crypto, agri, metalli) e assente o invertita dove la liquidita' e' massima
+   (fx_major). E' lo stesso ordinamento di [[project_trend_playground_lead_2026_08_14]] (rho +0,857),
+   misurato con **uno strumento completamente diverso** — deviazione da media invece di regola di
+   trend. Non e' una conferma statistica, e' una convergenza di segno che vale come prior.
+
+⚠️ **Anomalia da non inseguire stasera**: per alcuni gruppi la pendenza complessiva e il
+comportamento **nelle code** (decile alto di |z|) hanno **segni opposti** — possibile non linearita'
+(ritorno alla media al centro, continuazione agli estremi). E' un'ipotesi generata dai dati: se si
+vuole guardare, si guarda **dichiarandolo prima**.
+
+---
+
 ## 2026-09-17 (4) — **FADE: KILL della famiglia.** EA spento. Il +0,31R era per intero fill fantasma
 
 Decisione dell'utente dopo la misura onesta. Chiude la famiglia **NXT/FADE**, aperta a luglio.

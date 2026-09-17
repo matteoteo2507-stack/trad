@@ -1,0 +1,34 @@
+B1 - RITORNO ALLA MEDIA SU D1: misura descrittiva (0 trial)
+==============================================================================
+Universo: 30 strumenti, 8 gruppi, 2012-2026.
+
+Pendenza di (rendimento a h giorni / ATR) su z = scostamento normalizzato.
+NEGATIVA = ritorno alla media.  POSITIVA = continuazione.
+
+--- La mappa intera: pendenza media per periodo x orizzonte ---
+h        1       2       3       4
+n                                 
+3  -0.0017  0.0026  0.0040  0.0060
+5   0.0003  0.0049  0.0063  0.0077
+10  0.0012  0.0046  0.0053  0.0061
+20  0.0020  0.0048 -0.0026 -0.0193
+
+--- Per gruppo (media su tutti i periodi e orizzonti) ---
+           slope    corr  eff_code  n_str
+group                                    
+index    -0.0357 -0.0330    0.0466      2
+fx_cross -0.0214 -0.0189    0.0377      3
+energy   -0.0102 -0.0092    0.0527      3
+fx_major -0.0067 -0.0062   -0.0146      7
+metal     0.0048  0.0119   -0.0508      5
+bond      0.0082  0.0063   -0.0079      3
+agri      0.0131  0.0125   -0.0720      5
+crypto    0.0796  0.0687   -0.2507      2
+
+Strumenti con pendenza media negativa (ritorno alla media): 16 su 30
+Gruppi con pendenza media negativa: 4 su 8
+
+NOTA sui costi: 'eff_code' e' in unita' di ATR giornaliero. Lo spread su D1
+vale una frazione molto piccola dell'ATR, ma NON e' zero e qui non e' sottratto.
+Nessuna riga di questa tabella e' un risultato: e' la mappa da cui, semmai,
+si sceglie UNA configurazione da pre-registrare.
