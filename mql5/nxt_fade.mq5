@@ -32,9 +32,20 @@
 //|   ne prende una alla volta -> meno trade per asset. Confronta la   |
 //|   DISTRIBUZIONE per-trade (win%/E[R]), non il numero di trade.     |
 //|   Divergenza sui numeri per-trade = bug -> NON deployare.          |
+//|                                                                   |
+//|  REGISTRO DELLE CORREZIONI                                        |
+//|   2026-08-27  pendenti orfani / strumento congelato dopo riavvio. |
+//|   2026-09-17  v1.10 - RIMOSSO il ramo di ingresso A MERCATO.      |
+//|     Quando il prezzo ha gia' oltrepassato l'entry il setup ora si |
+//|     SALTA (variante SKIP di entry_fill_audit.py). Il ramo vecchio |
+//|     violava insieme SL 1R, TP 3R e R=28.6% dell'ampiezza, con     |
+//|     rischio reale fino a 4x e RR fino a 1:0.00, ed era il motivo  |
+//|     per cui il forward e' stato AZZERATO il 27/08 (prereg sez.11).|
+//|     Non conta come trial: STRATEGY_LIFECYCLE sez.3, correzione di |
+//|     bug + esecuzione modellata in modo piu' realistico.           |
 //+------------------------------------------------------------------+
 #property copyright "Trading System Workspace"
-#property version   "1.00"
+#property version   "1.10"
 #property strict
 
 #include <Trade\Trade.mqh>
@@ -428,26 +439,48 @@ void ArmSetup(const bool is_short, const double hi, const double lo,
    double stops = (double)SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL) * _Point;
    string cm = InpStrategyName;
    bool ok = false;
+   bool skipped = false;   // entry gia' oltrepassata -> setup NON preso (variante SKIP)
 
    if(is_short)
    {
       // Il prezzo ritraccia SCENDENDO fino all'entry (L[j]<=entry nel .py) -> SELL STOP
-      // sotto il mercato; se il prezzo ha gia' oltrepassato l'entry -> market.
+      // sotto il mercato. Se il prezzo ha gia' oltrepassato l'entry il setup si SALTA.
       double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
       if(bid > entry + stops)
          ok = g_trade.SellStop(vol, entry, _Symbol, sl, tp, ORDER_TIME_GTC, 0, cm);
       else
-         ok = g_trade.Sell(vol, _Symbol, 0.0, sl, tp, cm);
+         skipped = true;
    }
    else
    {
       // Il prezzo ritraccia SALENDO fino all'entry (H[j]>=entry) -> BUY STOP sopra il
-      // mercato; se gia' oltre -> market.
+      // mercato. Se il prezzo ha gia' oltrepassato l'entry il setup si SALTA.
       double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
       if(ask < entry - stops)
          ok = g_trade.BuyStop(vol, entry, _Symbol, sl, tp, ORDER_TIME_GTC, 0, cm);
       else
-         ok = g_trade.Buy(vol, _Symbol, 0.0, sl, tp, cm);
+         skipped = true;
+   }
+
+   // --- FIX 2026-09-17: variante SKIP, niente ingressi a mercato -------------
+   // Definizione autorevole: analysis/nxt/entry_fill_audit.py righe 131-132,
+   //   fa = cb + 1;  already = (O[fa] > entry) if pos_long else (O[fa] < entry)
+   // "already" si valuta UNA SOLA VOLTA, all'apertura della prima barra
+   // azionabile: se il livello e' gia' oltrepassato il trade NON si prende e la
+   // gamba e' CONSUMATA. Per questo qui si marca g_last_armed_leg: ritentare
+   // alle barre successive eseguirebbe una regola diversa da quella
+   // pre-registrata (e OnNewBar gira a ogni apertura di barra, come il .py).
+   // Il ramo a mercato precedente violava insieme SL 1R, TP 3R e R=28.6%
+   // dell'ampiezza: vedi docs/NXT_FADE_FORWARD_PREREGISTRATION.md sez. 11.
+   if(skipped)
+   {
+      g_last_armed_leg = endtime;
+      PrintFormat("[%s] %s SKIP: entry %s gia' oltrepassata, setup non preso (gamba %s)",
+                  InpStrategyName, _Symbol, DoubleToString(entry, _Digits),
+                  TimeToString(endtime));
+      NotifyTelegram(StringFormat("[SKIP] [%s] %s setup NON preso: entry %s gia' oltrepassata",
+                     InpStrategyName, _Symbol, DoubleToString(entry, _Digits)));
+      return;
    }
 
    if(ok)
