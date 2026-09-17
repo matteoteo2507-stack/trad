@@ -26,15 +26,17 @@ l'affidabilità di una fonte, non l'utilità di uno strumento.
   Elenco completo: [`analysis/intake/lists/quantguild_canale.txt`](../../../../../analysis/intake/lists/quantguild_canale.txt)
   (`num` = posizione nel tab Videos, 1 = più recente).
 
-### Già distillati (8)
+### Già distillati (9)
 
 Gli appunti in `_sorgenti/` sono riassunti **senza ID video**: l'attribuzione è stata ricostruita per
-contenuto il 2026-09-15.
+contenuto il 2026-09-15. **#27 aggiunto in lettura** (blocco B, voce B5): i suoi appunti erano stati
+scambiati per la coda del blocco "Comprehensive Guide to Investing".
 
 | # | video | dove sono gli appunti | distillato in |
 |---|---|---|---|
 | 14 | Risk is always mispriced | `Appunti misti 2026-08-04.txt` righe 129-250 | `04_quant_metodologia` §9 (pre-mortem) |
-| 29 | The Ultimate Guide to Quant Portfolio Management | `quantportfolio managernotes.txt` righe 1-249 | `05_portfolio_rischio` (PCA, CAPM, beta) |
+| 27 | Math to Increase your Sharpe Ratios | `Nuove nozioni teoriche 2026-07-16.txt` righe 495-589 | `05_portfolio_rischio` (varianza a tre termini, indipendenza fisica) |
+| 29 | The Ultimate Guide to Quant Portfolio Management | `quantportfolio managernotes.txt` righe 1-249 **+ `Nuove nozioni teoriche 2026-07-16.txt` righe 331-491** | `05_portfolio_rischio` (PCA, CAPM, beta), `08_asset_allocation_passiva` (EMH, verita' dure, metriche) |
 | 31 | Modeling Tail Risk: A Quantitative Survival Guide | `Nuove nozioni teoriche 2026-07-16.txt` righe 223-330 | `05_portfolio_rischio` (tail risk) |
 | 32 | Compound Annual Growth Rate (CAGR) for Quant Finance | `Nuove nozioni teoriche 2026-07-16.txt` righe 112-222 | `04_quant_metodologia` §8 |
 | 41 | Volatility Risk Premium Explained | `NOZIONI AGGIUNTIVE.txt` righe 392-505 | `05_portfolio_rischio` (VRP) |
@@ -42,9 +44,15 @@ contenuto il 2026-09-15.
 | 44 | How to Derive Volatility Drag | `NOZIONI AGGIUNTIVE.txt` righe 181-391 | `05_portfolio_rischio` (volatility drag) |
 | 76 | 3 Backtesting Pitfalls That Ruin Your Trading Strategy | `Quant backtest notes.txt` | `04_quant_metodologia` §1-4 |
 
-⚠️ **Da attribuire**: il blocco *"Comprehensive Guide to Investing"* in
-`Nuove nozioni teoriche 2026-07-16.txt` (righe 331-588) viene da uno fra **#24, #131, #162**. Le tre
-trascrizioni sono in coda al gruppo 1 (blocco H): confrontarle e segnare quale.
+✅ **Attribuito il 2026-09-17** (vedi [`blocco-H.md`](blocco-H.md)): il blocco *"Comprehensive Guide to Investing"* in
+`Nuove nozioni teoriche 2026-07-16.txt` (righe **331-491**; le righe 495-589 sono #27) viene da **#29
+`LX4Ugaxx9n0` - The Ultimate Guide to Quant Portfolio Management**, cioe' dallo **stesso video** gia' attribuito per
+`quantportfolio managernotes.txt` righe 1-249: un solo video, **due serie di appunti in due file diversi**, che
+coprono meta' video ciascuna. L'ipotesi "uno fra #24, #131, #162" era **sbagliata**: tutti e tre letti per intero,
+zero marcatori. Il conteggio dei gia' distillati resta **9**.
+Marcatori verificati su #29: *"15 years of academic and industrial experience"*, quattro *hard truths*, tabella
+securities/non-securities, startup IA contro Microsoft, EMH nelle tre forme, controfattuali, orologi e arte come
+mercati ortogonali.
 
 Non sono Quant Guild, pur stando negli stessi file: il market update sui semiconduttori, la parte
 "Argo process / gamma exposure" di `quantportfolio managernotes.txt`, lost decades, MMT, outlook
@@ -144,17 +152,20 @@ dubbi nell'elenco completo.
 
 ## Stato
 
-Aggiornato automaticamente alla chiusura della sessione del 2026-09-15 (ultimo download: `2026-09-15T20:21:27+00:00` UTC). Rigenerare i conteggi leggendo `_state.json`.
+**DISTILLAMENTO CHIUSO il 2026-09-17.** Gruppo 1 completo: 81/81 scaricati e **81/81 letti per intero**, piu' 2 video di
+controllo (#29, #35) per l'attribuzione. Uscita finale: [`SINTESI.md`](SINTESI.md). Voce in `DECISIONS.md` (2026-09-17),
+riga in `fondamenti_tecnici/_INTAKE.md`, memoria aggiornata a CHIUSO. **Non riaprire il canale**: il gruppo 2 resta solo
+scaricato, il gruppo 3 escluso.
 
 | blocco | scaricati | letti | file di triage |
 |---|---|---|---|
-| A | 14/14 | 0 | — |
-| B | 5/24 | 0 | — |
-| C | 0/11 | 0 | — |
-| D | 0/11 | 0 | — |
-| E | 0/8 | 0 | — |
-| F | 0/4 | 0 | — |
-| G | 0/6 | 0 | — |
-| H | 0/3 | 0 | — |
+| A | 14/14 | **14** | [`blocco-A.md`](blocco-A.md) ✅ |
+| B | 24/24 | **24** | [`blocco-B.md`](blocco-B.md) ✅ lettura completa; buchi 5–13, mappa con 5 conflitti; righe di sintesi B23–B24 in aggiunta |
+| C | 11/11 | **11** | [`blocco-C.md`](blocco-C.md) ✅ lettura completa; buchi 14–18; da chiudere righe di sintesi C10–C11 e sezione mappa; **C4, C8, C9 classificati male per titolo** (sviluppo personale / motivazionale); C7 in conflitto con il pilastro PAC (mappato, non riaperto) |
+| D | 11/11 | **11** | [`blocco-D.md`](blocco-D.md) OK lettura completa; buchi 20-29; sintesi e buchi chiusi |
+| E | 8/8 | **8** | [`blocco-E.md`](blocco-E.md) OK lettura completa; buchi 30-35; 2 conflitti in mappa |
+| F | 4/4 | **4** | [`blocco-F.md`](blocco-F.md) OK lettura completa; buchi 36-39; nessun conflitto (blocco meno denso: il valore e' l'errore standard del MC, non le tecniche) |
+| G | 6/6 | **6** | [`blocco-G.md`](blocco-G.md) OK lettura completa; buchi 40-45; 3 conflitti in mappa (analisi tecnica non confutabile; alpha "non serve significativo"; gamba di copertura, seconda occorrenza) |
+| H | 3/3 (+2 di controllo) | **5** | [`blocco-H.md`](blocco-H.md) OK **attribuzione RISOLTA: e' #29 `LX4Ugaxx9n0`**, non uno dei tre candidati. Buchi 46-48 |
 | altri video del canale | 3 scaricati fuori dal gruppo 1 | — | — |
-| SINTESI | — | — | — |
+| SINTESI | — | — | [`SINTESI.md`](SINTESI.md) **CHIUSA**: catalogo per 9 domini, 48 buchi in 4 fasce di priorita', 14 conflitti |

@@ -11,6 +11,92 @@
 
 ---
 
+## 2026-09-17 — Distillamento Quant Guild **CHIUSO**: 81 video letti per intero, **48 buchi di metodo**, zero strategie, zero pre-registrazioni
+
+**Cosa è stato fatto.** Secondo distillamento del canale **Quant Guild** (Roman Paolucci), a **cattura ampia**
+([[feedback_distillazione_cattura_ampia]]): gruppo 1 = **81 video letti integralmente** dalle copie di lettura, in
+otto blocchi tematici, più 2 video scaricati per risolvere un'attribuzione. Output:
+[`fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/quantguild/SINTESI.md`](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/quantguild/SINTESI.md)
+(catalogo per dominio + buchi + conflitti), schede per video in `quantguild/blocco-A..H.md`, diario di lavoro in
+`quantguild/PIANO.md`. Registrato in [`_INTAKE.md`](fondamenti_tecnici/_INTAKE.md).
+
+**Natura della fonte, che cambia cosa ci si può aspettare.** A differenza del funnel Chart Fanatics (che cercava
+strategie e ne ha trovate zero), questa è una fonte di **metodo statistico**. Non c'era nulla da importare come
+strategia e infatti **nessuna pre-registrazione è stata aperta**: il budget esterno resta intatto. Ciò che ha prodotto
+sono **48 buchi** nel nostro impianto e **14 conflitti** da mappare.
+
+### Le sei cose che cambiano un verdetto, e costano poco
+
+1. **Potenza e dimensione campionaria** $n\approx(z\sigma/E)^2$. Senza, un NO-GO non distingue *"non c'è edge"* da
+   *"non potevo vederlo"*. Con un effetto di +0,04R servirebbero **~36.000 trade**: la maggior parte dei nostri NO-GO
+   non ha mai dichiarato quale effetto era in grado di rilevare.
+2. **Filtraggio vs lisciamento** come criterio **generale** contro il look-ahead. Oggi il repo copre un caso singolo
+   ([[reference_regime_timeline_lookahead]]); la regola è che **ogni finestra centrata** e ogni stima che usa il futuro
+   del campione (Baum-Welch, medie centrate, smoother) è look-ahead se usata come segnale.
+3. **L'errore standard delle nostre stime Monte Carlo non viene mai riportato.** Con 1.000 permutazioni il SE di un
+   p-value vicino a 0,05 vale ~0,7 punti percentuali: **"p = 0,048" e "p = 0,062" non sono distinguibili** dal numero
+   di repliche scelto. Tocca ogni verdetto vicino alla soglia e la regola di futilità DSR.
+4. **La finestra di misura del conto live non è pre-registrata.** La fonte esibisce, sullo stesso conto e sullo stesso
+   anno, **Sharpe 0,88** (da inizio anno) e **6,28** (partendo dal minimo): è il *look-elsewhere* applicato alla **data
+   d'inizio**. Per le strategie il periodo è pre-registrato; per il conto no, e il conto oggi mescola attività diverse.
+5. **Nessuna correlazione nei nostri documenti dichiara frequenza e finestra.** Esempio misurato dalla fonte:
+   JNJ/CMG stanno a **0,01** su rendimenti annuali, **0,13** su mobile mensile, **0,17** su mobile a 60 giorni
+   **con punte a 0,73**. Due attivi "scorrelati" possono essere quasi identici **proprio nella finestra in cui si
+   subisce il drawdown**. Riguarda `TSMOM_PREREGISTRATION`, `TREND_EXIT_PLAYGROUND_PREREGISTRATION`,
+   `INVESTMENT_ALGO_DESIGN`, `INVESTING_PILLAR_PLAN`. **Costo: una riga per documento.**
+6. **Backtest per eccedenze** delle soglie dichiarate e **test di indipendenza degli esiti**: tutte le nostre soglie
+   i.i.d. poggiano su un'ipotesi mai verificata.
+
+### Numeri ricalcolati — più volte **contro** la fonte
+Dove si poteva ricalcolare, si è ricalcolato. La rovina del giocatore nel suo esempio è **88,4%**, non *"certa anche
+con un vantaggio"* come afferma. Il vantaggio della roulette americana (**−5,26%**) è invece corretto. Le statistiche
+dichiarate sui mercati sono quasi tutte **in campione e senza costi** (Sharpe 2,72 del long-short; 3,01 in
+addestramento, che lui stesso dichiara sovradattamento) → registrate come **non-evidenza**.
+
+### Tre conferme esterne di decisioni già prese — **nessuna riapertura**
+- **Stock Selector archiviato** ([[project_stock_selector_eval_2026_06]]): il beta non si elimina scegliendo bene
+  (VRT: beta **2,22**, drawdown **61%** contro **20%** del mercato). Arriviamo alla stessa conclusione per due strade
+  indipendenti, la nostra empirica e la sua strutturale.
+- **I due secchi del PAC**: *"e se fra sei anni ti servissero i soldi e ci fosse un −30%?"* è esattamente la ragione del
+  secchio cuscinetto in `docs/INVESTING_PILLAR_PLAN.md`.
+- **Decenni persi**: già nel repo (`08`) con numeri migliori e con la risposta strutturale (i decenni persi di Italia e
+  Giappone furono **locali** → All-World).
+
+### Conflitti per la mappa dei modelli (i tre che contano)
+- **"L'analisi tecnica non si può confutare"**. *Condizioni*: vero per l'**abilità discrezionale** di chi sceglie
+  **quando** applicare una regola; falso come affermazione generale. *Stato*: **il NULL a 384 trial sui livelli resta**
+  ([[project_level_research_v1_null_2026_07_06]]) — falsificava regole **meccaniche**, che era il bersaglio. Si aggiunge
+  la precisazione che quel NULL **non copre il discrezionale**, e che il discrezionale si misura con il **track record
+  prospettico pre-registrato**: strada che abbiamo già percorso con successo sui segnali del mentore
+  ([[project_mentor_signals_edge_2026_07_08]]). **La confutabilità che la fonte dichiara impossibile, noi l'abbiamo
+  già esercitata.**
+- **"Non è la domanda se l'alpha sia consistente e statisticamente significativo"** (analogia del fuoricampo).
+  *Condizioni*: coerente per un **allocatore con mandato**, che opera comunque e deve solo restare in posizione.
+  *Contraddice* frontalmente `docs/STRATEGY_LIFECYCLE.md` e [[feedback_mass_search_vs_preregistration]] per chi deve
+  **decidere se accendere**. *Stato*: **la nostra posizione resta**; si registra la distinzione fra problema di
+  **selezione** (nostro) e di **esecuzione** (suo).
+- **Gamba di copertura con monetizzazione**: ora a **tre occorrenze** (E2, G6, #29), sempre presentata come corso a
+  pagamento, **mai** con un fuori campione, i costi o i parametri. *Stato*: **invariato** — resta la nota
+  "speculativo/promozionale, da verificare" in `08_asset_allocation_passiva`. **Tre video della stessa fonte con lo
+  stesso conflitto d'interesse non fanno tre conferme.**
+
+### Un'attribuzione risolta, e l'errore che l'aveva bloccata
+Il blocco di appunti orfano *"Comprehensive Guide to Investing"* (`Nuove nozioni teoriche 2026-07-16.txt`, righe
+331-491) è di **#29 `LX4Ugaxx9n0` — The Ultimate Guide to Quant Portfolio Management**, cioè dello **stesso video**
+già attribuito per `quantportfolio managernotes.txt` righe 1-249: **un video, due serie di appunti in due file
+diversi**, che coprono metà video ciascuna. L'ipotesi registrata nel piano (*"uno fra #24, #131, #162"*) era
+**sbagliata**: i tre candidati sono stati letti per intero, **zero marcatori**.
+**Regola che ne esce**: un blocco di appunti orfano va cercato **per contenuto sull'intero canale**, non fra i video
+"non ancora distillati" — un video già distillato può aver prodotto **più blocchi**, e il titolo del riassunto è
+generato dal sintetizzatore, quindi **non coincide** con quello del video. I già distillati restano **9**.
+
+### Cosa NON è stato fatto, di proposito
+**Nessuno dei 48 buchi è stato implementato.** Sono identificati e ordinati per priorità in `SINTESI.md`; la decisione
+su cosa installare si prende con l'utente. Nessuna strategia importata, nessuna pre-registrazione aperta, nessuna
+decisione esistente riaperta.
+
+---
+
 ## 2026-09-15 — Ripresa dopo 19 giorni: il fade resta acceso **per scelta**, trade2sync **in prova**, secondo distillamento Quant Guild a **cattura ampia**
 
 **Stato trovato — verificato in MT5, non nel repo.**
@@ -1515,6 +1601,41 @@ che calza il contesto. È l'estensione naturale del principio "edge condizionato
   "non cercare". La formulazione corretta è **"cerca pure, ma deflaziona sul numero vero e non
   toccare l'holdout"** — e gli strumenti per farlo li abbiamo già in
   [`core/quant_metrics.py`](core/quant_metrics.py). Fonte del conflitto: Noel T./SQX, 2026-08-17.
+- *"L'analisi tecnica non si può confutare: non puoi rigiocare lo stesso evento tecnico 10.000
+  volte, e comunque non sono obbligato a usarla sempre"* (Quant Guild, #119, distillamento
+  2026-09-17) **vs** i nostri **384 trial pre-registrati** che hanno chiuso la ricerca sui livelli
+  ([[project_level_research_v1_null_2026_07_06]]). **Si separa per oggetto, non per merito.**
+  L'argomento è **corretto** su un punto: un backtest meccanico falsifica **quella regola
+  meccanica**, non l'abilità di chi la applica **selettivamente**; sono due ipotesi diverse.
+  È **insufficiente** su un altro: da ciò non segue che l'abilità discrezionale sia
+  **inosservabile** — è osservabile con il **track record prospettico pre-registrato** di quello
+  specifico operatore, che è esattamente la strada già percorsa sui segnali del mentore
+  ([[project_mentor_signals_edge_2026_07_08]]: direzione giusta 67-72% vs 32% casuale, stabile su
+  6 mesi, robusta al ritardo). **Condizione operativa**: il NULL sui livelli **resta valido e non
+  si riapre** (il suo bersaglio erano regole meccaniche); e **nessun** NULL meccanico va citato
+  come prova contro un operatore discrezionale — per quello serve il suo track record prospettico.
+- *"Non è la domanda se io possa generare alpha in modo consistente e statisticamente
+  significativo"* (Quant Guild, #25, analogia del fuoricampo: *"devi solo essere in posizione di
+  batterlo"*) **vs** `docs/STRATEGY_LIFECYCLE.md` + [[feedback_mass_search_vs_preregistration]].
+  **Si separa per problema.** La fonte parla da **allocatore con mandato**: opera comunque, il suo
+  problema è l'**esecuzione** e la sopravvivenza in posizione, e lì presidiare il processo (la
+  "media battuta") è la mossa giusta. Noi abbiamo il problema opposto, la **selezione**: decidere
+  **se accendere** una strategia. In una distribuzione a coda destra il singolo esito eccezionale
+  è **esattamente** ciò che il rumore produce (~0,25% di falsi passaggi × 10.000 candidati ≈ 25
+  "fuoricampo" dal nulla). **Condizione operativa**: per decidere se accendere, la significatività
+  corretta per molteplicità **è** la domanda; il criterio "resta in posizione" vale **dopo**, sul
+  capitale già allocato.
+- *"Portfolio engineering con gamba di copertura e monetizzazione del drawdown: batte il
+  portafoglio non coperto sul lungo periodo"* (Quant Guild, **tre video**: #47, #38 e #29)
+  **vs** il pilastro passivo deciso ([[project_stock_selector_eval_2026_06]],
+  `docs/INVESTING_PILLAR_PLAN.md`). **Condizioni di validità: nessuna verificabile.** In tre
+  occorrenze: mai un fuori campione, mai i costi della copertura, mai i parametri, e in tutte e tre
+  il rimando a un corso a pagamento dello stesso autore. **Stato: parcheggiato, invariato** — resta
+  la nota *"speculativo/promozionale, da verificare"* in `08_asset_allocation_passiva`.
+  **Regola generale che ne discende**: *più occorrenze della stessa affermazione dalla stessa fonte
+  non sono conferme indipendenti*. Le conferme si contano per **fonte**, non per **occorrenza** —
+  vale anche al contrario di come l'abbiamo usata in passato (le 4 conferme esterne del lead
+  playground contano perché erano **4 fonti diverse**).
 
 Operativamente la mappa vive in due posti: il **registro di intake**
 ([fondamenti_tecnici/_INTAKE.md](fondamenti_tecnici/_INTAKE.md)) traccia stato e destinazione di
