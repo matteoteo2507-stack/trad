@@ -185,15 +185,61 @@ Sui **prodotti**, la fonte è US-centrica (CD, conti FDIC-insured, high-yield sa
 
 ---
 
-### Nota sul blocco "portfolio engineering con hedge leg" (speculativo/promozionale, da verificare)
+### Nota sul blocco "portfolio engineering con hedge leg" — **CHIUSA il 2026-09-17** (era: speculativo/promozionale, da verificare)
 
-La fonte include una sezione che propone l'uso di un ETF alternativo (KMLM, trend following) come "hedge leg" su un portafoglio SPY, con leva per mantenere l'esposizione beta. I numeri citati (Sharpe ~0,79 vs 0,77, max drawdown -22% vs -25%, backtest 5 anni) provengono da un singolo backtest in-sample su un periodo specifico, senza walk-forward ne out-of-sample validation. La conclusione — che l'active risk allocation superi sistematicamente il passive investing — e una tesi commerciale tipica delle societa di gestione quantitativa, non un risultato peer-reviewed. Il concetto di volatility drag e reale e ben fondato; la soluzione proposta (leva + hedge leg su 5y backtest) non costituisce evidenza robusta. Non riprodurre i numeri come fatto; considerare il concetto di diversificazione con asset a bassa correlazione come principio valido ma non come ricetta operativa validata.
+Due varianti della stessa idea sono arrivate da fonti diverse. Vanno tenute insieme perche' condividono il meccanismo
+— ridurre l'erosione da volatilita' per alzare la crescita geometrica — e quindi **la stessa condizione di pareggio**.
 
-> Derivazione formale del volatility drag ($R_G \approx \bar R - \sigma^2/2$) e degli **orthogonal return streams** in [[05_portfolio_rischio]]. Il principio (drawdown piu basso → meno variance drain → miglior crescita geometrica) e solido; resta valida la cautela qui sopra sulle *ricette* levered-hedge da singolo backtest. Eventuale terzo secchio managed-futures/trend nel pilastro investing: trattarlo come ipotesi da validare su correlazione forward reale, non come fatto.
->
-> **Corroborazione esterna** (review FinceptTerminal, 2026-06-14): un analizzatore managed-futures in impostazione CFA giudica la classe *"The Flawed"* — crisis-alpha che non ripaga i costi 2&20, capacity constraints, meglio **replica via ETF trend low-cost o saltare**. Allineato alla cautela qui sopra. Decisione operativa: terzo secchio **RIMANDATO a fase 2-3** ([../../DECISIONS.md](../../DECISIONS.md)).
+**Variante 1 — hedge leg con ETF trend following** (fonte: `Petrodollar ed ETF.txt`). Propone KMLM come gamba di
+copertura su un portafoglio SPY, con leva per mantenere l'esposizione beta. Numeri citati: Sharpe ~0,79 vs 0,77, max
+drawdown -22% vs -25%, backtest 5 anni — **un singolo backtest in campione**, senza walk-forward ne' fuori campione.
 
----
+**Variante 2 — hedge leg con put lunghe e monetizzazione** (fonte: Quant Guild, 3 video + 7 letti apposta il
+2026-09-17; dettaglio in
+[`_sorgenti/insight_da_yt/_triage/quantguild/copertura.md`](../_sorgenti/insight_da_yt/_triage/quantguild/copertura.md)).
+**Claim chiuso.** Tre motivi: il costo della protezione **non viene mai prezzato** in nessuno dei 10 video; la regola di
+monetizzazione e' **dichiaratamente non pubblicata** (*"stavo pensando di pubblicare le note... non so bene cosa
+farne"*, e il resto e' dentro un corso a pagamento); l'unica dimostrazione numerica ha i **numeri sbagliati**
+(dichiara crescita geometrica 0% con media 15% e volatilita' 30%: con $g \approx \mu - \sigma^2/2$ sono **+10,5%**, e
+per azzerarla servirebbe una volatilita' del **54,8%**).
+
+🔧 **La condizione di pareggio, che vale per entrambe le varianti e nessuna delle due fonti enuncia.** Se la gamba costa
+$c$ all'anno e porta la volatilita' da $\sigma$ a $k\sigma$, si ripaga con la sola riduzione dell'erosione **solo se**
+
+$$\sigma > \sqrt{\frac{2c}{1-k^2}}$$
+
+| costo annuo della gamba | porta la vol a | serve $\sigma$ di portafoglio maggiore di |
+|---|---|---|
+| 1,0% | 50% | 16,3% |
+| 2,5% | 50% | **25,8%** |
+| 2,5% | 70% | 31,3% |
+| 4,0% | 50% | 32,7% |
+
+**L'erosione disponibile e' piccola**: a $\sigma$=18% vale **1,62%/anno**, a 20% vale 2,00%/anno. Su un portafoglio
+azionario diversificato, **anche azzerando del tutto la volatilita'** si recupererebbero ~1,6 punti l'anno — meno del
+2,5% che la gamba costa nell'esempio della fonte stessa. **Il conto torna solo a volatilita' alta**, ed e' esattamente
+per questo che entrambe le varianti **accoppiano la gamba alla leva** (dichiarato in tutte e due, mai con la
+conseguenza tratta): la leva alza $\sigma$, la $\sigma$ alta rende l'erosione grande, e l'erosione grande e' cio' che
+rende la copertura pagabile. **Quindi non e' "aggiungi una protezione al tuo ETF": e' un pacchetto azionario-con-leva
+piu' copertura**, che e' una proposta diversa e piu' rischiosa, rivolta a un destinatario diverso.
+
+**Cosa sopravvive, e a quale condizione.** Un argomento regge e non dipende da nessun numero mancante: la **perdita
+tripla** — in una crisi si perde il lavoro, il valore della casa scende e il portafoglio va in drawdown
+**contemporaneamente**, perche' sono esposti allo stesso fattore macro, e *"serve liquidita' esattamente quando serve a
+tutti gli altri"*. Ma **non e' un argomento sul CAGR**: il valore della copertura sta nella correlazione col **capitale
+umano**. Da cui la condizione operativa:
+
+> **La gamba di copertura ha senso quando il capitale finanziario e' grande rispetto al capitale umano residuo.**
+
+Per il nostro PAC **oggi non si applica**, e non di poco: capitale finanziario ~0, decenni di reddito davanti, e un
+drawdown si ricompra con i **versamenti successivi** — che e' la monetizzazione, ottenuta gratis dal piano di accumulo
+invece che comprando opzioni (coerente con [`INVESTING_PILLAR_PLAN`](../../docs/INVESTING_PILLAR_PLAN.md) e con il
+rifiuto del market timing). La domanda torna seria **a ridosso del decumulo**, e anche allora solo con un costo
+dichiarato e una regola scritta prima.
+
+**Regola d'uso**: il concetto di erosione da volatilita' resta reale e ben fondato (vedi la derivazione gia' distillata);
+la **ricetta** no. Non riprodurre i numeri di nessuna delle due varianti come fatto. Se la questione si riapre, si
+riapre con la disuguaglianza qui sopra e un costo misurato, non con un backtest a 5 anni.
 
 ### Decenni persi, sequence risk e aspettative valuation-aware
 

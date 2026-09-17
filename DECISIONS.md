@@ -11,6 +11,45 @@
 
 ---
 
+## 2026-09-17 (2) — Passata mirata sulle opzioni: la **gamba di copertura e' CHIUSA**. Il conto torna solo con la leva
+
+Unica coda aperta del distillamento Quant Guild: il claim della "gamba di copertura con monetizzazione del drawdown",
+parcheggiato **tre volte** senza mai essere deciso. Letti **7 video** del gruppo 2 scelti perche' toccano il claim
+(non e' l'apertura del gruppo 2, che resta chiuso), con i **criteri di qualifica/chiusura dichiarati prima** della
+lettura: [`copertura.md`](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/quantguild/copertura.md).
+
+**Esito: CHIUSO.** Il claim forte — *"la copertura migliora il CAGR di lungo periodo"* — cade per tre motivi:
+il costo non e' mai prezzato in 10 video; la regola di monetizzazione e' **dichiaratamente non pubblicata**
+(*"stavo pensando di pubblicare le note... non so bene cosa farne"*, il resto e' in un corso a pagamento);
+l'unica dimostrazione numerica e' **sbagliata** (dichiara crescita geometrica 0% con mu=15% e sigma=30%: ricalcolata
+vale **+10,5%**, e per azzerarla servirebbe **sigma=54,8%**).
+
+🔧 **Il risultato riusabile — la condizione di pareggio**, che nessuna delle fonti enuncia e che vale anche per la
+variante KMLM gia' nel repo: una gamba che costa `c` all'anno e porta la volatilita' da `sigma` a `k*sigma` si ripaga
+con la sola riduzione dell'erosione **solo se `sigma > sqrt(2c / (1 - k^2))`**. Con c=2,5% e k=0,5 serve
+**sigma > 25,8%**; un azionario diversificato sta a 15-20%, dove l'erosione totale vale **1,1-2,0%/anno** — cioe'
+**meno di quanto costa la gamba**, anche azzerando tutta la volatilita'. **Il conto torna solo a volatilita' alta**, ed
+e' esattamente per questo che entrambe le fonti accoppiano la gamba alla **leva** senza trarne la conseguenza: la
+proposta reale non e' "aggiungi protezione al tuo ETF", e' un **pacchetto azionario-con-leva piu' copertura**.
+
+**Cosa sopravvive, con condizione dichiarata.** L'argomento della **perdita tripla** (in una crisi lavoro, casa e
+portafoglio crollano insieme perche' condividono il fattore macro; *"serve liquidita' quando serve a tutti"*) e'
+valido, ma **non e' un argomento sul CAGR**: e' sulla correlazione col **capitale umano**. Condizione operativa:
+*la gamba serve quando il capitale finanziario e' grande rispetto al capitale umano residuo*. **Oggi non si applica**
+(capitale ~0, decenni di reddito davanti, e il drawdown si ricompra con i versamenti del PAC — la monetizzazione
+gratis). Torna seria **a ridosso del decumulo**, e solo con costo dichiarato e regola scritta prima.
+
+**Aggiornati**: la nota in `08_asset_allocation_passiva` (da "da verificare" a **chiusa**, con la disuguaglianza e la
+condizione), la Mappa dei modelli, la memoria. **Nessuna azione operativa**: non abbiamo un broker opzioni e non
+serve averlo.
+
+**Nota di metodo, a mio carico**: avevo scelto `#65` ("Why Hedging Ruins Everything") aspettandomi la contraddizione
+interna della fonte. **Ipotesi sbagliata**: e' un video motivazionale su startup e relazioni, non sulla copertura
+finanziaria. Contiene pero' un difetto che vale la pena registrare — presenta come matematica un argomento
+**infalsificabile** (due diagrammi di Venn e nessun dato), cioe' lo stesso difetto che il canale rimprovera ai guru.
+
+---
+
 ## 2026-09-17 — Distillamento Quant Guild **CHIUSO**: 81 video letti per intero, **48 buchi di metodo**, zero strategie, zero pre-registrazioni
 
 **Cosa è stato fatto.** Secondo distillamento del canale **Quant Guild** (Roman Paolucci), a **cattura ampia**
@@ -1626,16 +1665,31 @@ che calza il contesto. È l'estensione naturale del principio "edge condizionato
   corretta per molteplicità **è** la domanda; il criterio "resta in posizione" vale **dopo**, sul
   capitale già allocato.
 - *"Portfolio engineering con gamba di copertura e monetizzazione del drawdown: batte il
-  portafoglio non coperto sul lungo periodo"* (Quant Guild, **tre video**: #47, #38 e #29)
-  **vs** il pilastro passivo deciso ([[project_stock_selector_eval_2026_06]],
-  `docs/INVESTING_PILLAR_PLAN.md`). **Condizioni di validità: nessuna verificabile.** In tre
-  occorrenze: mai un fuori campione, mai i costi della copertura, mai i parametri, e in tutte e tre
-  il rimando a un corso a pagamento dello stesso autore. **Stato: parcheggiato, invariato** — resta
-  la nota *"speculativo/promozionale, da verificare"* in `08_asset_allocation_passiva`.
-  **Regola generale che ne discende**: *più occorrenze della stessa affermazione dalla stessa fonte
+  portafoglio non coperto sul lungo periodo"* (Quant Guild, #47/#38/#29; e nella variante KMLM
+  anche dagli appunti `Petrodollar ed ETF.txt`) **vs** il pilastro passivo deciso
+  ([[project_stock_selector_eval_2026_06]], `docs/INVESTING_PILLAR_PLAN.md`).
+  **CHIUSO il 2026-09-17** con una passata mirata di 7 video
+  ([`copertura.md`](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/quantguild/copertura.md), criteri
+  dichiarati **prima** della lettura). Motivi: il costo della protezione non e' mai prezzato in 10
+  video; la regola di monetizzazione e' **dichiaratamente non pubblicata** (sta in un corso a
+  pagamento); l'unica dimostrazione numerica e' **sbagliata** (crescita geometrica dichiarata 0% con
+  mu=15% e sigma=30%: sono +10,5%; per azzerarla servirebbe sigma=54,8%).
+  🔧 **Condizione di pareggio ricavata da noi**, valida per **entrambe** le varianti: una gamba che
+  costa `c` all'anno e porta la volatilita' da `sigma` a `k*sigma` si ripaga con la sola riduzione
+  dell'erosione **solo se `sigma > sqrt(2c/(1-k^2))`** — con c=2,5% e k=0,5 serve **sigma > 25,8%**,
+  mentre un azionario diversificato sta a 15-20% (erosione 1,1-2,0%/anno). **Il conto torna solo a
+  volatilita' alta**, ed e' per questo che entrambe le fonti accoppiano la gamba alla **leva** senza
+  trarne la conseguenza: non e' "aggiungi protezione al tuo ETF", e' un **pacchetto con leva**.
+  **Cosa sopravvive, con condizione**: l'argomento della **perdita tripla** (lavoro + casa +
+  portafoglio crollano insieme perche' condividono il fattore macro) non e' un argomento sul CAGR ma
+  sulla correlazione col **capitale umano**. Condizione: *la gamba serve quando il capitale
+  finanziario e' grande rispetto al capitale umano residuo* — **oggi per noi no** (capitale ~0,
+  decenni di reddito, e il drawdown si ricompra con i versamenti del PAC); torna seria **a ridosso
+  del decumulo**. **Stato: chiuso, non si riparcheggia.**
+  **Regola generale che ne discende**: *piu' occorrenze della stessa affermazione dalla stessa fonte
   non sono conferme indipendenti*. Le conferme si contano per **fonte**, non per **occorrenza** —
   vale anche al contrario di come l'abbiamo usata in passato (le 4 conferme esterne del lead
-  playground contano perché erano **4 fonti diverse**).
+  playground contano perche' erano **4 fonti diverse**).
 
 Operativamente la mappa vive in due posti: il **registro di intake**
 ([fondamenti_tecnici/_INTAKE.md](fondamenti_tecnici/_INTAKE.md)) traccia stato e destinazione di
