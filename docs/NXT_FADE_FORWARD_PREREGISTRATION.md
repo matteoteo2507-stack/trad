@@ -303,6 +303,25 @@ dentro campione non esisteva**, quindi non c'era nulla da validare.
 | budget famiglia | invariato: **2 di 3**, holdout **già aperto** |
 | nome | la famiglia è **FADE**; il rinominare **non** azzera il contatore (il fade è l'inversione della continuazione NXT sugli stessi dati) |
 
+### ⚠️ Aggiornamento 2026-09-17 — le condizioni sono ancora aperte, e ora c'e' un numero
+
+Verificato **nel sorgente** (`mql5/nxt_fade.mq5`, righe 432-451): l'EA **entra ancora a mercato**
+quando il prezzo ha superato l'entry, con volume dimensionato sulla distanza teorica. La condizione 3
+qui sotto e' **non soddisfatta**, come la 1 e la 2.
+
+Aggiunto il calcolo che mancava, in [`FADE_LIVE_AUDIT_PROTOCOL.md`](FADE_LIVE_AUDIT_PROTOCOL.md):
+
+- con **SD = 1,8R**, il campione live (~46 trade onesti) rileva solo effetti oltre **0,74R** — un win
+  rate del 43,5% su una 1:3, che **nessuno ha mai proposto**;
+- il confronto fra ramo pendente e ramo a mercato, che giustificava di lasciare l'EA rotto,
+  richiederebbe **3.362 trade per ramo** (~12 anni): la giustificazione **non sopravvive**;
+- il campione onesto non e' solo piccolo, e' **selezionato**: un ingresso a mercato occupa lo slot
+  (una posizione per strumento) e blocca i setup successivi, e lo fa **quando il prezzo si e' mosso
+  in fretta** — cioe' non a caso;
+- per risolvere il FADE servirebbero **~11 mesi** (rilevare +0,31R) o **~3,6 anni** (KILL statistico).
+
+**Condizione 5, aggiunta**: N va dichiarato **sulla base della potenza**, non scelto a occhio.
+
 ### Cosa serve prima che esista un forward nuovo
 
 1. Una **primitiva unica** `resolve_trade()` in `core/`, con la convenzione sulla barra di fill e sul

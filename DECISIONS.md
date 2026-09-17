@@ -11,6 +11,56 @@
 
 ---
 
+## 2026-09-17 (3) — FADE: il motivo per cui l'EA era lasciato rotto **non sopravvive a un calcolo di potenza**
+
+Primo lavoro fatto **applicando** i buchi del distillamento invece di catalogarli. Documento vincolante:
+[`FADE_LIVE_AUDIT_PROTOCOL.md`](docs/FADE_LIVE_AUDIT_PROTOCOL.md), scritto **prima di guardare qualunque esito**
+(nessun P&L, nessun R, nessuna interrogazione dello storico MT5 in questa sessione).
+
+**Il fatto verificato nel sorgente, non nei resoconti.** `mql5/nxt_fade.mq5` righe **432-451**: l'EA **entra ancora a
+mercato** quando il prezzo ha superato l'entry pre-registrata (`else ok = g_trade.Sell(...)`), con volume dimensionato
+sulla distanza **teorica** `entry - sl` (riga 427). Il difetto del 27/08 **non e' stato riparato**: la patch di allora
+sistemo' i pendenti orfani, non questo ramo.
+
+**Il calcolo che nessuno aveva fatto.** Con SD = 1,8R per trade (numero gia' nostro, dichiarato il 2026-08-04):
+
+| | n | effetto minimo rilevabile (80%) |
+|---|---|---|
+| ramo onesto | ~46 | **0,744R** — un win rate del **43,5%** su una 1:3, che nessuno ha mai proposto |
+| tutto il campione | ~82 | 0,557R |
+
+E per il **confronto fra i due rami** — la seconda motivazione del 2026-09-15, quella per cui l'EA non andava
+riparato — la differenza prevista e' **0,123R**, che richiede **3.362 trade per ramo**, cioe' **circa dodici anni**.
+
+> 🔧 **La motivazione n. 2 del 2026-09-15 non era sbagliata come ragionamento: era non verificata come numero.**
+> E' fuori scala di un fattore ~40. E' il buco 2 del distillamento Quant Guild applicato per la prima volta **contro
+> una nostra decisione**, non contro una fonte esterna.
+
+**Il problema piu' grave non e' la potenza, e' la selezione.** Il vincolo *una posizione per strumento* fa si' che un
+ingresso a mercato **occupi lo slot** e blocchi i setup successivi su quello strumento — e l'ingresso a mercato avviene
+**quando il prezzo si e' mosso in fretta contro il ritracciamento atteso**, cioe' per una ragione non casuale. Il ramo
+onesto non e' un sottoinsieme casuale dei setup: e' il complemento di una selezione sistematica.
+**Raccogliere piu' trade con l'EA in questo stato rende la stima piu' precisa attorno al valore sbagliato.**
+
+**Costo in tempo, mai calcolato prima.** Al ritmo del ramo onesto (0,77 trade/giorno): **~11 mesi** per rilevare
++0,31R, **~1,4 anni** per |E| = 0,25R, **~3,6 anni** per un KILL statistico onesto. Il FADE non e' solo non
+dimostrato: **non e' risolvibile in meno di circa un anno**, qualunque sia la risposta.
+
+**Decisioni.**
+1. **Nessun verdetto su E[R] da questo campione**, ne' GO ne' KILL — e il mancato rifiuto del fantasma +0,31R
+   (potenza ~52%) **non conta come evidenza a favore**, dichiarato prima di vedere il dato.
+2. **Il trial #3 resta chiuso.** Delle 4 condizioni del §11 della pre-registrazione, **tre sono non soddisfatte**
+   (primitiva `resolve_trade`, backtest a fill ottenibili con E[R] positivo, EA che rifiuta il setup). Aggiunta la
+   **condizione 5**: N dichiarato sulla base della potenza.
+3. **Si esegue un audit deterministico** (0 trial): tipo di ordine, prezzo di fill, rischio reale, RR, doppioni,
+   e conteggio dei setup persi per slot occupato. Sono verifiche **binarie per trade**, dove n=46 abbonda perche' non
+   si stima un effetto, si controlla una conformita'. **L'audit non guarda il P&L.**
+4. **Aperta all'utente**: riparare l'EA (rifiutare il setup invece di entrare a mercato) oppure spegnerlo. La ragione
+   per lasciarlo com'e' e' decaduta con il §2.3 del protocollo. Se si ripara, il campione raccolto finora **non si
+   somma** a quello nuovo (§4.3, che vale contro di noi come il 27/08).
+
+---
+
 ## 2026-09-17 (2) — Passata mirata sulle opzioni: la **gamba di copertura e' CHIUSA**. Il conto torna solo con la leva
 
 Unica coda aperta del distillamento Quant Guild: il claim della "gamba di copertura con monetizzazione del drawdown",
