@@ -59,6 +59,39 @@ dimostrato: **non e' risolvibile in meno di circa un anno**, qualunque sia la ri
    per lasciarlo com'e' e' decaduta con il §2.3 del protocollo. Se si ripara, il campione raccolto finora **non si
    somma** a quello nuovo (§4.3, che vale contro di noi come il 27/08).
 
+### Esito dell'audit, eseguito lo stesso giorno
+
+EA portato a **v1.10** (commit `bbea38e`): il ramo a mercato **non esiste piu'**, il setup si salta,
+fedele alla definizione della variante SKIP in `entry_fill_audit.py` righe 131-132. **Zero trial**
+(§3: bug fix + esecuzione piu' realistica). Poi audit con
+[`analysis/nxt/execution_audit.py`](analysis/nxt/execution_audit.py) su **90 ingressi**:
+
+| verifica | non conformi | esito |
+|---|---|---|
+| V1 ordine pendente | **40 su 90 (44%)** | ❌ |
+| V2 fill al prezzo pre-registrato | 0 su 50 pendenti | ✅ |
+| V3 rischio reale = inteso | **39**, fino a **4,01×** | ❌ |
+| V4 rapporto 1:3 | **39**, fino a **1:0,00** | ❌ |
+| V5 un setup per strumento | 1 | ❌ |
+
+**Verdetto per la tabella dichiarata prima di guardare**: V1 fallita → i trade **non sono la
+strategia pre-registrata**, il ramo pendente resta **selezionato**, il campione **non e' utilizzabile
+per stimare E[R], ne' ora ne' mai**. I 90 ingressi valgono **zero**, come i 36 del 27/08.
+
+Il **44%** e' peggiore del 40% misurato allora: non un peggioramento del codice — quel ramo non era
+mai stato toccato — ma la conferma che il difetto era **stabile e continuo** (23 su 45 anche dopo il
+fix del 27/08). Unica nota positiva, isolata: **V2 passa su tutti e 50 i pendenti**, quindi il
+meccanismo dell'ordine pre-registrato funziona; era rotto solo il **ripiego**.
+
+⚠️ **Correzione a mio carico**: la prima versione di V3 non valutava gli ordini a mercato
+(`price_open = 0`) e la tabella degli outlier mostrava solo `1,00×`, leggibile come *"va tutto
+bene"*. Il rischio inteso si ricostruisce esattamente da `|tp - sl| / 4`. Corretto prima di
+pubblicare il report.
+
+**Serve ricompilare e ridistribuire l'EA sulla VPS** perche' il fix abbia effetto.
+
+---
+
 ---
 
 ## 2026-09-17 (2) — Passata mirata sulle opzioni: la **gamba di copertura e' CHIUSA**. Il conto torna solo con la leva
