@@ -212,3 +212,59 @@ Al ritmo del ramo onesto (**0,77 trade/giorno**):
 | data | evento |
 |---|---|
 | 2026-09-17 | documento creato, prima di qualunque lettura degli esiti. Calcoli di potenza in DECISIONS 2026-09-17 (3) |
+
+---
+
+## 9. Esito dell'audit — eseguito il 2026-09-17
+
+Motore: [`analysis/nxt/execution_audit.py`](../analysis/nxt/execution_audit.py).
+Report: [`health/fade_execution_audit_2026-09-17.md`](health/fade_execution_audit_2026-09-17.md).
+**Nessun P&L letto**: lo script ha un guard (`_assert_no_pnl`) che solleva un'eccezione se un record
+contiene un campo di risultato.
+
+| # | verifica | conformi | non conformi | esito |
+|---|---|---|---|---|
+| V1 | tipo di ordine e' pendente | 50 | **40** | ❌ **FALLITA** |
+| V2 | fill al prezzo pre-registrato | 50 | 0 | ✅ passata (sui 50 pendenti) |
+| V3 | rischio reale = rischio inteso | 51 | **39** | ❌ **FALLITA** |
+| V4 | rapporto SL/TP = 1:3 | 51 | **39** | ❌ **FALLITA** |
+| V5 | un solo setup attivo per strumento | 89 | **1** | ❌ fallita (1 caso) |
+| V6 | setup che la spec non avrebbe preso | — | **40 su 90 (44%)** | misura della selezione |
+
+**Il danno, in concreto.** I 39 trade non conformi hanno rischiato fino a **4,01×** l'1% previsto, con
+il rapporto rischio/rendimento degradato fino a **1:0,00** — cioe' posizioni che rischiavano il 4%
+dell'equity con premio atteso nullo. I peggiori:
+
+| simbolo | data | rischio reale / inteso | RR reale |
+|---|---|---|---|
+| XAUUSD.cyr | 2026-08-13 12:32 | **4,01×** | 1:0,00 |
+| US100 | 2026-07-31 04:00 | **3,95×** | 1:0,01 |
+| US100 | 2026-08-31 05:00 | **3,84×** | 1:0,04 |
+
+**La buona notizia, isolata**: **V2 passa su tutti e 50 i pendenti**. Quando l'EA riesce a piazzare
+l'ordine pre-registrato, il fill avviene al prezzo giusto. Il meccanismo non e' rotto: era rotto il
+**ripiego** quando il prezzo era gia' oltre.
+
+### Verdetto, secondo la tabella del §5 dichiarata prima di guardare
+
+> **V1 fallisce** → i trade raccolti **non sono la strategia pre-registrata**. Il campione onesto
+> resta **selezionato** (§3) e **non e' utilizzabile per stimare E[R], ne' ora ne' mai.**
+
+Quindi: **nessun verdetto su E[R]**, come previsto. I 90 ingressi raccolti dal 2026-07-24 al
+2026-09-17 valgono **zero** per qualunque conclusione sulla strategia, esattamente come i 36 del
+27/08. Il loro valore e' diagnostico e si esaurisce qui.
+
+⚠️ **Il 44% e' peggiore del 40% misurato il 27/08.** Non e' un peggioramento del codice — il ramo a
+mercato non e' mai stato toccato fino a oggi — ma la conferma che il difetto era **stabile e
+continuo**: ha prodotto 23 ingressi non conformi su 45 solo dopo il fix del 27/08.
+
+### Cosa cambia da qui
+
+1. L'EA e' stato portato a **v1.10** lo stesso giorno: il ramo a mercato **non esiste piu'**, il
+   setup si salta (commit `bbea38e`). Non consuma trial ([`STRATEGY_LIFECYCLE`](STRATEGY_LIFECYCLE.md)
+   §3: correzione di bug + esecuzione piu' realistica).
+2. Serve **ricompilare e ridistribuire** l'EA sulla VPS perche' il fix abbia effetto.
+3. Il campione raccolto finora **non si somma** a quello nuovo (§4.3 della pre-registrazione, che
+   vale contro di noi come il 27/08).
+4. **V6 diventa misurabile in avanti**: da v1.10 ogni skip e' loggato e notificato. Il conteggio dei
+   setup saltati sostituisce il conteggio degli ingressi a mercato come misura della selezione.
