@@ -322,6 +322,43 @@ Aggiunto il calcolo che mancava, in [`FADE_LIVE_AUDIT_PROTOCOL.md`](FADE_LIVE_AU
 
 **Condizione 5, aggiunta**: N va dichiarato **sulla base della potenza**, non scelto a occhio.
 
+### ⚠️ Aggiornamento 2026-09-17 (2) — condizione 2 MISURATA: non e' soddisfatta, e non lo sara'
+
+Condizione 1 **fatta**: primitiva unica [`core/resolve_trade.py`](../core/resolve_trade.py), con le
+cinque convenzioni come parametri espliciti e l'equivalenza con le implementazioni storiche
+**dimostrata** su migliaia di percorsi ([`core/tests/test_resolve_trade.py`](../core/tests/test_resolve_trade.py)).
+
+Condizione 2 **misurata** con [`analysis/nxt/fade_obtainable.py`](../analysis/nxt/fade_obtainable.py),
+su 10.218 setup in 14 anni e 6 asset:
+
+| campione | n | E[R] | BCa 95% |
+|---|---|---|---|
+| **solo fill ottenibili (SKIP), convenzione di riferimento** | **5.506** | **−0,250** | **[−0,287 ; −0,210]** |
+| solo fill ottenibili, convenzione ottimista | 5.506 | −0,186 | [−0,226 ; −0,146] |
+| tutti i setup, col fill fantasma (per confronto) | 10.218 | **+0,409** | [+0,370 ; +0,443] |
+
+Il **46,1%** dei setup ha il livello gia' oltrepassato — identico al valore dell'audit di agosto, che
+e' anche una verifica incrociata della primitiva contro un numero gia' pubblicato.
+
+> **La condizione 2 chiedeva un E[R] positivo sui fill ottenibili. Il valore e' −0,250 con
+> l'intervallo di confidenza interamente negativo su 5.506 trade.** Non e' "non ancora dimostrato":
+> e' **misurato negativo con precisione alta** (SE 0,020). E lo e' **sui dati da cui la strategia e'
+> stata derivata**, cioe' nelle condizioni piu' favorevoli possibili.
+
+L'intero segno positivo del lead veniva dai fill non ottenibili: **+0,409 con il fantasma, −0,250
+senza**. Non e' un aggiustamento, e' un ribaltamento.
+
+**Nota su un mio sospetto risultato infondato**: avevo segnalato che tre implementazioni su quattro
+**scartavano** i trade in timeout (filtro sull'esito, non convenzione). E' vero come difetto, ma qui
+e' **trascurabile**: 10 trade su 10.218 (0,1%), che spostano E[R] di 0,006R. Registrato come difetto
+di metodo da non ripetere, non come causa di nulla.
+
+**Conseguenza sulle condizioni della sez. 11**: la 2 non e' soddisfatta e non c'e' un percorso per
+soddisfarla senza cambiare la strategia — cioe' senza spendere il trial #3 su una variante nuova.
+Si applicano i **kill duri** di [`STRATEGY_LIFECYCLE`](STRATEGY_LIFECYCLE.md) §6a n. 1 (difetto
+metodologico conclamato: i vecchi numeri sono nulli e rifatti da zero) e n. 3 (fallimento di
+breadth). **Verdetto proposto all'utente: KILL della famiglia.** Non lo dichiaro io.
+
 ### Cosa serve prima che esista un forward nuovo
 
 1. Una **primitiva unica** `resolve_trade()` in `core/`, con la convenzione sulla barra di fill e sul
