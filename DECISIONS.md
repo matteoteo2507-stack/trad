@@ -11,6 +11,63 @@
 
 ---
 
+## 2026-09-17 (6) — **B1 CHIUSA** sul criterio dichiarato prima. Ma il nullo non e' piatto: e' **bimodale**
+
+Ultimo tassello della giornata, fatto invece di lasciare B1 al 90% con una "condizione di
+riapertura" — che sarebbe stato un parcheggio travestito da decisione
+([[feedback_un_lavoro_iniziato_si_finisce]]).
+
+**Perche' serviva.** La passata descrittiva misurava una **pendenza lineare**, ma la fonte parla delle
+**code** (*"deviates significantly far"*), e pendenza e code avevano segni opposti su alcuni gruppi.
+La pendenza era il riassunto sbagliato per la domanda.
+
+**Criterio dichiarato nel commit PRIMA di eseguire** (`analysis/meanrev/tails.py`): effetto di coda
+(decile alto di |z|) aggregato per gruppo, contro un nullo **matched** ottenuto ri-allineando z ai
+rendimenti futuri con spostamento circolare — conserva autocorrelazione, volatilita', calendario e
+numerosita', rompe **solo** l'accoppiamento. 300 permutazioni. Un gruppo conferma se eff > 0 **e**
+sopra il 95esimo percentile del nullo. **Soglia: ≥ 5 gruppi su 8.**
+
+| gruppo | eff osservato | percentile nel nullo | |
+|---|---|---|---|
+| energy | **+0,0527** | 100,0% | ✅ ritorno alla media |
+| index | **+0,0466** | 99,7% | ✅ ritorno alla media |
+| fx_cross | **+0,0377** | 100,0% | ✅ ritorno alla media |
+| bond | −0,0079 | 30,7% | no |
+| metal | −0,0508 | 38,3% | no ⚠️ nullo instabile (p95 = +0,77) |
+| fx_major | −0,0146 | 3,7% | no |
+| agri | −0,0720 | **0,0%** | **continuazione** |
+| crypto | **−0,2507** | **0,0%** | **continuazione netta** |
+
+**3 su 8. Sotto la soglia. → B1 CHIUSA.**
+
+### Cosa dice davvero questo risultato
+
+Non e' "non c'e' niente": e' **struttura con segni opposti per gruppo**, che si annulla in aggregato.
+Crypto sta allo 0° percentile sul lato continuazione con la stessa forza con cui energy sta al 100°
+sul lato ritorno alla media.
+
+> ⚠️ **E questo e' esattamente il motivo per cui la soglia era dichiarata prima.** La tentazione ora
+> e' *"tre gruppi confermano, inseguiamo quelli"*. Sarebbe **eleggere un vincitore dalla mappa dopo
+> averla vista** — il p-hacking che il criterio esisteva per impedire. Il claim della fonte era
+> *"mean reversion"* senza condizioni: quel claim e' **falso sui nostri dati**. Un claim
+> **condizionato al gruppo** e' un'ipotesi diversa, che nessuno ha formulato prima di guardare, e che
+> costerebbe un trial.
+
+### Terza corroborazione indipendente del lead playground, nella stessa giornata
+La continuazione e' netta dove la volatilita' e' alta (**crypto −0,25**, agri −0,07) e assente sui
+major FX. Terzo strumento diverso, stesso ordinamento del rho +0,857
+([[project_trend_playground_lead_2026_08_14]]). Non e' conferma statistica — e' convergenza di segno,
+e vale come prior per quando si aprira' A1.
+
+⚠️ **Nota tecnica**: il nullo del gruppo metal e' instabile (p95 = +0,77 contro p50 = +0,004),
+segno che almeno uno strumento del gruppo produce valori estremi. Non cambia il verdetto — metal non
+confermava comunque — ma va guardato se si torna su quel gruppo.
+
+**Costo: 0 trial.** Budget della famiglia FADE ancora 2 di 3, budget pre-registrazioni esterne ancora
+2 di 2-3 nel trimestre.
+
+---
+
 ## 2026-09-17 (5) — B1 (mean reversion Kichev): la fonte dice **molto meno** di quanto le attribuivamo, e la misura descrittiva e' **nulla**
 
 Misura descrittiva, **0 trial**: [`analysis/meanrev/descriptive.py`](analysis/meanrev/descriptive.py),
