@@ -190,7 +190,7 @@ def cmd_live(args: argparse.Namespace) -> int:
 
     broker = None
     if mode == "live":
-        broker = _build_broker(config["broker_account"], copier_cfg)
+        broker = _build_broker(config["broker_account"], config)
         broker.connect()
 
     # Canale reale (sia in dry_run che in live): journal principale.
@@ -233,7 +233,7 @@ def cmd_live(args: argparse.Namespace) -> int:
     return 0
 
 
-def _build_broker(prefix: str, copier_cfg: dict) -> Any:
+def _build_broker(prefix: str, cfg: dict) -> Any:
     """Costruisce un MT5Broker dalle env MT5_<prefix>_LOGIN/PASSWORD/SERVER.
 
     Due parametri sono CRITICI e vanno da config.yaml (2026-08-12):
@@ -254,7 +254,17 @@ def _build_broker(prefix: str, copier_cfg: dict) -> Any:
     if not (login and password and server):
         raise RuntimeError(f"Credenziali {prefix}_* mancanti in .env")
 
-    terminal_path = copier_cfg.get("terminal_path") or None
+    # ATTENZIONE (fix 2026-08-22): questi tre parametri stanno al livello TOP del
+    # config.yaml, non dentro `copier:`. Prima venivano letti da config["copier"] e
+    # risolvevano SEMPRE a None -> terminal_path vuoto -> mt5.initialize() sul
+    # terminale PREDEFINITO. Si legge il top level, col sotto-dict come ripiego.
+    _sub = cfg.get("copier", {}) if isinstance(cfg.get("copier"), dict) else {}
+
+    def _cfg(key, default=None):
+        v = cfg.get(key)
+        return _sub.get(key, default) if v is None else v
+
+    terminal_path = _cfg("terminal_path") or None
     if not terminal_path:
         logger.warning(
             "terminal_path non impostato in config.yaml: mt5.initialize() usera' il "
@@ -267,8 +277,8 @@ def _build_broker(prefix: str, copier_cfg: dict) -> Any:
         password=password,
         server=server,
         terminal_path=terminal_path,
-        symbol_suffix=copier_cfg.get("symbol_suffix", "") or "",
-        symbol_overrides=copier_cfg.get("symbol_overrides") or {},
+        symbol_suffix=_cfg("symbol_suffix", "") or "",
+        symbol_overrides=_cfg("symbol_overrides") or {},
         magic=27050,
     )
 

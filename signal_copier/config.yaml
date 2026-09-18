@@ -12,7 +12,9 @@ channels:
   gfetyydh8959: "gold_5tp"                    # entry_mode=signal (5 TP tutto-in-uno)
 
 # Quale broker MT5 usare in live (riferito alle credenziali MT5_DEMO*_ in .env).
-# MT5_DEMO3 = account MetaQuotes 10685251 (hedge), usato anche per London.
+# MT5_DEMO3 = MetaQuotes-Demo 5054470558, HEDGING, 100.000 EUR (conto congelato
+# dalla pre-registrazione, docs/COPIER_EXECUTION_PREREGISTRATION.md §2).
+# (Il numero 10685251 che stava qui era sbagliato — corretto il 2026-08-22.)
 broker_account: "MT5_DEMO3"
 
 # Installazione MT5 DEDICATA al copier (percorso di terminal64.exe).
