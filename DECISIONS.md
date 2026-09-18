@@ -11,6 +11,74 @@
 
 ---
 
+## 2026-09-18 — **C3 fatta**: soglie di ritiro del copier mentore. L'ipotesi di indipendenza valeva **5,3R**
+
+Prima voce di §8bis mai compilata, e arriva **prima del capitale**: il copier non e' ancora operativo
+(il deploy VPS del 15/09 era fallito). Documento vincolante:
+[`MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md`](docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md), motore
+[`analysis/mentor_signals/withdrawal_thresholds.py`](analysis/mentor_signals/withdrawal_thresholds.py).
+
+**Il profilo che rende le soglie necessarie.** 477 trade, 101 giorni: E[R] **+0,2025**, sd 0,571,
+**82,6% di vincenti**, payoff **+0,46 / −1,03**. L'equity sale quasi sempre e scende di colpo, e
+servono **2,2 vincite per recuperare una perdita**: e' il profilo in cui la tentazione di spegnere nel
+mezzo e' massima proprio quando non andrebbe fatto.
+
+### Il risultato che ha cambiato i numeri
+
+Il Monte Carlo standard rimescola i trade, cioe' **assume che siano indipendenti**. Non lo sono:
+
+| diagnostica | valore |
+|---|---|
+| runs test vinta/persa | **z = −3,37** |
+| autocorrelazione lag 1 / lag 10 | **+0,136** / +0,085 |
+| segnali al giorno | 4,7 (max 9), stesso strumento |
+
+Quando la lettura del mentore e' sbagliata, **sbaglia per tutta la sessione**: le perdite arrivano in
+grappoli, e il rimescolamento distrugge proprio quello.
+
+| simulazione (95° pct, 20.000 percorsi) | maxDD | serie negativa |
+|---|---|---|
+| i.i.d. (rimescola i trade) | **6,84 ± 0,06 R** | 4,88 ± 0,35 |
+| **a blocchi (giorni interi)** | **12,15 ± 0,12 R** | 5,38 ± 0,52 |
+
+> 🔧 **L'ipotesi di indipendenza valeva 5,31R: il 78% di drawdown in meno.** Col metodo standard
+> avremmo messo la soglia a 6,8R e ritirato il copier durante un drawdown che gli capita
+> **normalmente una volta su venti**. E' il **buco 29** del distillamento Quant Guild applicato, e da
+> solo ha quasi raddoppiato la soglia. Gli errori standard sono riportati perche' un percentile e' una
+> stima (**buco 37**).
+
+### Le soglie
+
+| | valore |
+|---|---|
+| **DD di ritiro** | **12 R** |
+| **Serie negativa** | **6 consecutive** |
+| **Finestra minima** | **62 trade** (~13 giorni) |
+
+**12R e non 20R** (il valore che si otterrebbe con E[R] al limite inferiore OOS +0,079): la soglia
+manda in **incubazione**, non in pensione. Un falso allarme costa poco ed e' reversibile; una soglia
+larga fa bruciare capitale vero mentre si aspetta. Si accetta che scatti piu' del 5% se il vero E[R]
+e' basso.
+
+**Criterio di rientro, dichiarato ora**: si torna LIVE quando in simulazione la curva **recupera il
+picco precedente** *e* sono passati almeno **62 trade** dall'ingresso in incubazione. Entrambe.
+Seconda uscita dopo un rientro → **ritirata definitiva**.
+
+### Una buona notizia sulla potenza, per contrasto col FADE
+Il degrado che conta — **da +0,20 a zero** — si vede in **62 trade (~13 giorni)**. Sul FADE ne
+servivano oltre 1.000 anche per la domanda grossa. La differenza e' la deviazione standard:
+**0,571R contro 1,8R**. E' questo che rende il binario governabile. (Un degrado *piccolo*, 0,05R,
+resta invisibile per ~216 giorni: dichiarato, non nascosto.)
+
+### Limiti dichiarati
+Campione **in larga parte in campione** (la OOS e' successiva e su export diverso; la sensibilita' del
+§3 compensa solo in parte) · il **replay non e' il copier**: assume fill entro 6h e la **soglia
+anti-ritardo (C5) e' ancora aperta** · un solo strumento, un solo mentore, cinque mesi.
+
+**Costo: 0 trial.**
+
+---
+
 ## 2026-09-17 (6) — **B1 CHIUSA** sul criterio dichiarato prima. Ma il nullo non e' piatto: e' **bimodale**
 
 Ultimo tassello della giornata, fatto invece di lasciare B1 al 90% con una "condizione di
