@@ -64,10 +64,23 @@ ER_OOS_LOW = 0.079
 
 
 def serie_r():
-    """R per trade (uscita a TP1, costi inclusi, scenario pessimistico) + giorno."""
+    """R per trade (uscita a TP1, costi inclusi, scenario pessimistico) + giorno.
+
+    FIX 2026-09-18 (2): usa il feed ESTESO e l'export Telegram completo, non
+    `XAU_spot_M5.csv` (che si ferma al 12/06) e `signals.csv` (fermo al 08/07).
+    Il repo aveva gia' due mesi in piu' di dati: `XAU_spot_M5_ext.csv` fino al
+    07/08 e la cartella export fino al 07/08. Usarli non e' un'estensione del
+    perimetro, e' smettere di buttare via meta' di quello che abbiamo.
+    """
+    import os as _os
+    bt.M5 = _os.path.join(ROOT, "analysis", "trading-bot-eval", "data",
+                          "XAU_spot_M5_ext.csv")
     T, HI, LO, CL = bt.load_m5()
+    sys.path.insert(0, _os.path.join(ROOT, "analysis", "mentor_signals"))
+    import oos_validation as ov
+    segnali = ov.to_engine(ov.parse_export())
     out = []
-    for s in bt.load_signals():
+    for s in segnali:
         r = bt.replay(s, T, HI, LO)
         if r is None or r.get("tp1_pess") is None:
             continue

@@ -200,4 +200,77 @@ prezzo si e' mosso **contro** di noi.
 | data | evento |
 |---|---|
 | 2026-09-18 | prima stesura: DD 12R, serie 6, finestra 62. **Nulla** — costruita su timestamp disallineati |
+| 2026-09-18 | **seconda riscrittura**: usavo i file corti. Su tutto il campione E[R] scende a **+0,0375**, DD **25R**, e il binario risulta **non governabile su E[R]**. Il mentore e' bravo sulla direzione, la geometria TP1/SL la spreca |
 | 2026-09-18 | trovato l'offset di +1h, corretto in `backtest.py` come `TS_OFFSET`. Riscrittura: DD **13,7R**, serie **5**, finestra **310 trade**. Aggiunto il §4 (gate asimmetrico, C5) |
+
+---
+
+## 7. Seconda riscrittura (stesso giorno): **stavo usando i file corti**
+
+Domanda dell'utente: *fino a che mese arrivano i dati?* La risposta ha invalidato di nuovo i numeri.
+
+| file | copertura | l'avevo usato? |
+|---|---|---|
+| `XAU_spot_M5.csv` | → **12/06** | si' |
+| **`XAU_spot_M5_ext.csv`** | → **07/08** | **no** |
+| `signals.csv` | → **08/07** | si' |
+| **export Telegram** `Messaggi tg aggiornati 07-08` | → **07/08**, 617 segnali | **no** |
+
+**I due mesi in piu' erano gia' nel repo**, usati da `oos_validation.py` che fa `bt.M5 = M5_EXT`.
+Io ho importato `bt.load_m5()` col default corto. Errore mio, non un limite dei dati.
+
+### Rifatto su tutto (443 trade, 2026-01-22 → 2026-08-07)
+
+| | campione corto | **completo** |
+|---|---|---|
+| E[R] | +0,1015 | **+0,0375** |
+| serie negativa osservata | 4 | **7** |
+| maxDD 95° (a blocchi) | 13,7R | **25,0R** |
+| finestra minima | 310 trade | **2.522 trade (~2 anni)** |
+
+### Ma non e' decadimento: e' un numero piccolo, misurato male
+
+| mese | n | E[R] | win% | random% | **differenza appaiata** |
+|---|---|---|---|---|---|
+| 2026-01 | 29 | −0,034 | 58,6% | 27,6% | **+0,310** |
+| 2026-02 | 84 | −0,072 | 47,6% | 22,6% | **+0,250** |
+| 2026-03 | 81 | +0,093 | 59,3% | 22,2% | **+0,370** |
+| 2026-04 | 65 | +0,104 | 58,5% | 29,2% | **+0,292** |
+| 2026-05 | 57 | −0,057 | 47,4% | 28,1% | **+0,193** |
+| 2026-06 | 62 | +0,119 | 55,0% | 31,7% | **+0,233** |
+| 2026-07 | 55 | +0,120 | 52,7% | 21,8% | **+0,309** |
+| 2026-08 | 10 | −0,130 | 40,0% | 10,0% | **+0,300** |
+
+E[R] oscilla attorno a zero senza tendenza (prima meta' +0,014, seconda +0,061, entrambe con
+intervallo che attraversa lo zero). **La differenza appaiata invece e' positiva in tutti e otto i
+mesi**, fra +0,19 e +0,37.
+
+> 🔧 **La lettura che ne esce, ed e' il risultato piu' importante del lavoro sul copier.**
+> **Il mentore e' bravo a chiamare la direzione; la geometria TP1/SL che pubblica converte quella
+> bravura in circa niente.** Con TP1 a **+0,46R** e stop a **−1,03R** il pareggio e' al **69,1%** di
+> vincite: lui sta al **71,8%**, cioe' **2,7 punti di margine**. L'edge direzionale (~55% contro
+> ~26% del lato casuale) e' grande e stabile; il modo in cui viene monetizzato no.
+
+### Conseguenza operativa
+
+**Con E[R] = +0,0375 e sd = 0,67 il binario non e' governabile su E[R]**: servirebbero ~2.500 trade
+(due anni) per distinguerlo da zero. Una soglia di ritiro su E[R] non scattera' mai in tempo utile.
+
+**La grandezza governabile e' la differenza appaiata**, che ha un rapporto segnale/rumore molto
+migliore (positiva 8 mesi su 8, deviazione fra i mesi ~0,05). Per ogni segnale copiato si registra
+anche l'esito del **lato casuale sullo stesso segnale** — costa nulla, e' gia' quello che fa
+`oos_validation.py` — e si sorveglia quella.
+
+⚠️ **Ipotesi generata dai dati, NON approvata**: uscire a **1R invece che a TP1 (0,5R)** userebbe
+l'edge direzionale invece di sprecarlo. Con 55% contro 45% a 1:1 darebbe E[R] ≈ +0,10 invece di
++0,04. **E' un cambio di parametro dopo aver visto l'esito: costa un trial** (§3) e va
+pre-registrato, non fatto adesso.
+
+### Soglie aggiornate
+
+| soglia | valore |
+|---|---|
+| **DD di ritiro** | **25 R** (95° pct, blocchi) |
+| **Serie negativa** | **9** (osservata 7) |
+| **Finestra minima su E[R]** | **non applicabile** — servirebbero ~2 anni |
+| **Sorveglianza primaria** | **differenza appaiata contro il lato casuale**, soglia da fissare quando il copier accumula i primi mesi live |
