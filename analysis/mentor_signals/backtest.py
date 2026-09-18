@@ -15,6 +15,7 @@ Uso: python analysis/mentor_signals/backtest.py
 from __future__ import annotations
 
 import csv
+import datetime as dt
 import os
 from datetime import datetime
 
@@ -29,6 +30,10 @@ ENTRY_WINDOW = 72     # barre M5 (~6h) per il fill all'entry
 MAX_HOLD = 576        # barre M5 (~48h) di holding max
 COST_USD = 0.30       # costo round-trip (spread/slippage) in $ oro
 SEED = 42
+
+# Disallineamento fra l'orologio dell'export dei segnali e quello del feed M5.
+# Vedi il commento in replay(). Va sottratto/aggiunto qui, non nei singoli script.
+TS_OFFSET = dt.timedelta(hours=1)
 
 
 def load_m5():
@@ -107,7 +112,13 @@ def replay(sig, T, HI, LO, side_override=None):
     risk = abs(entry - sl)
     if risk <= 0:
         return None
-    i = int(np.searchsorted(T, sig["ts"]))
+    # FIX 2026-09-18: i timestamp dei segnali sono indietro di 1h rispetto al feed M5.
+    # Misurato su 544 segnali: lo scostamento mediano |mercato - entry| passa da
+    # $12.69 a $4.23 applicando +1h, con minimo NETTO e STABILE su tutti e 6 i mesi
+    # (nessun cambio DST -> offset fisso, non stagionale). Senza la correzione la
+    # ricerca del fill parte 1h PRIMA che il segnale esista: e' look-ahead di prezzo,
+    # la stessa famiglia di difetto del fill fantasma del FADE.
+    i = int(np.searchsorted(T, sig["ts"] + TS_OFFSET))
     if i >= len(T):
         return None
     # fill all'entry entro ENTRY_WINDOW

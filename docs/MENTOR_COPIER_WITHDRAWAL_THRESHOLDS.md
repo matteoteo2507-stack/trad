@@ -1,158 +1,203 @@
-# Soglie di ritiro del copier mentore — dichiarate **prima** del capitale
+# Copier mentore — soglie di ritiro e gate di esecuzione, dichiarate **prima** del capitale
 
-> **Documento vincolante.** Fissato il **2026-09-18**, con il copier **non ancora operativo**
-> (il deploy su VPS del 2026-09-15 non era andato a buon fine). Questo e' il momento giusto: le
-> soglie vanno dichiarate **prima** che entri il capitale, altrimenti si finisce per spegnere la
-> strategia dopo un drawdown — cioe' al minimo — e riaccenderla dopo il recupero.
+> **Documento vincolante.** Creato il **2026-09-18**, **riscritto lo stesso giorno** dopo aver
+> trovato un disallineamento di un'ora fra i timestamp dei segnali e il feed dei prezzi. I numeri
+> della prima stesura sono **nulli e non vanno citati**: §6a n.1 del
+> [ciclo di vita](STRATEGY_LIFECYCLE.md) — un difetto conclamato non si corregge, si rifa' da zero.
 >
-> Richiesto da [`STRATEGY_LIFECYCLE.md`](STRATEGY_LIFECYCLE.md) **§8bis**. Colma la voce **C3** del
-> [backlog](BACKLOG_RICERCA.md).
->
-> Motore: [`analysis/mentor_signals/withdrawal_thresholds.py`](../analysis/mentor_signals/withdrawal_thresholds.py).
+> Copre le voci **C3** (soglie di ritiro, §8bis) e **C5** (gate anti-ritardo) del
+> [backlog](BACKLOG_RICERCA.md). Motori:
+> [`withdrawal_thresholds.py`](../analysis/mentor_signals/withdrawal_thresholds.py) ·
+> [`latency_gate.py`](../analysis/mentor_signals/latency_gate.py).
 
 ---
 
-## 1. Di cosa stiamo fissando le soglie
+## 0. Il difetto trovato per primo: **i timestamp erano indietro di un'ora**
 
-Il copia-segnali del mentore su **XAUUSD**, uscita a **TP1**, scenario pessimistico, costi inclusi
-($0,30 round-trip). E' l'**unico binario del workspace con un verdetto positivo pre-registrato**
-([`MENTOR_SIGNALS_OOS_PREREGISTRATION.md`](MENTOR_SIGNALS_OOS_PREREGISTRATION.md), 2026-08-07:
-win-rate 63,0% contro 35,0% del lato casuale, E[R] **+0,194** BCa95 [+0,079 ; +0,289]).
+Cercando la soglia anti-ritardo e' emerso che lo scostamento mediano fra il prezzo di mercato al
+momento del segnale e l'`entry` dichiarato valeva **$12,92 — cioe' 1,27R**, piu' dell'intero TP1 nel
+**79,5%** dei casi. Troppo per essere latenza.
 
-**Profilo del rendimento**, su 477 trade in 101 giorni (2026-01-22 → 2026-06-12):
+Test dell'offset costante (se e' un fuso orario, uno shift deve **minimizzare** lo scostamento):
+
+| shift | mediana \|mercato − entry\| |
+|---|---|
+| −1h | $18,15 |
+| **0h (come stava)** | **$12,69** |
+| **+1h** | **$4,23** ← minimo netto |
+| +2h | $10,60 |
+
+Minimo **netto** e **stabile su tutti e sei i mesi** (gen→giu), senza salti a marzo: e' un offset
+**fisso**, non stagionale, quindi non DST ma un disallineamento di orologio fra l'export dei segnali
+e il feed M5.
+
+⚠️ **Perche' e' grave.** `replay()` cercava il fill partendo da `searchsorted(T, ts)`, cioe'
+**un'ora prima che il segnale esistesse**. Il riempimento poteva avvenire su prezzi **precedenti alla
+pubblicazione**: e' look-ahead di prezzo, la stessa famiglia del fill fantasma che e' costata due mesi
+sul FADE ([[feedback_fill_ottenibile]]).
+
+**Quanto valeva**, misurato:
+
+| | fill eseguiti | win-rate simmetrica | E[R] a TP1 |
+|---|---|---|---|
+| ts grezzo (come tutto e' stato validato finora) | 88% | **67,3%** | **+0,2025** |
+| **ts corretto (+1h)** | 78% | **56,1%** | **+0,1015** [+0,037 ; +0,159] |
+
+**L'E[R] si dimezza e il win-rate perde 11 punti.** Il "67-72%" citato ovunque nel repo era misurato
+col difetto.
+
+### Ma l'edge sopravvive, e il motivo e' il disegno appaiato
+
+La metrica primaria del verdetto OOS non era il win-rate assoluto: era la **differenza appaiata**
+contro lo stesso segnale con lato casuale. Il difetto gonfiava **entrambi i lati**, e la differenza
+lo assorbe quasi tutto:
+
+| | mentore | random | differenza appaiata |
+|---|---|---|---|
+| ts grezzo | 67,4% | 35,3% | **+0,3214** [+0,2794 ; +0,3613] |
+| **ts corretto** | 56,2% | 30,8% | **+0,2541** [+0,2118 ; +0,2941] |
+
+> 🔧 **Il verdetto OOS non si ribalta: l'edge era sovrastimato del ~21%, non inventato.** E il motivo
+> per cui non si ribalta e' che era misurato **contro un baseline appaiato** invece che contro una
+> soglia assoluta — la stessa lezione di [[feedback_r_multiple_ceiling_baseline]], qui a nostro
+> favore.
+
+**Correzione applicata** in `analysis/mentor_signals/backtest.py` come `TS_OFFSET`, cosi' vale per
+tutti gli script a valle. E' un **bug fix**: non consuma trial (§3).
+
+---
+
+## 1. Il binario e il suo profilo (numeri corretti)
+
+Copia-segnali del mentore su **XAUUSD**, uscita a **TP1**, scenario pessimistico, costi inclusi.
 
 | | |
 |---|---|
-| E[R] | **+0,2025** |
-| deviazione standard | 0,571 |
-| vincenti | **82,6%** |
-| payoff | **+0,46** contro **−1,03** |
+| E[R] | **+0,1015** BCa95 [+0,037 ; +0,159] |
+| deviazione standard | 0,60 |
+| vincenti | ~72% |
+| trade / giorno | 4,2 |
 
-⚠️ **Questo profilo e' il motivo per cui le soglie servono davvero.** Un win rate dell'82,6% con un
-payoff di 1:0,45 significa che **l'equity sale quasi sempre e scende di colpo**: servono **2,2
-vincite per recuperare una perdita**. Una serie sfortunata non "si vede arrivare", e la tentazione di
-spegnere nel mezzo e' massima proprio quando statisticamente non andrebbe fatto.
+⚠️ Profilo ad **alto win-rate e payoff piccolo**: l'equity sale quasi sempre e scende di colpo. E'
+il profilo in cui la tentazione di spegnere nel mezzo di un drawdown e' massima proprio quando
+statisticamente non andrebbe fatto — cioe' il motivo per cui §8bis esiste.
 
 ---
 
-## 2. Il problema che ha cambiato i numeri: **gli esiti non sono indipendenti**
+## 2. Gli esiti **non sono indipendenti**, e questo cambia le soglie
 
-Il Monte Carlo standard **rimescola i trade**, e cosi' facendo assume che siano indipendenti.
-Qui non lo sono:
+| diagnostica | valore |
+|---|---|
+| runs test vinta/persa | **z = −2,55** |
+| autocorrelazione dei rendimenti, lag 1 | **+0,128** |
+| segnali al giorno | 4,2 (max 9), stesso strumento |
 
-| diagnostica | valore | lettura |
-|---|---|---|
-| runs test sulla serie vinta/persa | **z = −3,37** | raggruppamento netto |
-| autocorrelazione dei rendimenti, lag 1 | **+0,136** | |
-| autocorrelazione, lag 10 | +0,085 | persiste a lungo |
-| segnali al giorno | **4,7** (max 9) | stesso strumento, stessa sessione |
-
-Il meccanismo e' ovvio a posteriori: **quando la lettura del mentore e' sbagliata, sbaglia per tutta
-la sessione**. Le perdite arrivano in grappoli.
-
-**Conseguenza sui numeri**: il rimescolamento distrugge proprio il raggruppamento che genera i
-drawdown profondi.
+Quando la lettura del mentore e' sbagliata, **sbaglia per tutta la sessione**: le perdite arrivano in
+grappoli. Il Monte Carlo che rimescola i trade distrugge proprio quel raggruppamento.
 
 | simulazione (95° percentile, 20.000 percorsi) | maxDD | serie negativa |
 |---|---|---|
-| **i.i.d.** — rimescola i singoli trade | **6,84 ± 0,06 R** | 4,88 ± 0,35 |
-| **a blocchi** — ricampiona **giorni interi** | **12,15 ± 0,12 R** | 5,38 ± 0,52 |
+| i.i.d. — rimescola i singoli trade | 10,94 ± 0,13 R | 5,88 ± 0,35 |
+| **a blocchi — ricampiona giorni interi** | **13,72 ± 0,23 R** | **5,00 ± 0,00** |
 
-> 🔧 **L'ipotesi di indipendenza valeva 5,31R, cioe' il 78% di drawdown in meno.** Con il metodo
-> standard avremmo fissato la soglia a **6,8R** e ritirato il copier durante un drawdown che gli
-> capita **normalmente una volta su venti**. E' il buco 29 del distillamento Quant Guild (test di
-> indipendenza degli esiti), applicato — e da solo ha quasi raddoppiato la soglia.
-
-Gli **errori standard** sono riportati perche' un percentile e' una stima: 12,15 ± 0,12 e' un numero,
-"12,15" da solo non lo e' (buco 37 dello stesso distillamento).
+**L'ipotesi di indipendenza vale 2,78R, il 25% di drawdown in meno** (buco 29 del distillamento).
+Gli errori standard sono riportati perche' un percentile e' una stima (buco 37).
 
 ---
 
-## 3. Sensibilita': e se il vero E[R] fosse al limite inferiore?
+## 3. Le soglie di ritiro — **§8bis**
 
-L'intervallo OOS su E[R] e' [+0,079 ; +0,289]. Rifacendo la simulazione a blocchi con E[R] portato a
-**+0,079**:
+| soglia | valore |
+|---|---|
+| **DD di ritiro** | **13,7 R** (95° pct, ricampionamento a blocchi) |
+| **Serie negativa di ritiro** | **5 perdite consecutive** |
+| **Finestra minima di valutazione** | **310 trade** (~73 giorni) |
 
-| | maxDD 95° | serie negativa 95° |
-|---|---|---|
-| E[R] = +0,203 (stima puntuale) | 12,15 ± 0,12 R | 5,38 |
-| **E[R] = +0,079 (limite inferiore OOS)** | **20,11 ± 0,33 R** | 5,38 |
+⚠️ **La finestra minima e' quintuplicata rispetto alla prima stesura** (era 62 trade): serve
+$n \approx (2{,}80\,\sigma/E)^2$, e con E[R] dimezzato il fabbisogno **quadruplica**. E' il prezzo
+del difetto, ed e' bene saperlo prima e non dopo: **sotto i 310 trade non si valuta affatto**,
+nemmeno per dire "sta andando bene".
 
-Cioe': **se il vantaggio reale e' nella parte bassa dell'intervallo, drawdown da 20R sono normali.**
-La scelta della soglia deve dire esplicitamente cosa si accetta di sbagliare.
-
----
-
-## 4. Le soglie — **dichiarate ora**
-
-| soglia | valore | da dove viene |
-|---|---|---|
-| **DD di ritiro** | **12 R** | 95° percentile del maxDD, ricampionamento a blocchi |
-| **Serie negativa di ritiro** | **6 perdite consecutive** | 95° percentile (5,38 ± 0,52), arrotondato in alto |
-| **Finestra minima di valutazione** | **62 trade** (~13 giorni) | potenza 80%, α 0,05, per distinguere E[R] attuale da zero |
-
-**Perche' 12R e non 20R.** La soglia non manda la strategia in pensione: la manda in **INCUBAZIONE**,
-dove continua a girare in simulazione e a raccogliere dati. Un falso allarme costa **poco ed e'
-reversibile**; una soglia troppo larga fa bruciare capitale vero mentre si aspetta. Si accetta
-quindi che, **se il vero E[R] fosse +0,079, questa soglia scattera' piu' spesso del 5%** — e va bene
-cosi', perche' la conseguenza e' guardare, non chiudere.
-
-**Perche' una finestra minima.** Sotto i 62 trade non si valuta **affatto**: nemmeno per dire "sta
-andando bene". Con 4,7 trade al giorno sono circa **13 giorni**, quindi il vincolo non e' oneroso.
-
-⚠️ **Nota sulla potenza, che qui e' una buona notizia.** Distinguere un degrado di **0,05R**
-richiederebbe **1.022 trade (~216 giorni)**: i degradi *piccoli* restano invisibili a lungo. Ma il
-degrado che conta — **da +0,20 a zero** — si vede in **62 trade**. Contrasto col FADE, dove servivano
-oltre 1.000 trade anche per la domanda grossa: qui la deviazione standard e' **0,571R** invece di
-1,8R, ed e' questo che rende il binario governabile.
-
----
-
-## 5. Macchina a stati e criterio di rientro — anch'esso dichiarato ora
+**Macchina a stati** (§8bis):
 
 ```
-   LIVE ──(DD > 12R  oppure  6 perdite consecutive)──► INCUBAZIONE
-     │                                                      │
-     │                                            (criterio di rientro)
-     │                                                      ▼
-     │                                                    LIVE
-     │                                                      │
-     │                                      (seconda uscita) ▼
+   LIVE ──(DD > 13,7R  oppure  5 perdite consecutive)──► INCUBAZIONE
+     │                                                        │
+     │                                              (criterio di rientro)
+     │                                                        ▼
+     │                                                      LIVE
+     │                                        (seconda uscita) │
      └──(razionale falsificato / difetto)──────────────► RITIRATA
 ```
 
-- **INCUBAZIONE**: il copier continua a girare **in simulazione**, con le **stesse identiche regole**.
-  Non si ritara nulla: ritarare su dati che includono il periodo negativo e' p-hacking col capitale
-  gia' in gioco (§4 + §8bis).
-- **Criterio di rientro, dichiarato ora**: si torna LIVE quando, **in simulazione**, la curva
-  **recupera il picco precedente all'ingresso in incubazione** *e* sono stati accumulati almeno
-  **62 trade** dall'ingresso. Entrambe le condizioni, non una.
-- **Seconda uscita dalla distribuzione dopo un rientro → RITIRATA definitiva.** Due fallimenti
-  indipendenti non sono sfortuna.
-- **Ritiro immediato, senza incubazione**, se cade il razionale: key-man risk (il mentore smette,
-  cambia stile o strumento), oppure un difetto metodologico conclamato nel nostro replay.
+- **Criterio di rientro, dichiarato ora**: in simulazione la curva **recupera il picco precedente**
+  all'ingresso in incubazione **e** sono passati almeno **310 trade**. Entrambe le condizioni.
+- **Seconda uscita dopo un rientro → RITIRATA definitiva.**
+- **Ritiro immediato senza incubazione** se cade il razionale: il mentore smette, cambia stile o
+  strumento (key-man risk), oppure emerge un difetto metodologico nel replay — **come e' appena
+  successo**.
 
 ---
 
-## 6. Limiti dichiarati
+## 4. Il gate di esecuzione — **C5**, e non e' un dettaglio
 
-1. **Il campione e' in larga parte in campione.** I 477 trade coprono 2026-01-22 → 2026-06-12, cioe'
-   il periodo da cui l'edge e' stato identificato; la validazione OOS (131 segnali) e' successiva ed
-   e' su un export diverso. La sensibilita' del §3 e' il modo in cui questo e' stato parzialmente
-   compensato, non una soluzione.
-2. **Il replay non e' il copier.** Il replay assume il fill entro 6h dal prezzo di ingresso
-   dichiarato; il copier reale avra' un ritardo proprio, e la **soglia anti-ritardo non e' ancora
-   fissata** (voce **C5** del backlog, tuttora aperta). Se il ritardo reale degrada il fill, la
-   distribuzione qui sopra e' ottimista.
-3. **Un solo strumento, un solo mentore, cinque mesi.** Nessuna di queste soglie e' trasferibile a
-   un'altra fonte di segnali.
-4. Il rischio per trade con cui si converte R in percentuale di capitale **non e' fissato in questo
-   documento**: con l'1% per trade, 12R valgono circa il 12% del capitale.
+Il replay riempie **a `entry`**, aspettando fino a 6h che il prezzo ci torni. Il copier vero piazza
+`order_type="market"` sul trigger "NOW" del canale (`signal_copier/executor.py`). **Sono due
+esecuzioni diverse**, e la differenza e' enorme:
+
+| modello di esecuzione | E[R] |
+|---|---|
+| replay (fill a `entry`, attesa fino a 6h) | **+0,101** [+0,037 ; +0,159] |
+| copier senza gate (fill a mercato, +5 min) | **−0,256** [−0,332 ; −0,185] |
+
+**Senza gate, l'esecuzione a mercato trasforma l'edge in una perdita.** Il gate non e' una
+raffinatezza: e' cio' che rende il binario praticabile.
+
+### Lo scostamento favorevole e quello sfavorevole non sono la stessa cosa
+
+| | n | E[R] |
+|---|---|---|
+| **favorevole** (entriamo meglio del mentore) | 132 | **+0,183** [+0,043 ; +0,310] |
+| **sfavorevole** (entriamo peggio) | 347 | **−0,423** [−0,510 ; −0,348] |
+
+Il meccanismo e' aritmetico: entrando peggio, il rischio reale supera l'1% su cui `suggested_lots`
+ha dimensionato **e** il TP1 si allontana. Il gate di oggi (`max_slippage_pips: 20`) li tratta
+**uguali**, quindi butta via proprio i trade migliori.
+
+### La regola, con il numero gia' dichiarato
+
+| configurazione | trade tenuti | E[R] |
+|---|---|---|
+| simmetrico a 20 pip (oggi) | 103 (22%) | +0,085 [**−0,045** ; +0,192] |
+| **asimmetrico: nessun limite sul favorevole, 20 pip sullo sfavorevole** | **197 (41%)** | **+0,130** [**+0,037** ; +0,236] |
+
+> **Quasi il doppio dei trade e un intervallo che non tocca lo zero, con lo stesso numero.** Non e'
+> una taratura: **20 pip era gia' il valore dichiarato**, si toglie solo una restrizione che i dati
+> mostrano dannosa. Modifica di **modellazione dell'esecuzione**, non ricerca di parametri (§3).
+
+**Da implementare** in `signal_copier/planner.py`: il gate `anti_late` deve misurare lo scostamento
+**con segno** rispetto alla direzione del segnale e applicare `max_slippage_pips` **solo** quando il
+prezzo si e' mosso **contro** di noi.
 
 ---
 
-## 7. Registro
+## 5. Limiti dichiarati
+
+1. **Campione in larga parte in campione** (gen→giu 2026, il periodo da cui l'edge e' stato
+   identificato). La validazione OOS e' successiva, su export diverso, **e va rifatta col
+   `TS_OFFSET` corretto**: finche' non e' rifatta, il verdetto OOS va considerato **sovrastimato di
+   circa il 21%**, non annullato.
+2. **Il gate va implementato prima del capitale.** Oggi il codice e' ancora simmetrico: i numeri del
+   §4 descrivono una configurazione che **non e' quella in esecuzione**.
+3. Un solo strumento, un solo mentore, cinque mesi. Nulla di questo e' trasferibile a un'altra fonte.
+4. Il rischio per trade resta **1% del capitale** (`risk_per_signal_pct`), diviso fra le gambe:
+   13,7R di drawdown valgono circa il **13,7%** del capitale.
+
+---
+
+## 6. Registro
 
 | data | evento |
 |---|---|
-| 2026-09-18 | documento creato **prima** del capitale, copier non ancora operativo. Soglie: DD 12R, serie 6, finestra 62 trade |
+| 2026-09-18 | prima stesura: DD 12R, serie 6, finestra 62. **Nulla** — costruita su timestamp disallineati |
+| 2026-09-18 | trovato l'offset di +1h, corretto in `backtest.py` come `TS_OFFSET`. Riscrittura: DD **13,7R**, serie **5**, finestra **310 trade**. Aggiunto il §4 (gate asimmetrico, C5) |

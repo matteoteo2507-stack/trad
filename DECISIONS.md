@@ -11,6 +11,94 @@
 
 ---
 
+## 2026-09-18 (2) — **Gruppo C chiuso**. E cercando una soglia abbiamo trovato **un'ora di look-ahead** sull'unico binario positivo
+
+Il bucket C del [backlog](docs/BACKLOG_RICERCA.md) e' chiuso per intero (C1-C2 gia' decadute, **C3,
+C4, C5, C6** oggi). Il risultato che conta non era nella scaletta.
+
+### Il difetto: i timestamp dei segnali erano indietro di un'ora
+
+Cercando la soglia anti-ritardo (C5) e' saltato fuori che lo scostamento mediano fra il prezzo di
+mercato al momento del segnale e l'`entry` dichiarato valeva **$12,92 = 1,27R**, piu' dell'intero TP1
+nel **79,5%** dei casi. Troppo per essere latenza.
+
+Test dell'offset costante: minimo **netto a +1h** (mediana da $12,69 a **$4,23**) e **stabile su tutti
+e sei i mesi**, senza salti DST → disallineamento **fisso** di orologio fra export dei segnali e feed M5.
+
+⚠️ `replay()` cercava il fill da `searchsorted(T, ts)`, cioe' **un'ora prima che il segnale
+esistesse**: poteva riempire su prezzi **precedenti alla pubblicazione**. **Look-ahead di prezzo**,
+stessa famiglia del fill fantasma del FADE ([[feedback_fill_ottenibile]]).
+
+| | fill eseguiti | win-rate simmetrica | E[R] a TP1 |
+|---|---|---|---|
+| ts grezzo (come tutto e' stato validato) | 88% | **67,3%** | **+0,2025** |
+| **ts corretto (+1h)** | 78% | **56,1%** | **+0,1015** [+0,037 ; +0,159] |
+
+**E[R] dimezzato, win-rate −11 punti.** Il "67-72%" citato ovunque nel repo era misurato col difetto.
+
+### L'edge sopravvive, e il motivo e' il disegno appaiato
+
+La metrica primaria del verdetto OOS era la **differenza appaiata** contro lo stesso segnale con lato
+casuale. Il difetto gonfiava **entrambi i lati**:
+
+| | mentore | random | differenza appaiata |
+|---|---|---|---|
+| ts grezzo | 67,4% | 35,3% | +0,3214 [+0,2794 ; +0,3613] |
+| **ts corretto** | 56,2% | 30,8% | **+0,2541** [+0,2118 ; +0,2941] |
+
+> 🔧 **Il verdetto non si ribalta: l'edge era sovrastimato del ~21%, non inventato.** E non si
+> ribalta **perche' era misurato contro un baseline appaiato** invece che contro una soglia assoluta
+> ([[feedback_r_multiple_ceiling_baseline]], qui a nostro favore). Correzione applicata come
+> `TS_OFFSET` in `backtest.py`: **bug fix, 0 trial** (§3).
+
+### C5 — il gate non e' un dettaglio, e non deve essere simmetrico
+
+Il replay riempie a `entry`; il copier piazza `order_type="market"`. **Due esecuzioni diverse**:
+
+| esecuzione | E[R] |
+|---|---|
+| replay (fill a `entry`, attesa 6h) | +0,101 |
+| **copier senza gate (mercato, +5 min)** | **−0,256** |
+
+Senza gate l'esecuzione a mercato **trasforma l'edge in una perdita**. E lo scostamento ha due segni
+molto diversi: **favorevole +0,183**, **sfavorevole −0,423**. Il gate di oggi li tratta uguali, quindi
+scarta proprio i trade migliori.
+
+| configurazione | tenuti | E[R] |
+|---|---|---|
+| simmetrico 20 pip (oggi) | 103 (22%) | +0,085 [**−0,045**; +0,192] |
+| **asimmetrico, 20 pip solo sullo sfavorevole** | **197 (41%)** | **+0,130** [**+0,037**; +0,236] |
+
+Stesso numero gia' dichiarato, si toglie solo una restrizione dannosa. ⚠️ **Da implementare in
+`signal_copier/planner.py`**: oggi il codice e' ancora simmetrico.
+
+### C3 — soglie rifatte coi numeri corretti
+
+**DD 13,7R · serie negativa 5 · finestra minima 310 trade (~73 giorni)**, dal ricampionamento **a
+blocchi sui giorni** (gli esiti non sono indipendenti: runs test z=−2,55, +25% di drawdown rispetto
+al rimescolamento i.i.d.). La finestra minima **quintuplica** rispetto alla prima stesura: serve
+$npprox(2{,}80\sigma/E)^2$ e con E[R] dimezzato il fabbisogno quadruplica.
+La prima stesura (DD 12R, serie 6, finestra 62) e' **nulla e non va citata** (§6a n.1).
+
+### C4 — era gia' corretto, verificato
+
+`suggested_lots` calcola `lots = (equity × risk%) / (distanza_SL_pip × valore_pip)`: rischio fisso in
+valuta, size derivata dallo stop, come raccomandano le 3 fonti. Usa **equity**, non balance
+(`__main__.py:214`), e l'1% per segnale e' **diviso fra le gambe**, quindi non cresce col numero di
+TP. **Nessuna modifica.**
+
+### C6 — decaduta, con condizione scritta
+
+Il livello di portafoglio richiede ≥2 strategie vive e poco correlate: col KILL del FADE ne resta
+**una**. Si riapre **quando esistono due binari con capitale contemporaneamente**.
+
+### Cosa resta aperto
+Rifare la **validazione OOS** col `TS_OFFSET` corretto (finche' non e' rifatta, il verdetto va letto
+come **sovrastimato del ~21%**, non annullato) e **implementare il gate asimmetrico** prima del
+capitale.
+
+---
+
 ## 2026-09-18 — **C3 fatta**: soglie di ritiro del copier mentore. L'ipotesi di indipendenza valeva **5,3R**
 
 Prima voce di §8bis mai compilata, e arriva **prima del capitale**: il copier non e' ancora operativo
