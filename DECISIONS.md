@@ -11,6 +11,87 @@
 
 ---
 
+## 2026-09-18 (4) — **La correzione dell'ora era applicata due volte.** Il copier non e' piatto: E[R] **+0,127**, sorvegliabile in **54 giorni**
+
+Voce di **correzione**: annulla e sostituisce i numeri del **§8** del documento soglie e del commit
+`Copier: dati completi e verificati` (in DECISIONS non erano ancora entrati).
+
+### Il difetto, mio, introdotto oggi stesso
+
+La correzione di fuso di +1h **esisteva gia' da agosto** dentro `oos_validation.to_engine()`
+(`TZ_SHIFT_H = 1`, commit `a845a32`). Non l'ho cercata prima di aggiungerne una seconda dentro
+`backtest.replay()`. Ogni analisi che passa dal loader **e poi** dal motore — soglie di ritiro,
+validazione OOS, report al socio — ha applicato la correzione **due volte**, cioe' **+2h**.
+
+Non e' look-ahead (quello era il difetto del mattino): e' l'opposto, il fill cercato **un'ora piu'
+tardi del vero**. Produce numeri **peggiori e plausibili**, che e' il motivo per cui non si e' visto.
+
+Scarto mediano |entry dichiarato − prezzo al timestamp|, criterio indipendente dagli esiti, 699 segnali:
+
+| shift aggiuntivo | −2h | −1h | **0h** | +1h | +2h |
+|---|---|---|---|---|---|
+| scarto mediano | $17,42 | $12,10 | **$3,98** | $9,39 | $13,30 |
+
+### I numeri veri (629 trade, 2026-01-22 -> 2026-09-18)
+
+| | §8, **nullo** | **corretto** |
+|---|---|---|
+| **E[R] a TP1** | +0,026 (indistinguibile da zero) | **+0,1265** BCa95 **[+0,0756 ; +0,1736]**, t = **+5,06** |
+| differenza appaiata | +0,2821 | **+0,2939** [+0,2572 ; +0,3291], **9/9 mesi positivi** |
+| maxDD 95esimo (blocchi) | 29,1 R | **11,7 R** |
+| costo dell'indipendenza | +9,1R (+46%) | **+1,09R (+10%)** |
+| serie negativa 95esimo | 9 | **5** |
+| finestra minima su E[R] | ~5.300 trade (~5 anni) | **199 trade (~54 giorni)** |
+
+**Si ribalta la conclusione del §8.** E[R] **non** e' indistinguibile da zero e **non** e'
+ingovernabile: e' positivo con margine e si sorveglia in due mesi. La validazione OOS, che non era
+contaminata (era gia' allineata), rifatta sulla finestra estesa a oggi conferma: differenza appaiata
+**+0,274** [+0,209 ; +0,333], E[R] **+0,173** [+0,083 ; +0,244] su 218 segnali.
+
+Resta vero che **la geometria pubblicata non incassa tutta la bravura direzionale**: vantaggio
+appaiato **+0,294**, incassato a TP1 **+0,127**. Il pareggio e' al **69,1%** (TP1 +0,46R contro SL
+−1,03R) e lui sta al **77,4%**: margine **8,3 punti**, ma meno della meta' del segnale arriva al conto.
+
+### Decisione strutturale: la correzione ha **un solo proprietario**
+
+`load_signals()` e `to_engine()` restituiscono timestamp **gia' allineati**; `replay()` e
+`market_replay()` non toccano piu' l'orologio; il valore vive solo in `backtest.TS_OFFSET_H`.
+Effetto collaterale: si chiude un secondo buco mai notato — `market_replay()` non applicava **nessuna**
+correzione, quindi la tabella "robustezza al ritardo di copia" girava un'ora in anticipo.
+
+`coverage.verifica()` adesso ricalcola quella tabella **a ogni esecuzione** e **solleva** se il minimo
+non cade a 0. Una convenzione applicata in due posti non e' una svista da correggere guardando meglio:
+e' una proprieta' del codice, e va resa impossibile ([[feedback_convenzioni_implicite]]).
+
+Corretto anche il default di `backtest.M5`, che puntava ancora al feed corto (fino al 2026-06-12) e
+tagliava in silenzio gli ultimi tre mesi di segnali.
+
+### C5 implementata: il gate anti-ritardo diventa **asimmetrico**
+
+Il divario fra modello e realta' operativa resta **il fatto piu' grande**: replay con fill a `entry`
+**+0,124**, copier con fill **a mercato** +5 min e nessun gate **−0,184**. Lo scostamento e'
+sfavorevole nel **72%** dei casi e i due lati hanno segno opposto: **favorevole +0,209** (n=195),
+**sfavorevole −0,337** (n=501). Il gate sul valore assoluto buttava via proprio i migliori.
+
+Applicando **la soglia gia' scritta in `config.yaml` (20 pip)** al **solo lato sfavorevole**:
+**293 segnali su 696 (42%), E[R] +0,159** [+0,076 ; +0,239] — meglio del replay a limite, con
+esecuzione realistica. Implementato in `signal_copier/planner.py` con test di regressione.
+
+> ⚠️ **La soglia non e' stata scelta dalla tabella.** A 5 pip si legge +0,195: prenderlo sarebbe
+> eleggere un vincitore dopo aver visto gli esiti, e costerebbe un trial. L'unica modifica e'
+> **simmetrico -> asimmetrico**, correzione di esecuzione, **0 trial** ([[feedback_correggere_non_e_cercare]]).
+
+### Igiene del repo
+
+`.gitignore` non copriva `_export_telegram/`: il commit delle 17:xx aveva inglobato **4.384 file /
+184 MB** di chat privata (foto e video del canale). **Mai pushato**; regole aggiunte, indice ripulito,
+commit riscritto. Estratto inoltre in un commit proprio il fix `_build_broker` dell'utente, finito per
+sbaglio nel commit del gruppo C per un `git add -A` di troppo.
+
+Documento: [MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9](docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md).
+
+---
+
 ## 2026-09-18 (2) — **Gruppo C chiuso**. E cercando una soglia abbiamo trovato **un'ora di look-ahead** sull'unico binario positivo
 
 Il bucket C del [backlog](docs/BACKLOG_RICERCA.md) e' chiuso per intero (C1-C2 gia' decadute, **C3,

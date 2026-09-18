@@ -295,6 +295,20 @@ def test_plan_rejects_late_signal():
     assert "tardivo" in plan.reason
 
 
+def test_plan_accepts_favourable_displacement():
+    """Il gate anti-ritardo e' ASIMMETRICO: scarta solo lo scostamento sfavorevole.
+
+    SELL con entry 4536: un prezzo a 4539 vuol dire vendere **piu' in alto** del
+    mentore, cioe' entrare meglio. Sono 30 pip, oltre la soglia di 20, ma dalla
+    parte giusta. Il gate simmetrico di prima li buttava via, ed erano i segnali
+    piu' redditizi: E[R] +0,209 contro -0,337 dell'altro lato (C5, 696 segnali,
+    docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9).
+    """
+    sig = _parser().parse(SIGNAL_TXT)
+    plan = build_plan(sig, 10000, COPIER_CFG, current_price=4539.0)
+    assert plan.accepted, plan.reason
+
+
 def test_plan_rejects_price_past_tp1():
     sig = _parser().parse(SIGNAL_TXT)
     # SELL, prezzo già sotto TP1 (4531) ma entro slippage → segnale concluso.

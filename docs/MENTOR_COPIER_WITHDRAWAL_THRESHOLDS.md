@@ -354,3 +354,141 @@ direzionale invece di sprecarlo. **Costa un trial** (§3) e va pre-registrata pr
   riconciliazione sulla sovrapposizione **+$0,060 / correlazione 1,000000**, identica al riferimento.
 - [`coverage.py`](../analysis/mentor_signals/coverage.py) stampa e verifica la finestra dei dati
   **prima** di ogni calcolo, e si ferma se l'export e' vuoto.
+
+---
+
+## 9. Quarta riscrittura — **la correzione dell'ora era applicata due volte** (2026-09-18, tarda sera)
+
+> ⚠️ **Tutto il §8 e' NULLO e non va citato.** I numeri li' dentro sono stati prodotti con i
+> segnali spostati di **+2h** invece che di +1h.
+
+### Il difetto, e di chi e'
+
+Il difetto e' **mio**, introdotto oggi stesso mentre correggevo il fuso orario (§0).
+
+La correzione di +1h **esisteva gia'** da agosto dentro `oos_validation.to_engine()`
+(`TZ_SHIFT_H = 1`, commit `a845a32`), dove era stata determinata con lo stesso criterio
+indipendente dagli esiti. Non l'ho cercata: ne ho aggiunta una seconda dentro
+`backtest.replay()`. Ogni analisi che passa dal primo loader e poi dal motore di replay
+— **soglie di ritiro, validazione OOS, report al socio** — ha quindi applicato la
+correzione **due volte**.
+
+Effetto: non look-ahead (quello era il difetto di stamattina) ma l'opposto, **ingressi
+cercati un'ora piu' tardi del vero**. Il fill sistematicamente peggiore ha prodotto
+numeri **plausibili e sbagliati** — che e' la ragione per cui non si e' visto subito.
+
+Misura dello scarto mediano |entry dichiarato − prezzo al timestamp|, criterio
+indipendente dagli esiti, 699 segnali:
+
+| shift aggiuntivo | −2h | −1h | **0h** | +1h | +2h |
+|---|---|---|---|---|---|
+| scarto mediano | $17,42 | $12,10 | **$3,98** | $9,39 | $13,30 |
+
+Il minimo e' a **0**: i segnali usciti da `to_engine` erano **gia' allineati**, e il
+`+TS_OFFSET` dentro `replay` era di troppo.
+
+### La correzione, e perche' e' strutturale
+
+**La correzione di fuso ha UN SOLO proprietario: il loader.** `load_signals()` e
+`to_engine()` restituiscono timestamp gia' allineati; `replay()` e `market_replay()` non
+toccano piu' l'orologio; il valore vive in un solo posto (`backtest.TS_OFFSET_H`) e
+`oos_validation` lo importa invece di ridichiararlo.
+
+Come effetto collaterale si chiude un secondo buco: `market_replay()` **non applicava
+nessuna correzione**, quindi la tabella "robustezza al ritardo di copia" girava un'ora in
+anticipo — look-ahead residuo mai notato.
+
+`coverage.verifica()` adesso **calcola quella tabella a ogni esecuzione e solleva** se il
+minimo non cade a 0. Una convenzione applicata in due posti non e' una svista che si
+corregge guardando meglio: e' una proprieta' del codice, e va resa impossibile.
+
+### I numeri veri — 629 trade, 170 giorni, 2026-01-22 -> 2026-09-18
+
+| | §8 (sbagliato, +2h) | **§9 (corretto, +1h)** |
+|---|---|---|
+| trade replayati | 509 | **629** |
+| **E[R] a TP1** | +0,026 | **+0,1265** BCa95 **[+0,0756 ; +0,1736]**, t = **+5,06** |
+| vincenti (TP1 hit) | ~72% | **77,4%** |
+| **differenza appaiata** | +0,2821 [+0,2406 ; +0,3215] | **+0,2939** BCa95 **[+0,2572 ; +0,3291]** |
+| mesi con differenza positiva | 9/9 | **9/9** |
+| maxDD 95esimo (a blocchi) | 29,1 R | **11,7 ± 0,2 R** |
+| maxDD 95esimo (i.i.d.) | 20,0 R | 10,6 ± 0,1 R |
+| costo dell'indipendenza | +9,1R (+46%) | **+1,09R (+10%)** |
+| serie negativa 95esimo | 9 | **5** (osservata 4) |
+| runs test | z = −3,37 | z = **−1,81** |
+| **finestra minima su E[R]** | ~5.300 trade (~5 anni) | **199 trade (~54 giorni)** |
+
+### Cosa cambia nella conclusione
+
+**Si ribalta la conclusione del §8.** Non era vero che E[R] fosse indistinguibile da zero:
+e' **+0,1265 con l'intervallo tutto positivo e t oltre 5**. Non era vero che servissero
+cinque anni per sorvegliarlo: ne bastano **~54 giorni** di segnali. Non era vero che il
+drawdown atteso fosse di 29R: e' **11,7R**.
+
+Resta vero, e anzi si vede meglio, che **la geometria pubblicata non sfrutta tutta la
+bravura direzionale**: il mentore chiama la direzione con un vantaggio appaiato di
+**+0,294** contro il lato casuale, e uscendo a TP1 ne incassa **+0,127**. Il pareggio
+richiede **69,1%** di vincite (TP1 +0,46R contro SL −1,03R) e lui sta a **77,4%**: il
+margine c'e' — **8,3 punti**, non 2,7 — ma meno della meta' del vantaggio direzionale
+arriva al conto.
+
+### Stabilita' mensile della differenza appaiata (n=626)
+
+| mese | gen | feb | mar | apr | mag | giu | lug | ago | set |
+|---|---|---|---|---|---|---|---|---|---|
+| n | 35 | 106 | 112 | 75 | 67 | 65 | 69 | 61 | 36 |
+| **diff.** | +0,229 | +0,208 | +0,295 | +0,347 | +0,328 | +0,323 | +0,261 | +0,311 | +0,417 |
+
+### Validazione OOS rifatta (finestra allungata a oggi)
+
+La pre-registrazione del 2026-08-07 era gia' allineata correttamente, quindi **il verdetto
+di allora non era contaminato**. Rifatta sulla finestra estesa (218 segnali, 15/06 -> 18/09,
+contro i 131 originali) conferma con margine:
+
+| | valore | soglia pre-registrata |
+|---|---|---|
+| differenza appaiata | **+0,274** BCa95 [+0,209 ; +0,333] | lower bound > 0 |
+| E[R] a TP1 (pess) | **+0,173** BCa95 [+0,083 ; +0,244] | puntuale > 0 |
+| win-rate mentore vs random | 61,2% contro 33,7% | — |
+
+### Soglie finali (sostituiscono quelle del §8)
+
+| soglia | valore |
+|---|---|
+| **DD di ritiro** | **11,7 R** (percentile 95, ricampionamento a blocchi) |
+| **Serie negativa** | **5 perdite consecutive** |
+| **Finestra minima** | **199 trade** (~54 giorni) — sotto non si valuta affatto |
+| **Sensibilita'** | con E[R] al limite inferiore OOS (+0,079): DD **15,4 R**, serie 5 |
+| **Sorveglianza** | E[R] **e** differenza appaiata: ora sono governabili entrambe |
+
+### Il gate di esecuzione, rimisurato (C5)
+
+Il divario fra il modello e la realta' operativa **resta il fatto piu' grande di tutti**:
+
+| modello | n | E[R] |
+|---|---|---|
+| replay, fill a `entry` entro 6h | 629 | **+0,124** [+0,077 ; +0,172] |
+| copier, fill **a mercato** +5 min, nessun gate | 696 | **−0,184** [−0,241 ; −0,125] |
+
+Lo scostamento e' **sfavorevole nel 72% dei casi**. Separando i due lati:
+
+| | n | E[R] |
+|---|---|---|
+| scostamento **favorevole** (entriamo meglio) | 195 | **+0,209** [+0,099 ; +0,311] |
+| scostamento **sfavorevole** (entriamo peggio) | 501 | **−0,337** [−0,409 ; −0,276] |
+
+Il gate di oggi guarda il **valore assoluto** e quindi butta via anche i segnali del primo
+gruppo. Applicando **la soglia gia' in `config.yaml` (20 pip)** al **solo lato sfavorevole**:
+
+| | n | % tenuti | E[R] |
+|---|---|---|---|
+| gate asimmetrico 20 pip | **293** | 42% | **+0,159** [+0,076 ; +0,239] |
+
+Cioe' **meglio del replay stesso, su quasi la meta' dei segnali, con esecuzione a mercato
+realistica**.
+
+> ⚠️ **La soglia non si sceglie dalla tabella.** A 5 pip si legge +0,195 e a 30 pip +0,157:
+> prendere il massimo sarebbe **eleggere un vincitore dopo aver visto gli esiti**, e
+> costerebbe un trial. Si tiene il **20 gia' scritto in `config.yaml`**; l'unica modifica e'
+> **simmetrico -> asimmetrico**, che e' una correzione di esecuzione, non una ricerca di
+> parametro.

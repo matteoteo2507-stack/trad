@@ -47,7 +47,12 @@ OOS_FROM = np.datetime64("2026-06-12T22:55:00")
 # fuso. Offset determinato con un criterio INDIPENDENTE DAGLI ESITI: quello che
 # minimizza lo scarto mediano |entry dichiarato - prezzo al timestamp|.
 #     -1h: $16.34   0h: $10.53   +1h: $3.16 (min)   +2h: $7.15   +3h: $9.95
-TZ_SHIFT_H = 1
+#
+# 2026-09-18 (sera): il valore non e' piu' scritto qui ma preso da backtest, che ne
+# e' l'unico proprietario. Stesso numero, una sola fonte: per qualche ora la stessa
+# correzione e' stata applicata due volte (qui e dentro replay) e tutto cio' che
+# passava da to_engine girava a +2h. Vedi il commento su TS_OFFSET_H.
+TZ_SHIFT_H = bt.TS_OFFSET_H
 
 
 def parse_export():

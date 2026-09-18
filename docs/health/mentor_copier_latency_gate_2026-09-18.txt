@@ -1,0 +1,64 @@
+C5 - SOGLIA ANTI-RITARDO DEL COPIER, misurata
+==============================================================================
+Fill a MERCATO (come fa il copier), non a `entry` (come fa il replay).
+R normalizzato su |entry-sl|, cioe' su cui il copier dimensiona i lotti.
+
+--- ritardo 0 barre M5 (~0 min) ---
+   tutti i segnali:            n=696   E[R]=-0.130  BCa95 [-0.182 ; -0.076]
+   scostamento: mediana 39.6 pip, 90esimo pct 122.9, max 3974
+   sfavorevole nel 76% dei casi
+
+--- ritardo 1 barre M5 (~5 min) ---
+   tutti i segnali:            n=696   E[R]=-0.184  BCa95 [-0.241 ; -0.125]
+   scostamento: mediana 47.9 pip, 90esimo pct 146.6, max 3974
+   sfavorevole nel 72% dei casi
+
+--- ritardo 2 barre M5 (~10 min) ---
+   tutti i segnali:            n=696   E[R]=-0.243  BCa95 [-0.314 ; -0.174]
+   scostamento: mediana 51.2 pip, 90esimo pct 180.5, max 3974
+   sfavorevole nel 70% dei casi
+
+--- ritardo 3 barre M5 (~15 min) ---
+   tutti i segnali:            n=696   E[R]=-0.305  BCa95 [-0.387 ; -0.228]
+   scostamento: mediana 60.4 pip, 90esimo pct 195.8, max 4007
+   sfavorevole nel 70% dei casi
+
+==============================================================================
+EFFETTO DELLA SOGLIA (ritardo 1 barra ~5 min, lo scenario realistico)
+==============================================================================
+soglia        tenuti  % tenuti  E[R] dei tenuti
+5 pip             36        5%  n=36    E[R]=+0.080  BCa95 [-0.170 ; +0.267]
+10 pip            75       11%  n=75    E[R]=+0.033  BCa95 [-0.152 ; +0.169]
+15 pip           118       17%  n=118   E[R]=+0.073  BCa95 [-0.062 ; +0.185]
+20 pip           163       23%  n=163   E[R]=+0.105  BCa95 [-0.005 ; +0.192]
+30 pip           233       33%  n=233   E[R]=+0.137  BCa95 [+0.054 ; +0.215]
+50 pip           365       52%  n=365   E[R]=+0.084  BCa95 [+0.020 ; +0.139]
+nessuna          696      100%  n=696   E[R]=-0.184  BCa95 [-0.241 ; -0.125]
+
+SCOSTAMENTO SFAVOREVOLE contro FAVOREVOLE (il gate oggi li tratta uguali)
+   favorevole (entriamo meglio)     n=195   E[R]=+0.209  BCa95 [+0.099 ; +0.311]
+   sfavorevole (entriamo peggio)    n=501   E[R]=-0.337  BCa95 [-0.409 ; -0.276]
+
+   solo sfavorevole oltre 10 pip:   n=460   E[R]=-0.365  BCa95 [-0.441 ; -0.301]
+   solo sfavorevole oltre 20 pip:   n=403   E[R]=-0.433  BCa95 [-0.513 ; -0.362]
+   solo sfavorevole oltre 30 pip:   n=362   E[R]=-0.499  BCa95 [-0.584 ; -0.429]
+
+==============================================================================
+GATE ASIMMETRICO: soglia SOLO sullo scostamento sfavorevole
+==============================================================================
+Il gate di oggi (`max_slippage_pips`) guarda il valore ASSOLUTO e quindi
+scarta anche i segnali in cui il mercato si e' mosso A NOSTRO FAVORE, che
+sono quelli che rendono di piu'. Qui la stessa soglia si applica solo al
+lato sfavorevole: il favorevole si tiene sempre.
+
+soglia sfav.    tenuti  % tenuti  E[R] dei tenuti
+5 pip              214       31%  n=214   E[R]=+0.195  BCa95 [+0.090 ; +0.299]
+10 pip             236       34%  n=236   E[R]=+0.168  BCa95 [+0.067 ; +0.263]
+15 pip             262       38%  n=262   E[R]=+0.167  BCa95 [+0.078 ; +0.256]
+20 pip             293       42%  n=293   E[R]=+0.159  BCa95 [+0.076 ; +0.239]
+30 pip             334       48%  n=334   E[R]=+0.157  BCa95 [+0.083 ; +0.226]
+50 pip             431       62%  n=431   E[R]=+0.124  BCa95 [+0.065 ; +0.180]
+
+CONFRONTO col modello del replay (fill a `entry`, attesa fino a 6h)
+   replay (fill a entry):       n=629   E[R]=+0.124  BCa95 [+0.077 ; +0.172]
+   copier (fill a mercato +5m): n=696   E[R]=-0.184  BCa95 [-0.241 ; -0.125]

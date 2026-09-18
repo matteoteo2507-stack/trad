@@ -42,6 +42,48 @@ def _finestra(ts):
     return str(min(ts))[:16], str(max(ts))[:16]
 
 
+def allineamento(segnali, T, CL, silenzioso=False):
+    """I segnali sono allineati al feed? Criterio indipendente dagli esiti.
+
+    Lo scostamento mediano |entry dichiarato - prezzo al timestamp| e' minimo
+    quando l'orologio dei segnali coincide con quello dei prezzi. Se il minimo
+    NON cade a shift aggiuntivo 0, i segnali arrivano disallineati: o manca una
+    correzione, o ne e' stata applicata una di troppo.
+
+    Serve esattamente per questo: il 2026-09-18 la correzione di +1h viveva in
+    due posti (il loader e il motore di replay) e tutto cio' che passava da
+    `to_engine` girava a **+2h** -- un'ora troppo tardi, quindi non look-ahead
+    ma fill sistematicamente peggiori del vero. Un difetto invisibile nei
+    risultati, perche' produce numeri plausibili.
+    """
+    import numpy as np
+
+    scarti = {}
+    for k in (-2, -1, 0, 1, 2):
+        d = []
+        for s in segnali:
+            i = int(np.searchsorted(T, s["ts"] + np.timedelta64(k, "h")))
+            if 0 <= i < len(T):
+                d.append(abs(float(s["entry"]) - float(CL[i])))
+        if d:
+            scarti[k] = float(np.median(d))
+    if not scarti:
+        return
+    best = min(scarti, key=scarti.get)
+    if not silenzioso:
+        print("  allineamento  " + "  ".join(
+            "%+dh:$%.2f%s" % (k, v, "*" if k == best else "")
+            for k, v in sorted(scarti.items())))
+    if best != 0:
+        raise CoperturaInsufficiente(
+            "SEGNALI DISALLINEATI: lo scarto mediano |entry - prezzo| e' minimo a "
+            "%+dh ($%.2f) invece che a 0h ($%.2f).\n"
+            "  La correzione di fuso orario e' applicata %s.\n"
+            "  Va applicata UNA VOLTA SOLA, nel loader (backtest.TS_OFFSET_H)."
+            % (best, scarti[best], scarti.get(0, float('nan')),
+               "due volte" if best < 0 else "mai, o e' insufficiente"))
+
+
 def verifica(prezzi="XAU_spot_M5_ext.csv", silenzioso=False):
     """Carica prezzi e segnali, stampa la copertura di entrambi, solleva se non torna.
 
@@ -85,6 +127,9 @@ def verifica(prezzi="XAU_spot_M5_ext.csv", silenzioso=False):
               % (os.path.basename(ov.EXPORT) + "/", s0, s1, len(righe)))
         print("  ritardo rispetto a oggi: prezzi %d giorni, segnali %d giorni"
               % (ritardo_p, ritardo_s))
+
+    # I segnali devono essere allineati al feed: solleva se non lo sono.
+    allineamento(segnali, T, CL, silenzioso=silenzioso)
 
     # I segnali senza prezzi che li coprano NON sono replayabili: e' esattamente
     # la situazione che ci ha fatto buttare via un mese (segnali al 08/07,

@@ -23,7 +23,9 @@ import numpy as np
 
 HERE = os.path.dirname(__file__)
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
-M5 = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "XAU_spot_M5.csv")
+# Feed ESTESO (fino a oggi). Il vecchio XAU_spot_M5.csv si ferma al 2026-06-12 e
+# tagliava in silenzio gli ultimi mesi di segnali: era il default fino al 18/09.
+M5 = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "XAU_spot_M5_ext.csv")
 SIG = os.path.join(HERE, "signals.csv")
 
 ENTRY_WINDOW = 72     # barre M5 (~6h) per il fill all'entry
@@ -31,9 +33,22 @@ MAX_HOLD = 576        # barre M5 (~48h) di holding max
 COST_USD = 0.30       # costo round-trip (spread/slippage) in $ oro
 SEED = 42
 
-# Disallineamento fra l'orologio dell'export dei segnali e quello del feed M5.
-# Vedi il commento in replay(). Va sottratto/aggiunto qui, non nei singoli script.
-TS_OFFSET = dt.timedelta(hours=1)
+# Disallineamento fra l'orologio dell'export dei segnali (UTC+01:00, dichiarato
+# dall'export stesso) e quello del feed M5 (ora server del broker, ~UTC+2).
+#
+# DOVE SI APPLICA (regola, 2026-09-18 sera): **una volta sola, al CARICAMENTO**.
+# I segnali escono dai loader (`load_signals` qui, `to_engine` in oos_validation)
+# gia' allineati al feed; `replay` e `market_replay` NON toccano piu' il timestamp.
+#
+# Perche' la regola esiste: fino a poche ore fa la correzione stava in `replay`,
+# ma `to_engine` ne applicava gia' una propria -> ogni analisi che passava di li'
+# (soglie di ritiro, OOS, report al socio) girava a **+2h**, un'ora troppo TARDI.
+# Due posti che applicano la stessa correzione sono un difetto strutturale, non
+# una svista: la correzione ha **un solo proprietario**, ed e' il loader.
+# Verifica automatica in coverage.verifica(): lo scarto mediano
+# |entry dichiarato - prezzo al ts| deve essere **minimo a shift aggiuntivo 0**.
+TS_OFFSET_H = 1
+TS_OFFSET = dt.timedelta(hours=TS_OFFSET_H)
 
 
 def load_m5():
@@ -80,7 +95,10 @@ def load_signals():
                 continue
             try:
                 out.append({
-                    "ts": np.datetime64(r["ts"][:19]), "side": r["side"],
+                    # allineato al feed QUI, una volta sola (vedi TS_OFFSET_H)
+                    "ts": np.datetime64(r["ts"][:19])
+                          + np.timedelta64(TS_OFFSET_H, "h"),
+                    "side": r["side"],
                     "entry": float(r["entry"]), "sl": float(r["sl"]),
                     "tp1": float(r["tp1"]), "tp2": float(r["tp2"]) if r["tp2"] else None,
                     "tp3": float(r["tp3"]) if r["tp3"] else None})
@@ -112,13 +130,9 @@ def replay(sig, T, HI, LO, side_override=None):
     risk = abs(entry - sl)
     if risk <= 0:
         return None
-    # FIX 2026-09-18: i timestamp dei segnali sono indietro di 1h rispetto al feed M5.
-    # Misurato su 544 segnali: lo scostamento mediano |mercato - entry| passa da
-    # $12.69 a $4.23 applicando +1h, con minimo NETTO e STABILE su tutti e 6 i mesi
-    # (nessun cambio DST -> offset fisso, non stagionale). Senza la correzione la
-    # ricerca del fill parte 1h PRIMA che il segnale esista: e' look-ahead di prezzo,
-    # la stessa famiglia di difetto del fill fantasma del FADE.
-    i = int(np.searchsorted(T, sig["ts"] + TS_OFFSET))
+    # Il timestamp arriva GIA' allineato dal loader (vedi TS_OFFSET_H): qui non si
+    # tocca. Applicarlo di nuovo sposterebbe il fill un'ora piu' avanti del vero.
+    i = int(np.searchsorted(T, sig["ts"]))
     if i >= len(T):
         return None
     # fill all'entry entro ENTRY_WINDOW

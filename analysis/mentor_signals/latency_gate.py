@@ -71,7 +71,8 @@ def costruisci(ritardo):
         if not tp1 or entry == sl:
             continue
         r_unit = abs(entry - sl)
-        i = int(np.searchsorted(T, s["ts"] + bt.TS_OFFSET)) + ritardo
+        # ts gia' allineato da bt.load_signals() (vedi bt.TS_OFFSET_H)
+        i = int(np.searchsorted(T, s["ts"])) + ritardo
         if i >= len(T):
             continue
         fill = float(CL[i])
@@ -144,6 +145,22 @@ def main() -> int:
         m = sf > s
         if m.sum() >= 30:
             print("   solo sfavorevole oltre %2d pip:   %s" % (s, sintesi(R[m])))
+    print()
+
+    print("=" * 78)
+    print("GATE ASIMMETRICO: soglia SOLO sullo scostamento sfavorevole")
+    print("=" * 78)
+    print("Il gate di oggi (`max_slippage_pips`) guarda il valore ASSOLUTO e quindi")
+    print("scarta anche i segnali in cui il mercato si e' mosso A NOSTRO FAVORE, che")
+    print("sono quelli che rendono di piu'. Qui la stessa soglia si applica solo al")
+    print("lato sfavorevole: il favorevole si tiene sempre.\n")
+    print("%-14s %7s %9s  %s" % ("soglia sfav.", "tenuti", "% tenuti", "E[R] dei tenuti"))
+    for s in SOGLIE:
+        if s > 1000:
+            continue
+        m = (sf <= 0) | (sf <= s)
+        print("%-14s %7d %8.0f%%  %s" % ("%d pip" % s, m.sum(), 100 * m.mean(),
+                                         sintesi(R[m])))
     print()
 
     print("CONFRONTO col modello del replay (fill a `entry`, attesa fino a 6h)")

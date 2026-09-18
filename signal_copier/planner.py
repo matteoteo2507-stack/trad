@@ -98,10 +98,31 @@ def build_plan(
         max_slip = float(anti.get("max_slippage_pips", 20))
         slip = price_delta_pips(signal.symbol, signal.entry, current_price)
         _slip_measured = slip
-        if slip > max_slip:
+
+        # Il gate e' ASIMMETRICO (C5, misurato il 2026-09-18 su 696 segnali).
+        #
+        # Entrare a mercato dopo il segnale non e' un rumore simmetrico: lo
+        # scostamento e' sfavorevole nel 72% dei casi, e i due lati hanno segno
+        # opposto. Scostamento FAVOREVOLE (il mercato si e' mosso dalla nostra
+        # parte, entriamo meglio del mentore): E[R] = +0,209 [+0,099 ; +0,311]
+        # su 195 segnali. Scostamento SFAVOREVOLE: E[R] = -0,337 su 501.
+        #
+        # Un gate sul valore assoluto scarta anche il primo gruppo, cioe' proprio
+        # i segnali migliori. Applicando la STESSA soglia (20 pip, quella gia'
+        # scritta in config.yaml: non e' stata ricercata sugli esiti) al solo lato
+        # sfavorevole si tengono 293 segnali su 696 con E[R] = +0,159
+        # [+0,076 ; +0,239] -- meglio del replay a limite, con fill a mercato.
+        #
+        # Dettagli in docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9.
+        sfavorevole = (
+            current_price > signal.entry if signal.side == "BUY"
+            else current_price < signal.entry
+        )
+        if sfavorevole and slip > max_slip:
             return _reject(
                 signal,
-                f"prezzo mosso {slip:.1f} pip dall'entry > {max_slip} (segnale tardivo)",
+                f"prezzo mosso {slip:.1f} pip SFAVOREVOLI dall'entry > {max_slip} "
+                f"(segnale tardivo)",
                 slip_pips=slip,
             )
         # Prezzo già oltre il primo TP → trade di fatto già concluso.
