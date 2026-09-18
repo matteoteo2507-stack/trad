@@ -274,3 +274,83 @@ pre-registrato, non fatto adesso.
 | **Serie negativa** | **9** (osservata 7) |
 | **Finestra minima su E[R]** | **non applicabile** — servirebbero ~2 anni |
 | **Sorveglianza primaria** | **differenza appaiata contro il lato casuale**, soglia da fissare quando il copier accumula i primi mesi live |
+
+---
+
+## 8. Versione definitiva — dati completi e verificati (2026-09-18, sera)
+
+Export unico e aggiornato a oggi, prezzi estesi da MT5 a oggi, copertura controllata prima di
+calcolare. **Campione: 509 trade, 168 giorni, 2026-01-22 → 2026-09-18.**
+
+### Il terzo difetto nei dati, trovato rigenerando `signals.csv`
+`parse.py` aveva **tre nomi di file cablati** (`messages.html`, `2`, `3`) e ignorava
+**`messages4.html`**, cioe' i messaggi piu' recenti di ogni export. Corretto con `glob` e
+ordinamento **numerico**. Terzo difetto della stessa famiglia in un giorno, tutti nei **dati**.
+
+### I numeri definitivi
+
+| | valore |
+|---|---|
+| **E[R] a TP1** | **+0,026** — indistinguibile da zero |
+| trade per distinguerlo da zero | **~5.300 (~5 anni)** |
+| maxDD 95° (a blocchi) | **29,1 ± 0,6 R** |
+| maxDD 95° (i.i.d., per confronto) | 20,0 ± 0,1 R — **l'indipendenza vale 9,1R, +46%** |
+| serie negativa 95° | **9** (osservata 7) |
+
+### La stabilita' mensile dice la cosa importante
+
+| mese | n | E[R] | **diff. appaiata** |
+|---|---|---|---|
+| gen | 29 | −0,034 | **+0,310** |
+| feb | 84 | −0,072 | **+0,250** |
+| mar | 81 | +0,093 | **+0,370** |
+| apr | 65 | +0,104 | **+0,292** |
+| mag | 57 | −0,057 | **+0,193** |
+| giu | 62 | +0,119 | **+0,233** |
+| lug | 55 | +0,120 | **+0,309** |
+| ago | 49 | −0,077 | **+0,245** |
+| set | 27 | −0,030 | **+0,370** |
+
+**Differenza appaiata complessiva: +0,2821 BCa95 [+0,2406 ; +0,3215]** su n=507, **positiva in tutti
+e nove i mesi**.
+
+> 🔧 **Conclusione del lavoro sul copier.** Il mentore **e' bravo a chiamare la direzione** — 9 mesi
+> su 9, differenza fra +0,19 e +0,37 contro il lato casuale, con un intervallo stretto. **La
+> geometria TP1/SL che pubblica converte quella bravura in circa niente**: TP1 rende +0,46R e lo stop
+> costa −1,03R, quindi il pareggio e' al **69,1%** di vincite e lui sta al ~72%. **2,7 punti di
+> margine.**
+>
+> **Copiarlo alla lettera non e' un'allocazione di capitale difendibile.** L'edge esiste, ma non in
+> quello che si incassa uscendo a TP1.
+
+### Cosa si puo' sorvegliare, e cosa no
+
+| grandezza | governabile? |
+|---|---|
+| **E[R]** | **no** — ~5 anni per distinguerlo da zero. Una soglia su E[R] non scattera' mai in tempo |
+| **differenza appaiata** | **si'** — positiva 9/9 mesi, deviazione fra i mesi ~0,06 |
+
+Per ogni segnale copiato si registra anche l'esito del **lato casuale sullo stesso segnale** (costa
+nulla, `oos_validation.py` lo fa gia') e si sorveglia **quella**.
+
+### Soglie finali
+
+| soglia | valore |
+|---|---|
+| **DD di ritiro** | **29 R** |
+| **Serie negativa** | **9 consecutive** |
+| **Finestra minima su E[R]** | **non applicabile** |
+| **Sorveglianza primaria** | differenza appaiata; soglia da fissare sui primi mesi live |
+
+⚠️ **Ipotesi generata dai dati, NON approvata**: uscire a **1R invece che a TP1** userebbe l'edge
+direzionale invece di sprecarlo. **Costa un trial** (§3) e va pre-registrata prima, non provata ora.
+
+### Igiene dei dati, sistemata
+- Export **unico** in `_export_telegram/` (nome fisso, 704 segnali a oggi). I **tre** export datati
+  che convivevano sono stati eliminati dopo aver verificato insiemisticamente che il nuovo li
+  contiene tutti. L'unico segnale presente solo nel piu' vecchio era gia' registrato in
+  `deleted_signals/` — **cancellato dal mentore dal canale**.
+- Prezzi estesi a oggi con [`extend_prices.py`](../analysis/mentor_signals/extend_prices.py):
+  riconciliazione sulla sovrapposizione **+$0,060 / correlazione 1,000000**, identica al riferimento.
+- [`coverage.py`](../analysis/mentor_signals/coverage.py) stampa e verifica la finestra dei dati
+  **prima** di ogni calcolo, e si ferma se l'export e' vuoto.

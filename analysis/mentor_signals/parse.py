@@ -16,7 +16,10 @@ import os
 import re
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SRC_DIR = os.path.join(ROOT, "Dati su segnali mentore")
+# Cartella STABILE dell'export Telegram (2026-09-18): un export nuovo SOSTITUISCE
+# il vecchio. Prima erano tre cartelle datate e si finiva per parsare la piu'
+# vecchia senza accorgersene.
+SRC_DIR = os.path.join(ROOT, "_export_telegram")
 OUT = os.path.join(os.path.dirname(__file__), "signals.csv")
 
 TS_RE = re.compile(r'title="(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2}):(\d{2})')
@@ -85,7 +88,18 @@ def parse_text(txt: str):
 
 def main():
     rows = []
-    for fn in ("messages.html", "messages2.html", "messages3.html"):
+    # FIX 2026-09-18: prima c'erano TRE nomi cablati e `messages4.html` veniva
+    # ignorato in silenzio -> signals.csv perdeva i messaggi piu' recenti.
+    # Ordinamento NUMERICO: "messages10.html" viene dopo "messages2.html".
+    def _num(fn):
+        m = re.search(r"messages(\d*)\.html$", fn)
+        return int(m.group(1) or 1) if m else 0
+    _file = sorted((fn for fn in os.listdir(SRC_DIR)
+                    if re.fullmatch(r"messages\d*\.html", fn)), key=_num)
+    if not _file:
+        raise SystemExit("nessun messages*.html in %s" % SRC_DIR)
+    print("file letti: %s" % ", ".join(_file))
+    for fn in _file:
         path = os.path.join(SRC_DIR, fn)
         if not os.path.exists(path):
             print(f"[skip] {fn} mancante"); continue

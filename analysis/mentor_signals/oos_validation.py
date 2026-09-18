@@ -8,6 +8,7 @@ Uso: python analysis/mentor_signals/oos_validation.py
 """
 from __future__ import annotations
 
+import glob
 import os
 import re
 import sys
@@ -23,7 +24,19 @@ from core import quant_metrics as qm  # noqa: E402
 import backtest as bt  # noqa: E402
 import parse as pr  # noqa: E402
 
-EXPORT = os.path.join(ROOT, "Messaggi tg aggiornati 07-08")
+# Cartella STABILE dell'export Telegram. Non mettere la data nel nome: un export
+# nuovo deve SOSTITUIRE il vecchio, non affiancarlo. Il 2026-09-18 abbiamo
+# analizzato per mezza giornata i file corti perche' ne convivevano due versioni.
+EXPORT = os.path.join(ROOT, "_export_telegram")
+# Ripiego se la cartella stabile non c'e' O e' vuota: cosi' il passaggio al nuovo
+# export e' automatico e nel frattempo nulla si rompe.
+if not glob.glob(os.path.join(EXPORT, "messages*.html")):
+    _vecchi = sorted(g for g in glob.glob(os.path.join(ROOT, "Messaggi tg aggiornati*"))
+                     if os.path.isdir(g))
+    if _vecchi:
+        EXPORT = _vecchi[-1]
+        print("ATTENZIONE: uso l'export datato %r. Spostalo in _export_telegram/"
+              % os.path.basename(EXPORT), file=sys.stderr)
 M5_EXT = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "XAU_spot_M5_ext.csv")
 # fine della copertura prezzi usata dall'audit -> tutto cio' che segue e' OOS
 OOS_FROM = np.datetime64("2026-06-12T22:55:00")

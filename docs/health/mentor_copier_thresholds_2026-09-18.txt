@@ -1,36 +1,42 @@
+COPERTURA DEI DATI (controllata prima di calcolare)
+--------------------------------------------------------------------
+  prezzi  XAU_spot_M5_ext.csv          2025-08-04T16:30 -> 2026-09-18T18:25  (79140 barre)
+  segnali _export_telegram/            2026-01-21T04:32 -> 2026-09-18T11:38  (704 messaggi)
+  ritardo rispetto a oggi: prezzi 0 giorni, segnali 0 giorni
+
 SOGLIE DI RITIRO - copier segnali mentore (XAUUSD)   [§8bis]
 ============================================================================
-Campione: 443 trade, 139 giorni, 2026-01-22 -> 2026-08-07
-E[R] = +0.0375   sd = 0.6727   vincenti 71.8%   payoff +0.46 / -1.03
+Campione: 509 trade, 168 giorni, 2026-01-22 -> 2026-09-18
+E[R] = +0.0261   sd = 0.6792   vincenti 70.9%   payoff +0.46 / -1.03
 
 1) GLI ESITI SONO INDIPENDENTI?  (se no, il rimescolamento sottostima)
-   runs test: 162 sequenze contro 180.5 attese  ->  z = -2.17
-   autocorrelazione dei rendimenti a lag 1: +0.104
+   runs test: 195 sequenze contro 210.9 attese  ->  z = -1.71
+   autocorrelazione dei rendimenti a lag 1: +0.077
    serie negativa piu' lunga osservata: 7
    -> raggruppamento confermato: si usa il ricampionamento A BLOCCHI (giorni)
 
 2) SIMULAZIONE - percentile 95, 20.000 simulazioni, errore standard su 8 repliche
 
                                            maxDD (R)   serie negativa
-   i.i.d. (rimescola i trade)           17.16 +- 0.15      6.00 +- 0.00
-   a blocchi (giorni interi)            25.03 +- 0.35      8.75 +- 0.46
+   i.i.d. (rimescola i trade)           19.98 +- 0.14      7.00 +- 0.00
+   a blocchi (giorni interi)            29.12 +- 0.61      9.00 +- 0.00
 
-   Costo dell'ipotesi di indipendenza: **+7.87R** di drawdown (46% in piu')
+   Costo dell'ipotesi di indipendenza: **+9.14R** di drawdown (46% in piu')
 
 3) SENSIBILITA' - stesso campione con E[R] portato al limite inferiore
-   dell'intervallo OOS (+0.079 invece di +0.038):
-   maxDD 18.26 +- 0.23 R   serie negativa 8.75 +- 0.46
+   dell'intervallo OOS (+0.079 invece di +0.026):
+   maxDD 18.79 +- 0.22 R   serie negativa 9.00 +- 0.00
 
 4) FINESTRA MINIMA - quanti trade servono per vedere un degrado
-   da E[R] attuale a ZERO                   n =  2522 trade  (~791 giorni)
-   da E[R] attuale al limite inf. OOS       n =  2060 trade  (~646 giorni)
-   un degrado di 0,05R                      n =  1419 trade  (~445 giorni)
+   da E[R] attuale a ZERO                   n =  5290 trade  (~1746 giorni)
+   da E[R] attuale al limite inf. OOS       n =  1295 trade  (~427 giorni)
+   un degrado di 0,05R                      n =  1447 trade  (~478 giorni)
 
 ============================================================================
 SOGLIE PROPOSTE (dal ricampionamento a blocchi, quello onesto)
 ============================================================================
-   DD di ritiro          : **25.0 R**  (percentile 95)
+   DD di ritiro          : **29.1 R**  (percentile 95)
    Serie negativa        : **9 perdite consecutive**
-   Finestra minima       : **2522 trade** - sotto non si valuta affatto
+   Finestra minima       : **5290 trade** - sotto non si valuta affatto
 
-   Con rischio dell'1% per trade, 25.0R di drawdown valgono circa 25.0% del capitale.
+   Con rischio dell'1% per trade, 29.1R di drawdown valgono circa 29.1% del capitale.

@@ -81,6 +81,10 @@ socio-trading-bot/
 
 # Export Telegram grezzi (pesanti, fuori repo per scelta 2026-08-09)
 /Messaggi tg aggiornati*/
+# Export Telegram del canale mentore: dati privati, ~184MB con foto e video.
+# Cartella a nome FISSO: un export nuovo sostituisce il vecchio (2026-09-18).
+/_export_telegram/
+/Dati su segnali mentore/
 /Dati su segnali mentore/
 
 # Sessioni Telethon del signal copier — SONO CREDENZIALI.
