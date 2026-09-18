@@ -1,0 +1,36 @@
+A5 - ORB v2: il verdetto contro la convenzione intrabar
+==============================================================================
+Il NO-GO del 2026-07-16 e' stato dichiarato sulla sola colonna PESSIMISTICA.
+Qui le due convenzioni sono affiancate. La distanza fra loro e' la misura
+di quanto non sappiamo su cosa succede dentro la barra M5.
+
+===== NAS100  (n=1957 eseguiti, di cui 0 senza esito sotto 'opt') =====
+    tutti ADX>=25    pess  n=1195 E[R]=-0.012  CI=[-0.100,+0.078]
+                     opt   n=1195 E[R]=-0.012  CI=[-0.099,+0.078]  forbice +0.001 R
+    no-news          pess  n=865  E[R]=-0.016  CI=[-0.122,+0.105]
+                     opt   n=865  E[R]=-0.015  CI=[-0.122,+0.105]  forbice +0.001 R
+    TRAIN '12-'19    pess  n=621  E[R]=-0.076  CI=[-0.194,+0.058]
+                     opt   n=621  E[R]=-0.076  CI=[-0.194,+0.058]  forbice +0.000 R
+    TEST  '20-'26    pess  n=574  E[R]=+0.057  CI=[-0.073,+0.203]
+                     opt   n=574  E[R]=+0.058  CI=[-0.071,+0.205]  forbice +0.002 R
+
+    POTENZA - il piu' piccolo effetto che questo campione poteva vedere
+      tutti ADX>=25    sd=1.670  MDE=0.135 R   estremo alto del CI=+0.078 R  <- il CI arriva in territorio TRADABILE
+      TRAIN '12-'19    sd=1.651  MDE=0.185 R   estremo alto del CI=+0.058 R  <- il CI arriva in territorio TRADABILE
+      TEST  '20-'26    sd=1.689  MDE=0.197 R   estremo alto del CI=+0.203 R  <- il CI arriva in territorio TRADABILE
+
+===== SPX500  (n=1911 eseguiti, di cui 0 senza esito sotto 'opt') =====
+    tutti ADX>=25    pess  n=1094 E[R]=-0.094  CI=[-0.192,+0.001]
+                     opt   n=1094 E[R]=-0.094  CI=[-0.192,+0.001]  forbice +0.000 R
+    no-news          pess  n=872  E[R]=-0.108  CI=[-0.215,+0.004]
+                     opt   n=872  E[R]=-0.108  CI=[-0.215,+0.004]  forbice +0.000 R
+    TRAIN '12-'19    pess  n=525  E[R]=-0.267  CI=[-0.391,-0.121]
+                     opt   n=525  E[R]=-0.267  CI=[-0.391,-0.121]  forbice +0.000 R
+    TEST  '20-'26    pess  n=569  E[R]=+0.066  CI=[-0.072,+0.214]
+                     opt   n=569  E[R]=+0.066  CI=[-0.072,+0.214]  forbice +0.000 R
+
+    POTENZA - il piu' piccolo effetto che questo campione poteva vedere
+      tutti ADX>=25    sd=1.668  MDE=0.141 R   estremo alto del CI=+0.001 R  
+      TRAIN '12-'19    sd=1.575  MDE=0.192 R   estremo alto del CI=-0.121 R  
+      TEST  '20-'26    sd=1.736  MDE=0.204 R   estremo alto del CI=+0.214 R  <- il CI arriva in territorio TRADABILE
+

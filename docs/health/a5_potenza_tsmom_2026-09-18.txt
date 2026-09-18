@@ -1,0 +1,27 @@
+A5 - POTENZA del test TSMOM (2026-07-08)
+========================================================================
+Osservato: Sharpe +0.21 su 23 anni, BCa95 riportato [-0.18 ; +0.59]
+Controllo analitico: SE = 0.211 -> CI95 [-0.20 ; +0.62]  (coerente)
+
+EFFETTO MINIMO RILEVABILE con 23 anni: **Sharpe 0.59**
+
+Quanto sarebbe servito per vedere l'effetto ATTESO A PRIORI:
+  Sharpe cercato               anni   avevamo 23 anni?
+  0.20                          200   NO  (servivano 9x)
+  0.30                           91   NO  (servivano 4x)
+  0.40                           53   NO  (servivano 2x)
+  0.50                           35   NO  (servivano 2x)
+  0.60                           26   NO  (servivano 1x)
+  0.80                           16   SI
+  1.00                           12   SI
+
+LETTURA
+------------------------------------------------------------------------
+La letteratura citata dalla review stessa attende Sharpe 0,3-0,5.
+Per rilevare 0,4 servono 53 anni: ne avevamo 23, cioe' **2.3x meno**.
+L'intervallo osservato arriva a +0.59: comprende per intero la fascia
+attesa dalla letteratura. Il test **non ha escluso** l'effetto cercato:
+ha fallito nel dimostrarlo, che non e' la stessa cosa.
+
+Nota: l'approssimazione i.i.d. e' generosa. Con autocorrelazione positiva
+gli anni necessari crescono ancora.

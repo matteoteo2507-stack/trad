@@ -155,7 +155,12 @@ def run(sym):
             continue
         adxv = float(ADX[sess[jbk]]) if np.isfinite(ADX[sess[jbk]]) else 0.0
         trades.append({"year": int(year[f]), "side": side, "risk": risk,
-                       "R_pess": rp - cR, "R_opt": (ro - cR) if ro is not None else 0.0,
+                       "R_pess": rp - cR,
+                       # A5 (2026-09-18): era `else 0.0`, cioe' un timeout sotto la
+                       # convenzione ottimistica veniva contato come pareggio invece che
+                       # scartato. Colonna mai usata nel verdetto, quindi il NO-GO non ne
+                       # risente -- ma ora la usiamo, e va pulita.
+                       "R_opt": (ro - cR) if ro is not None else float("nan"),
                        "win": rp > 0, "nfp": nfp, "gap": abs(gap_pct), "adx": adxv})
     return pd.DataFrame(trades)
 

@@ -11,6 +11,88 @@
 
 ---
 
+## 2026-09-18 (5) — **A5: audit dei verdetti early-stage.** Nessuno era sbagliato; due dicevano **meno** di quello che gli abbiamo fatto dire
+
+Protocollo scritto e committato **prima** di aprire i motori
+([EARLY_STAGE_AUDIT_PROTOCOL.md](docs/EARLY_STAGE_AUDIT_PROTOCOL.md)), referto completo in
+[EARLY_STAGE_AUDIT_REPORT.md](docs/EARLY_STAGE_AUDIT_REPORT.md). **0 trial spesi.**
+
+### L'asimmetria da cui e' partito
+
+Sono quasi tutti **NO-GO**, e questo ribalta quale difetto e' pericoloso. Un difetto che **gonfia**
+(look-ahead, fill fantasma) rende il NO-GO piu' difficile: se non passa nonostante il regalo, il
+verdetto regge a maggior ragione. Il difetto pericoloso e' quello che **deprime** il risultato o che
+**toglie potenza** — ed e' invisibile, perche' un numero peggiore sembra prudenza. Un NO-GO falso
+non si autocorregge mai: la strategia non esiste piu' e non genera dati che lo contraddicano.
+
+### Il risultato
+
+**Nessun verdetto era sbagliato. Il difetto sistematico sta nel passaggio dal test al verdetto.**
+Le review tecniche sono oneste — scrivono *"non distinguibile dal caso"*, *"INSUFFICIENT DATA"*. In
+DECISIONS e in memoria diventano *"NO-GO pulito"*, *"null"*, *"l'edge non esiste"*. **Su quelle
+formulazioni compresse abbiamo poi costruito il bilancio del pivot.**
+
+| famiglia | esito | cosa cambia |
+|---|---|---|
+| **Livelli** (384 trial) | ✅ CONFERMATO, **piu' solido** del dichiarato | niente; CI larghi **meno di 1 punto** su base 30% |
+| **NXT continuazione** | ✅ CONFERMATO, **numero sbagliato** | E[R] vero **−0,118**, non −0,444 |
+| **ORB** | 🟡 MISTO | SPX500 refutato · **NAS100 mai misurato** |
+| **TSMOM** | ⚠️ **NON MISURATO** | MDE Sharpe **0,59** contro un atteso di **0,3-0,5** |
+
+### NXT: il difetto c'era, valeva 0,326R, il verdetto regge lo stesso
+
+Fade e continuazione entrano allo **stesso livello**: il fade **vende**, la continuazione **compra**.
+Il fill fantasma **regala** un prezzo migliore a chi vende e **impone** un prezzo peggiore a chi
+compra — cioe' poteva **aver prodotto lui** il NO-GO della continuazione.
+
+Rimisurata con i soli fill ottenibili (`analysis/nxt/continuation_obtainable.py`): da **−0,444**
+[−0,470 ; −0,417] a **−0,118** [−0,161 ; −0,076]. **Tre quarti dell'effetto erano artefatto.** Ma
+l'intervallo esclude lo zero in entrambe le convenzioni, **0/6** strumenti e **2/15** anni positivi.
+
+🔧 **Il fatto che vale piu' del verdetto**: misurate onestamente **entrambe le direzioni dello
+stesso ingresso perdono** — fade **−0,250**, continuazione **−0,118**. Non e' un edge col segno
+sbagliato: e' **un livello che non contiene informazione**, piu' costi. E' la stessa conclusione dei
+384 trial sui livelli, raggiunta da una strada indipendente.
+
+### ORB: una mia ipotesi refutata, e un buco vero
+
+Sospettavo che il verdetto dipendesse dalla convenzione intrabar (il motore calcola `R_pess` e
+`R_opt` ma stampa solo la pessimistica). **Misurata: forbice +0,001R.** Ipotesi mia, sbagliata — con
+RR 1:3 e stop ampio le barre ambigue sono rare.
+
+Il buco vero e' la **potenza**. NAS100: **ogni** intervallo contiene lo zero e arriva a **+0,078** /
+**+0,203**, territorio tradabile; MDE **0,135R**. SPX500 TRAIN '12-'19 e' invece **genuinamente
+negativo**: −0,267 [−0,391 ; −0,121]. E il criterio pre-registrato era *"E[R] > 0 con lower bound >
+0"*, che puo' produrre solo "dimostrato" / "non dimostrato" — e il "non dimostrato" e' diventato
+*"anche il filone scalping single-asset e' null"*, generalizzando da **uno strumento su due**.
+
+### TSMOM: il test non poteva vedere quello che cercava
+
+Sharpe +0,21, BCa95 [−0,18 ; +0,59] → NO-GO per regola. Ma la review **cita nella stessa pagina**
+l'atteso a priori: **Sharpe 0,3-0,5**. Con `SE(SR) ≈ sqrt((1+SR²/2)/T)` e T=23 anni, l'**MDE e'
+Sharpe 0,59**: per rilevare 0,4 servivano **53 anni**, 2,3× quelli disponibili; per 0,3 ne servivano
+91. **L'intervallo osservato contiene per intero la fascia attesa.**
+
+Stessa forma del difetto che il 17/09 ha smontato il "secondo test" del FADE (fuori scala 40×):
+una giustificazione plausibile, mai tradotta in un numero. ⚠️ Non autorizza a riaprire — autorizza a
+**smettere di citarlo come prova**. E la casella non e' riempibile: 53 anni non esistono.
+
+### Regola nuova
+
+**Un verdetto si scrive con la forza del test che lo produce.** Se il criterio era *"dimostra che
+> 0"*, il fallimento si scrive **"non dimostrato"**, non "refutato", e si accompagna con l'**MDE**.
+`STRATEGY_LIFECYCLE` chiede gia' di dichiarare prima cosa significhera' un mancato rifiuto:
+**non lo stavamo facendo**.
+
+### Contabilita'
+
+0 trial. Nessuna famiglia riaperta, nessun holdout toccato. I due verdetti declassati **non**
+ricevono un trial nuovo: tornano allo stato precedente col budget residuo di allora. Restano chiusi,
+ma **smettono di valere come prova** nel bilancio *"niente edge meccanico own robusto"* — che e' la
+frase su cui poggia il pivot al passivo.
+
+---
+
 ## 2026-09-18 (4) — **La correzione dell'ora era applicata due volte.** Il copier non e' piatto: E[R] **+0,127**, sorvegliabile in **54 giorni**
 
 Voce di **correzione**: annulla e sostituisce i numeri del **§8** del documento soglie e del commit
@@ -1614,6 +1696,9 @@ nostri dati).
 
 ## 2026-07-17 — NXT (Fibonacci/Elliott, ex-soci): continuazione NO-GO. Il FADE resta un LEAD.
 
+> ⚠️ **Numero corretto dall'audit A5 del 2026-09-18** (la decisione **non** cambia). Il −0,44R qui sotto e' stato prodotto col **fill fantasma**: rimisurato coi soli fill ottenibili vale **−0,118R** BCa95 [−0,161 ; −0,076], e la breadth e' **0/6 strumenti** e **2/15 anni** positivi, non 14/14. Il difetto valeva **+0,326R**, tre quarti dell'effetto dichiarato. Vedi [voce 18/09 (5)](#) e [EARLY_STAGE_AUDIT_REPORT.md](docs/EARLY_STAGE_AUDIT_REPORT.md).
+
+
 > *Voce ricostruita il 2026-08-04: la decisione era tracciata in memoria, in
 > [`strategie_candidate/nxt_fib_trend_pullback.md`](fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md)
 > e in `_INTAKE.md`, ma mancava da questo log.*
@@ -1638,6 +1723,9 @@ EA [`mql5/nxt_fade.mq5`](mql5/nxt_fade.mq5). Forward pre-registrato il 2026-08-0
 ---
 
 ## 2026-07-16 — Opening-Range Breakout (scalping single-asset, idea utente+socio): NO-GO su 14.5y.
+
+> ⚠️ **Ridimensionato dall'audit A5 del 2026-09-18.** Il NO-GO vale per **SPX500** (TRAIN '12-'19: −0,267 BCa95 [−0,391 ; −0,121], esclude lo zero). Su **NAS100 ogni intervallo contiene lo zero** e arriva fino a +0,078 / +0,203, con MDE **0,135R**: la casella e' **vuota, non chiusa**. La frase *"anche il filone scalping single-asset e' null"* generalizza da **uno strumento su due**. ⚠️ Non autorizza a riaprire: l'holdout della famiglia e' gia' speso.
+
 
 Primo test del filone **scalping intraday single-asset**. ORB dell'apertura cash USA (09:30 ET) + retest,
 US100/US500 M5, 1:2, pre-registrato ([docs/OPENING_RANGE_PREREGISTRATION.md](docs/OPENING_RANGE_PREREGISTRATION.md)),
@@ -1741,6 +1829,9 @@ a capitale senza forward.
 ---
 
 ## 2026-07-08 — TSMOM multi-asset (primo edge del pivot): NO-GO pulito. Kill-switch → mean-reversion vol.
+
+> ⚠️ **Declassato dall'audit A5 del 2026-09-18 da "refutato" a NON MISURATO.** Con 23 anni l'effetto minimo rilevabile e' **Sharpe 0,59**, mentre l'atteso a priori citato da questa stessa voce e' **0,3-0,5**: per vedere 0,4 servivano **53 anni**. L'intervallo osservato [−0,18 ; +0,59] **contiene per intero** la fascia attesa. Il test **non ha escluso** l'effetto: ha fallito nel dimostrarlo. Resta chiuso (la casella non e' riempibile), ma **smette di valere come prova** nel bilancio *"niente edge meccanico own robusto"*.
+
 
 Primo edge dopo la chiusura livelli. Test **pre-registrato** ([docs/TSMOM_PREREGISTRATION.md](docs/TSMOM_PREREGISTRATION.md)),
 motore di portafoglio [strategies/tsmom/backtest.py](strategies/tsmom/backtest.py) sulle **serie di
