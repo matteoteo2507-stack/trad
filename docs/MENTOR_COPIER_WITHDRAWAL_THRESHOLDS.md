@@ -492,3 +492,71 @@ realistica**.
 > costerebbe un trial. Si tiene il **20 gia' scritto in `config.yaml`**; l'unica modifica e'
 > **simmetrico -> asimmetrico**, che e' una correzione di esecuzione, non una ricerca di
 > parametro.
+
+---
+
+## 10. L'uscita a 1R: **ipotesi chiusa a costo zero**, e una correzione di unita'
+
+### La correzione: confrontavo punti di win-rate con R
+
+Nel §9 ho scritto che il mentore ha *"un vantaggio appaiato di **+0,294** contro il lato casuale, e
+uscendo a TP1 ne incassa **+0,127**"*, concludendo che **meno della meta' arriva al conto**.
+
+**Il confronto e' sbagliato: le due grandezze non hanno la stessa unita'.** Il **+0,294** e' una
+differenza di **win-rate** (29,4 punti percentuali: 57,7% contro 27,3%); il **+0,127** e' un valore
+atteso **in R**. Non sono commensurabili, e da un confronto fra unita' diverse non si ricava nessun
+"spreco".
+
+In R, appaiato sugli stessi segnali (n=626):
+
+| vantaggio del mentore sul lato casuale | in R |
+|---|---|
+| uscendo a **1R** | **+0,588** BCa95 [+0,514 ; +0,658] |
+| uscendo a **TP1** | **+0,597** BCa95 [+0,539 ; +0,656] |
+| **differenza fra le due uscite** | **−0,009** BCa95 [−0,055 ; +0,033] |
+
+**Le due geometrie estraggono lo stesso vantaggio.** Non ce n'e' una che ne spreca meta'.
+
+### L'ipotesi B7, misurata: **nessuna differenza**
+
+L'uscita a 1R **era gia' dentro i numeri dall'inizio** e non me n'ero accorto: la "win-rate
+simmetrica (+1R prima di −1R)", la metrica **primaria** della pre-registrazione di agosto, **e'**
+l'uscita a 1R. Bastava convertirla in R.
+
+Confronto appaiato, stesso segnale, stesso ingresso, stesso stop — cambia solo il bersaglio (n=627):
+
+| uscita | E[R] | BCa95 | sd |
+|---|---|---|---|
+| **TP1** (attuale) | **+0,1247** | [+0,0737 ; +0,1712] | 0,627 |
+| **1R** | **+0,1246** | [+0,0480 ; +0,2011] | **0,989** |
+| **differenza appaiata (1R − TP1)** | **−0,0001** | **[−0,0633 ; +0,0596]** | 0,773 |
+
+**Identiche fino alla quarta cifra**, con l'intervallo della differenza stretto e centrato su zero.
+E l'uscita a 1R porta **+58% di deviazione standard** a parita' di rendimento: stesso E[R], piu'
+rumore, quindi drawdown attesi piu' profondi e finestra di sorveglianza piu' lunga. **Peggiore a
+parita' di tutto il resto.**
+
+Coerente col resto dei numeri: TP1 vale 0,774 × (+0,46) − 0,226 × (−1,03) ≈ **+0,123**; 1R vale
+0,577 × (+1) − 0,423 × (−1) − costi ≈ **+0,124**. Due strade diverse per lo stesso posto.
+
+### Perche' questo **non** costa un trial
+
+Il contatore si muove quando si **adotta** una regola scelta dopo averne visto l'esito, non quando
+la si **rifiuta**. Qui l'esito e' nullo: non si adotta niente, la geometria resta quella del mentore.
+Se fosse uscito positivo, **allora** sarebbe servita una pre-registrazione e un trial prima di
+toccare il copier. Test di [[feedback_correggere_non_e_cercare]] superato: **l'avrei misurata anche
+se il risultato fosse stato positivo** — anzi, proprio in quel caso sarebbe costata.
+
+**B7 chiusa. Trial spesi: 0.**
+
+### ⚠️ Un limite che resta aperto, e che vale piu' di B7
+
+Il baseline casuale e' **molto sensibile alla convenzione sui tie** (barre M5 che toccano bersaglio e
+stop nella stessa barra): a TP1 il lato casuale vale **−0,487** nella convenzione pessimistica e
+**+0,333** in quella ottimistica. Una forbice di **0,82R**, contro i **0,05R** del mentore.
+
+Quella forbice **non e' un dettaglio di implementazione: e' la misura di quanto non sappiamo** su
+cosa succede dentro la barra ([[feedback_convenzioni_implicite]]). Finche' resta cosi' larga, il
+numero *"il mentore batte il caso di +0,59R"* va letto come **condizionato alla convenzione
+pessimistica**, non come un fatto. Si stringe solo con dati a granularita' piu' fine (M1 o tick),
+non con altra statistica sugli stessi dati.

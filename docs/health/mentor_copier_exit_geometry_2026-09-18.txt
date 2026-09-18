@@ -1,0 +1,19 @@
+n = 627
+
+  uscita a TP1 (attuale)           +0.1247  BCa95 [+0.0737 ; +0.1712]   sd 0.627
+  uscita a 1R                      +0.1246  BCa95 [+0.0480 ; +0.2011]   sd 0.989
+  DIFFERENZA appaiata (1R - TP1)   -0.0001  BCa95 [-0.0633 ; +0.0596]   sd 0.773
+
+  win-rate a 1R (simmetrica): 57.7%   pareggio richiesto ~50%
+  TP1 hit%                  : 77.4%   pareggio richiesto 69,1%
+
+  per mese (differenza 1R - TP1):
+    2026-01  +0.176  (n=35)
+    2026-02  -0.008  (n=107)
+    2026-03  -0.017  (n=112)
+    2026-04  -0.010  (n=75)
+    2026-05  -0.069  (n=67)
+    2026-06  -0.088  (n=65)
+    2026-07  +0.109  (n=69)
+    2026-08  -0.123  (n=61)
+    2026-09  +0.213  (n=36)

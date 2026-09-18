@@ -48,9 +48,14 @@ ingovernabile: e' positivo con margine e si sorveglia in due mesi. La validazion
 contaminata (era gia' allineata), rifatta sulla finestra estesa a oggi conferma: differenza appaiata
 **+0,274** [+0,209 ; +0,333], E[R] **+0,173** [+0,083 ; +0,244] su 218 segnali.
 
-Resta vero che **la geometria pubblicata non incassa tutta la bravura direzionale**: vantaggio
-appaiato **+0,294**, incassato a TP1 **+0,127**. Il pareggio e' al **69,1%** (TP1 +0,46R contro SL
-−1,03R) e lui sta al **77,4%**: margine **8,3 punti**, ma meno della meta' del segnale arriva al conto.
+Il pareggio e' al **69,1%** (TP1 +0,46R contro SL −1,03R) e lui sta al **77,4%**: **8,3 punti** di
+margine.
+
+> ⚠️ **Correzione, mia, entro la stessa sera.** Avevo scritto che la geometria pubblicata "spreca"
+> l'edge perche' il vantaggio appaiato vale **+0,294** e a TP1 se ne incassa **+0,127**. Il confronto e'
+> **sbagliato: unita' diverse**. Il +0,294 e' una differenza di **win-rate** (29,4 punti percentuali),
+> il +0,127 e' un E[R] **in R**. In R il vantaggio sul lato casuale vale **+0,597** a TP1 e **+0,588**
+> a 1R: **la stessa cosa**. Nessuna geometria ne spreca meta'. Vedi §10 del documento.
 
 ### Decisione strutturale: la correzione ha **un solo proprietario**
 
@@ -88,7 +93,24 @@ esecuzione realistica. Implementato in `signal_copier/planner.py` con test di re
 commit riscritto. Estratto inoltre in un commit proprio il fix `_build_broker` dell'utente, finito per
 sbaglio nel commit del gruppo C per un `git add -A` di troppo.
 
-Documento: [MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9](docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md).
+### B7 (uscita a 1R) chiusa la sera stessa, **0 trial**
+
+L'uscita a 1R **era gia' dentro i numeri**: la "win-rate simmetrica (+1R prima di −1R)", metrica
+**primaria** della pre-registrazione di agosto, **e'** l'uscita a 1R — bastava convertirla in R.
+Confronto appaiato sullo stesso segnale (n=627): TP1 **+0,1247** [+0,0737 ; +0,1712], 1R **+0,1246**
+[+0,0480 ; +0,2011], **differenza −0,0001 BCa95 [−0,0633 ; +0,0596]**. Identiche — e 1R porta
+**+58% di deviazione standard** a parita' di rendimento, quindi e' **peggiore**.
+
+Non costa un trial perche' **non si adotta niente**: il contatore si muove quando si adotta una
+regola scelta dopo averne visto l'esito, non quando la si rifiuta. Se fosse uscita positiva, allora
+sarebbe servita una pre-registrazione.
+
+⚠️ **Limite che resta, e vale piu' di B7**: il lato casuale a TP1 vale **−0,487** in convenzione
+pessimistica e **+0,333** in quella ottimistica — forbice di **0,82R**, contro i 0,05R del mentore.
+Il "+0,59R contro il caso" e' **condizionato alla convenzione pessimistica**. Si stringe solo con
+dati M1/tick, non con altra statistica sugli stessi dati.
+
+Documento: [MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9-§10](docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md).
 
 ---
 
