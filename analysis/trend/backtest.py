@@ -25,6 +25,7 @@ import pandas as pd
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 sys.path.insert(0, ROOT)
 from core import quant_metrics as qm  # noqa: E402
+from core.random_baseline import BarSampler, check_matching  # noqa: E402
 
 DATA = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "dukascopy_d1")
 
@@ -178,6 +179,8 @@ def run_asset(sym, grp, lookback, rng, t0=None, t1=None):
     years = pd.DatetimeIndex(t).year.values
     valid = np.flatnonzero(np.isfinite(A) & (A > 0))
     lo_v, hi_v = (valid[0], valid[-1]) if len(valid) else (0, 0)
+    usable = (np.arange(len(C)) >= lo_v) & (np.arange(len(C)) <= hi_v - 2)
+    sampler = BarSampler(years, rng, usable=usable)
 
     for i in range(lookback + ATR_N, len(C) - 2):
         if i <= in_pos_until:
@@ -203,12 +206,9 @@ def run_asset(sym, grp, lookback, rng, t0=None, t1=None):
         in_pos_until = int(res["exit_idx"])
 
         # ---- baseline random risk-matched: stesso anno, stesso lato, istante casuale ----
-        same_year = np.flatnonzero((years == years[f]) & (np.arange(len(C)) >= lo_v)
-                                   & (np.arange(len(C)) <= hi_v - 2))
-        for _ in range(M_RANDOM):
-            if len(same_year) == 0:
-                break
-            k = int(rng.choice(same_year))
+        # Campionamento da core.random_baseline: estrazioni identiche a quelle del
+        # ciclo scritto a mano che stava qui (core/tests/test_random_baseline.py, caso 3).
+        for k in sampler.draw(years[f], M_RANDOM):
             if not np.isfinite(A[k]) or A[k] <= 0 or k + 1 >= len(C) - 1:
                 continue
             Rk = A[k]
@@ -352,6 +352,15 @@ def q1_report(real, rand, tag):
 
     print("\n--- vs BASELINE RANDOM risk-matched (stessa uscita) ---")
     if len(rand):
+        # Il matching si VERIFICA, non si dichiara. Nota sulla convenzione, che qui
+        # non era mai stata scritta: il rischio e' matchato **in unita' di ATR locale**
+        # (1 ATR per entrambi i bracci), NON in unita' di prezzo. E' coerente con la
+        # regola — l'R della strategia e' 1 ATR all'ingresso — ma significa che le due
+        # gambe rischiano importi diversi in valuta, e per questo `R_price` sta fra gli
+        # ESITI osservati e non fra le dimensioni matchate.
+        print(check_matching(real, rand, link="sigid",
+                             exact=("sym", "side", "year"), numeric=(),
+                             observed=("R_price", "hold_e1")))
         for col in ("E1", "oracle"):
             lo, hi, pt = cluster_diff(real, rand, col)
             flag = ("  <-- reale > random" if lo > 0 else

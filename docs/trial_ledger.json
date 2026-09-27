@@ -1,0 +1,227 @@
+{
+  "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
+  "aggiornato": "2026-09-19",
+  "budget": {
+    "round_rifinitura_per_famiglia": 3,
+    "prereg_esterne_per_trimestre": 3,
+    "prereg_esterne_per_trimestre_soglia_allarme": 2,
+    "holdout_aperture_per_famiglia": 1,
+    "llm_knowledge_cutoff": "2026-05-31"
+  },
+  "trimestre_corrente": "2026-Q3",
+  "famiglie": [
+    {
+      "id": "livelli",
+      "nome": "Ricerca livelli (reazione vs random)",
+      "stato": "CLOSED",
+      "trial_cumulati": 384,
+      "round_rifinitura": 3,
+      "holdout_aperto": "2026-07-06",
+      "fonte_esterna": false,
+      "verdetto": "NULL su ogni timeframe",
+      "fonti": [
+        "docs/LEVEL_RESEARCH_PREREGISTRATION.md",
+        "DECISIONS.md 2026-07-06 (v1, 96 trial)",
+        "DECISIONS.md 2026-07-07 (v2 volume, cumulato 144)",
+        "DECISIONS.md 2026-07-07 v3 (HTF, cumulato 384)"
+      ],
+      "note": "96 OHLC + 48 volume + 240 HTF. Riconfermata dall'audit A5 (2026-09-18) e piu' solida del dichiarato. Riapertura solo con evidenza esterna nuova (LIFECYCLE §7).",
+      "provenienza_ipotesi": "utente",
+      "finestra_dati_fine": "2026-07-06",
+      "nota_provenienza": "Ipotesi dell'utente dalla propria formazione tecnica; il motore e' nostro."
+    },
+    {
+      "id": "nxt",
+      "nome": "NXT / Fibonacci (continuazione + fade)",
+      "stato": "CLOSED",
+      "trial_cumulati": 2,
+      "trial_budget": 3,
+      "round_rifinitura": 2,
+      "holdout_aperto": "prima del 2026-08-04",
+      "fonte_esterna": true,
+      "verdetto": "KILL della famiglia (2026-09-17)",
+      "fonti": [
+        "docs/NXT_FADE_FORWARD_PREREGISTRATION.md:101 (fade = trial #2)",
+        "docs/NXT_FADE_FORWARD_PREREGISTRATION.md:303 (budget 2 di 3, holdout gia' aperto)",
+        "DECISIONS.md 2026-09-17 (4) - KILL"
+      ],
+      "note": "Trial #1 = continuazione (NO-GO 2026-07-17), #2 = fade. Il terzo NON e' stato speso. Rinominare la famiglia non azzera il contatore. Il KILL e' per difetto metodologico (fill fantasma, §6a.1), non per budget.",
+      "provenienza_ipotesi": "umana_esterna",
+      "finestra_dati_fine": "2026-09-17",
+      "nota_provenienza": "Spec degli ex-soci (Fibonacci/Elliott), documentata in fondamenti_tecnici/strategie_candidate/."
+    },
+    {
+      "id": "opening_range",
+      "nome": "Opening-Range Breakout + retest (ORB)",
+      "stato": "CLOSED",
+      "trial_cumulati": null,
+      "trial_cumulati_minimo_documentato": 2,
+      "round_rifinitura": 2,
+      "holdout_aperto": "2026-07-16",
+      "fonte_esterna": false,
+      "verdetto": "NO-GO su SPX500; NAS100 NON MISURATO (A5)",
+      "fonti": [
+        "docs/OPENING_RANGE_PREREGISTRATION.md",
+        "DECISIONS.md 2026-07-16",
+        "docs/BACKLOG_RICERCA.md A3 e A5 (holdout gia' aperto)"
+      ],
+      "note": "NUMERO NON RICOSTRUIBILE: v1 + v2 (filtro news, ADX) sono documentati come round, ma il conteggio per-variante non e' mai stato scritto. Il minimo documentato e' 2. E' esattamente il buco che questo registro esiste per non ripetere.",
+      "provenienza_ipotesi": "utente",
+      "finestra_dati_fine": "2026-07-16",
+      "nota_provenienza": "Idea utente + socio (DECISIONS 2026-07-16)."
+    },
+    {
+      "id": "tsmom",
+      "nome": "TSMOM multi-asset",
+      "stato": "CLOSED",
+      "trial_cumulati": 8,
+      "round_rifinitura": 1,
+      "holdout_aperto": "2026-07-08",
+      "fonte_esterna": false,
+      "verdetto": "dichiarato NO-GO; declassato a NON MISURATO dall'audit A5",
+      "fonti": [
+        "docs/TSMOM_PREREGISTRATION.md (n_trials = 8: lookback 4 x ribilanciamento 2)",
+        "DECISIONS.md 2026-07-08",
+        "DECISIONS.md 2026-09-18 (5) - A5"
+      ],
+      "note": "MDE Sharpe 0,59 contro un atteso a priori di 0,3-0,5: servivano ~53 anni. Il test non poteva vincere. Resta chiuso ma NON vale come prova.",
+      "provenienza_ipotesi": "letteratura",
+      "finestra_dati_fine": "2026-07-08",
+      "nota_provenienza": "Filone accademico (time-series momentum). NON e' dichiarato CHI abbia proposto la specifica testata."
+    },
+    {
+      "id": "meanrev_vol",
+      "nome": "Mean-reversion su volatilita' (z-score)",
+      "stato": "CLOSED",
+      "trial_cumulati": 6,
+      "round_rifinitura": 1,
+      "holdout_aperto": "2026-07-08",
+      "fonte_esterna": false,
+      "verdetto": "NO-GO",
+      "fonti": [
+        "docs/MEANREV_PREREGISTRATION.md (n_trials = 6: N 3 x Z_ENTRY 2)",
+        "DECISIONS.md 2026-07-08"
+      ],
+      "provenienza_ipotesi": "non_dichiarata",
+      "finestra_dati_fine": "2026-07-08",
+      "nota_provenienza": "La pre-registrazione non dichiara la provenienza dell'ipotesi. E' il buco che questo campo esiste per rendere visibile."
+    },
+    {
+      "id": "seasonality_tom",
+      "nome": "Stagionalita' Turn-of-Month",
+      "stato": "CLOSED",
+      "trial_cumulati": 4,
+      "round_rifinitura": 1,
+      "holdout_aperto": "2026-07-08",
+      "fonte_esterna": false,
+      "verdetto": "NO-GO",
+      "fonti": [
+        "docs/SEASONALITY_PREREGISTRATION.md (n_trials = 4 finestre)",
+        "DECISIONS.md 2026-07-08"
+      ],
+      "provenienza_ipotesi": "letteratura",
+      "finestra_dati_fine": "2026-07-08",
+      "nota_provenienza": "Ogden 1990; Etula-Rinne-Suominen-Vuolteenaho 2020 'Dash for Cash', citati nella pre-registrazione."
+    },
+    {
+      "id": "round_grid",
+      "nome": "Griglia a numero tondo .80/.20 (Nasdaq)",
+      "stato": "CLOSED",
+      "trial_cumulati": 1,
+      "trial_budget": 3,
+      "round_rifinitura": 1,
+      "holdout_aperto": null,
+      "fonte_esterna": true,
+      "prereg_esterna_trimestre": "2026-Q3",
+      "verdetto": "NULL al primo trial",
+      "fonti": [
+        "docs/ROUND_NUMBER_GRID_PREREGISTRATION.md:31 (trial #1 di 3)",
+        "DECISIONS.md 2026-08-09"
+      ],
+      "note": "Fonte: Okala / Chart Fanatics. Consuma UNA delle pre-registrazioni esterne del trimestre.",
+      "provenienza_ipotesi": "umana_esterna",
+      "finestra_dati_fine": "2026-08-09",
+      "nota_provenienza": "Okala / Chart Fanatics, fonte datata e citabile."
+    },
+    {
+      "id": "trend_momentum",
+      "nome": "Trend following / playground (Donchian + gradiente di volatilita')",
+      "stato": "LEAD",
+      "trial_cumulati": null,
+      "round_rifinitura": 2,
+      "round_budget": 3,
+      "holdout_aperto": null,
+      "fonte_esterna": true,
+      "prereg_esterna_trimestre": "2026-Q3",
+      "verdetto": "coda aperta REFUTATA; gradiente di volatilita' = LEAD (rho +0,857, p=0,006, n=8)",
+      "fonti": [
+        "docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md",
+        "docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md:196 (lacuna: nessun holdout sigillato per Q2)",
+        "DECISIONS.md 2026-08-14 (2)",
+        "docs/BACKLOG_RICERCA.md A1"
+      ],
+      "note": "Fonte: Pavel Kichev. Consuma la SECONDA pre-registrazione esterna del trimestre. Round 2 di 3 gia' speso: ne resta uno. NESSUN holdout sigillato per Q2 - dichiarato nella pre-registrazione stessa, non scoperto dopo. Riserva aggiunta il 2026-09-19 (E1): holding mediano 7 giorni sul reale contro 2 sul random.",
+      "provenienza_ipotesi": "umana_esterna",
+      "finestra_dati_fine": "2026-08-14",
+      "nota_provenienza": "Pavel Kichev, registrato in fondamenti_tecnici/_INTAKE.md."
+    },
+    {
+      "id": "meanrev_kichev",
+      "nome": "Mean reversion Kichev (code, B1)",
+      "stato": "CLOSED",
+      "trial_cumulati": 0,
+      "round_rifinitura": 0,
+      "holdout_aperto": null,
+      "fonte_esterna": true,
+      "verdetto": "chiusa sul criterio dichiarato prima (3 gruppi su 8), 0 trial spesi",
+      "fonti": [
+        "DECISIONS.md 2026-09-17 (5) e (6)",
+        "docs/BACKLOG_RICERCA.md B1"
+      ],
+      "note": "Chiusa a costo zero: il criterio era scritto prima e non e' stato raggiunto. Non consuma pre-registrazione esterna perche' non e' stata aperta (DECISIONS 2026-09-17: budget esterne resta 2 di 2-3).",
+      "provenienza_ipotesi": "umana_esterna",
+      "finestra_dati_fine": "2026-09-17",
+      "nota_provenienza": "Pavel Kichev. La fonte dice meno di quanto le attribuivamo: SMA5 e soglia erano NOSTRE."
+    },
+    {
+      "id": "mentor_signals",
+      "nome": "Segnali mentore XAUUSD (copier)",
+      "stato": "GO",
+      "trial_cumulati": 1,
+      "round_rifinitura": 0,
+      "holdout_aperto": "2026-08-07",
+      "fonte_esterna": false,
+      "verdetto": "CONFERMATO fuori campione - primo OOS pre-registrato superato del workspace",
+      "fonti": [
+        "docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md",
+        "docs/COPIER_EXECUTION_PREREGISTRATION.md",
+        "DECISIONS.md 2026-08-07",
+        "DECISIONS.md 2026-09-18 (4)"
+      ],
+      "note": "B7 (uscita a 1R), C3 (soglie di ritiro), C4 (sizing), C5 (gate di latenza) sono state chiuse a 0 trial: erano misure o verifiche, non ricerca di conferma (LIFECYCLE §3). La correzione del fuso e la sua doppia applicazione sono FIX, non trial.",
+      "provenienza_ipotesi": "umana_esterna",
+      "finestra_dati_fine": "2026-09-18",
+      "nota_provenienza": "Track record live di un mentore terzo, misurato sui suoi segnali datati. Il forward e' OLTRE il cutoff: non contaminabile."
+    },
+    {
+      "id": "london_breakout",
+      "nome": "London Breakout",
+      "stato": "CLOSED",
+      "trial_cumulati": null,
+      "round_rifinitura": 1,
+      "holdout_aperto": null,
+      "fonte_esterna": false,
+      "verdetto": "NO-GO per difetto metodologico (regime gating look-ahead)",
+      "fonti": [
+        "DECISIONS.md 2026-05-30",
+        "docs/reviews/london_breakout-2026-05-29.md",
+        "docs/reviews/london_breakout-postmortem-2026-05-30.md"
+      ],
+      "note": "Kill duro §6a.1: i numeri sono nulli, non 'da correggere'. Conteggio trial mai scritto - precede il ciclo di vita formalizzato (2026-08-04).",
+      "provenienza_ipotesi": "non_dichiarata",
+      "finestra_dati_fine": "2026-05-30",
+      "nota_provenienza": "Precede il ciclo di vita formalizzato. Provenienza mai registrata."
+    }
+  ],
+  "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920."
+}

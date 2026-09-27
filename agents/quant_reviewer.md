@@ -87,6 +87,11 @@ Financial ML* (2018), cap. 7:
 ### 2. Bias detection
 
 Cerca attivamente questi pattern:
+- **Fill fantasma (look-ahead di PREZZO)**: il backtest transa a un prezzo che il
+  mercato offriva solo *prima* che potessimo agire? Il segnale puo' essere confermato
+  correttamente e il fill essere comunque impossibile. **Si chiede per primo** — sul
+  FADE valeva il 46,1% dei setup e l'intero risultato (+0,409 → −0,250). Protocollo:
+  [QUANT_REVIEW_PROTOCOL.md Step 3bis](../docs/QUANT_REVIEW_PROTOCOL.md).
 - **Look-ahead**: la strategia usa dati non disponibili al tempo della decisione?
   (es. close della barra corrente per signal sulla stessa barra).
 - **Survivorship**: il dataset include solo strumenti ancora quotati?

@@ -11,6 +11,311 @@
 
 ---
 
+## 2026-09-21 (3) — **B3 chiusa a 0 trial.** La condizione di struttura non è trasferibile, e il motivo è aritmetico
+
+**Cosa è stato fatto.** Prossimo punto operativo del backlog dopo lo stop di A1: **B3**, l'unica
+voce aperta che non costa budget (B2 spenderebbe l'ultimo round del ramo trend, B5 e B6 una
+pre-registrazione esterna, e ne resta una sola nel trimestre). Protocollo — soglie, celle,
+direzione attesa e significato di un mancato rifiuto — scritto **prima** di misurare:
+[docs/B3_EXTENSION_STRUCTURE_PROTOCOL.md](docs/B3_EXTENSION_STRUCTURE_PROTOCOL.md).
+Motore: [analysis/extension/structure.py](analysis/extension/structure.py). **Costo: 0 trial.**
+
+**L'oggetto.** Non *"l'estensione estrema si inverte"* — lo dicono in cinque ed è infalsificabile
+così. Ma **quale** estensione: Marius (C3.4) e Kyle (C3.5), indipendenti e su mercati diversi,
+convergono su *"poche candele grandi con volume in espansione"*, scartando le **"formiche"**
+(tante candeline) e il volume calante.
+
+### Esito: H1 NO, H2 non valutabile
+
+1.733 eventi a `E ≥ 3 ATR` su 27 strumenti, baseline random matched su strumento, direzione, anno
+**e orizzonte** (durata identica per costruzione: il confonditore trovato su A1 non si presenta).
+
+| | n | differenza vs random | BCa95 | MDE |
+|---|---|---|---|---|
+| tutti gli eventi, h=2 (primario) | 1.733 | **+0,011** | [−0,061; +0,090] | **0,106** |
+| **cella attesa** range+ / vol+ | 517 | **+0,007** | [−0,145; +0,168] | 0,221 |
+| range+ / vol− | 126 | +0,011 | [−0,218; +0,224] | 0,323 |
+
+Nessun orizzonte (1, 2, 3, 5) si distingue dal random. Le due celle misurabili danno **lo stesso
+numero**: la gamba volume non separa niente. Robustezza sulla soglia: `E≥2,0` +0,041 → `E≥4,0`
++0,001, **monotona verso zero al crescere dell'estensione** — il contrario di quanto prevede
+l'ipotesi.
+
+### Il risultato vero: le celle non esistono, e non per mancanza di campione
+
+| L | n | range **+** | range **−** |
+|---|---|---|---|
+| 2 | 236 | **97,0%** | 1,3% |
+| 3 | 450 | **93,6%** | 1,3% |
+| 5 | 513 | 59,5% | 9,9% |
+
+**È aritmetica.** Un'estensione di 3 ATR in 2 barre impone barre da ≥1,5 ATR; il range è almeno
+quanto il movimento, quindi il range **è già in espansione per costruzione**. Normalizzando la
+soglia sulla volatilità, *"estensione estrema"* e *"candele grandi"* diventano **la stessa cosa**,
+e le "formiche" scendono all'1,3% degli eventi.
+
+> La distinzione delle fonti vive di soglie in **percentuale** applicate a strumenti con
+> volatilità molto diversa: lì un +200% può arrivare in venti candeline. **Non è che non riusciamo
+> a misurarla: su un universo normalizzato non è una distinzione.**
+
+### Il gate sul volume esclude proprio gli strumenti che servivano
+
+Dichiarato prima (zeri <5%, `corr(volume, |rendimento|)` ≥0,15, mediana ≥10): **17 strumenti su 27
+passano**. Non passano COCOA, COTTON, SUGAR, SOYBEAN (corr da −0,03 a −0,00), BTCUSD (0,02),
+ETHUSD (0,05), NATGAS (**20,6% di barre a volume zero**), BRENT, COPPER, UKGILT. Sono **agri,
+bond, crypto, energy, metal**: l'estremo ad alta volatilità, dove il fenomeno dovrebbe esserci.
+La gamba volume resta testabile solo su un sottoinsieme dominato dall'FX. ⚠️ È la seconda volta in
+due giorni che il vincolo mordente è la **composizione dell'universo**, non il metodo.
+
+### Breadth: moneta, e il segno più forte è quello sbagliato
+
+**4 gruppi su 8** vanno nella direzione attesa. Il valore più grande è **crypto +0,248**, cioè
+**continuazione** — l'opposto della predizione, sullo strumento dove il fenomeno dovrebbe essere
+più forte. Coerente con la misura indipendente di B1 (17/09): crypto **continua**, non ritorna.
+
+### Formulazione del verdetto
+
+Come imponeva §6 del protocollo: le fonti **non sono falsificate sul loro universo**. Operano
+small/mid cap USA con float ristretto, squeeze, halt e locate — meccanismi che su CFD e FX non
+esistono. Il test dice che la condizione **non è trasferibile**, per una ragione **strutturale**
+(normalizzazione) e non statistica.
+
+**Riaprirebbe la casella**: un universo dove volatilità e dimensione della candela si separano
+davvero (azionario con normalizzazione su market cap = bucket D2, bloccato per dati) e **volume
+vero**, non tick volume di CFD. ⚠️ **Non** è condizione di riapertura inseguire il +0,248 della
+crypto: segno opposto all'ipotesi, non pre-registrato, un gruppo su otto visto **dopo** la tabella.
+
+**Contabilità invariata**: 0 trial, round trend 2 di 3, pre-registrazioni esterne 2 di 2-3.
+Restano aperte **B2, B5, B6** — tutte e tre costano budget, quindi sono decisioni dell'utente.
+
+---
+
+## 2026-09-21 (2) — **A1 punto 2: il test held-out non è finanziabile con i dati che esistono.** Fuori scala da 2,1× a 19,6×
+
+**Cosa è stato fatto.** Secondo dei tre passi concordati, eseguito perché il punto 1 era passato.
+Calcolo di **potenza** + **inventario degli strumenti disponibili**, entrambi *prima* di aprire
+qualunque pre-registrazione. Referto: [docs/TREND_A1_HELDOUT_POWER.md](docs/TREND_A1_HELDOUT_POWER.md).
+Motori: [power_two_groups.py](analysis/trend/power_two_groups.py) e
+[heldout_pool.py](analysis/trend/heldout_pool.py). **Costo: 0 trial.**
+
+**Esito: la condizione NON è rispettata.** Il punto 3 non si apre.
+
+### Quanti strumenti servono
+
+Unità di inferenza = lo **strumento**, non il trade: è lo strumento che si tiene fuori, e i trade
+dentro uno strumento condividono la serie. Misurato: ICC 0,011–0,022 con cluster da 43 trade →
+design effect **1,5–1,9**, cioè i 1.169 trade raccolti valgono **791** trade indipendenti.
+Contarli per trade darebbe 246/588 per braccio: comodo e sbagliato.
+
+| effetto ipotizzato | durata appaiata | durata fissa 20g |
+|---|---|---|
+| osservato +0,61 / +0,65 R (ottimistico) | **7,3** | **16,7** |
+| **dimezzato** (winner's curse) | **29,3** | **66,8** |
+
+### Quanti ce ne sono davvero
+
+Dukascopy espone 1.380 strumenti, quasi tutti azioni. Fuori dall'azionario restano **liberi**:
+58 cross FX, 20 indici, 19 crypto, 1 agricolo, 1 energia. Bond, FX major e metalli **esauriti**.
+Disponibilità **verificata scaricando** (18 su 19; XMRUSD non ha dati).
+
+Ma i ticker non sono informazione. Con ρ **misurato** sui rendimenti D1:
+
+| insieme | ρ medio | liberi | **valgono** |
+|---|---|---|---|
+| **crypto** | **+0,698** | 19 | **1,40** |
+| indici | **+0,791** | 20 | 1,25 |
+| cross FX | +0,050 | 58 | 15,07 |
+
+E la volatilità dice dove finiscono: **nessun cross FX raggiunge il 20%** (il massimo è USDZAR a
+13,0%); DAX 17,8%, N225 19,7%, DJIND 16,5% stanno **sotto** la soglia. Capacità effettiva del
+braccio ad **alta volatilità: 3,4 strumenti** nuovi indipendenti (crypto 1,40 + agri 1,00 +
+energia 1,00), contro 16,3 del braccio basso — e la stima è **generosa**, perché somma categorie
+diverse come se fossero indipendenti.
+
+| scenario | servono | ALTA ha | esito |
+|---|---|---|---|
+| appaiata, effetto osservato | 7,3 | 3,4 | **fuori scala 2,1×** |
+| fissa 20g, effetto osservato | 16,7 | 3,4 | 4,9× |
+| appaiata, effetto dimezzato | 29,3 | 3,4 | 8,6× |
+| fissa 20g, effetto dimezzato | 66,8 | 3,4 | **19,6×** |
+
+### Perché non è un problema di dati, ma di struttura del mercato
+
+**L'estremo alto della volatilità è una sola classe di attivi.** Le 19 crypto libere si muovono
+insieme e portano 1,4 strumenti di informazione. Un confronto a due bracci costruito su quel pool
+non misurerebbe *"alta contro bassa volatilità"*: misurerebbe **"crypto contro cross FX"** — una
+differenza di classe di attivi, e per giunta sulla classe che è **l'unica positiva nel campione di
+scoperta**. Sarebbe circolare **per costruzione**.
+
+**Le tre vie d'uscita che sembrano disponibili e non lo sono**: (a) abbassare la soglia fa entrare
+strumenti meno volatili → **riduce Δ** e alza il fabbisogno; (b) una regressione continua è più
+efficiente di uno split ma resta dominata dai ~3 punti indipendenti sopra il 20%; (c) allungare la
+finestra all'indietro non aiuta, la crypto non esiste prima del 2017.
+
+### Decisione
+
+**Il punto 3 non si apre**, e il terzo round del ramo trend **non si spende**. Condizioni di
+riapertura scritte ora (§7 del referto): una fonte dati con **più classi ad alta volatilità** e
+storia lunga; un effetto più grande misurato da un disegno diverso; oppure il **forward**, che non
+consuma holdout — ma a **4,8 trade per strumento-anno** arrivare a ~30 strumenti indipendenti per
+braccio è questione di anni.
+
+⚠️ **Non** è condizione di riapertura scegliere la crypto perché è l'unica casella positiva: dopo
+aver visto la tabella, è eleggere un vincitore dalla mappa.
+
+**Contabilità invariata**: 0 trial, round trend **2 di 3**, pre-registrazioni esterne 2 di 2-3.
+Sottoprodotto riutilizzabile: 18 serie D1 nuove in
+`analysis/trading-bot-eval/data/dukascopy_d1/_pool_candidati/`.
+
+---
+
+## 2026-09-21 — **A1, diagnostico di durata**: il gradiente regge, ma a parità di tempo in mercato la regola **perde dal random**
+
+**Cosa è stato fatto.** Primo dei tre passi concordati sul playground (A1). Protocollo e soglie
+scritti **prima** di eseguire: [docs/TREND_DURATION_DIAGNOSTIC.md](docs/TREND_DURATION_DIAGNOSTIC.md).
+Motore: [analysis/trend/duration_diagnostic.py](analysis/trend/duration_diagnostic.py).
+**Costo: 0 trial** — verifica dell'integrità di un confronto già fatto, non una regola nuova.
+
+**Da dove nasce.** Il 19/09 `check_matching` (primitiva nuova, debito E1) ha mostrato che i due
+bracci del confronto **non stanno in mercato per lo stesso tempo**: holding mediano **7 giorni
+contro 2**. Il controllo C1 di `q2_checks.py`, quello che doveva neutralizzare il canale
+meccanico, era costruito proprio su quella differenza.
+
+### Esito 1 — il gradiente SOPRAVVIVE, ed è più netto di prima
+
+| | rho(vol, differenza) | rho(vol, E[R] del random) |
+|---|---|---|
+| **come oggi** (durata non appaiata) | +0,786 p=0,0135 | **+0,619** p=0,062 |
+| **durata appaiata** al trade reale | **+0,929** p=0,0009 | **+0,048** p=0,46 |
+| **durata fissa** 20g (E3, già pre-registrata) | **+0,881** p=0,0041 | +0,429 p=0,15 |
+
+Il braccio random mostrava da solo un gradiente di **+0,619**: era la spiegazione meccanica da
+battere. A durata controllata **crolla a +0,048**. Il gradiente non è la normalizzazione in unità
+di ATR e non è il tempo in mercato. Due controlli indipendenti, stesso segno.
+
+### Esito 2 — ma il livello si ribalta, ed è la cosa più importante
+
+| confronto | reale | random | divario | BCa95 |
+|---|---|---|---|---|
+| come oggi | +0,037 | +0,118 | −0,081 | [−0,215 ; **+0,071**] — contiene lo zero |
+| **durata appaiata** | +0,037 | +0,275 | **−0,238** | [−0,363 ; −0,098] |
+| **durata fissa 20g** | +0,135 | +0,587 | **−0,451** | [−0,661 ; −0,219] |
+
+A parità di tempo in mercato, **un'entrata casuale dello stesso lato e dello stesso anno batte il
+breakout Donchian**: in aggregato, con CI che escludono lo zero, e con differenza positiva su
+**1 gruppo su 8** a durata fissa (solo crypto). Il vantaggio che la regola sembrava avere era
+**tempo in mercato**, non scelta del momento: il trail teneva le posizioni aperte quasi il doppio
+del controllo, e in un mercato con deriva il tempo paga. Tolto quello, dell'entrata resta un costo.
+
+⚠️ Non è "assenza di prova": è una misura positiva con segno sfavorevole.
+
+### Il dettaglio che cambia la lettura del primario
+
+`rho(holding, E[R])` sui gruppi = **+0,976** (p=0,0001), più forte del primario `rho(vol, E[R])`
+= +0,857. Al netto della durata, la parziale `vol → E[R]` scende a **+0,525** (p=0,12, non
+rilevato). ⚠️ Ma volatilità e durata sono **collineari** (+0,810): con n=8 **non sono separabili**,
+quindi questa riga da sola non decide — è per questo che il protocollo aveva dichiarato *prima* il
+confronto controllato come test decisivo, e non la parziale.
+
+### Limiti dichiarati
+
+1. **La durata appaiata condiziona su un esito**: `rho(hold, E1)` sui singoli trade = **+0,836**,
+   quindi il controllo riceve un orizzonte più lungo proprio quando il reale ha funzionato. Per
+   questo esiste D3b a **durata fissa decisa prima**, che non è esposta all'obiezione e dà lo
+   stesso segno, più forte.
+2. **n = 8 resta n = 8**: partenze scaglionate (bond dal 2016-17), **nessun holdout sigillato** —
+   lacuna dichiarata nella pre-registrazione originale, non scoperta dopo.
+3. Il lato è **ereditato** dal trade reale: il confronto misura *quando* entrare, non *se* essere
+   long o short. Resta valido il controllo C2: solo **3/8** gruppi positivi su entrambi i lati.
+
+### Conseguenza per la decisione (punto 3, che è dell'utente)
+
+A1 non si chiude qui, ma **cambia oggetto**: non più *"più volatile = più edge"* bensì *"più
+volatile = l'entrata danneggia meno"*. Una pre-registrazione su strumenti held-out dovrebbe
+misurare la **differenza contro random a durata controllata** (è il grezzo che conteneva il canale
+meccanico) e dichiarare come ipotesi un **divario negativo che si attenua**, non un edge positivo.
+⚠️ Inseguire l'unica casella positiva (crypto) dopo aver visto questa tabella sarebbe **eleggere un
+vincitore dalla mappa**, e costerebbe il terzo e ultimo round del ramo trend.
+
+**Contabilità invariata**: 0 trial spesi, round trend fermo a 2 di 3, pre-registrazioni esterne
+ferme a 2 di 2-3 nel trimestre.
+
+---
+
+## 2026-09-19 — **Debito di protocollo ESTINTO** (E1-E6). Le regole erano prosa; ora sono codice che blocca
+
+**Decisione.** Chiuse tutte e sei le voci del bucket E di
+[docs/BACKLOG_RICERCA.md](docs/BACKLOG_RICERCA.md). Non e' ricerca e non consuma trial: e' la
+differenza fra avere un protocollo e **avere un protocollo che si applica da solo**.
+
+**Il problema, detto una volta sola.** Ogni voce del guardiano nasce da un errore realmente
+accaduto qui — e **ogni errore e' accaduto dopo che la voce era stata scritta**. Una regola che
+funziona solo se qualcuno si ricorda di applicarla non e' una regola: e' un auspicio. Le sei voci
+avevano tutte la stessa forma, non sei forme diverse.
+
+### Cosa esiste adesso
+
+| debito | cosa e' stato costruito | cosa impedisce |
+|---|---|---|
+| **E6** | [`QUANT_REVIEW_PROTOCOL.md` **Step 3bis**](docs/QUANT_REVIEW_PROTOCOL.md), gate **bloccante prima delle metriche** + Checklist 3.0 del guardiano + `LIFECYCLE §6a.1` + red flag del reviewer | un verdetto su **fill non ottenibili** |
+| **E1** | [`core/random_baseline.py`](core/random_baseline.py) (`BarSampler`, `PoolSampler`, `check_matching`, `gap_ci`) | baseline riscritto a mano, matching mai verificato, CI i.i.d. su controlli non indipendenti |
+| **E3** | [`core/data_checks.py`](core/data_checks.py) | monotonia, duplicati, barre/anno, partenze scaglionate, **file corto accanto a quello lungo**, % di fill fantasma, gap oltre lo stop |
+| **E2** | [`core/trial_ledger.py`](core/trial_ledger.py) + [`docs/trial_ledger.json`](docs/trial_ledger.json) | contatore trial tenuto a memoria, budget sforati in silenzio |
+| **E4** | campo `provenienza_ipotesi` nel registro + `LIFECYCLE §8` + `PROTOCOL` Step 2 | contaminazione da knowledge cutoff scritta **in un posto solo** |
+| **E5** | `core/resolve_trade.py` (gia' fatto il 17/09) | 5 convenzioni d'uscita implicite in 4 copie |
+
+### La prova che la primitiva non e' una primitiva in piu'
+
+E' la stessa pretesa di E5: **equivalenza bit-identica** con le implementazioni storiche, o non
+serve a niente. `core/tests/test_random_baseline.py` ricopia il campionamento di `analysis/nxt/stops.py`,
+`analysis/nxt/excursion.py`, `analysis/trend/backtest.py` e `analysis/level_research/engine.py`
+e verifica che escano **gli stessi identici indici**. `analysis/trend/backtest.py` e' stato migrato:
+**output identico riga per riga**, tranne il nuovo blocco di verifica.
+
+`core/tests/test_data_checks.py` non testa funzioni: **riproduce gli incidenti**. Il `cumsum`
+invertito del 14/08, `XAU_spot_M5.csv` accanto a `_ext.csv`, il **46,1%** di fill fantasma del FADE,
+il **12,7%** di gap oltre lo stop, i bond dal 2016 accanto a FX dal 2012 — piu' un test che verifica
+che su dati puliti **non gridi**, perche' un guardiano che segnala sempre smette di essere letto.
+
+### Quattro cose che i controlli hanno trovato appena accesi
+
+Nessuna era nota. E' il motivo per cui il debito andava pagato adesso e non "quando serve".
+
+1. **Il playground (A1) confronta reale e random a durate diverse**: holding mediano **7 giorni
+   contro 2** (−71%). Il divario *reale vs random* e' quindi **in parte un confronto fra durate**.
+   Coerente con la regola (un'entrata casuale con trailing SMA10 viene troncata subito), ma **va
+   dichiarato nella pre-registrazione**: e' una riserva sul lead vivo, non una sua refutazione.
+   Tutti gli altri assi — asset, lato, anno, numerosita' — risultano matchati.
+2. **La "stessa durata di holding" della checklist non e' matchabile.** Con le stesse regole
+   d'uscita la durata e' un **esito**, non un input. Si matcha la **regola**, si **verifica** la
+   durata, e se diverge si dichiara. La riga della tabella del guardiano e' stata corretta.
+3. **Il CI i.i.d. sui controlli random e' il 28% piu' stretto** di quello a cluster sull'evento,
+   misurato sui dati sintetici del test. Gli `m` controlli di uno stesso evento condividono strato,
+   lato e rischio: un CI che li tratta da indipendenti e' **finto**.
+4. **Tre famiglie hanno il contatore trial non ricostruibile** (`opening_range`, `trend_momentum`,
+   `london_breakout`) e **due la provenienza dell'ipotesi non dichiarata** (`meanrev_vol`,
+   `london_breakout`). Nel registro valgono `null`, non un numero plausibile: per il DSR di quelle
+   famiglie si applica Bailey-LdP (100 × N_params) **e lo si dichiara**.
+
+### La regola di futilita' e' diventata un numero
+
+`python -m core.trial_ledger --futilita 250`. Su 250 osservazioni servono Sharpe **1,65** con 1
+trial, **3,12** con 8, **4,64** con i **384** della ricerca livelli — cioe' arrivati a v3 nessun
+risultato raggiungibile avrebbe potuto essere significativo, e il libro andava chiuso a v2. E' un
+**pavimento gaussiano**: con skew negativo o code grasse la soglia sale.
+
+### Cosa NON e' stato fatto, e perche'
+
+I motori storici (`analysis/nxt/*`, `analysis/level_research/*`, `analysis/round_grid/*`) **non**
+sono stati migrati alla primitiva. Sono il **registro** di verdetti gia' emessi: riscriverli non
+cambia un numero e introdurrebbe rischio su risultati che non si possono piu' verificare contro
+nulla. La primitiva e' obbligatoria per i test **nuovi**, ed e' il guardiano a farla rispettare.
+
+**Costo: 0 trial.** Nessuna ipotesi aperta, nessuna chiusa, nessun budget toccato. Budget FADE
+fermo a 2 di 3, pre-registrazioni esterne ferme a 2 di 2-3 nel trimestre.
+
+---
+
 ## 2026-09-18 (5) — **A5: audit dei verdetti early-stage.** Nessuno era sbagliato; due dicevano **meno** di quello che gli abbiamo fatto dire
 
 Protocollo scritto e committato **prima** di aprire i motori

@@ -83,6 +83,15 @@ Il **Deflated Sharpe Ratio** penalizza il numero di tentativi ([`deflated_sharpe
 Perché funzioni, il contatore deve **persistere attraverso le iterazioni del loop**, non azzerarsi a
 ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 
+> ✅ **Dal 2026-09-19 il contatore esiste davvero**: dato in [`docs/trial_ledger.json`](trial_ledger.json),
+> letto e verificato da [`core/trial_ledger.py`](../core/trial_ledger.py).
+> `python -m core.trial_ledger` stampa lo stato di ogni famiglia (trial cumulati, round
+> spesi, holdout, quota di pre-registrazioni esterne del trimestre) e `--check` esce con
+> **exit 1** se un budget e' sforato o se una voce non cita le sue fonti nel repo.
+> ⚠️ Tre famiglie storiche hanno il conteggio a `null` perche' **non e' ricostruibile**:
+> non si inventa un numero, si applica la raccomandazione Bailey-LdP (100 × N_params) e
+> lo si dichiara.
+
 | Azione | Conta come trial? |
 |---|---|
 | Correzione di un **bug**: il codice non implementava la regola pre-registrata | **No** — è la prima esecuzione valida del trial originale. Va documentata |
@@ -96,6 +105,12 @@ ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 > minimo sotto il quale il DSR non può essere significativo. Se il **migliore** risultato osservato
 > su tutte le varianti è sotto quella soglia, continuare a iterare è **matematicamente inutile**:
 > serviresti un effetto più grande di qualunque cosa tu abbia mai visto. → **kill immediato**.
+>
+> Ora è un numero: `futility_sharpe(n_trial, n_obs)` in [`core/trial_ledger.py`](../core/trial_ledger.py),
+> o `python -m core.trial_ledger --futilita <n_obs>`. Su **250 osservazioni** servono Sharpe
+> **1,65** con 1 trial, **3,12** con 8, **4,64** con i 384 della ricerca livelli — cioè a quel punto
+> del libro nessun risultato raggiungibile avrebbe potuto essere significativo. È un **pavimento
+> gaussiano**: con skew negativo o code grasse la soglia sale.
 
 ---
 
@@ -140,9 +155,14 @@ risposta è no, è p-hacking — conta come trial e va dichiarata.
 
 Questi non si aggiustano con un parametro. Quando scattano, la strategia (o la famiglia) muore.
 
-1. **Difetto metodologico conclamato** — look-ahead, survivorship, finestre sovrapposte, dati
-   contaminati. I risultati sono **nulli**, non "da correggere": vanno rifatti da zero e il vecchio
-   numero non si cita più. *Precedente: London Breakout, edge da regime gating look-ahead.*
+1. **Difetto metodologico conclamato** — look-ahead **di informazione** (survivorship, finestre
+   sovrapposte, dati contaminati) *oppure* look-ahead **di prezzo** (fill non ottenibile: si transa
+   a un livello disponibile solo *prima* di poter agire). I risultati sono **nulli**, non "da
+   correggere": vanno rifatti da zero e il vecchio numero non si cita più. *Precedenti: London
+   Breakout, edge da regime gating look-ahead · FADE NXT, **+0,409 → −0,250** togliendo il 46,1%
+   di fill fantasma → KILL della famiglia (2026-09-17).* ⚠️ Il difetto **non ha un segno**: lo
+   stesso fantasma aveva reso il NO-GO della continuazione NXT troppo severo (−0,44R contro
+   −0,118R onesto). Gate di verifica: [QUANT_REVIEW_PROTOCOL.md Step 3bis](QUANT_REVIEW_PROTOCOL.md).
 2. **Non batte il baseline random** matched (stessa geometria, stessi tempi, distance-matched).
    *Precedente: ricerca livelli, 384 trial, NULL su ogni timeframe.*
 3. **Fallimento di breadth** — negativa sulla maggioranza degli asset **e** dei periodi testati.
@@ -198,6 +218,17 @@ mai le fasi successive. Due vincoli:
   (VELTRIX); 90% → ~20% (playbook Chart Fanatics, test di terzi).
 - **Budget di ipotesi esterne dichiarato**: max **2-3 pre-registrazioni per trimestre** da fonti
   esterne. Un funnel aperto non produce più edge — produce più penalità DSR su quelli veri.
+- **Provenienza dell'ipotesi dichiarata** — rischio nuovo, non previsto dalla prima stesura di
+  questo documento. Il knowledge cutoff del modello che assiste la ricerca è **maggio 2026**:
+  un'ipotesi **proposta dall'LLM** su dati **precedenti** a quella data **non è una predizione
+  indipendente**, può essere memorizzazione. Vale solo se arriva da (a) una **fonte esterna umana**
+  datata e citabile, (b) un **razionale economico** che non richiede di conoscere l'esito, o (c) un
+  **forward oltre il cutoff**. Si registra nel campo `provenienza_ipotesi` di
+  [`docs/trial_ledger.json`](trial_ledger.json), e `python -m core.trial_ledger` segnala chi non
+  l'ha dichiarata. Evidenza esterna: *Profit Mirage* (arXiv 2510.07920) — spostando la finestra di
+  test oltre il cutoff, **quasi tutti** gli agenti LLM pubblicati **non battono un baseline
+  random**. ⚠️ Corollario che va nella direzione opposta a quella che verrebbe da pensare: questo
+  **rafforza** il valore del forward OOS, che resta l'unica validazione non contaminabile.
 
 ---
 
