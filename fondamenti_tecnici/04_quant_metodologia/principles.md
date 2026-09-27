@@ -1,4 +1,5 @@
 ---
+aliases: [04_quant_metodologia]
 titolo: Metodologia Quant & Bias del Backtest
 fonti:
   - "_sorgenti/Quant backtest notes.txt"

@@ -1,4 +1,5 @@
 ---
+aliases: [02_liquidita_orderflow]
 titolo: Liquidità & Order Flow (Smart Money Concepts)
 fonti: ["HOW TO MASTER LIQUIDITY - Soulz", "What Is Liquidity - CryptoSoulz", "THE ORDERFLOW - CryptoSoulz", "The Liquidity Edge"]
 tipo: concetti

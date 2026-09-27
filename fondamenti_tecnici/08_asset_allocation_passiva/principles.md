@@ -1,4 +1,5 @@
 ---
+aliases: [08_asset_allocation_passiva]
 titolo: Asset Allocation Passiva — ETF, bond, fiscalita e contesto valutario
 fonti:
   - _sorgenti/Petrodollar ed ETF.txt

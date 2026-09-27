@@ -45,7 +45,10 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 - [Claude Code for Trading](blueprints/claude_code_for_trading.md) — guida meta/onboarding
 
 ### Strategie candidate
+Lo stato di ciascuna sta nel suo frontmatter (`stato`), non qui.
 - [NYSE Scalping (VWAP + TPO + OTF)](strategie_candidate/nyse_scalping.md)
+- [NXT — Fibonacci + Elliott trend-pullback](strategie_candidate/nxt_fib_trend_pullback.md)
+- [FADE mean-reversion — spec walk-forward per il socio](strategie_candidate/fade_mr_walkforward_socio.md)
 
 ## Convenzione dei file
 

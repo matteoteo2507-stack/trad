@@ -1,3 +1,11 @@
+---
+tipo: preregistrazione
+stato: CONFERMATO
+aggiornato: 2026-09-18
+decisione: "DECISIONS 2026-09-18 (4) — OOS rifatta sulla finestra estesa"
+metrica_corrente: "differenza appaiata +0,274 [+0,209; +0,333]; E[R] +0,173 [+0,083; +0,244] su 218 segnali"
+nota: "Verdetto del 07/08 confermato; i numeri originali (63,0% vs 35,0%, +0,194) sono superati."
+---
 # Pre-registrazione — Validazione OOS dei segnali mentore (XAUUSD)
 
 > **Documento vincolante, scritto il 2026-08-07 PRIMA di eseguire il replay.** Nessun risultato è

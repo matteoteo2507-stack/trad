@@ -1,4 +1,5 @@
 ---
+aliases: [05_portfolio_rischio]
 titolo: Portfolio & Decomposizione del Rischio
 fonti:
   - "_sorgenti/quantportfolio managernotes.txt"

@@ -63,7 +63,7 @@ L'utente decide se piazzare l'ordine a mano dall'app del broker (telefono o PC).
 **Locale (sviluppo, primo test)**:
 
 ```bash
-cd c:/Users/mmbus/Desktop/lavoro/trad
+cd c:/Users/mmbus/Obsidian/claude-brain/trad
 python -m strategies.confluence_levels validate-levels
 python -m strategies.confluence_levels run                  # default yfinance
 python -m strategies.confluence_levels run --datasource mt5 --account DEMO1   # legacy

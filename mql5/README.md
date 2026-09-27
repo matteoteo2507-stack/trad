@@ -64,7 +64,7 @@ testati (`EURUSD, GBPUSD, USDJPY, XAUUSD, US100, US500`). Ogni istanza usa lo st
 1. F7 in MetaEditor: deve compilare senza errori.
 2. Strategy Tester su un singolo simbolo (es. `EURUSD`, `PERIOD_H1`), `Every tick based on real ticks`,
    sullo **stesso periodo** del backtest Python (~2012→oggi se hai i tick).
-3. Confronta con l'atteso Python (pool): **win ~31% @1:3, E[R] ~+0.35R pessimistico**. Il singolo
+3. Confronta con l'atteso Python (pool): **win ~31% @1:3, E[R] ~+0.35R pessimistico**. ⚠️ **Superato:** l'EA `nxt_fade` è **spento dal 2026-09-17 (KILL)** e quell'atteso era fill fantasma (coi fill ottenibili: −0,250R) — vedi `docs/NXT_FADE_FORWARD_PREREGISTRATION.md`. Il singolo
    simbolo può variare, ma l'ordine di grandezza e il segno devono tornare.
 4. **Se EA e Python divergono in modo netto, il port ha un bug → NON deployare.** Verifica prima con
    `Open prices only` che la logica sia corretta, poi alza la qualità del tick model.

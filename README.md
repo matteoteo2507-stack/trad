@@ -43,7 +43,7 @@ strutturati (vedi [fondamenti_tecnici/README.md](fondamenti_tecnici/README.md)).
 
 ## Quick start (quando passi su Antigravity / Claude Code)
 
-1. Apri la cartella `C:\Users\mmbus\Desktop\lavoro\trad` come progetto.
+1. Apri la cartella `C:\Users\mmbus\Obsidian\claude-brain\trad` come progetto.
 2. Leggi `PROJECT.md` e `ROADMAP.md` (5 minuti).
 3. Stage corrente da implementare → vedi sezione "Stato corrente" qui sotto.
 4. Le `skills/` sono già scritte: usale come istruzioni precompilate per Claude Code.

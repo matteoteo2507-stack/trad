@@ -1,3 +1,9 @@
+---
+tipo: preregistrazione
+stato: NO-GO
+aggiornato: 2026-07-08
+decisione: "DECISIONS 2026-07-08 — mean-reversion vol NO-GO"
+---
 # Mean-reversion vol (non-level) — PRE-REGISTRAZIONE (anti-p-hacking)
 
 > **Committata PRIMA dei risultati.** 2026-07-08. Secondo edge del pivot (dopo TSMOM NO-GO). Contratto:

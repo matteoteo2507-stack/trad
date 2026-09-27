@@ -3,9 +3,13 @@ titolo: FADE mean-reversion — spec per walk-forward live (hand-off al socio)
 fonti:
   - "analysis/nxt/closure.py (config A1)"
 tipo: strategia_candidata
+stato: KILL
+aggiornato: 2026-09-17
 ---
 
 # FADE mean-reversion — regole per walk-forward live
+
+> ⚠️ **Documento storico. Famiglia FADE: KILL il 2026-09-17** — il +0,31/+0,35R era per intero fill fantasma; EA spento. Stato canonico: [NXT_FADE_FORWARD_PREREGISTRATION](../docs/NXT_FADE_FORWARD_PREREGISTRATION.md). Le regole sotto restano come riferimento, non come strategia attiva.
 
 > **Documento da consegnare al socio.** È la spec eseguibile della variante emersa dall'analisi di NXT. NON è una strategia dimostrata: è un **lead da validare in avanti** su mercato live/demo. Lo scopo di questo test è proprio capire se regge fuori campione. Regole **fisse**: non vanno modificate durante il test. Derivazione interna completa in [nxt_fib_trend_pullback.md](nxt_fib_trend_pullback.md) §4.
 

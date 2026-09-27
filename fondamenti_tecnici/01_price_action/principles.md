@@ -1,4 +1,5 @@
 ---
+aliases: [01_price_action]
 titolo: Price Action & Market Structure
 fonti: ["Art of Confluence Trading.pdf", "PDF - HOW TO MASTER THE ART OF TRADING - BY SOULZ"]
 tipo: concetti

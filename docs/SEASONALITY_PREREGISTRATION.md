@@ -1,3 +1,9 @@
+---
+tipo: preregistrazione
+stato: NO-GO
+aggiornato: 2026-07-08
+decisione: "DECISIONS 2026-07-08 — stagionalità TOM NO-GO"
+---
 # Stagionalità / calendario (Turn-of-Month) — PRE-REGISTRAZIONE (anti-p-hacking)
 
 > **Committata PRIMA dei risultati.** 2026-07-08. Terzo e **ultimo** edge sistematico del pivot (patto

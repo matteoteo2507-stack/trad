@@ -30,17 +30,23 @@ Documentazione tecnica che vive col codice. Aggiornato **2026-09-19**.
 
 Ipotesi, metriche e soglie fissate **prima** di guardare i dati. Nessun test è informativo senza.
 
-| Documento | Stato |
+> **Lo stato di ogni pre-registrazione vive in un solo posto: il frontmatter del documento**
+> (`stato`, `aggiornato`, `decisione`, `metrica_corrente`). Questa tabella **non ripete** stati né
+> numeri — è il motivo per cui il 27/09 diceva ancora "FADE ATTIVO" dieci giorni dopo il KILL.
+> Vista d'insieme: [`../mappa/_cruscotto.base`](../mappa/_cruscotto.base) (Obsidian).
+
+| Documento | Cosa testa |
 |---|---|
-| [NXT_FADE_FORWARD_PREREGISTRATION.md](NXT_FADE_FORWARD_PREREGISTRATION.md) | **ATTIVO** — forward in corso. Due stadi: N=50 boccia, N=200 conferma |
-| [COPIER_EXECUTION_PREREGISTRATION.md](COPIER_EXECUTION_PREREGISTRATION.md) | **IN AVVIO** — quanto dell'edge del segnale (+0,194R) sopravvive all'esecuzione. N=60 boccia, N=120 conferma |
-| [MENTOR_SIGNALS_OOS_PREREGISTRATION.md](MENTOR_SIGNALS_OOS_PREREGISTRATION.md) | Chiuso → **CONFERMATO** (63,0% vs 35,0% random; E[R] +0,194) |
-| [ROUND_NUMBER_GRID_PREREGISTRATION.md](ROUND_NUMBER_GRID_PREREGISTRATION.md) | Chiuso → **NULL** (griglia .80/.20, famiglia CLOSED) |
-| [TSMOM_PREREGISTRATION.md](TSMOM_PREREGISTRATION.md) | Chiuso → NO-GO |
-| [OPENING_RANGE_PREREGISTRATION.md](OPENING_RANGE_PREREGISTRATION.md) | Chiuso → NO-GO |
-| [MEANREV_PREREGISTRATION.md](MEANREV_PREREGISTRATION.md) | Chiuso → NO-GO |
-| [SEASONALITY_PREREGISTRATION.md](SEASONALITY_PREREGISTRATION.md) | Chiuso → NO-GO |
-| [LEVEL_RESEARCH_PREREGISTRATION.md](LEVEL_RESEARCH_PREREGISTRATION.md) + [LEVEL_RESEARCH_PLAN.md](LEVEL_RESEARCH_PLAN.md) | Chiuso → **CLOSED** (famiglia morta, 384 trial) |
+| [NXT_FADE_FORWARD_PREREGISTRATION.md](NXT_FADE_FORWARD_PREREGISTRATION.md) | forward del FADE mean-reversion (NXT A1), due stadi |
+| [COPIER_EXECUTION_PREREGISTRATION.md](COPIER_EXECUTION_PREREGISTRATION.md) | quanto dell'edge dei segnali mentore sopravvive all'esecuzione del copier |
+| [MENTOR_SIGNALS_OOS_PREREGISTRATION.md](MENTOR_SIGNALS_OOS_PREREGISTRATION.md) | segnali mentore XAUUSD fuori campione, contro lato casuale appaiato |
+| [TREND_EXIT_PLAYGROUND_PREREGISTRATION.md](TREND_EXIT_PLAYGROUND_PREREGISTRATION.md) | trend following: uscita a coda aperta × gradiente di liquidità (playground, A1) |
+| [ROUND_NUMBER_GRID_PREREGISTRATION.md](ROUND_NUMBER_GRID_PREREGISTRATION.md) | livelli a numero tondo .80/.20 sul Nasdaq |
+| [TSMOM_PREREGISTRATION.md](TSMOM_PREREGISTRATION.md) | time-series momentum multi-asset |
+| [OPENING_RANGE_PREREGISTRATION.md](OPENING_RANGE_PREREGISTRATION.md) | opening-range breakout + retest, US100 M5 |
+| [MEANREV_PREREGISTRATION.md](MEANREV_PREREGISTRATION.md) | mean-reversion di volatilità (non su livelli) |
+| [SEASONALITY_PREREGISTRATION.md](SEASONALITY_PREREGISTRATION.md) | stagionalità turn-of-month |
+| [LEVEL_RESEARCH_PREREGISTRATION.md](LEVEL_RESEARCH_PREREGISTRATION.md) + [LEVEL_RESEARCH_PLAN.md](LEVEL_RESEARCH_PLAN.md) | livelli come zone di reazione (famiglia dei 384 trial) |
 
 ## Pilastro investing (passivo)
 

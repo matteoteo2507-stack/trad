@@ -113,7 +113,7 @@ python3 --version  # deve essere 3.12+
 1. Sul tuo PC Windows, crea un repo privato su github.com (es. `trad`).
 2. Push del workspace locale:
    ```powershell
-   cd c:\Users\mmbus\Desktop\lavoro\trad
+   cd c:\Users\mmbus\Obsidian\claude-brain\trad
    git init
    git add .
    git commit -m "Initial commit"
@@ -261,7 +261,7 @@ Ogni domenica, dopo aver compilato il file in locale:
 
 ```powershell
 # Da PowerShell Windows
-scp c:\Users\mmbus\Desktop\lavoro\trad\strategies\confluence_levels\levels.yaml matteo@95.217.123.45:~/trad/strategies/confluence_levels/levels.yaml
+scp c:\Users\mmbus\Obsidian\claude-brain\trad\strategies\confluence_levels\levels.yaml matteo@95.217.123.45:~/trad/strategies/confluence_levels/levels.yaml
 ```
 
 Il runner rilegge il file al ciclo successivo (entro 60s). Niente restart necessario.
@@ -286,17 +286,17 @@ Se preferisci usare git: `git push` da locale, poi `git pull` sul VPS, restart d
 Crea (se non esiste) la sottocartella `MQL5/Experts/TradingSystemWorkspace/` e copia:
 
 ```
-DA: c:\Users\mmbus\Desktop\lavoro\trad\mql5\london_breakout.mq5
+DA: c:\Users\mmbus\Obsidian\claude-brain\trad\mql5\london_breakout.mq5
 A:  <DataFolder>\MQL5\Experts\TradingSystemWorkspace\london_breakout.mq5
 ```
 
 Crea (se non esiste) `MQL5/Include/TradingSystemWorkspace/` e copia:
 
 ```
-DA: c:\Users\mmbus\Desktop\lavoro\trad\mql5\include\telegram.mqh
+DA: c:\Users\mmbus\Obsidian\claude-brain\trad\mql5\include\telegram.mqh
 A:  <DataFolder>\MQL5\Include\TradingSystemWorkspace\telegram.mqh
 
-DA: c:\Users\mmbus\Desktop\lavoro\trad\mql5\include\helpers.mqh
+DA: c:\Users\mmbus\Obsidian\claude-brain\trad\mql5\include\helpers.mqh
 A:  <DataFolder>\MQL5\Include\TradingSystemWorkspace\helpers.mqh
 ```
 
@@ -466,7 +466,7 @@ Tempo stimato: 30-45 minuti.
    - Scendi a H4/H1: identifica zone di Supply/Demand.
    - Aggiungi Fibonacci dell'ultimo swing significativo.
    - Marca i livelli dove convergono ≥ 2 criteri.
-3. Apri `c:\Users\mmbus\Desktop\lavoro\trad\strategies\confluence_levels\levels.yaml`.
+3. Apri `c:\Users\mmbus\Obsidian\claude-brain\trad\strategies\confluence_levels\levels.yaml`.
 4. Aggiungi/aggiorna i livelli secondo il formato (vedi `levels.example.yaml` come riferimento). Ricorda:
    - `id` univoco per livello.
    - `confluence` ≥ 2 elementi.
@@ -474,7 +474,7 @@ Tempo stimato: 30-45 minuti.
    - `tp_target_price` = prossimo livello strutturale.
 5. Valida:
    ```powershell
-   cd c:\Users\mmbus\Desktop\lavoro\trad
+   cd c:\Users\mmbus\Obsidian\claude-brain\trad
    python -m strategies.confluence_levels validate-levels
    ```
    Verifica che la tabella stampata sia tutta verde.
@@ -492,7 +492,7 @@ Tempo stimato: 5-10 minuti (download dati + analisi 503 ticker SP500).
 
 1. Da PowerShell:
    ```powershell
-   cd c:\Users\mmbus\Desktop\lavoro\trad
+   cd c:\Users\mmbus\Obsidian\claude-brain\trad
    ```
 
 2. Decidi i due input macro:
@@ -547,7 +547,7 @@ Spegni il PC di casa fino al weekend successivo.
 ### Locale (Windows PowerShell)
 
 ```powershell
-cd c:\Users\mmbus\Desktop\lavoro\trad
+cd c:\Users\mmbus\Obsidian\claude-brain\trad
 
 # Test offline
 python -m pytest tests/
@@ -598,7 +598,7 @@ sudo systemctl start confluence
 
 ```powershell
 # 1. Aggiorni levels.yaml in locale e validi
-cd c:\Users\mmbus\Desktop\lavoro\trad
+cd c:\Users\mmbus\Obsidian\claude-brain\trad
 # (modifica levels.yaml a mano)
 python -m strategies.confluence_levels validate-levels
 

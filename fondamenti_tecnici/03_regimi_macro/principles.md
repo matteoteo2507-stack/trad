@@ -1,4 +1,5 @@
 ---
+aliases: [03_regimi_macro]
 titolo: "Regimi di mercato (Markov) e timing macro"
 fonti:
   - "Markov regime skill for claude.txt (framework Roan / @RohOnChain)"

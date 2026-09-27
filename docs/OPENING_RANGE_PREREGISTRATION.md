@@ -1,3 +1,11 @@
+---
+tipo: preregistrazione
+stato: NO-GO
+aggiornato: 2026-09-18
+decisione: "DECISIONS 2026-09-18 (5) — audit A5"
+metrica_corrente: "SPX500 TRAIN −0,267 [−0,391; −0,121]; NAS100 MDE 0,135R"
+nota: "Audit A5: MISTO — SPX500 refutato, NAS100 mai misurato con potenza sufficiente. Forward ORB spento il 27/08."
+---
 # Opening-Range Breakout + Retest (US100 M5) — PRE-REGISTRAZIONE
 
 > **Committata PRIMA dei risultati.** 2026-07-08. Primo test del filone **scalping single-asset intraday**

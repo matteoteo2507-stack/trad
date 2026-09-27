@@ -1,3 +1,11 @@
+---
+tipo: preregistrazione
+stato: KILL
+aggiornato: 2026-09-17
+decisione: "DECISIONS 2026-09-17 (4) — FADE: KILL della famiglia"
+metrica_corrente: "E[R] −0,250 [−0,287; −0,210] coi soli fill ottenibili (5.506 trade)"
+nota: "EA spento. Il +0,31/+0,35/+0,409 era fill fantasma: non citarlo come edge."
+---
 # Pre-registrazione — Forward test FADE mean-reversion (NXT A1)
 
 > **Documento vincolante.** Fissato il **2026-08-04**, con il forward test **già in corso** (EA

@@ -1,4 +1,5 @@
 ---
+aliases: [06_stock_selection]
 titolo: Stock Selection — Strategie, archetipi azienda e metodologie di screening
 fonti:
   - _sorgenti/Stock conceps from defiantmentor.txt (parte STOCK SELECTION)

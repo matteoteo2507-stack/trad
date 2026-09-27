@@ -1,3 +1,11 @@
+---
+tipo: preregistrazione
+stato: CLOSED
+aggiornato: 2026-09-18
+decisione: "DECISIONS 2026-07-07 (v3) — libro CHIUSO; confermato dall'audit A5 del 2026-09-18"
+metrica_corrente: "384 trial, 0 edge"
+nota: "Audit A5: verdetto confermato e più solido del dichiarato."
+---
 # Ricerca livelli — PRE-REGISTRAZIONE (anti-p-hacking)
 
 > **Committata PRIMA di guardare i risultati.** 2026-07-06. Contratto scientifico: le definizioni,

@@ -1,3 +1,11 @@
+---
+tipo: preregistrazione
+stato: LEAD
+aggiornato: 2026-09-21
+decisione: "DECISIONS 2026-09-21 (2) — A1 held-out non finanziabile"
+metrica_corrente: "gradiente rho +0,929 a durata appaiata, ma divario vs random −0,238 [−0,363; −0,098]"
+nota: "Fermo: il punto 3 (held-out) non si apre; round trend 2 di 3. Condizioni di riapertura in TREND_A1_HELDOUT_POWER §7."
+---
 # Trend following: uscita a coda aperta × gradiente di liquidità — PRE-REGISTRAZIONE
 
 > **Committata PRIMA di guardare qualunque risultato.** 2026-08-14. Fonte esterna:

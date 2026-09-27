@@ -1,3 +1,11 @@
+---
+tipo: preregistrazione
+stato: IN AVVIO
+aggiornato: 2026-09-18
+decisione: "DECISIONS 2026-09-18 (4) — correzione dell'ora applicata due volte"
+metrica_corrente: "E[R] segnale a TP1 +0,1265 [+0,0756; +0,1736], 629 trade; gate asimmetrico 20 pip: +0,159 [+0,076; +0,239]"
+nota: "Copier non ancora operativo (deploy VPS del 15/09 fallito). Il +0,194 nel corpo è superato."
+---
 # Pre-registrazione — Test di ESECUZIONE del copier (segnali mentore XAUUSD)
 
 > **Vincolante, scritta il 2026-08-14 PRIMA di avviare il copier in modalità `live`.**

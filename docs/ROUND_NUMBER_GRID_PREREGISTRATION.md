@@ -1,3 +1,9 @@
+---
+tipo: preregistrazione
+stato: CLOSED
+aggiornato: 2026-08-09
+decisione: "DECISIONS 2026-08-09 — griglia .80/.20 NULL, famiglia CLOSED"
+---
 # Pre-registrazione — I livelli a numero tondo .80/.20 sono zone di reazione? (Nasdaq)
 
 > **Vincolante, scritta il 2026-08-09 PRIMA di qualunque esecuzione.** Nessun risultato è ancora

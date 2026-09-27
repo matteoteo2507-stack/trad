@@ -1,4 +1,5 @@
 ---
+aliases: [07_data_sources]
 titolo: Data Sources — Endpoint macro/market, fonti primarie e provider API
 fonti:
   - _sorgenti/Data sources.txt

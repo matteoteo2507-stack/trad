@@ -1,0 +1,15 @@
+filters:
+  and:
+    - file.inFolder("trad/docs")
+    - file.name.contains("PREREGISTRATION")
+
+views:
+  - type: table
+    name: "Pre-registrazioni — stato canonico"
+    order:
+      - file.name
+      - note.stato
+      - note.aggiornato
+      - note.metrica_corrente
+      - note.decisione
+      - note.nota

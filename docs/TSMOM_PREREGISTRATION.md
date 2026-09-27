@@ -1,3 +1,11 @@
+---
+tipo: preregistrazione
+stato: NO-GO
+aggiornato: 2026-09-18
+decisione: "DECISIONS 2026-09-18 (5) — audit A5"
+metrica_corrente: "Sharpe +0,21 [−0,18; +0,59]; MDE Sharpe 0,59"
+nota: "Audit A5: NON MISURATO (potenza insufficiente). Resta chiuso ma non vale come prova di assenza di edge."
+---
 # TSMOM multi-asset — PRE-REGISTRAZIONE (anti-p-hacking)
 
 > **Committata PRIMA di guardare i risultati.** 2026-07-08. Primo edge del pivot post-livelli

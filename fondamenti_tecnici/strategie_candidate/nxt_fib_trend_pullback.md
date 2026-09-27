@@ -3,9 +3,13 @@ titolo: NXT — Fibonacci + Elliott trend-pullback (strategia ex-soci)
 fonti:
   - "_sorgenti/NXT strategy Fibonacci Elliott (video ex-socio).txt"
 tipo: strategia_candidata
+stato: NO-GO
+aggiornato: 2026-09-17
 ---
 
 # NXT — Fibonacci + Elliott trend-pullback
+
+> ⚠️ **Stato attuale:** continuazione **NO-GO** (17/07; E[R] rimisurato −0,118 dall'audit A5 del 18/09). Il sottoprodotto FADE ("positivo, robusto" nella tabella sotto) è **KILL dal 2026-09-17**: era fill fantasma. Stato canonico: [NXT_FADE_FORWARD_PREREGISTRATION](../docs/NXT_FADE_FORWARD_PREREGISTRATION.md).
 
 > **STATO: in valutazione — esperimento ridotto pre-registrato.** Strategia usata da alcuni ex-soci dell'utente, spiegata in un video da uno di loro. Questo file contiene (1) il triage onesto, (2) la **pre-registrazione** dell'esperimento ridotto — regole fissate *prima* di vedere i risultati — e (3) il verdetto a valle. Motore: [`analysis/nxt/backtest.py`](../../analysis/nxt/backtest.py). Metodologia allineata a [[04_quant_metodologia]] e alla ricerca livelli [[project_level_research_v1_null_2026_07_06]].
 
