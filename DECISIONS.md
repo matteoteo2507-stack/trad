@@ -11,6 +11,44 @@
 
 ---
 
+## 2026-09-28 — **Forex Gump in quarantena**, live demo come raccolta dati, **BE silenzioso del copier corretto**
+
+**Stato trovato (dati del socio, 21-28/09).** Il socio fa girare **in demo**, da una settimana, due
+fonti: **XAU Analysis Team** (log del copier, 20 segnali eseguiti; secondo l'utente probabilmente una
+vecchia versione del nostro `signal_copier`, perche' formato e magic non combaciano col repo) e
+**Forex Gump GOLD VIP** ("Gump", fonte nuova). I 4 trade MT5 di Gump confrontati col suo export
+Telegram: la copia entra in media **0,79R peggio del prezzo postato** (il mentore scrive "ho venduto
+a X" dopo essere entrato). Il backtest della webapp del socio (1.969 segnali) **non e' un risultato**:
+codice non visto, fill probabilmente al prezzo postato.
+
+**Decisione 1 — la live demo continua come raccolta dati.** Entrambe le fonti restano in demo per
+raccogliere i numeri che mancano (fill reali, spread del broker, latenza). Nessun verdetto dalla
+settimana osservata: 4 segnali Gump e nessun esito per l'Analysis Team (il log non contiene chiusure).
+Il conto FTMO del socio e' lavoro suo, fuori da questo repo (utente, 28/09).
+
+**Decisione 2 — Gump entra in `quarantena` con una pre-registrazione.** La proposta del socio:
+misurare le entrate in ritardo sui **dati storici**, come fatto per il mentore XAU (C5), invece di
+aspettarle dal live. Bozza in [FOREXGUMP_LATENCY_PREREGISTRATION.md](docs/FOREXGUMP_LATENCY_PREREGISTRATION.md);
+passo successivo approvato dall'utente: **revisione G1 del gatekeeper**. Preparazione gia' fatta,
+senza alcun esito: parser (1.899 bracket), prezzi Dukascopy M1 BID/ASK 2020-09 → 2026-09, e il
+**fuso**: l'export etichetta tutto `UTC+01:00` ma e' **ora italiana con l'ora legale** (entrate
+postate nel range dei 5 minuti precedenti: 98,9% con Europe/Rome, sotto il 23% con ogni altro
+offset). Credere all'etichetta avrebbe spostato di un'ora ogni segnale estivo.
+
+**Decisione 3 — trade2sync: la prova non e' mai partita** (utente, 28/09). Al suo posto il copier ha
+girato sul PC del socio. La voce del 15/09 resta come storia; il piano B non e' piu' in prova.
+
+**Correzione (0 trial) — il BE rifiutato non passa piu' in silenzio.** Il log del socio del 24/09
+mostra un BE rifiutato 78 volte in 25 minuti (`10016`, prezzo gia' oltre l'entrata). Il nostro
+`executor` aveva lo stesso difetto in forma peggiore: registrava il rifiuto come "gamba gia' chiusa"
+e marcava il piano protetto, lasciando la gamba sullo SL pieno. Ora: livello gia' oltrepassato →
+**chiusura a mercato** (e' l'uscita che lo stop avrebbe prodotto); altro errore → si riprova al poll
+successivo, fino a 5 volte, poi allarme. 4 test di regressione, verificati **rossi sul codice
+vecchio**; suite 170 passati, 2 saltati. Correzione di esecuzione, non scelta dopo l'esito
+([[feedback_correggere_non_e_cercare]]).
+
+---
+
 ## 2026-09-21 (3) — **B3 chiusa a 0 trial.** La condizione di struttura non è trasferibile, e il motivo è aritmetico
 
 **Cosa è stato fatto.** Prossimo punto operativo del backlog dopo lo stop di A1: **B3**, l'unica

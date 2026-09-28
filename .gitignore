@@ -108,3 +108,8 @@ analysis/trend/trades_*.csv
 
 # WIP utente non committabile (committato per errore il 2026-08-24 con git add -A docs/)
 docs/VPS_COPIER_SETUP.md
+
+# Export dalla webapp VELTRIX del socio (conti, ticket): dati, non codice
+28-09/
+materiale_socio/dati*/
+analysis/forexgump/signals.csv

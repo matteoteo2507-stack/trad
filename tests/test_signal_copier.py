@@ -344,14 +344,19 @@ class _FakeBroker:
         self._fail = set(fail_tickets or ())
         self.price = price
         self.magic = 27050
+        # Rifiuti di modifica su posizioni APERTE: "invalid_stops" imita MT5 10016
+        # (stop dalla parte sbagliata del prezzo), "altro" un errore qualunque.
+        self.rifiuta_sl: str | None = None
+        self.tentativi_modify = 0
 
     def get_price(self, symbol):
         return self.price
 
     def get_positions(self, symbol):
         from types import SimpleNamespace
+        # Come MT5: una gamba gia' chiusa (anche quelle in _fail) non e' fra le aperte.
         return [SimpleNamespace(ticket=t, direction=self._dir.get(t), magic=self.magic)
-                for t in self.placed if t not in self.closed]
+                for t in self.placed if t not in self.closed and t not in self._fail]
 
     def place_order(self, order):  # noqa: ANN001 - firma minima per il test
         self._next += 1
@@ -363,6 +368,11 @@ class _FakeBroker:
         # Come MT5: una posizione già chiusa (per TP/SL/flip) non è modificabile.
         if ticket in self._fail or ticket in self.closed:
             raise RuntimeError(f"posizione {ticket} inesistente")
+        self.tentativi_modify += 1
+        if self.rifiuta_sl == "invalid_stops":
+            raise RuntimeError(f"MT5 modify per-ticket {ticket} fallito retcode=10016")
+        if self.rifiuta_sl == "altro":
+            raise RuntimeError(f"MT5 modify per-ticket {ticket} fallito retcode=10031")
         self.modified.append({"ticket": ticket, "sl": new_sl, "tp": new_tp})
 
     def close_position_by_ticket(self, ticket):
@@ -413,6 +423,78 @@ def test_executor_be_ignora_gamba_gia_chiusa():
     ex.on_update(SignalUpdate(kind="tp_hit", channel=sig.channel, tp_index=1))
     assert closed_leg not in {m["ticket"] for m in broker.modified}
     assert len({m["ticket"] for m in broker.modified}) == 2  # le altre 2 gambe ricevono il BE
+    assert plan.be_armed
+
+
+# ---- BE rifiutato dal broker (incidente 24/09/2026) -------------------------
+# Prima: qualunque rifiuto era "probabile gamba gia' chiusa" e il piano veniva
+# marcato protetto lo stesso -> gamba sullo SL pieno, in silenzio.
+
+
+class _Notifiche:
+    def __init__(self):
+        self.testi: list[str] = []
+
+    def send_message(self, text):
+        self.testi.append(text)
+
+
+def _piano_con_tp1_chiuso(price):
+    """SELL a 4536 (SL 4546): la gamba TP1 e' chiusa sul broker, restano 2 gambe."""
+    sig, plan, broker, _ = _live_plan_and_broker()
+    note = _Notifiche()
+    ex = Executor(mode="live", broker=broker, notifier=note,
+                  config={"manage": {"move_sl_to_be_on_tp": 1}})
+    ex._active[sig.channel] = plan
+    broker.closed.append(plan.legs[0].ticket)
+    broker.price = price
+    return sig, plan, broker, ex, note
+
+
+def test_be_non_piazzabile_chiude_a_mercato():
+    # Il prezzo e' gia' risalito sopra l'entrata del SELL: lo stop a BE scatterebbe
+    # subito, MT5 lo rifiuta (10016). La regola si esegue uscendo a mercato.
+    sig, plan, broker, ex, note = _piano_con_tp1_chiuso(price=4538.0)
+    broker.rifiuta_sl = "invalid_stops"
+    ex.poll_broker_management()
+    assert set(broker.closed) == set(broker.placed)          # le 2 gambe residue chiuse
+    assert plan.be_armed
+    assert any("chiusa a mercato" in t for t in note.testi)
+
+
+def test_be_rifiutato_per_altro_motivo_non_arma_e_riprova():
+    sig, plan, broker, ex, note = _piano_con_tp1_chiuso(price=4530.0)
+    broker.rifiuta_sl = "altro"
+    ex.poll_broker_management()
+    assert not plan.be_armed                                 # NON marcato protetto
+    assert broker.closed == [plan.legs[0].ticket]            # e nessuna chiusura inventata
+    broker.rifiuta_sl = None                                 # il broker torna a rispondere
+    ex.poll_broker_management()
+    assert plan.be_armed
+    assert {m["ticket"] for m in broker.modified} == {plan.legs[1].ticket, plan.legs[2].ticket}
+    assert sum("break-even" in t for t in note.testi) == 1   # annunciato una volta sola
+
+
+def test_be_rifiutato_sempre_allarme_dopo_il_tetto():
+    from signal_copier.executor import MAX_TENTATIVI_SL
+
+    sig, plan, broker, ex, note = _piano_con_tp1_chiuso(price=4530.0)
+    broker.rifiuta_sl = "altro"
+    for _ in range(MAX_TENTATIVI_SL + 3):
+        ex.poll_broker_management()
+    # un tentativo per gamba per poll, fino al tetto: poi si smette (niente raffica)
+    assert broker.tentativi_modify == 2 * MAX_TENTATIVI_SL
+    assert any("intervento manuale" in t for t in note.testi)
+
+
+def test_trailing_non_piazzabile_chiude_a_mercato(tmp_path):
+    # gold_5tp BUY a 4470, trailing a TP1 (4474) dopo TP3: il prezzo e' gia' sceso sotto 4474.
+    broker, ex = _gold5_live(tmp_path)
+    broker.closed.extend(broker.placed[:3])
+    broker.price = 4472.0
+    broker.rifiuta_sl = "invalid_stops"
+    ex.poll_broker_management()
+    assert set(broker.closed) == set(broker.placed)
 
 
 # ---- Trade journal (auto-log, sostituisce Notion) -------------------------

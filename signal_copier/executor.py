@@ -15,7 +15,9 @@ distinte, ciascuna col proprio ticket. Il ticket viene catturato all'apertura
 (`TradeLeg.ticket`) e usato per il management per-ticket: SL→BE e flatten
 agiscono sulla singola gamba via `MT5Broker.modify_position_by_ticket` /
 `close_position_by_ticket`. Una gamba il cui TP è già scattato sul broker non
-esiste più: l'errore relativo viene assorbito e loggato, non è un fallimento.
+esiste più e si salta. Uno SL che il broker **rifiuta** non viene più scambiato per
+una gamba chiusa (vedi `_sl_protetto`, 2026-09-28): se il prezzo è già oltre il
+livello la gamba si chiude a mercato, altrimenti si riprova e poi si dà l'allarme.
 
 ⚠️ Richiede un account MT5 di tipo HEDGING (vedi README): su netting le gambe
 si fondono e i ticket indipendenti saltano.
@@ -31,6 +33,9 @@ from brokers.base import Order
 from .models import ParsedSignal, SignalUpdate, TradePlan
 
 logger = logging.getLogger(__name__)
+
+# Tetto ai ritentativi di spostamento SL (uno per poll, default ogni 20 s): oltre, allarme.
+MAX_TENTATIVI_SL = 5
 
 
 class Executor:
@@ -150,23 +155,51 @@ class Executor:
                                "(%d TP) → niente trailing", plan.signal.symbol, to_tp,
                                len(plan.signal.tps))
                 return
-            msg = (f"⏫ {plan.signal.symbol}: TP{reached_tp} raggiunto → SL a TP{to_tp} "
-                   f"({level}) sulle gambe residue")
-            logger.info(msg)
-            self._notify(msg)
-            if self.mode == "live":
-                self._move_sl_to_price(plan, level)
+            if plan.sl_move_failures == 0:  # l'annuncio una volta sola, non a ogni ritentativo
+                msg = (f"⏫ {plan.signal.symbol}: TP{reached_tp} raggiunto → SL a TP{to_tp} "
+                       f"({level}) sulle gambe residue")
+                logger.info(msg)
+                self._notify(msg)
+            if self.mode == "live" and not self._sl_protetto(plan, level):
+                return  # non marcato: il prossimo poll riprova
             plan.trailed = True
             plan.be_armed = True  # il trailing è più protettivo del BE: copre anche quello
             return
         if not plan.be_armed and reached_tp >= self._be_trigger():
-            msg = (f"➡️ {plan.signal.symbol}: TP{reached_tp} raggiunto → SL a "
-                   f"break-even ({plan.signal.entry})")
-            logger.info(msg)
-            self._notify(msg)
-            if self.mode == "live":
-                self._move_sl_to_be(plan)
+            if plan.sl_move_failures == 0:
+                msg = (f"➡️ {plan.signal.symbol}: TP{reached_tp} raggiunto → SL a "
+                       f"break-even ({plan.signal.entry})")
+                logger.info(msg)
+                self._notify(msg)
+            if self.mode == "live" and not self._sl_protetto(plan, plan.signal.entry):
+                return  # non marcato: il prossimo poll riprova
             plan.be_armed = True
+
+    def _sl_protetto(self, plan: TradePlan, level: float) -> bool:
+        """Sposta lo SL a `level` e dice se il piano si può considerare protetto.
+
+        Prima del 2026-09-28 il piano veniva marcato protetto (`be_armed`/`trailed`)
+        **anche quando nessuno SL era stato spostato**: il rifiuto del broker finiva in
+        un log "probabile gamba già chiusa" e la gamba restava sullo SL pieno, in silenzio.
+        Il copier del socio aveva lo stesso difetto nella forma opposta: 78 ritentativi in
+        25 minuti sullo stesso ticket (log del 24/09/2026).
+
+        Qui: se ogni gamba ancora aperta è protetta → True. Altrimenti si conta il
+        fallimento e si ritorna False, così il poll successivo riprova; dopo
+        `MAX_TENTATIVI_SL` si rinuncia con un **allarme esplicito** (intervento manuale).
+        """
+        if self._move_sl_to_price(plan, level):
+            plan.sl_move_failures = 0
+            return True
+        plan.sl_move_failures += 1
+        if plan.sl_move_failures >= MAX_TENTATIVI_SL:
+            msg = (f"🆘 {plan.signal.symbol}: SL NON spostato a {level} dopo "
+                   f"{plan.sl_move_failures} tentativi — gambe ancora sullo SL originale, "
+                   f"serve intervento manuale")
+            logger.error(msg)
+            self._notify(msg)
+            return True  # si smette di riprovare: l'allarme e' il segnale, non il loop
+        return False
 
     def poll_broker_management(self) -> None:
         """Gestione guidata dal broker, indipendente dai messaggi del canale.
@@ -352,17 +385,60 @@ class Executor:
         """Sposta lo SL a break-even su tutte le gambe ancora aperte (per-ticket)."""
         self._move_sl_to_price(plan, plan.signal.entry)
 
-    def _move_sl_to_price(self, plan: TradePlan, price: float) -> None:
-        """Sposta lo SL al prezzo dato su tutte le gambe ancora aperte (per-ticket)."""
+    def _move_sl_to_price(self, plan: TradePlan, price: float) -> bool:
+        """Sposta lo SL al prezzo dato sulle gambe ancora aperte (per-ticket).
+
+        Ritorna True se **ogni** gamba ancora aperta è protetta a `price`. Tre casi per gamba:
+        - già chiusa sul broker (TP/SL colpito) → niente da proteggere;
+        - SL spostato → protetta;
+        - rifiutato perché il prezzo è **già oltre** `price` (MT5 10016, stop non valido):
+          lo stop scatterebbe subito, quindi la regola si esegue **chiudendo a mercato** —
+          è l'uscita che il BE avrebbe prodotto, non una scelta nuova;
+        - rifiutato per altro motivo → non protetta (False: si riprova).
+        """
+        try:
+            aperte = {getattr(p, "ticket", None)
+                      for p in self.broker.get_positions(plan.signal.symbol)}
+        except Exception as exc:
+            logger.warning("Posizioni non leggibili prima di spostare lo SL: %s", exc)
+            aperte = None  # senza lista si prova su tutte: una gamba chiusa fallira' sotto
+        protetto = True
         for leg in plan.legs:
             if leg.ticket is None:
                 continue
+            if aperte is not None and leg.ticket not in aperte:
+                continue
             try:
                 self.broker.modify_position_by_ticket(leg.ticket, new_sl=price)
+                continue
             except Exception as exc:
-                # Una gamba può essersi già chiusa (TP colpito sul broker): non è un errore.
-                logger.info("Spostamento SL su ticket %s saltato (probabile gamba già chiusa): %s",
-                            leg.ticket, exc)
+                errore = exc
+            if self._livello_oltrepassato(leg, price, errore):
+                try:
+                    self.broker.close_position_by_ticket(leg.ticket)
+                    msg = (f"⚠️ {leg.symbol}: SL a {price} non piazzabile sul ticket "
+                           f"{leg.ticket} (prezzo già oltre) → chiusa a mercato")
+                    logger.warning(msg)
+                    self._notify(msg)
+                    continue
+                except Exception as exc2:
+                    logger.error("Ticket %s: SL non piazzabile E chiusura fallita: %s",
+                                 leg.ticket, exc2)
+            else:
+                logger.warning("SL del ticket %s non spostato a %s: %s — riprovo",
+                               leg.ticket, price, errore)
+            protetto = False
+        return protetto
+
+    def _livello_oltrepassato(self, leg, level: float, errore: Exception) -> bool:
+        """True se lo SL a `level` non è piazzabile perché il mercato l'ha già superato."""
+        if "retcode=10016" in str(errore):  # TRADE_RETCODE_INVALID_STOPS
+            return True
+        try:
+            px = float(self.broker.get_price(leg.symbol))
+        except Exception:
+            return False
+        return px <= level if leg.direction == "long" else px >= level
 
     @staticmethod
     def _tp_level(plan: TradePlan, tp_index: int) -> Optional[float]:

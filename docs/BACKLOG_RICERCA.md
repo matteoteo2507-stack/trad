@@ -104,6 +104,34 @@ il contatore trial non ricostruibile e **due** la provenienza dell'ipotesi non d
 
 ---
 
+## G — DATI MANCANTI (da aggiungere al repo, anche a pagamento)
+
+> **Ricostruita il 2026-09-28 dal repo.** Matteo ci stava lavorando in sessioni poi chiuse, e quella
+> lista non era stata salvata su file: **aggiungere qui cio' che si ricorda**.
+>
+> **Regola per comprare** (estesa da DECISIONS 2026-06-02, *"acquisto dati rimandato finche' il livello
+> gratis non supera il gate"*): un dato a pagamento si compra solo se sblocca un test **pre-registrabile**
+> con **MDE calcolato prima** che stia sotto l'effetto atteso
+> ([[feedback_potenza_prima_di_raccogliere]]). Prima si esaurisce la versione gratuita dello stesso dato.
+> Costi: nessuna cifra senza fonte e data — dove manca, "da verificare".
+
+| # | dato | cosa sblocca | fonte candidata | costo | stato |
+|---|---|---|---|---|---|
+| **G1** | **Tick XAU/USD BID/ASK** (e M1) | (a) Gump: esecuzione e uscite senza pareggi ([pre-reg](FOREXGUMP_LATENCY_PREREGISTRATION.md) §4). (b) ⚠️ **Mentore XAU: la forbice di 0,82R** fra convenzione pessimistica e ottimistica del baseline casuale, che per DECISIONS 2026-09-18 (2) *"si stringe solo con dati M1/tick"* — cioe' la parte d'ignoranza piu' grande del nostro unico edge | Dukascopy (`dukascopy_python`, gia' installato) | **gratis** | 🟡 M1 BID/ASK 2020-09 → 2026-09 **scaricato** il 28/09 (`XAU_duka_M1_{bid,ask}.parquet`); tick da scaricare nelle finestre dei segnali. (b) non ancora rifatto |
+| **G2** | **Spread e fill reali del broker** dei conti copiati | Gump: bias dello spread (§8.7 pre-reg: Dukascopy 0,58-0,69 $ nel 2025-26 = ~0,3R su SL 2 $); copier XAU: taratura del gate su fill veri (C5) | storico MT5 dei conti demo del socio (Report) | gratis | ⏳ in raccolta: la demo live continua (DECISIONS 2026-09-28) |
+| **G3** | **Export Telegram di Gump piu' vecchio** + accesso alla repo `gold-desk-trading-suite` | cancellazioni e messaggi modificati (D3 della pre-reg): unico modo di misurarli dal passato; codice del copier e della webapp del socio | socio | gratis | ⏳ da chiedere |
+| **G4** | **Serie VIX** | D5 (regime da VIX) | FRED `VIXCLS` / CBOE | gratis | non scaricata: vale solo se A1 si riapre |
+| **G5** | **Posizionamento sui futures** | D7 (riflessivita' / affollamento) | CFTC Commitments of Traders (settimanale) | gratis | non valutato. Open interest intraday e short interest: a pagamento, costo da verificare |
+| **G6** | **Fondamentali point-in-time senza survivorship** + **sorprese sugli utili** | D3 (PEAD / episodic pivot); selezione titoli (Stock Selector, archiviato) | Sharadar SF1 / Norgate (DECISIONS 2026-06-02); `financialdatasets.ai` ([data/README](../data/README.md)) | a pagamento, da verificare | rimandato per decisione del 2026-06-02; l'unico setup del funnel con supporto accademico indipendente e' PEAD (D3) |
+| **G7** | **Tick + book (order flow)** | D1 (assorbimento, delta, big trade) | feed di borsa a livello di book | a pagamento, da verificare | ⛔ il backlog dice *"mai, realisticamente"*: il vantaggio e' di latenza, non di dato |
+| **G8** | **Small cap USA**: float, short interest, halt, locate | D2 | provider dedicati + broker con locate | a pagamento, da verificare | ⛔ fuori perimetro |
+| **G9** | **Strumenti indipendenti ad alta volatilita'** per A1 punto 2 | riapertura di A1 ([referto](TREND_A1_HELDOUT_POWER.md) §7) | — | **non si compra** | ⚠️ in lista per non comprarlo: il limite e' l'**universo** (19 crypto valgono 1,4 strumenti), non il fornitore |
+
+**Il piu' conveniente adesso:** G1 (b). E' gratis, i dati sono gia' in casa, e restringe l'incertezza
+proprio sull'unico binario con un verdetto positivo.
+
+---
+
 ## Collegamenti
 
 - [`STRATEGY_LIFECYCLE.md`](STRATEGY_LIFECYCLE.md) — gate, budget, verdetti
