@@ -17,8 +17,9 @@ sezione "PIVOT ARCHITETTURALE". In sintesi:
 ```
 mql5/
 ├── london_breakout.mq5         # EA London Breakout (Stage 2.5) — NO-GO, storico
-├── tsmom_jpy.mq5               # EA TSMOM JPY — NO-GO, storico
-├── nxt_fade.mq5                # EA fade mean-reversion — WALK-FORWARD LIVE (attivo)
+├── tsmom_jpy.mq5               # EA TSMOM JPY — stato: docs/TSMOM_PREREGISTRATION.md
+├── nxt_fade.mq5                # EA fade mean-reversion — stato: docs/NXT_FADE_FORWARD_PREREGISTRATION.md
+├── orb_nasdaq.mq5              # EA ORB v2 su NAS100 — stato: docs/OPENING_RANGE_PREREGISTRATION.md
 ├── include/
 │   ├── telegram.mqh            # Helper WebRequest per inviare messaggi Telegram
 │   └── helpers.mqh             # Sessioni UTC, blackout NFP/FOMC, ATR, range Asia
@@ -165,7 +166,7 @@ Si apre il dialogo input. Imposta:
 
 Tab "Common": ☑️ `Allow algorithmic trading`, ☑️ `Allow live trading`. OK.
 
-In alto a destra del grafico apparirà un faccino sorridente verde se l'EA è attivo.
+In alto a destra del grafico apparirà l'icona dell'EA (nelle build moderne di MT5 è un cappello di laurea; nelle vecchie un faccino sorridente): colorata se l'EA è attivo.
 
 ## Backtest in Strategy Tester
 

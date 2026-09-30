@@ -1,11 +1,10 @@
-filters:
-  and:
-    - file.inFolder("trad/docs")
-    - file.name.contains("PREREGISTRATION")
-
 views:
   - type: table
     name: "Pre-registrazioni — stato canonico"
+    filters:
+      and:
+        - file.inFolder("trad/docs")
+        - file.name.contains("PREREGISTRATION")
     order:
       - file.name
       - note.stato
@@ -13,3 +12,14 @@ views:
       - note.metrica_corrente
       - note.decisione
       - note.nota
+  - type: table
+    name: "Comprensione"
+    filters:
+      and:
+        - file.inFolder("trad/mappa")
+        - note.tipo == "mappa"
+    order:
+      - file.name
+      - note.compreso
+      - note.metodo
+      - note.verificato_il
