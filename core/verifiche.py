@@ -299,3 +299,141 @@ def correlazione_dichiarata(x: pd.Series, y: pd.Series, frequenza: str, finestra
             "intero_campione": float(agg["x"].corr(agg["y"])),
             "mobile_min": float(mob.min()), "mobile_mediana": float(mob.median()),
             "mobile_max": float(mob.max())}
+
+
+# =================================================================================================
+# PRIORITA' 2 (2026-09-30): rendere dimensionabile cio' che oggi e' a soglia fissa
+# =================================================================================================
+
+# ---- buco 15: probabilita' di toccare un obiettivo prima di un limite -------------------------
+
+def prob_obiettivo_prima_del_limite(mu: float, sigma: float, obiettivo: float, limite: float) -> float:
+    """P(il capitale sale di `obiettivo` prima di scendere di `limite`), moto browniano con deriva.
+
+    `mu`, `sigma`: media e deviazione del P&L **per operazione**, nelle stesse unita' di obiettivo e
+    limite (es. % di capitale). Con theta = 2 mu / sigma^2:
+        P = (1 - e^(theta * limite)) / (e^(-theta * obiettivo) - e^(theta * limite)),
+    e con mu = 0, P = limite / (obiettivo + limite). Una challenge +8% / -10% **senza edge** si supera
+    per caso nel 10/18 = ~56% dei casi (blocco C, C2): e' il numero contro cui leggere un "l'ho passata".
+    """
+    if obiettivo <= 0 or limite <= 0 or sigma <= 0:
+        raise ValueError("obiettivo, limite e sigma devono essere > 0")
+    theta = 2 * mu / sigma ** 2
+    if abs(theta) < 1e-12:
+        return limite / (obiettivo + limite)
+    return float((1 - math.exp(theta * limite)) / (math.exp(-theta * obiettivo) - math.exp(theta * limite)))
+
+
+def rovina_del_giocatore(p: float, passi_obiettivo: int, passi_limite: int) -> float:
+    """Versione discreta: passi di +1 con probabilita' p e -1 con 1-p. P(+obiettivo prima di -limite)."""
+    if not 0 < p < 1 or passi_obiettivo < 1 or passi_limite < 1:
+        raise ValueError("argomenti non validi")
+    i, N = passi_limite, passi_limite + passi_obiettivo
+    if abs(p - 0.5) < 1e-12:
+        return i / N
+    r = (1 - p) / p
+    return float((1 - r ** i) / (1 - r ** N))
+
+
+# ---- buco 16: le proprieta' del Kelly frazionario ---------------------------------------------
+
+def kelly_crescita(f: float, mu: float, sigma: float) -> float:
+    """Crescita geometrica attesa g(f) = f mu - f^2 sigma^2 / 2 (la parabola del blocco C).
+
+    Unifica volatility drag e Kelly: il massimo e' in f* = mu / sigma^2 (`kelly_ottimo`); oltre 2 f* la
+    crescita diventa negativa anche con edge positivo.
+    """
+    return f * mu - 0.5 * f * f * sigma * sigma
+
+
+def kelly_ottimo(mu: float, sigma: float) -> float:
+    if sigma <= 0:
+        raise ValueError("sigma deve essere > 0")
+    return mu / sigma ** 2
+
+
+def kelly_frazionario(k: float) -> dict:
+    """Cosa si compra puntando una frazione k del Kelly pieno (0 < k <= 1).
+
+    - crescita: k (2 - k) di quella massima (meta' Kelly = 75% della crescita);
+    - varianza della crescita: k^2 (meta' Kelly = 25%);
+    - con Kelly pieno P(scendere mai alla frazione x del capitale) = x (meta' capitale: 50%); con la
+      frazione k diventa x^(2/k - 1) (meta' Kelly: 12,5%).
+    Il Kelly pieno e' ottimo solo con edge noto: con edge stimato l'errore e' asimmetrico (sovrastimare
+    costa piu' che sottostimare), ed e' per questo che il reviewer lo tratta come red flag.
+    """
+    if not 0 < k <= 1:
+        raise ValueError("serve 0 < k <= 1")
+    return {"k": k, "crescita_relativa": k * (2 - k), "varianza_relativa": k * k,
+            "prob_meta_capitale": 0.5 ** (2 / k - 1)}
+
+
+# ---- buchi 13 + 39: Monte Carlo con incertezza sui parametri, soglie come probabilita' ---------
+
+def rischio_percorsi(r, n_trade: int, n_sim: int = 5000, blocco: int = 1,
+                     incertezza_parametri: bool = True, seed: int | None = 42) -> dict:
+    """Distribuzione di max drawdown e serie negativa piu' lunga su `n_trade` operazioni future.
+
+    `r`: R per operazione del campione (backtest o forward). Buco 13: il Monte Carlo classico rimescola
+    gli **stessi** trade, come se l'E[R] stimato fosse quello vero. Con `incertezza_parametri=True`
+    ogni simulazione **prima ricampiona il campione** (un E[R] plausibile diverso), poi genera il
+    percorso da quello: le code si allargano quanto l'incertezza sulla stima. `blocco` > 1 ricampiona a
+    blocchi contigui quando `runs_test` dice che gli esiti sono raggruppati.
+    """
+    x = np.asarray(r, dtype=float)
+    x = x[np.isfinite(x)]
+    n = x.size
+    if n < 5 or n_trade < 1 or blocco < 1:
+        raise ValueError("campione troppo piccolo o parametri non validi")
+    rng = np.random.default_rng(seed)
+    dd = np.empty(n_sim)
+    serie = np.empty(n_sim, dtype=int)
+    for s in range(n_sim):
+        base = x[rng.integers(0, n, n)] if incertezza_parametri else x
+        n_bl = int(math.ceil(n_trade / blocco))
+        inizi = rng.integers(0, max(1, n - blocco + 1), n_bl)
+        percorso = np.concatenate([base[i:i + blocco] for i in inizi])[:n_trade]
+        eq = np.concatenate([[0.0], np.cumsum(percorso)])
+        dd[s] = float((np.maximum.accumulate(eq) - eq).max())
+        c = m = 0
+        for v in percorso:
+            c = c + 1 if v < 0 else 0
+            m = max(m, c)
+        serie[s] = m
+    return {"max_drawdown": dd, "serie_negativa": serie, "n_trade": n_trade, "n_sim": n_sim,
+            "incertezza_parametri": incertezza_parametri, "blocco": blocco}
+
+
+def probabilita_violazione(valori, soglia: float, conf: float = 0.95) -> dict:
+    """Buco 39: una soglia di ritiro espressa come **probabilita'** che venga superata, con il suo errore.
+
+    Ricetta della variabile indicatrice (blocco F, F1): si registra 1 se il percorso supera la soglia,
+    0 altrimenti, e si fa la media. Da' "questo DD di ritiro ha il 5,2% +/- 0,3% di probabilita' di
+    scattare per caso" invece di "e' il 95esimo percentile".
+    """
+    v = np.asarray(valori, dtype=float)
+    k = int((v >= soglia).sum())
+    ic = stats.binomtest(k, v.size).proportion_ci(confidence_level=conf, method="exact")
+    p = k / v.size
+    return {"soglia": soglia, "prob": p, "se": math.sqrt(p * (1 - p) / v.size),
+            "low": float(ic.low), "high": float(ic.high), "n": int(v.size)}
+
+
+# ---- buco 45: confronto fra alternative sul decile peggiore -----------------------------------
+
+def confronto_decile_peggiore(esiti_a, esiti_b, q: float = 0.10) -> dict:
+    """Confronta due alternative sulla media **e** sulla coda: la media del q peggiore dei percorsi.
+
+    `esiti_a`, `esiti_b`: un esito per percorso simulato (es. rendimento finale o CAGR). Il blocco G
+    (G6) mostra un caso in cui il segno del confronto **cambia** passando dalla media al 10% peggiore:
+    chi decide su un capitale che non puo' ricominciare deve guardare anche la coda.
+    """
+    a = np.sort(np.asarray(esiti_a, dtype=float))
+    b = np.sort(np.asarray(esiti_b, dtype=float))
+    ka, kb = max(1, int(q * a.size)), max(1, int(q * b.size))
+    media = float(a.mean() - b.mean())
+    coda = float(a[:ka].mean() - b[:kb].mean())
+    return {"q": q, "media_a": float(a.mean()), "media_b": float(b.mean()),
+            "coda_a": float(a[:ka].mean()), "coda_b": float(b[:kb].mean()),
+            "diff_media": media, "diff_coda": coda,
+            "segno_cambia": bool(np.sign(media) != np.sign(coda) and media != 0 and coda != 0)}

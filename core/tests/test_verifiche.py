@@ -165,3 +165,69 @@ def test_correlazione_dichiarata_mostra_le_punte():
     r = v.correlazione_dichiarata(x, y, "D", 60)
     assert abs(r["intero_campione"]) < 0.15 and r["mobile_max"] > 0.7
     assert r["frequenza"] == "D" and r["finestra"] == 60
+
+
+# =================================================================================================
+# Priorita' 2
+# =================================================================================================
+
+# ---- buco 15 ------------------------------------------------------------------------------------
+
+def test_challenge_senza_edge_passa_nel_56_per_cento():
+    # blocco C, C2: +8% / -10% con edge zero -> 10/18
+    assert v.prob_obiettivo_prima_del_limite(0.0, 1.0, 8, 10) == pytest.approx(10 / 18)
+
+
+def test_continuo_e_discreto_concordano():
+    # passi di 1% con p = 0,52: deriva 0,04 e varianza ~1 per passo
+    p = 0.52
+    disc = v.rovina_del_giocatore(p, 8, 10)
+    cont = v.prob_obiettivo_prima_del_limite(2 * p - 1, math.sqrt(1 - (2 * p - 1) ** 2), 8, 10)
+    assert cont == pytest.approx(disc, abs=0.02)
+    assert disc > 10 / 18
+
+
+def test_rovina_simmetrica():
+    assert v.rovina_del_giocatore(0.5, 3, 7) == pytest.approx(0.7)
+
+
+# ---- buco 16 ------------------------------------------------------------------------------------
+
+def test_kelly_parabola_e_frazione():
+    mu, sigma = 0.1, 0.5
+    fstar = v.kelly_ottimo(mu, sigma)
+    assert fstar == pytest.approx(0.4)
+    gmax = v.kelly_crescita(fstar, mu, sigma)
+    assert v.kelly_crescita(0.5 * fstar, mu, sigma) / gmax == pytest.approx(0.75)
+    assert v.kelly_crescita(2 * fstar, mu, sigma) == pytest.approx(0.0, abs=1e-12)  # oltre 2f* si perde
+    k = v.kelly_frazionario(0.5)
+    assert k["crescita_relativa"] == 0.75 and k["varianza_relativa"] == 0.25
+    assert v.kelly_frazionario(1.0)["prob_meta_capitale"] == pytest.approx(0.5)
+    assert k["prob_meta_capitale"] == pytest.approx(0.125)
+
+
+# ---- buchi 13 + 39 -------------------------------------------------------------------------------
+
+def test_incertezza_sui_parametri_allarga_la_coda():
+    r = np.random.default_rng(9).normal(0.1, 1.0, 150)
+    senza = v.rischio_percorsi(r, 200, n_sim=3000, incertezza_parametri=False, seed=1)
+    con = v.rischio_percorsi(r, 200, n_sim=3000, incertezza_parametri=True, seed=1)
+    assert np.percentile(con["max_drawdown"], 95) > np.percentile(senza["max_drawdown"], 95)
+
+
+def test_probabilita_violazione_del_95esimo_percentile_vale_5_per_cento():
+    r = np.random.default_rng(4).normal(0.1, 1.0, 300)
+    sim = v.rischio_percorsi(r, 200, n_sim=4000, seed=2)
+    soglia = float(np.percentile(sim["max_drawdown"], 95))
+    pv = v.probabilita_violazione(sim["max_drawdown"], soglia)
+    assert pv["prob"] == pytest.approx(0.05, abs=0.005) and pv["low"] < 0.05 < pv["high"] + 0.005
+
+
+# ---- buco 45 ------------------------------------------------------------------------------------
+
+def test_confronto_decile_peggiore_cambia_segno():
+    rng = np.random.default_rng(6)
+    a = rng.normal(0.12, 0.40, 5000)     # media piu' alta, coda piu' brutta
+    b = rng.normal(0.08, 0.10, 5000)
+    r = v.confronto_decile_peggiore(a, b)
+    assert r["diff_media"] > 0 and r["diff_coda"] < 0 and r["segno_cambia"]

@@ -115,6 +115,32 @@ def test_rr_insufficiente_blocca():
 # ---------------------------------------------------------------------------
 
 
+def test_rischio_per_trade_blocca_anche_col_nozionale_in_regola():
+    # buco 14: nozionale ammesso (10.000 x 1,085 = 108,5% < 200%) ma stop a 3 centesimi:
+    # capitale a rischio 10.000 x 0,03 = 300$ = 3% dell'equity > 1%
+    risk = {**RISK, "max_size_per_trade_pct": 2.0, "max_total_exposure_pct": 3.0,
+            "max_risk_per_trade_pct": 0.01}
+    s = Signal(direction="long", size=10_000, sl=1.0550, tp=1.1500)
+    ok, reason = validate_signal(s, "EURUSD", 1.0850, _state(), risk)
+    assert not ok and "max_risk_per_trade_pct" in reason
+
+
+def test_rischio_per_trade_sotto_il_limite_passa():
+    risk = {**RISK, "max_size_per_trade_pct": 2.0, "max_total_exposure_pct": 3.0,
+            "max_risk_per_trade_pct": 0.01}
+    s = Signal(direction="long", size=10_000, sl=1.0800, tp=1.0950)   # 50$ = 0,5%
+    ok, reason = validate_signal(s, "EURUSD", 1.0850, _state(), risk)
+    assert ok, reason
+
+
+def test_rischio_per_trade_chiave_assente_nessun_limite():
+    # compatibilita': senza la chiave il comportamento e' quello di prima
+    risk = {**RISK, "max_size_per_trade_pct": 2.0, "max_total_exposure_pct": 3.0}
+    s = Signal(direction="long", size=10_000, sl=1.0550, tp=1.1500)
+    ok, reason = validate_signal(s, "EURUSD", 1.0850, _state(), risk)
+    assert ok, reason
+
+
 def test_size_eccessiva_blocca():
     # equity=10k, size=300 unità * 1.085 = 325$ notional → 3.25% > 2%
     s = Signal(direction="long", size=300, sl=1.0800, tp=1.0950)

@@ -10,8 +10,10 @@
 > [`core/verifiche.py`](../../../../../core/verifiche.py) (buchi 2, 5, 22, 27, 28, 29, 37, 46) con 21 test in
 > `core/tests/test_verifiche.py`; campi dell'errore del p in `mc_permutation_test` e `whites_reality_check` (37);
 > regole in `STRATEGY_LIFECYCLE` §8bis (5, 22, 27, 28, 29, **41**), `QUANT_REVIEW_PROTOCOL` Step 4 (2, 29, 37, 46),
-> `04_quant_metodologia` §1 (**20**), G2 del gatekeeper; buco 46 annotato nei 4 documenti indicati. **Prossimo:
-> priorita' 2.**
+> `04_quant_metodologia` §1 (**20**), G2 del gatekeeper; buco 46 annotato nei 4 documenti indicati.
+> **Priorita' 2 IMPLEMENTATA il 2026-09-30**: buco 14 in `core/risk_gate.py` + `config/risk.yaml`
+> (`max_risk_per_trade_pct`, 3 test); 13, 15, 16, 39, 45 in `core/verifiche.py` (7 test); regole in LIFECYCLE §8bis
+> (13, 39), `PROP_FIRM_CRITERIA` §1.9 (15), `05` (16), REVIEW Step 4 (45). **Prossimo: priorita' 3.**
 
 ## Che cosa è questo file
 

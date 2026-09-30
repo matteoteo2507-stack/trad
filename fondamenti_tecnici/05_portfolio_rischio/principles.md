@@ -56,6 +56,24 @@ Conseguenze, in ordine di importanza operativa:
 
 **Tradotto per il trading a R-multiple** (es. il Level Analyzer): la R per-trade è già normalizzata al rischio, quindi il drag **non si vede nella singola R** — vive nella **varianza della equity curve**, governata da (a) la frazione di capitale rischiata per trade e (b) la **correlazione/clustering tra trade**. Trade simultanei o nello stesso regime/sessione **non sono indipendenti**: la loro varianza combinata è più alta di $n$ trade iid → più drag → la frazione corretta per-trade è **più piccola** del Kelly calcolato come se fossero indipendenti.
 
+### Kelly frazionario: le ragioni quantitative (buco Quant Guild 16, 2026-09-30)
+
+Il repo diceva "Kelly frazionario" e "Kelly pieno = red flag" senza i numeri. Sono in
+[`core/verifiche.py`](../../core/verifiche.py) (`kelly_crescita`, `kelly_ottimo`, `kelly_frazionario`):
+
+- **La parabola** $g(f)=f\mu-\tfrac12 f^2\sigma^2$: massimo in $f^*=\mu/\sigma^2$, crescita **zero** a $2f^*$ e
+  negativa oltre, **anche con edge positivo**. E' la stessa formula del volatility drag qui sopra: esporsi di
+  piu' oltre $f^*$ riduce la crescita.
+- **Frazione $k$ del Kelly**: crescita $k(2-k)$ di quella massima, varianza $k^2$. **Meta' Kelly = 75% della
+  crescita con il 25% della varianza.**
+- **Rovina pratica**: col Kelly pieno $P(\text{scendere mai a } x \text{ del capitale}) = x$ — il 50% di
+  probabilita' di dimezzare. Con meta' Kelly $x^{3}$: 12,5%.
+- **L'errore di stima e' asimmetrico**: sovrastimare l'edge sposta oltre $f^*$, dove la crescita crolla;
+  sottostimarlo costa poco. Con un edge **stimato** (sempre, per noi) il Kelly pieno e' una scommessa sulla
+  propria stima. Da qui la red flag.
+- Il capitale a rischio per trade che si confronta con $f^*$ e' quello del risk gate
+  (`max_risk_per_trade_pct`, buco 14), non il nozionale.
+
 ### Orthogonal return streams: oltre la diversificazione
 
 Estende l'idea di alpha-come-rendimento-ortogonale e di fattori PCA ortogonali. Metafora del **"gioco contro i giocatori"**: giudicare una strategia dagli esiti passati dei singoli trade/titoli (i "giocatori") è fragile e prono all'overfitting; ciò che conta è il **meccanismo che genera il rendimento** (il "gioco"). Due strategie possono essere "giocatori" diversi dello **stesso gioco** (stesso driver di rischio) → la loro combinazione è diversificazione **illusoria**.

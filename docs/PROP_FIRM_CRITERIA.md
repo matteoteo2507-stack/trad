@@ -127,6 +127,15 @@ ceca. **CONSOB** aveva già avvertito nel luglio 2024 sulle challenge retail.
 
 ---
 
+### 1.9 La challenge si puo' superare per caso: il numero di riferimento (buco Quant Guild 15, 2026-09-30)
+
+Prima di leggere "l'ho passata" come prova di abilita', si calcola quanto spesso la **stessa challenge**
+si supera **senza edge**, con `core.verifiche.prob_obiettivo_prima_del_limite(mu, sigma, obiettivo,
+limite)` (o `rovina_del_giocatore` per passi discreti). Con edge zero, una challenge **+8% / −10%** si
+supera nel 10/18 = **~56%** dei casi. Un superamento vale come evidenza solo se la probabilita' con
+l'edge dichiarato e' **molto** piu' alta di quella a edge zero, e ogni regola aggiuntiva (drawdown
+giornaliero, consistency) va simulata sopra, non ignorata.
+
 ## 2. Criteri di RANKING (a parità di eliminatori)
 
 In ordine di peso. Nota che il **profit split è ultimo**: l'80% o il 90% di zero è zero.

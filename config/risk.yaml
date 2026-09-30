@@ -10,6 +10,14 @@ max_daily_drawdown_pct: 0.05  # 5%
 # Size massima per singolo trade (% del capitale corrente).
 max_size_per_trade_pct: 0.02  # 2%
 
+# Capitale a RISCHIO massimo per singolo trade: size x distanza dello stop / capitale corrente
+# (buco Quant Guild 14, 2026-09-30). E' il numero su cui si dimensiona e si confronta con una
+# frazione di Kelly; `max_size_per_trade_pct` sopra e' solo nozionale. 1% = stesso rischio per
+# segnale del copier (`risk_per_signal_pct: 0.01`).
+# ⚠️ Con il nozionale al 2%, un trade a rischio 1% con stop a 0,5% (nozionale 200%) viene bloccato
+# dal limite nozionale: finche' quel limite resta al 2%, e' lui a decidere.
+max_risk_per_trade_pct: 0.01  # 1%
+
 # Numero massimo di posizioni aperte simultaneamente.
 max_open_positions: 5
 

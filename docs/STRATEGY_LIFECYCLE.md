@@ -289,6 +289,8 @@ tradire il backtest. Da dichiarare nella stessa pre-registrazione, con le primit
 | **Degrado del win rate** (buco 5) | `SPRTBernoulli(p0, p1)` | test sequenziale con errori dichiarati (α falso allarme, β degrado non visto), aggiornato trade per trade. p0 dal backtest, p1 = degrado che si vuole vedere |
 | **Degrado del payoff** (buchi 5, 28) | `CUSUMInferiore(mu0, sigma0, k, h)` | sulla media di R, con le **innovazioni standardizzate** registrate: media ~0 e varianza ~1 se il modello regge |
 | **Taratura delle soglie** (buco 22) | `test_eccedenze` | ogni soglia "peggior x%" si verifica contando le eccedenze realizzate contro quelle attese. Un limite superato molto piu' spesso del dichiarato **sottostima il rischio** |
+| **DD e serie di ritiro con incertezza sui parametri** (buco 13, priorita' 2) | `rischio_percorsi(r, n_trade, incertezza_parametri=True, blocco=...)` | il Monte Carlo classico rimescola gli stessi trade come se l'E[R] stimato fosse quello vero; qui ogni percorso parte da un campione ricampionato, e le code si allargano quanto l'incertezza della stima |
+| **Soglie come probabilita' di violazione** (buco 39, priorita' 2) | `probabilita_violazione(valori, soglia)` | si dichiara "questo DD di ritiro scatta per caso con probabilita' p ± se", non "e' il 95esimo percentile" |
 
 ⚠️ **I parametri di riferimento sono quelli FISSI della pre-registrazione, mai statistiche mobili
 ristimate in corsa**: una banda mobile si ricentra dopo una rottura e **assorbe il degrado**, e dopo

@@ -187,6 +187,20 @@ def validate_signal(
                 f"{signal_pct:.2%} > {max_size_pct:.2%}"
             )
 
+    # 7bis. Capitale a RISCHIO per trade: size x distanza dello stop / equity (buco Quant Guild 14,
+    # 2026-09-30). Il limite 7 e' nozionale e non dice quanto si perde se lo stop scatta: senza
+    # questo numero non si puo' dimensionare su una frazione di Kelly ne' verificarlo. Chiave assente
+    # = nessun limite (compatibilita' con le configurazioni esistenti).
+    max_risk_pct = risk_config.get("max_risk_per_trade_pct")
+    if max_risk_pct is not None and state.equity > 0:
+        at_risk = abs(signal.size * (entry_price - signal.sl))
+        risk_pct = at_risk / state.equity
+        if risk_pct > max_risk_pct:
+            return False, (
+                f"capitale a rischio eccede max_risk_per_trade_pct: "
+                f"{risk_pct:.2%} > {max_risk_pct:.2%}"
+            )
+
     # 8. Esposizione totale (somma posizioni esistenti + nuova)
     max_total = risk_config.get("max_total_exposure_pct", 1.0)
     if state.equity > 0:

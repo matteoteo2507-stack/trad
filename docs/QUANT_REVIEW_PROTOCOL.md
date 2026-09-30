@@ -226,6 +226,9 @@ Con le primitive di [`core/verifiche.py`](../core/verifiche.py):
   Senza, "non dimostrato" diventa "refutato" nel passaggio a DECISIONS (audit A5).
 - **Indipendenza degli esiti** (buco 29): `runs_test` sulla sequenza vinto/perso prima di qualunque CI
   i.i.d. o Monte Carlo che rimescola i trade.
+- **Due alternative si confrontano anche sulla coda** (buco 45, priorita' 2): `confronto_decile_peggiore`
+  riporta media **e** media del 10% peggiore dei percorsi, e segnala se il segno del confronto cambia
+  (Quant Guild, G6). Per un capitale che non puo' ricominciare, la coda decide quanto la media.
 - **Nessuna correlazione senza frequenza e finestra** (buco 46): `correlazione_dichiarata(x, y,
   frequenza, finestra)` riporta intero campione **e** minimo/mediana/massimo della mobile. Due attivi
   "scorrelati" su base annuale possono stare a 0,73 su 60 giorni, proprio nella finestra del drawdown.
