@@ -48,7 +48,7 @@ Risposta diretta alla domanda "ha senso monitorare tutti i mercati mondiali?": *
   coerente con [05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)).
 - Nessun paese è il migliore per >2 anni consecutivi → argomento PER avere *breadth*, ma
   ottenibile con **4-6 blocchi liquidi**, non con decine di mercati.
-- **Raccomandazione**: concentrarsi su pochi blocchi a bassa correlazione e alta liquidità
+- **Raccomandazione**: concentrarsi su pochi blocchi a bassa correlazione e alta liquidità ⚠️ *(Buco Quant Guild 46, 30/09: affermazione **qualitativa**, nessuna correlazione misurata qui; frequenza e finestra non dichiarate. Se diventa un criterio di scelta si misura con `core.verifiche.correlazione_dichiarata`.)*
   (es. **US, Developed ex-US/Europa, Giappone, Emerging/Cina**) via ETF indicizzati. Oltre
   ~6 blocchi: complessità, costi e carico-dati crescono senza diversificazione proporzionale.
   La leva che conta per l'asimmetria resta il **Layer 1 (timing esposizione)**, non l'ampiezza.

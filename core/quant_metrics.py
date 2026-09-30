@@ -395,10 +395,13 @@ def mc_permutation_test(
         sims = np.array(sims)
 
     p_value = float((sims >= sr_obs).mean())
+    # Buco 37 (Quant Guild): il p Monte Carlo ha un errore. `p_value` resta la quota grezza, com'era,
+    # per non cambiare verdetti gia' emessi; accanto il p corretto (b+1)/(B+1) e il suo intervallo.
     return {
         "sr_observed": sr_obs,
         "p_value": p_value,
         "sr_distribution": sims,
+        **_errore_pvalue(int((sims >= sr_obs).sum()), int(sims.size)),
     }
 
 
@@ -618,6 +621,7 @@ def whites_reality_check(
 
     p_value = float((boot_stats >= obs_stat).mean())
     return {
+        **_errore_pvalue(int((boot_stats >= obs_stat).sum()), int(n_boot)),  # buco 37
         "obs_stat": float(obs_stat),
         "p_value": p_value,
         "best_strategy_idx": best_idx,
@@ -730,6 +734,13 @@ def bca_bootstrap_ci(
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+def _errore_pvalue(superamenti: int, repliche: int) -> dict:
+    """Campi p_corretto / p_se / p_low / p_high da `core.verifiche.pvalue_mc` (buco 37)."""
+    from core.verifiche import pvalue_mc  # import locale: verifiche non dipende da quant_metrics
+    r = pvalue_mc(superamenti, repliche)
+    return {"p_corretto": r["p"], "p_se": r["se"], "p_low": r["low"], "p_high": r["high"]}
+
 
 def _norm_cdf(x: float) -> float:
     return 0.5 * (1.0 + erf(x / sqrt(2.0)))

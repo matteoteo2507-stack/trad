@@ -30,7 +30,7 @@ asset): qui lo rifacciamo **multi-asset sulle serie di rendimenti** (non sulle s
 ## Universo (16 asset, D1) — feed demo4 validato
 EURUSD GBPUSD USDJPY AUDUSD USDCAD NZDUSD USDCHF EURJPY.r GBPJPY.r EURGBP.r · XAUUSD XAGUSD ·
 BTCUSD ETHUSD · US500 US100. Dati: `analysis/trading-bot-eval/data/{PREFIX}_D1.csv`.
-**Limite dichiarato**: correlazioni alte (molte gambe USD, 2 indici USA, 2 metalli, 2 crypto);
+**Limite dichiarato**: correlazioni alte (molte gambe USD, 2 indici USA, 2 metalli, 2 crypto); ⚠️ *(Buco Quant Guild 46, 30/09: affermazione **qualitativa**, nessuna correlazione misurata qui; frequenza e finestra non dichiarate. Se diventa un criterio di scelta si misura con `core.verifiche.correlazione_dichiarata`.)*
 espansione a bond/commodities/indici regionali solo se il concetto mostra vita.
 
 ## Spec canonica (fissa)

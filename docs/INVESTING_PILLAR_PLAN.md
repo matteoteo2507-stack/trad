@@ -178,6 +178,7 @@ accumulo. Perché:
 **Condizione per riaprire:** (a) pilastro passivo numericamente vivo **E** (b) ingresso in fase 2-3
 **E** (c) veicolo UCITS verificato → allora valuta lo sleeve come **frazione del difensivo**,
 misurandone il contributo reale a drawdown/correlazione. Fino ad allora: **chiuso, non in sospeso.**
+⚠️ *(Buco Quant Guild 46, 30/09: affermazione **qualitativa**, nessuna correlazione misurata qui; frequenza e finestra non dichiarate. Se diventa un criterio di scelta si misura con `core.verifiche.correlazione_dichiarata`.)*
 
 ## 4. Incognite da studiare PRIMA di costruire l'esecuzione
 

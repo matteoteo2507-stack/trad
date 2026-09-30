@@ -144,7 +144,7 @@ low liquidity markets have higher volatility, offering more directional moves"* 
 **volatilità realizzata annualizzata** dell'asset, quantità **misurata**, non un giudizio nostro.
 
 - **Primario**: Spearman fra **volatilità media di gruppo** ed **E[R] medio di gruppo**, su **n = 8
-  gruppi**, con test di permutazione. **Supportato** se ρ > 0 con p < 0,05.
+  gruppi**, con test di permutazione. **Supportato** se ρ > 0 con p < 0,05. *(Buco 46, 30/09: e' una correlazione **di rango fra gruppi** — volatilita' contro E[R] — non fra serie di rendimenti: frequenza e finestra non si applicano.)*
 - **Secondario** (riportato, non decisivo): stessa correlazione sui singoli strumenti — soggetta a
   **pseudo-replicazione** (7 major FX si muovono insieme), quindi non usabile per il verdetto.
 

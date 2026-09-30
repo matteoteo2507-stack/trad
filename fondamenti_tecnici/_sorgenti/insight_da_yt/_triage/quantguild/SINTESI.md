@@ -5,8 +5,13 @@
 > **14 conflitti** per la mappa dei modelli. Questo file è l'**uscita finale**; [`PIANO.md`](PIANO.md) resta il diario
 > di lavoro con lo stato per blocco.
 >
-> ⚠️ **I buchi sono identificati, non approvati**: nessuno è stato implementato. La decisione su cosa fare si prende
-> con l'utente.
+> ⚠️ ~~I buchi sono identificati, non approvati~~ → **2026-09-30: l'utente approva i buchi di PRIORITA' 1, poi gli
+> altri in ordine** (DECISIONS 2026-09-30). **Priorita' 1 IMPLEMENTATA il 2026-09-30**: primitive in
+> [`core/verifiche.py`](../../../../../core/verifiche.py) (buchi 2, 5, 22, 27, 28, 29, 37, 46) con 21 test in
+> `core/tests/test_verifiche.py`; campi dell'errore del p in `mc_permutation_test` e `whites_reality_check` (37);
+> regole in `STRATEGY_LIFECYCLE` §8bis (5, 22, 27, 28, 29, **41**), `QUANT_REVIEW_PROTOCOL` Step 4 (2, 29, 37, 46),
+> `04_quant_metodologia` §1 (**20**), G2 del gatekeeper; buco 46 annotato nei 4 documenti indicati. **Prossimo:
+> priorita' 2.**
 
 ## Che cosa è questo file
 

@@ -275,6 +275,25 @@ Da dichiarare **nella pre-registrazione, prima del capitale**, insieme alle sogl
 - Il ritiro per **razionale falsificato** o **difetto metodologico** (kill duri §6a n. 1 e n. 6)
   è **immediato e non passa dall'incubazione**: lì non c'è niente da incubare.
 
+### Sorveglianza in codice (buchi Quant Guild 5, 22, 27, 28, 29, 41 — dal 2026-09-30)
+
+Le soglie qui sopra erano **percentili**: dicono dove fermarsi, non **quando** il forward ha iniziato a
+tradire il backtest. Da dichiarare nella stessa pre-registrazione, con le primitive di
+[`core/verifiche.py`](../core/verifiche.py):
+
+| Cosa | Primitiva | Regola |
+|---|---|---|
+| **Finestra di misura del conto live** (buco 41) | — | data d'inizio, attività incluse e numero di trade della valutazione si scrivono **prima** di guardare. Lo stesso conto da' Sharpe **0,88 o 6,28** cambiando solo la data d'inizio (Quant Guild, G3). I trade gia' visti prima della dichiarazione **non entrano** |
+| **Indipendenza degli esiti** (buco 29) | `runs_test` | prima di fissare serie negative e DD da un Monte Carlo che rimescola i trade. Se `z < 0` (esiti raggruppati) le soglie i.i.d. sono **ottimiste**: si usa il ricampionamento a blocchi (precedente: copier C3, z = −3,37) |
+| **Serie negativa attesa** (buco 27) | `attesa_trade_prima_di_k_perdite`, `prob_serie_perdite` | il riferimento analitico accanto al percentile simulato. Con win rate 50%, 5 perdite di fila arrivano in media entro **62** operazioni: non sono un segnale |
+| **Degrado del win rate** (buco 5) | `SPRTBernoulli(p0, p1)` | test sequenziale con errori dichiarati (α falso allarme, β degrado non visto), aggiornato trade per trade. p0 dal backtest, p1 = degrado che si vuole vedere |
+| **Degrado del payoff** (buchi 5, 28) | `CUSUMInferiore(mu0, sigma0, k, h)` | sulla media di R, con le **innovazioni standardizzate** registrate: media ~0 e varianza ~1 se il modello regge |
+| **Taratura delle soglie** (buco 22) | `test_eccedenze` | ogni soglia "peggior x%" si verifica contando le eccedenze realizzate contro quelle attese. Un limite superato molto piu' spesso del dichiarato **sottostima il rischio** |
+
+⚠️ **I parametri di riferimento sono quelli FISSI della pre-registrazione, mai statistiche mobili
+ristimate in corsa**: una banda mobile si ricentra dopo una rottura e **assorbe il degrado**, e dopo
+qualche settimana il livello peggiore diventa "atteso" (Quant Guild, C4).
+
 **Cosa NON si fa.** Non si ritara la strategia durante l'incubazione — sarebbe rifinitura su dati
 che includono il periodo negativo, cioè il p-hacking del §4 con il capitale già in gioco. Se serve
 una modifica, è una **nuova specifica** e riparte dal gate [G1].

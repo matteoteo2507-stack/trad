@@ -1,10 +1,10 @@
 ---
 tipo: preregistrazione
 stato: IN AVVIO
-aggiornato: 2026-09-28
+aggiornato: 2026-09-30
 decisione: "DECISIONS 2026-09-18 (4) — correzione dell'ora applicata due volte"
 metrica_corrente: "E[R] segnale a TP1 +0,1265 [+0,0756; +0,1736], 629 trade; gate asimmetrico 20 pip: +0,159 [+0,076; +0,239]"
-nota: "In demo sul PC del socio dal 21/09 (probabile versione vecchia del copier, da verificare): vedi DECISIONS 2026-09-28. Il +0,194 nel corpo è superato."
+nota: "In demo sul PC del socio dal 21/09, con un setup diverso dal §2 e senza il gate C5 attivo (il flusso NOW lo spegne): 22 segnali descrittivi in reviews/analysis_team_live_2026-09-30.md. Conteggio N=60 da decidere (§8). Il +0,194 nel corpo è superato."
 ---
 # Pre-registrazione — Test di ESECUZIONE del copier (segnali mentore XAUUSD)
 
@@ -121,3 +121,4 @@ confuse quando si leggerà quel controfattuale.
 | Data | Modifica | Motivo |
 |---|---|---|
 | 2026-08-14 | Creazione, prima dell'avvio in `live` | Conto demo hedging ricreato e verificato; copier pronto |
+| 2026-09-30 | **Nessuna modifica alle soglie.** Primi esiti live (conto demo del socio 5056226036, 22 segnali 21-29/09) in [reviews/analysis_team_live_2026-09-30.md](reviews/analysis_team_live_2026-09-30.md): conto, magic, rischio e gate **diversi dal §2**; il gate a 20 pip non agisce sul flusso "NOW" (`build_market_plan` lo spegne). Se questi segnali contino per N = 60 e da quando far partire il conteggio: **decisione di Matteo, aperta** | Dati arrivati dal socio; il setup congelato non e' quello in esecuzione |

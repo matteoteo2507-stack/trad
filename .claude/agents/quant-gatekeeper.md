@@ -128,6 +128,15 @@ commento in cima al file.
   minimo sotto cui il DSR non puo' essere significativo. Se il **migliore**
   risultato osservato e' sotto quella soglia, iterare e' matematicamente
   inutile -> kill immediato, e lo dici.
+- **Verifiche di metodo in codice** (`core/verifiche.py`, buchi Quant Guild di priorita' 1, dal
+  2026-09-30) — BLOCCA se manca:
+  - ogni p-value Monte Carlo riportato **con** `p_low`/`p_high`; se la soglia sta dentro
+    l'intervallo il verdetto non si legge dal decimale (1.000 repliche: 0,048 e 0,062 sono uguali);
+  - ogni verdetto negativo con **`mde(sd, n)`** su n **indipendenti** accanto;
+  - `runs_test` sulla sequenza vinto/perso prima di un CI i.i.d. o di un MC che rimescola i trade;
+  - ogni correlazione con **frequenza e finestra** (`correlazione_dichiarata`);
+  - per un forward o un conto live: **finestra di misura dichiarata prima**, e monitor
+    (`SPRTBernoulli`, `CUSUMInferiore`) con parametri **fissi** del backtest, mai mobili.
 
 ---
 

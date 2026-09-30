@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-09-19",
+  "aggiornato": "2026-09-30",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -160,7 +160,7 @@
         "DECISIONS.md 2026-08-14 (2)",
         "docs/BACKLOG_RICERCA.md A1"
       ],
-      "note": "Fonte: Pavel Kichev. Consuma la SECONDA pre-registrazione esterna del trimestre. Round 2 di 3 gia' speso: ne resta uno. NESSUN holdout sigillato per Q2 - dichiarato nella pre-registrazione stessa, non scoperto dopo. Riserva aggiunta il 2026-09-19 (E1): holding mediano 7 giorni sul reale contro 2 sul random.",
+      "note": "Fonte: Pavel Kichev. Consuma la SECONDA pre-registrazione esterna del trimestre. Round 2 di 3 gia' speso: ne resta uno. NESSUN holdout sigillato per Q2 - dichiarato nella pre-registrazione stessa, non scoperto dopo. Riserva aggiunta il 2026-09-19 (E1): holding mediano 7 giorni sul reale contro 2 sul random. 2026-09-30: il round 3 e' ASSEGNATO a B2 (breakout Kichev) per decisione dell'utente (DECISIONS 2026-09-30), non ancora speso; A1 punto 3 vi rinuncia. Se B2 fallisce la famiglia chiude per budget, con A1 e D4.",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-08-14",
       "nota_provenienza": "Pavel Kichev, registrato in fondamenti_tecnici/_INTAKE.md."

@@ -11,6 +11,32 @@
 
 ---
 
+## 2026-09-30 — Bucket B deciso: **round 3 del trend a B2**, **B5 nel bucket D**, **B6 chiusa**; buchi Quant Guild di **priorita' 1 approvati**
+
+**Contesto.** L'utente (29/09) non vuole parcheggiare le voci B: si spendono gli ultimi trial disponibili
+per poterle riaprire o chiudere ufficialmente. Il quant-gatekeeper (parere di contabilita' del 29/09, 0
+trial) ha stabilito quali trial esistono davvero: B2 = 1, B5 = 0, B6 = 0 sull'universo gia' testato
+(dettaglio nel [backlog](docs/BACKLOG_RICERCA.md), sezione B).
+
+**Decisioni dell'utente (30/09):**
+1. **Il round 3 di `trend_momentum` va a B2** (breakout Kichev). A1 punto 3 rinuncia a quel round.
+   Conseguenza accettata: se B2 fallisce la famiglia chiude per budget, e con lei **A1 (LEAD → CLOSED)** e
+   **D4**; A1 resterebbe riapribile solo via §7 (feed nuovo, riga G9). Prima del round: **passo di potenza
+   a 0 trial**, poi pre-registrazione (slot esterno del Q4) e G1.
+2. **B5 (low volume node) → bucket D** come *"non falsificabile coi nostri dati"*, **non** falsificata.
+   Condizioni di riapertura confermate: volume vero intraday da borsa (fonte dati nuova, §7) o risultato
+   pubblicato con campione. Oggi bloccata.
+3. **B6 (trend line inclinate) CHIUSA**, 0 trial spesi. La via §7 sulla classe commodities non si prende.
+   Si riapre solo con evidenza esterna nuova ai sensi del §7.
+4. **Quant Guild: si implementano i buchi di priorita' 1**, poi gli altri in ordine di priorita'
+   ([SINTESI](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/quantguild/SINTESI.md) §8). Cambia la
+   decisione del 17/09 ("nessuno approvato").
+
+**Non cambia:** nessuna approvazione di pre-registrazione nel Q3 (nessuna bozza pronta): il terzo slot del
+Q3 decade inutilizzato.
+
+---
+
 ## 2026-09-28 — **Forex Gump in quarantena**, live demo come raccolta dati, **BE silenzioso del copier corretto**
 
 **Stato trovato (dati del socio, 21-28/09).** Il socio fa girare **in demo**, da una settimana, due

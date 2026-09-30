@@ -29,6 +29,23 @@ Insidia chiave: il look-ahead non produce sempre un backtest "troppo perfetto". 
 
 **Rimedio**: ogni modello, parametro e dataset deve essere strettamente adattato alla **filtration** dei dati disponibili al momento della decisione — nessun dato futuro deve filtrare nel segnale. Nel repo il rischio è formalizzato dal **purging + embargo** della CPCV ([`cpcv_splits`](../../core/quant_metrics.py)) e dal caveat operativo sulla regime timeline (`data/regime_timeline_gbpusd.csv`): la label calcolata sul close del giorno stesso è look-ahead e va usata **solo con lag di 1 giorno** per strategie intraday.
 
+**Criterio generale: filtraggio contro lisciamento** (buco Quant Guild 20, dal 2026-09-30). Tre
+compiti diversi usano informazione diversa:
+
+| compito | informazione | domanda |
+|---|---|---|
+| **filtraggio** | passato + presente | qual e' lo stato **adesso**, senza rumore? |
+| **lisciamento** | passato + **futuro** | qual **era** lo stato in un istante passato? |
+| **previsione** | passato + presente | cosa ci si aspetta **dopo**? |
+
+In un backtest si puo' usare **solo il filtraggio**. Qualunque quantita' calcolata con una **finestra
+centrata**, o stimata su tutto lo storico e poi applicata all'indietro (un'etichetta di regime HMM
+decodificata sull'intero campione, una normalizzazione con media e deviazione globali, un parametro
+ottimizzato su tutto il periodo), e' **lisciamento travestito da filtraggio**: look-ahead. La regime
+timeline col label sullo stesso close e' il caso gia' visto; questo e' il criterio che lo generalizza.
+Domanda da fare a ogni indicatore: *all'istante t, questo numero si poteva calcolare con i soli dati
+fino a t?* Il filtro di Kalman e' la forma onesta di una stima adattiva (usa solo passato e presente).
+
 ### 2. Overfitting / data snooping / p-hacking
 
 **Definizione**: testare ripetutamente molte combinazioni di parametri o modelli sugli **stessi dati storici** e scegliere quella che appare migliore per puro rumore statistico, senza contenuto predittivo reale e senza out-of-sample.

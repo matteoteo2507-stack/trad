@@ -213,6 +213,23 @@ tails = tail_metrics(r)
 wrc = whites_reality_check(variants_returns, n_boot=1000, block_size=5)
 ```
 
+### Come si riportano i numeri (buchi Quant Guild 2, 29, 37, 46 — dal 2026-09-30)
+
+Con le primitive di [`core/verifiche.py`](../core/verifiche.py):
+
+- **Ogni p-value Monte Carlo si riporta con il suo intervallo** (buco 37): `mc_permutation_test` e
+  `whites_reality_check` restituiscono ora anche `p_corretto` = (b+1)/(B+1), `p_se`, `p_low`, `p_high`.
+  Con 1.000 repliche, "p = 0,048" e "p = 0,062" **non sono distinguibili**: un verdetto che cambia fra i
+  due non e' un verdetto. Se la soglia sta dentro l'intervallo, si aumentano le repliche
+  (`repliche_per_distinguere`), non si legge il decimale.
+- **Ogni verdetto negativo si scrive con l'MDE accanto** (buco 2): `mde(sd, n)` con n **indipendenti**.
+  Senza, "non dimostrato" diventa "refutato" nel passaggio a DECISIONS (audit A5).
+- **Indipendenza degli esiti** (buco 29): `runs_test` sulla sequenza vinto/perso prima di qualunque CI
+  i.i.d. o Monte Carlo che rimescola i trade.
+- **Nessuna correlazione senza frequenza e finestra** (buco 46): `correlazione_dichiarata(x, y,
+  frequenza, finestra)` riporta intero campione **e** minimo/mediana/massimo della mobile. Due attivi
+  "scorrelati" su base annuale possono stare a 0,73 su 60 giorni, proprio nella finestra del drawdown.
+
 ## Step 5 — Costi reali (10 min)
 
 Verifica che il trade log includa:

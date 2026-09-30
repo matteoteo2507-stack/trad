@@ -10,6 +10,20 @@
 
 - [PARTNER_AI_INTEGRATION_GUIDE.md](PARTNER_AI_INTEGRATION_GUIDE.md) — guida hand-off **per l'AI del socio**: valutazione del bot VELTRIX, Level Analyzer validato, warning di sicurezza (chiave Bybit esposta in git history), opzioni di integrazione. (Era in root; nessun link entrante → spostato.)
 
+## 📥 Dati e export portati dal socio (settembre 2026)
+
+- `dati socio1/` — export Telegram di **Forex Gump GOLD VIP** (09/2020 → 09/2026). Letto da
+  [`../analysis/forexgump/parse.py`](../analysis/forexgump/parse.py); pre-registrazione
+  [`FOREXGUMP_LATENCY_PREREGISTRATION.md`](../docs/FOREXGUMP_LATENCY_PREREGISTRATION.md).
+- `dati socio 2/` — export MT5 del conto demo **5056226036** su cui gira il **mentore XAU** (XAU/USD
+  ANALYSIS TEAM), 21-29/09/2026, con `export.py` del socio. ⚠️ Orari = server **UTC+3**. Analisi:
+  [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md).
+- `Canale 2 trovato da socio/` — export Telegram di **"Ben, Gold Trader"** (08/2023 → 30/09/2026),
+  fonte **nuova**, non collegata ai trade del conto demo. Da analizzare.
+
+⚠️ Qui **mentore XAU** e **Gump** sono fonti di segnali seguite dal socio: la distinzione sotto
+(socio ≠ mentori) resta valida per il materiale *suo* (VELTRIX, NXT).
+
 ---
 
 ## 🤖 VELTRIX — motore/analisi del bot del socio *(resta in `analysis/veltrix/` — intrecciato)*

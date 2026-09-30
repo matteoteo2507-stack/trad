@@ -210,6 +210,14 @@ praticabile cosi' com'e': si riporta e si ferma).
    28/09): 0,33-0,39 $ nel 2020-2024, **0,58 $ nel 2025 e 0,69 $ nel 2026** — con SL 2 $ vale
    0,17-0,35R a trade. Il verdetto si legge sullo spread Dukascopy; stress a ×1,5, meta' spread
    descrittiva. Lo spread reale del broker va misurato dai fill live, non scelto.
+   **Misurato il 29/09 (solo prezzi):** in punti base lo spread **scende** da 2,04 bps (2020) a 1,51
+   (2026); l'aumento in dollari viene tutto dal prezzo (~1.890 → ~4.520). Profilo orario piatto
+   (~1,7 bps) con picco **21-23 UTC** (~2,0; domenica alle 22 UTC 2,18), coerente con CME e Batten et
+   al. 2017 ([ricerca 29/09](reviews/ricerca_X_dati_oro_2026-09-29.md)). ⚠️ **Conseguenza strutturale**:
+   SL e TP del mentore sono fissi in dollari mentre il prezzo e' piu' che raddoppiato, quindi il costo
+   dello spread **in R cresce meccanicamente** nel tempo anche a liquidita' invariata. La divisione per
+   anno (§5) va letta tenendone conto: un peggioramento negli anni recenti puo' essere geometria, non
+   perdita d'abilita' del mentore.
 8. **Informazione fissata guardando i dati (non gli esiti)**: il fuso (calibrato sulle entrate),
    L = 10 s (da trade dentro il campione), il filtro dell'universo (dal log del copier), i 4 trade live.
 
@@ -226,4 +234,5 @@ praticabile cosi' com'e': si riporta e si ferma).
 |---|---|---|
 | 2026-09-28 | Bozza, prima di qualunque esito | Proposta del socio: studiare le entrate in ritardo sui dati storici invece di raccoglierli live |
 | 2026-09-28 | §3.1 eseguito (fuso = Europe/Rome), checklist dati, bias dello spread | Preparazione dei dati: solo entrate e prezzi, nessun esito |
+| 2026-09-29 | Nessuna modifica alle regole. I 4 trade live (gia' in §8.8) analizzati coi tick in [reviews/gump_live_rr_qualitativo_2026-09-29.md](reviews/gump_live_rr_qualitativo_2026-09-29.md): lo scarto c'e' gia' al messaggio (1,8-3,1 $), e da giugno 2026 lo SL e' 3 $ | Informazione vista da dichiarare, come richiede §8.8. Nessun segnale storico simulato |
 | 2026-09-28 | Riscritta dopo **G1 #1 = BLOCCA** (quant-gatekeeper): D1 come holdout = 100%, D2 corretta (budget 3, data d'approvazione), D3 nuova; sezione trial; tabella dei verdetti esaustiva, "FALSIFICATO" → "NON DIMOSTRATO"; SKIP per spread ≥ SL, BID/ASK per lato, timeout a tempo, tick con fallback; bracket puro motivato dal live; diagnostica Step 3bis corretta; drift non rimosso + divisione per lato + stesso lato a istante casuale; CI a cluster per giorno definito; stress sullo spread e swap; descrittive LIMIT, SKIP, spiegazione noiosa, finestra post-cutoff; MDE da ricalcolare sulla differenza | Nessuna modifica guarda un esito: sono tutte convenzioni che la bozza lasciava implicite |

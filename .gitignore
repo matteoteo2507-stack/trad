@@ -110,6 +110,7 @@ analysis/trend/trades_*.csv
 docs/VPS_COPIER_SETUP.md
 
 # Export dalla webapp VELTRIX del socio (conti, ticket): dati, non codice
-28-09/
-materiale_socio/dati*/
+/28-09/
+# Export Telegram/MT5 portati dal socio (chat, conti): dati, non codice. Tracciati solo i .md alla radice.
+/materiale_socio/*/
 analysis/forexgump/signals.csv
