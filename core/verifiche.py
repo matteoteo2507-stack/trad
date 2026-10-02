@@ -437,3 +437,102 @@ def confronto_decile_peggiore(esiti_a, esiti_b, q: float = 0.10) -> dict:
             "coda_a": float(a[:ka].mean()), "coda_b": float(b[:kb].mean()),
             "diff_media": media, "diff_coda": coda,
             "segno_cambia": bool(np.sign(media) != np.sign(coda) and media != 0 and coda != 0)}
+
+
+# =================================================================================================
+# PRIORITA' 3 (2026-10-02): disciplina di metodo gia' quasi nostra, resa eseguibile
+# =================================================================================================
+
+# ---- buchi 24 + 25: matrici di transizione con incertezza, transizioni impossibili ------------
+
+def matrice_transizione(stati, n_stati: int | None = None) -> dict:
+    """Matrice di transizione stimata DA UNA SEQUENZA di stati, con l'errore standard di ogni cella.
+
+    Buco 25: una probabilita' stimata da 6 passaggi non vale quanto una da 600; ogni cella porta
+    se = sqrt(p (1 - p) / n_riga). Buco 24: una cella a **zero osservato** non e' "impossibile": e'
+    "mai vista su n_riga passaggi" (limite superiore ~3 / n_riga, regola del tre). Il campo
+    `zero_osservati` le elenca perche' nessun simulatore le tratti come vietate senza dirlo.
+    ⚠️ Stati di strumenti diversi non sono indipendenti: sommare i conteggi di piu' strumenti gonfia n.
+    """
+    s = np.asarray(stati, dtype=int)
+    k = int(n_stati if n_stati is not None else s.max() + 1)
+    c = np.zeros((k, k))
+    np.add.at(c, (s[:-1], s[1:]), 1)
+    n_riga = c.sum(axis=1, keepdims=True)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        p = np.where(n_riga > 0, c / n_riga, np.nan)
+        se = np.sqrt(p * (1 - p) / n_riga)
+    zero = [(i, j, int(n_riga[i, 0])) for i in range(k) for j in range(k)
+            if n_riga[i, 0] > 0 and c[i, j] == 0]
+    return {"conteggi": c, "p": p, "se": se, "n_riga": n_riga.ravel(),
+            "zero_osservati": zero, "limite_superiore_zero": {(i, j): 3 / n for i, j, n in zero}}
+
+
+def transizioni_vietate(stati, ammesse: set) -> list:
+    """Buco 24: elenca le transizioni (da, a) di una sequenza simulata che le regole dichiarano impossibili.
+
+    `ammesse`: insieme di coppie consentite. Un simulatore che produce una transizione vietata ha un bug
+    (es. una posizione chiusa che torna aperta senza un ingresso, un regime saltato).
+    """
+    s = list(stati)
+    return [(i, a, b) for i, (a, b) in enumerate(zip(s[:-1], s[1:])) if (a, b) not in ammesse]
+
+
+# ---- buco 33: perturbazione degli input con soglia dichiarata ----------------------------------
+
+def test_perturbazione(funzione, parametri: dict, frazione: float = 0.10, soglia: float = 0.50) -> dict:
+    """Muove ogni parametro numerico di +/- `frazione` e misura quanto si sposta l'uscita.
+
+    `funzione(**parametri) -> float`. Instabile se uno spostamento relativo dell'uscita supera `soglia`
+    (dichiarata PRIMA). Un risultato che vive solo nell'intorno esatto dei parametri scelti e' un
+    risultato sul punto, non sulla regola (buco 33, blocco E, E4).
+    """
+    base = float(funzione(**parametri))
+    righe = {}
+    for nome, val in parametri.items():
+        if not isinstance(val, (int, float)) or isinstance(val, bool) or val == 0:
+            continue
+        uscite = []
+        for seg in (-1, 1):
+            mod = dict(parametri)
+            nuovo = val * (1 + seg * frazione)
+            mod[nome] = type(val)(round(nuovo)) if isinstance(val, int) else nuovo
+            uscite.append(float(funzione(**mod)))
+        rel = max(abs(u - base) for u in uscite) / abs(base) if base != 0 else float("inf")
+        righe[nome] = {"uscite": uscite, "spostamento_relativo": rel}
+    peggiore = max((r["spostamento_relativo"] for r in righe.values()), default=0.0)
+    return {"base": base, "frazione": frazione, "soglia": soglia, "parametri": righe,
+            "spostamento_massimo": peggiore, "stabile": peggiore <= soglia}
+
+
+# ---- buco 38: ripetizione su piu' semi ---------------------------------------------------------
+
+def ripeti_su_semi(funzione, semi=range(10)) -> dict:
+    """Ripete `funzione(seme) -> float` su piu' semi: il seme si dichiara prima, la robustezza si misura dopo.
+
+    Tutto il repo usa seme fisso 42 (giusto, per la riproducibilita'), ma nessun baseline casuale e'
+    mai stato ripetuto: non sappiamo quanta parte di un divario "reale contro random" sia il flusso
+    pseudo-casuale numero 42 (buco 38). Si riporta accanto al risultato del seme dichiarato.
+    """
+    v = np.array([float(funzione(s)) for s in semi])
+    return {"valori": v, "media": float(v.mean()), "sd": float(v.std(ddof=1)) if v.size > 1 else 0.0,
+            "min": float(v.min()), "max": float(v.max()), "n_semi": int(v.size)}
+
+
+# ---- buco 48: ortogonalita' dentro le finestre di stress ---------------------------------------
+
+def correlazione_in_drawdown(x: pd.Series, y: pd.Series, soglia_dd: float = 0.10) -> dict:
+    """Correlazione di due gambe sull'intero campione e **solo nei periodi in cui il combinato e' in drawdown**.
+
+    "Le correlazioni saltano in crisi" e' scritto in `05`; questa funzione lo misura. `x`, `y`:
+    rendimenti semplici allineati; `soglia_dd`: drawdown del portafoglio 50/50 oltre cui il periodo
+    conta come stress. Due gambe "ortogonali" che in drawdown vanno a 0,7 non proteggono quando serve.
+    """
+    df = pd.concat([x.rename("x"), y.rename("y")], axis=1).dropna()
+    comb = (1 + df.mean(axis=1)).cumprod()
+    dd = 1 - comb / comb.cummax()
+    stress = dd >= soglia_dd
+    out = {"soglia_dd": soglia_dd, "periodi": int(len(df)), "periodi_stress": int(stress.sum()),
+           "intero_campione": float(df["x"].corr(df["y"]))}
+    out["in_drawdown"] = float(df.loc[stress, "x"].corr(df.loc[stress, "y"])) if stress.sum() > 10 else float("nan")
+    return out

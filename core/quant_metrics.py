@@ -533,6 +533,9 @@ def benchmark_metrics(
       - r_squared: quota di varianza spiegata dal benchmark (corr²).
 
     `returns` e `benchmark` devono avere la stessa lunghezza e stessa cadenza.
+
+    ⚠️ Ipotesi congiunta (buco Quant Guild 43): l'alpha e' misurato rispetto a UN fattore. Un alpha
+    positivo e' alpha OPPURE esposizione a un fattore non modellato: le due cose non si distinguono qui.
     """
     r = np.asarray(returns, dtype=float)
     b = np.asarray(benchmark, dtype=float)

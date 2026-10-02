@@ -208,6 +208,35 @@ forward**, non rileggendo gli stessi.
 > esperienza. Non è un motivo per scartare il concetto — è un motivo per non concedergli autorità
 > **contro** risultati misurati.
 
+### 10. Esiti censurati (buco Quant Guild 10, dal 2026-10-02)
+
+Quando uno stop chiude un trade, il suo seguito **non e' osservabile**: non si sa se sarebbe arrivato al
+target. Le analisi di uscite alternative e di MFE/MAE lavorano quindi su esiti **censurati**, e il
+controfattuale "se non avessi avuto lo stop" non si legge dai trade chiusi. Si confrontano uscite diverse
+**sugli stessi segnali** ripercorrendo il prezzo (ablazione, LIFECYCLE §4bis), non estrapolando dai trade.
+
+### 11. Livelli, rendimenti e cointegrazione (buco 21)
+
+Si regredisce **rendimenti su rendimenti** (come `benchmark_metrics`). Una regressione o una correlazione fra
+**livelli** (prezzi, equity, capitale) da' R² altissimi per costruzione: e' un **allarme**, non un risultato
+(regressione spuria). Lavorare sui livelli (spread fra due strumenti, pairs trading) richiede la
+**cointegrazione**: una combinazione dei due livelli con residuo stazionario, da testare sul residuo.
+
+### 12. "Stazionarieta'" ha un senso solo (buco 9)
+
+Stazionarieta' = la distribuzione del processo non cambia nel tempo; i test ADF/KPSS la verificano su una
+serie e dicono se va differenziata. **Non** misurano la durata dei regimi, e **non** sono la stessa cosa di
+un confronto fra sottoperiodi: quello e' un **test di stabilita'** (es. W3 del playground, pre/post-2020).
+Nelle pre-registrazioni si usa la parola giusta per la domanda giusta.
+
+### 13. Matrici di transizione: incertezza per cella e transizioni mai viste (buchi 24, 25)
+
+Una probabilita' di transizione stimata da 6 passaggi non vale quanto una da 600: ogni cella porta il suo
+errore standard (`core.verifiche.matrice_transizione`). Una cella a **zero osservato** e' "mai vista su n
+passaggi" (limite superiore ~3/n), non "impossibile"; e un simulatore che produce transizioni che le regole
+vietano ha un bug (`transizioni_vietate`). Sommare i conteggi di strumenti diversi gonfia n: gli stati di
+strumenti correlati non sono indipendenti.
+
 ## Regole operative
 
 - **Scrivi il pre-mortem prima del capitale.** Per ogni sistema, elenca le direzioni principali di

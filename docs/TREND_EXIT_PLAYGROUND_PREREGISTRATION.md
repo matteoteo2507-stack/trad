@@ -82,7 +82,7 @@ l'esclusione è registrata in `_coverage.csv`.
   **Primaria per Q1** (più dati per il confronto fra uscite).
 - **W2 "comune"** = data di inizio dello strumento più tardivo → fine dati, **tutti** gli strumenti.
   **Primaria per Q2** (nessun confondimento fra gruppo e calendario).
-- **W3 "stazionarietà"** = W1 spezzata in **pre-2020** e **post-2020**.
+- **W3 "stazionarietà"** = W1 spezzata in **pre-2020** e **post-2020**. *(Buco 9, 02/10: e' un **test di stabilita'** fra sottoperiodi, non di stazionarieta' in senso statistico; nome lasciato com'era per non cambiare il documento vincolante.)*
 
 ## Spec canonica (dalla fonte, fissa, nessun tuning)
 

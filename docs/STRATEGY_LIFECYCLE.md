@@ -137,6 +137,23 @@ risposta è no, è p-hacking — conta come trial e va dichiarata.
 
 ---
 
+### 4bis. Una componente aggiunta si testa per ABLAZIONE (buco Quant Guild 11, dal 2026-10-02)
+
+Un filtro, una condizione di regime o un'uscita alternativa aggiunti a una regola **non** si valutano come
+strategie nuove. Il formato e' l'**ablazione pre-registrata**: la **stessa** regola **con e senza** la
+componente, sugli **stessi** dati, ciascuna contro lo **stesso** baseline. La metrica e' la differenza
+appaiata fra le due versioni sugli stessi segnali (precedente: B7, uscita a 1R contro TP1, differenza
+-0,0001). E' anche la risposta operativa a *"l'analisi tecnica non si puo' smentire"*: si smentisce una
+componente alla volta.
+
+### 4ter. Si sceglie il parametro POSITIVO OVUNQUE, non quello ottimo da qualche parte (buco 40)
+
+Quando una regola ha un parametro, il criterio di scelta dichiarato nella pre-registrazione e' **"positivo in
+tutti i sottoperiodi e gruppi"**, non "massimo nel campione": la politica ottima di un regime ha spesso EV
+**negativo** in un altro (Quant Guild, G2: Sharpe 3,01 in addestramento, crollo fuori). La robustezza si
+verifica con `core.verifiche.test_perturbazione` (buco 33): se muovere gli input del 10% sposta l'uscita
+oltre la soglia dichiarata, il risultato vive sul punto, non sulla regola.
+
 ## 5. Tassonomia dei verdetti
 
 | Verdetto | Significato | Cosa succede |

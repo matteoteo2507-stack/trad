@@ -231,3 +231,49 @@ def test_confronto_decile_peggiore_cambia_segno():
     b = rng.normal(0.08, 0.10, 5000)
     r = v.confronto_decile_peggiore(a, b)
     assert r["diff_media"] > 0 and r["diff_coda"] < 0 and r["segno_cambia"]
+
+
+# =================================================================================================
+# Priorita' 3
+# =================================================================================================
+
+def test_matrice_transizione_con_errore_e_zeri():
+    seq = [0, 0, 1, 0, 0, 1, 1, 0, 0, 0] * 30
+    m = v.matrice_transizione(seq, n_stati=3)
+    assert np.allclose(np.nansum(m["p"][:2], axis=1), 1)
+    assert m["se"][0, 1] > 0
+    assert (0, 2, int(m["n_riga"][0])) in m["zero_osservati"]          # mai visto, non impossibile
+    assert m["limite_superiore_zero"][(0, 2)] == pytest.approx(3 / m["n_riga"][0])
+
+
+def test_transizioni_vietate():
+    ammesse = {("flat", "long"), ("long", "flat"), ("flat", "flat"), ("long", "long")}
+    seq = ["flat", "long", "long", "short", "flat"]
+    assert [(a, b) for _, a, b in v.transizioni_vietate(seq, ammesse)] == [("long", "short"), ("short", "flat")]
+
+
+def test_perturbazione_distingue_stabile_da_fragile():
+    stabile = v.test_perturbazione(lambda a, b: a + b, {"a": 10.0, "b": 5}, frazione=0.1, soglia=0.2)
+    fragile = v.test_perturbazione(lambda a: 1.0 if 9.95 < a < 10.05 else -1.0, {"a": 10.0})
+    assert stabile["stabile"] and not fragile["stabile"]
+
+
+def test_ripeti_su_semi_misura_la_dispersione():
+    r = v.ripeti_su_semi(lambda s: np.random.default_rng(s).normal(0, 1, 50).mean(), range(30))
+    assert r["n_semi"] == 30 and 0.05 < r["sd"] < 0.3
+
+
+def test_correlazione_in_drawdown_vede_il_contagio():
+    # gambe indipendenti, tranne un crollo comune di ~20% (60 giorni) seguito da una ripresa
+    rng = np.random.default_rng(8)
+    idx = pd.bdate_range("2015-01-01", periods=2000)
+    x = pd.Series(rng.normal(0.0004, 0.01, len(idx)), idx)
+    y = pd.Series(rng.normal(0.0004, 0.01, len(idx)), idx)
+    shock = rng.normal(-0.004, 0.01, 60)
+    x.iloc[900:960] = shock + rng.normal(0, 0.002, 60)
+    y.iloc[900:960] = shock + rng.normal(0, 0.002, 60)
+    x.iloc[960:1020] = rng.normal(0.004, 0.01, 60)
+    y.iloc[960:1020] = rng.normal(0.004, 0.01, 60)
+    r = v.correlazione_in_drawdown(x, y, soglia_dd=0.10)
+    assert 20 < r["periodi_stress"] < 400
+    assert r["intero_campione"] < 0.2 and r["in_drawdown"] > r["intero_campione"] + 0.15

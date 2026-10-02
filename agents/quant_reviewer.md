@@ -176,7 +176,7 @@ costituzione operativa del workspace (vedi
 Per ogni strategia che valuti, identifica:
 - In quale dei 6 regimi è stata sviluppata?
 - È stata testata negli altri 5? Quale è il regime peggiore (max DD)?
-- Quanto durano tipicamente i regimi (test stazionarietà ADF/KPSS sui returns)?
+- Quanto durano tipicamente i regimi? (Non con ADF/KPSS: quei test dicono se una serie e' stazionaria, non quanto durano i regimi — buco Quant Guild 9, `04` §12. La durata si stima dagli stati, con l'incertezza di `core.verifiche.matrice_transizione`.)
 
 ### 7. Ortogonalità e contributo al book (non giudicare una strategia da sola)
 

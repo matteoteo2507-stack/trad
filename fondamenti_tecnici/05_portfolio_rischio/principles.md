@@ -18,6 +18,16 @@ Un errore diffuso è credere che sovraperformare un benchmark (S&P 500, NASDAQ) 
 
 Esempio: un portafoglio tech che rende 87% contro il 49% dell'indice NON ha generato alpha se quella sovraperformance deriva da sovraesposizione al beta di mercato (e infatti soffre drawdown più severi nei ribassi). Il vero alpha si genera con rendimenti indipendenti dalla direzione del mercato: trading intraday attivo, raccolta del premio di volatilità, o stock selection con effettiva skill.
 
+**Il problema dell'ipotesi congiunta** (buco Quant Guild 43, dal 2026-10-02): un "alpha" stimato rispetto a
+**un** fattore (il mercato, come in `benchmark_metrics`) e' formalmente indistinguibile da un'esposizione a un
+fattore che non si sta modellando. Un alpha a un fattore e' quindi **alpha o fattore mancante**, e il
+rendimento "ortogonale" va scritto con il modello rispetto a cui e' ortogonale.
+
+**L'ortogonalita' si misura dove serve: dentro i drawdown** (buco 48). "Le correlazioni saltano in crisi" si
+verifica con `core.verifiche.correlazione_in_drawdown`: due gambe a 0,05 sull'intero campione possono stare a
+0,3 o piu' nei periodi in cui il combinato e' in perdita, che sono gli unici in cui la diversificazione
+doveva servire.
+
 ### Tassonomia del rischio azionario
 
 Tre componenti gerarchiche, distinte per diversificabilità:

@@ -134,6 +134,19 @@ Gestione tipica: chiudi 80% dentro il range, lascia 20% runner per la deviation 
 - **ATAS** (piattaforma a pagamento): Market Profile & TPO, Cumulative Delta (divergenza price vs delta), Big Trades (whale), DOM Levels/Heatmap, Market Replay.
 - Altri citati in "What Is Liquidity": Bookmap, Sierra Chart, NinjaTrader, Jigsaw, MarketDelta, MotiveWave (order flow/volume profile). Libri di riferimento: Dalton "Mind Over Markets" / "Markets in Profile", Anna Coulling "Volume Price Analysis".
 
+### 4) Esecuzione limite: vantaggio per probabilita' d'esecuzione (buco Quant Guild 12, dal 2026-10-02)
+
+Un ordine limite vale **vantaggio x P(esecuzione)**, e le due grandezze si muovono in senso opposto: un
+prezzo migliore aumenta il vantaggio e **riduce** la probabilita' d'essere eseguiti (Quant Guild, G1:
+allargare lo spread alza il profitto per esecuzione e abbassa le esecuzioni). In piu' c'e' la **selezione
+avversa**: un limite viene eseguito proprio quando il prezzo sta andando **oltre**, cioe' piu' spesso sui trade
+che perdono. Due conseguenze per noi:
+- un backtest che riempie a un livello gia' oltrepassato ignora P(esecuzione) e la selezione avversa: e' il
+  **fill fantasma** che ha tenuto in piedi il FADE per due mesi ([[feedback_fill_ottenibile]]);
+- copiare un segnale con un limite al prezzo postato (variante LIMIT di Gump) perde **proprio i trade che
+  scappano**, cioe' i vincenti: sui 4 live di Gump, i due mai riempiti erano i due TP
+  ([review](../../docs/reviews/gump_live_rr_qualitativo_2026-09-29.md)).
+
 ## Regole operative
 
 1. **Pensa "da liquidità a liquidità".** Identifica cosa è stato appena spazzato (Point A) e quale liquidità è il prossimo target (Point B); trada il movimento tra i due. External > Internal quando coesistono.

@@ -83,7 +83,7 @@ socio-trading-bot/
 /Messaggi tg aggiornati*/
 # Export Telegram del canale mentore: dati privati, ~184MB con foto e video.
 # Cartella a nome FISSO: un export nuovo sostituisce il vecchio (2026-09-18).
-/_export_telegram/
+/_export_telegram*/
 /Dati su segnali mentore/
 /Dati su segnali mentore/
 

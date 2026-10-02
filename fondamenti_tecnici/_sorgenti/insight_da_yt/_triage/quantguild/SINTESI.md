@@ -13,7 +13,14 @@
 > `04_quant_metodologia` §1 (**20**), G2 del gatekeeper; buco 46 annotato nei 4 documenti indicati.
 > **Priorita' 2 IMPLEMENTATA il 2026-09-30**: buco 14 in `core/risk_gate.py` + `config/risk.yaml`
 > (`max_risk_per_trade_pct`, 3 test); 13, 15, 16, 39, 45 in `core/verifiche.py` (7 test); regole in LIFECYCLE §8bis
-> (13, 39), `PROP_FIRM_CRITERIA` §1.9 (15), `05` (16), REVIEW Step 4 (45). **Prossimo: priorita' 3.**
+> (13, 39), `PROP_FIRM_CRITERIA` §1.9 (15), `05` (16), REVIEW Step 4 (45).
+> **Priorita' 3 IMPLEMENTATA il 2026-10-02**: in `core/verifiche.py` 24-25 (`matrice_transizione`, `transizioni_vietate`),
+> 33 (`test_perturbazione`), 38 (`ripeti_su_semi`), 48 (`correlazione_in_drawdown`), +5 test; regole in LIFECYCLE §4bis-4ter
+> (11, 40), REVIEW Step 4 (8, 33, 38), `04` §10-13 (10, 21, 9, 24-25), `02` §4 (12), `05` (43, 48), docstring di
+> `benchmark_metrics` (43), reviewer e playground W3 (9), nuovo [`RIFERIMENTI.md`](../../../../RIFERIMENTI.md) (44).
+> **Buco 47 PARCHEGGIATO con condizione**: la quota di tempo in contante non e' misurabile finche' il PAC non parte
+> (in attesa del quadro del budget, 29/09); si aggiunge a `weekly_healthcheck.py` al primo versamento. **Prossimo:
+> priorita' 4.**
 
 ## Che cosa è questo file
 

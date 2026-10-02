@@ -229,6 +229,13 @@ Con le primitive di [`core/verifiche.py`](../core/verifiche.py):
 - **Due alternative si confrontano anche sulla coda** (buco 45, priorita' 2): `confronto_decile_peggiore`
   riporta media **e** media del 10% peggiore dei percorsi, e segnala se il segno del confronto cambia
   (Quant Guild, G6). Per un capitale che non puo' ricominciare, la coda decide quanto la media.
+- **Assunzioni e direzione dell'errore** (buco 8, priorita' 3): ogni pre-registrazione elenca normalita',
+  indipendenza fra trade, indipendenza fra asset, stazionarieta' e, **per ciascuna**, se la violazione rende
+  la stima del rischio **ottimista o pessimista** (es. esiti raggruppati: serie negative e DD i.i.d.
+  ottimisti). Modello gia' in uso: sezioni 7-8 della pre-registrazione Gump.
+- **Il seme si dichiara prima, la robustezza si misura dopo** (buco 38): accanto al risultato del seme
+  dichiarato (42) si riporta `ripeti_su_semi` su almeno 10 semi per ogni baseline casuale.
+- **Perturbazione degli input** (buco 33): `test_perturbazione` con frazione e soglia dichiarate.
 - **Nessuna correlazione senza frequenza e finestra** (buco 46): `correlazione_dichiarata(x, y,
   frequenza, finestra)` riporta intero campione **e** minimo/mediana/massimo della mobile. Due attivi
   "scorrelati" su base annuale possono stare a 0,73 su 60 giorni, proprio nella finestra del drawdown.
