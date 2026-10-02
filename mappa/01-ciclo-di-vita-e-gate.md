@@ -3,9 +3,9 @@ titolo: 1 · Ciclo di vita e gate
 tipo: mappa
 tags: [#public]
 creato: 2026-10-02
-compreso: no
+compreso: spiegato
 verificato_il:
-metodo:
+metodo: spiegazione
 ---
 
 # 1 · Ciclo di vita e gate
