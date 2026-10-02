@@ -3,9 +3,9 @@ titolo: Mappa di trad — panoramica e percorso
 tipo: mappa
 tags: [#public]
 creato: 2026-09-30
-compreso: no
+compreso: spiegato
 verificato_il:
-metodo:
+metodo: spiegazione
 ---
 
 # Mappa di trad — panoramica e percorso
@@ -55,12 +55,19 @@ flowchart LR
   TG[Canale Telegram<br/>del mentore] --> R[reader<br/>Telethon]
   R --> PA[parser<br/>per canale]
   PA --> PL[planner<br/>sizing + gate]
-  RG[(config/risk.yaml<br/>core/risk_gate)] --> PL
-  PL --> EX[executor]
+  CF[(signal_copier/<br/>config.yaml)] --> PL
+  PL --> EX[executor<br/>+ gate alla riconciliazione]
   EX --> MT[brokers/mt5.py] --> MT5[(MetaTrader 5<br/>demo)]
   EX --> J[journal JSONL]
   TG -. export .-> ET[(_export_telegram/)] --> MS[analysis/mentor_signals/<br/>misura del track record]
 ```
+
+**Dove agisce il gate anti-ritardo (dal 30/09).** Il mentore apre sul messaggio "NOW", prima di
+postare l'entrata: il copier entra a mercato con un bracket provvisorio e, al messaggio coi livelli,
+**riconcilia**. Il gate (20 pip, solo lato sfavorevole: `planner.late_gate`) agisce quindi in due
+punti: nel **planner** per i canali che postano tutto in un messaggio, e nell'**executor alla
+riconciliazione** per il mentore, dove se scatta **chiude le gambe a mercato**. Prima del 30/09 sul
+mentore non agiva mai ([review del 30/09](../docs/reviews/analysis_team_live_2026-09-30.md) §4).
 
 ## Catasto: dove sta ogni cosa
 
@@ -72,10 +79,10 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 |---|---|---|---|
 | `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `docs/EARLY_STAGE_AUDIT_*`, `docs/BACKLOG_RICERCA.md`, `docs/trial_ledger.json` | il metodo | 1 · ciclo di vita e gate | vivo |
 | `docs/*_PREREGISTRATION.md`, `DECISIONS.md`, `docs/reviews/`, `docs/README.md`, `mappa/_cruscotto.base` | stato e storia delle decisioni | 2 · stato canonico | vivo |
-| `signal_copier/`, `config/risk.yaml`, `docs/COPIER_EXECUTION_PREREGISTRATION.md` | copia dei segnali Telegram → MT5 | 3 · signal copier | vivo (demo dal 21/09) |
+| `signal_copier/` (configurazione propria in `signal_copier/config.yaml`), `docs/COPIER_EXECUTION_PREREGISTRATION.md` | copia dei segnali Telegram → MT5 | 3 · signal copier | vivo (demo dal 21/09) |
 | `mql5/`, `analysis/ops/`, `docs/health/`, `docs/FADE_LIVE_AUDIT_PROTOCOL.md` | Expert Advisor e loro sorveglianza | 4 · EA e VPS | sorveglianza |
 | `analysis/mentor_signals/`, `analysis/{mentor_entries,mentor_momentum,export_dataset,probe_mt5}.py`, `docs/MENTOR_*`, `docs/PROP_FIRM_CRITERIA.md`, `_export_telegram/` (dati, fuori da git) | misura del track record del mentore | 5 · segnali mentore | vivo |
-| `core/` (tranne runner, registry, regime), `core/tests/` | primitive di misura | 6 · primitive | vivo |
+| `core/` (tranne runner, registry, regime), `core/tests/`, `config/risk.yaml` (letto da `core/risk_gate.py`) | primitive di misura e gate di rischio delle strategie meccaniche | 6 · primitive | vivo |
 | `analysis/trend/`, `docs/TREND_*`, `docs/B2_KICHEV_POTENZA.md` | uno studio completo, usato come esempio | 7 · anatomia di uno studio | vivo |
 | `analysis/{level_research,nxt,opening_range,meanrev,round_grid,extension,trading-bot-eval,veltrix,forexgump}/`, `strategies/{tsmom,meanrev,seasonality}/`, i restanti `docs/*` di famiglia (`LEVEL_RESEARCH_PLAN`, `NXT_EXIT_CEILING_ADDENDUM`, `B3_*`) | tutte le famiglie studiate | 8 · catalogo delle famiglie | archivio, tranne `forexgump` (vivo) |
 | `fondamenti_tecnici/`, `analysis/intake/`, `materiale_socio/`, `TRADING_PRINCIPLES.md` | conoscenza distillata e porta del materiale nuovo | 9 · conoscenza e intake | vivo |
@@ -87,7 +94,8 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 | `backtest_results/`, `logs/`, `output/`, `socio-trading-bot/`, `28-09/` | risultati e materiale locale, quasi tutto fuori da git | — | dati |
 
 **Moduli condivisi tra componenti:** `brokers/mt5.py` (3 e 4), `notifiers/_pip_table.py` (3 e 5),
-`core/quant_metrics.py` (usato da 22 file di ricerca), `core/risk_gate.py` (3 e 12).
+`core/quant_metrics.py` (usato da 22 file di ricerca), `core/risk_gate.py` (6 e 12: lo usano
+`core/runner.py` e `confluence_levels`, **non** il copier).
 
 **Da sapere prima di iniziare:** `docs/PYTHON_FILES_MAP.md` è una mappa vecchia, ferma al 02/06 e
 già marcata incompleta dal 27/08. Il suo posto lo prende questo catasto.
