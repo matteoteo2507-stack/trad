@@ -11,6 +11,145 @@
 
 ---
 
+## 2026-10-02 (approvazione) — Gump: **pre-registrazione APPROVATA**, procedura di ripresa confermata, **`gate_finale: "forward"`** nel ledger
+
+**Decisione dell'utente (02/10), prima di qualunque esito:**
+1. La [pre-registrazione di Gump](docs/FOREXGUMP_LATENCY_PREREGISTRATION.md) passa a **`APPROVATA`** (G1 #4 =
+   PASSA con riserve, sistemate). Consuma una pre-registrazione esterna del **2026-Q4**. 1 trial, budget 1 sui
+   dati storici: le varianti si validano solo sul forward, con pre-registrazioni nuove (D1).
+2. **Procedura di ripresa confermata** (§0bis): se l'esecuzione unica si interrompe dopo l'apertura
+   dell'holdout, il referto parziale resta, il difetto si corregge come esecuzione (0 trial), si scrive una voce
+   qui **prima** del rilancio e si rilancia **una** volta con `esegui_test.py --ripresa AAAA-MM-GG`.
+3. **`gate_finale: "forward"`**: con D1 il campione intero e' l'holdout, quindi l'esito positivo massimo e'
+   un LEAD **con holdout gia' aperto**. `core/trial_ledger.py` lo segnalava come errore; ora lo accetta solo
+   se la famiglia dichiara il campo **prima** dell'esito (ammesso solo `forward`). Senza il campo resta errore.
+
+**Perche':** la regola del ledger difendeva da un LEAD che ha gia' bruciato il suo ultimo gate; qui il gate
+finale esiste ed e' il forward. Dichiararlo prima toglie la tentazione di lasciare `holdout_aperto` vuoto per
+far tornare il controllo.
+
+---
+
+## 2026-10-02 (notte, 2) — Tre canali del socio **CHIUSI all'intake**, 0 trial
+
+**Decisione dell'utente (02/10):** chiusi senza replay **"Ben, Gold Trader"**, **"THE GOLD SNIPER"** e
+**"ROYAL TRADING EMPIRE"**. Nessuno si avvicina a XAT o a Gump. Bastano tre numeri letti dal solo testo,
+nessun esito sui prezzi:
+
+| Canale | Id mancanti | Stop ammessi | Soldi e conti | Nota |
+|---|---|---|---|---|
+| Ben, Gold Trader | 3% | 104 su 1.943 | "Invest $200, get $4,000", raccolta di capitale, "recupero fondi" | [intake](docs/reviews/ben_gold_trader_intake_2026-10-02.md) |
+| THE GOLD SNIPER | 28,7% | **0 su 78** | chiede **i dati dei conti** | [intake](docs/reviews/gold_sniper_intake_2026-10-02.md) |
+| ROYAL TRADING EMPIRE | **34,6%** | 5 su 456 (44 senza esito) | "No Loss / No Risk / Recover your all loses" | [intake](docs/reviews/royal_trading_empire_intake_2026-10-02.md) |
+
+**Conseguenze:** `gold_5tp` (THE GOLD SNIPER, quasi certamente) resta **disattivato per sempre** nel copier.
+Lo screening dei tre numeri si applica a ogni canale nuovo prima di qualunque lavoro.
+Si riapre solo con un registro **live** non selezionato e un razionale.
+
+**Obiettivo dichiarato dall'utente:** trovare una fonte che dia **piu' certezze di XAT**. La ricerca
+continua.
+
+---
+
+## 2026-10-02 (notte) — XAT **IN REVISIONE**; il forward e' la misura
+
+**Decisione dell'utente (02/10):** lo stato del mentore XAT passa da `CONFERMATO` a **`IN REVISIONE`**
+(frontmatter di [MENTOR_SIGNALS_OOS](docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md) e ledger). Lo storico e'
+selezionato dalle cancellazioni del canale (voce precedente). **Si rimisura sul forward del copier** da
+lunedi' 05/10: il journal registra i segnali prima che spariscano.
+
+**Conseguenze:**
+1. **Nessuna misura dall'export** di XAT fa piu' da riferimento: capture ratio, monitor SPRT/CUSUM, soglie
+   di ritiro e la variante del socio si calcolano sui segnali del **journal** del forward.
+2. **La variante del socio non richiede una seconda demo.** Si puo' rigiocare sui segnali registrati dal
+   forward, appaiata all'esecuzione reale, con la sua pre-registrazione scritta **prima** di guardare gli
+   esiti. La potenza decide quando: con circa 2,7 segnali al giorno servono settimane, non giorni.
+3. Il tasso di cancellazione si misura confrontando il journal con un export fatto **dopo** il periodo.
+   Basta l'orario, gia' registrato. L'id dei messaggi lo renderebbe esatto, ma non e' indispensabile.
+
+---
+
+## 2026-10-02 (sera) — XAT **cancella i segnali andati male**; variante del socio **sospesa prima del calcolo**, 0 trial spesi
+
+**Fatto** ([xat_cancellazioni_2026-10-02.md](docs/reviews/xat_cancellazioni_2026-10-02.md)). Sui 31
+segnali XAT registrati dal vivo (conto del socio 21-29/09, nostro journal 02-08/06), **6 non sono
+nell'export** del 02/10, e 5 di questi sono **stop pieni**. Al loro posto ci sono buchi negli id dei
+messaggi. Il confronto fra export successivi (tasso 0,2%) non poteva vederli. Il +0,1265 a TP1 su 629
+trade si azzera se i segnali cancellati sono l'11% del totale; la stima dal vivo e' **19% (9-36%)**.
+**Il segno dell'edge storico di XAT non e' piu' determinato.**
+Controprova con l'export del 18/09: nessun segnale sparito fra 18/09 e 02/10, buchi negli id identici. I
+segnali spariscono **prima** di qualunque export, e il cancellato del 03/06 perde anche sui livelli del mentore.
+
+**Conseguenze applicate:**
+1. La **variante del socio** (bracket fisso 1:1 e 1:2 a 200 pip) **non si e' testata** sullo storico: su un
+   campione selezionato sull'esito il numero non sarebbe leggibile. Nessun esito calcolato, **ledger
+   invariato**. L'approvazione dell'utente del 02/10 resta valida per quando ci saranno dati non selezionati.
+2. **La misura storica del gate (b)** su cui tarare i monitor (voce precedente, punto 3) **non si fa** sullo
+   storico, per lo stesso motivo.
+3. Avvertenza nel frontmatter di [MENTOR_SIGNALS_OOS](docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md) e
+   [COPIER_EXECUTION](docs/COPIER_EXECUTION_PREREGISTRATION.md). **Lo stato non e' cambiato.**
+
+**Non cambia:** la demo da lunedi' 05/10. Diventa l'unica misura non selezionata, perche' il copier esegue
+prima che il canale cancelli.
+
+**Aperto (Matteo):** stato di XAT (`CONFERMATO` → `in revisione`?); registrare l'id Telegram dei messaggi
+ricevuti prima dell'avvio di domenica; variante del socio in forward parallelo o rimandata.
+
+---
+
+## 2026-10-02 — Demo XAT: **parte lunedi' 05/10 su PC2**, conteggio N = 60 da li'; Gump: **D1 decisa, D3 non misurabile**
+
+**Decisioni dell'utente (02/10):**
+1. **Il conteggio N = 60** di [COPIER_EXECUTION_PREREGISTRATION](docs/COPIER_EXECUTION_PREREGISTRATION.md)
+   **parte dal primo segnale XAT eseguito dal nostro copier col gate (b)**, da lunedi' 05/10 (avvio del
+   copier domenica 04/10). I **22 trade del socio** (21-29/09) restano **dati descrittivi**, fuori dal
+   conteggio. Chiude l'"Aperto" della voce del 30/09 (sera).
+   - **Finestra di misura** (buco Quant Guild 41, LIFECYCLE §8bis): dal primo segnale eseguito fino al
+     60esimo (~2 settimane al ritmo di ~2,7 segnali al giorno), dichiarata **prima** del primo trade.
+   - **Host**: secondo PC acceso 24 ore su 24. Necessario, non comodo: da giugno il **27%** dei segnali XAT
+     arriva fra le 00 e le 06 UTC, e spegnere di notte toglierebbe sempre la stessa sessione (campione
+     selezionato).
+   - **Conto**: `.env` ripulito dai demo vecchi, resta 7396683 per lo scarico di tick e barre. Il conto su
+     cui gira il copier si registra nel §8 della pre-registrazione **all'avvio**, prima del primo trade.
+2. **`gold_5tp` disattivato** in `signal_copier/config.yaml`: il §2 prevede solo XAT; attivo, i suoi segnali
+   entrerebbero nel conteggio o chiuderebbero trade XAT col flip.
+3. **Monitor**: per la demo bastano le soglie degli Stadi 1-2 gia' fissate (§4). I monitor a parametri fissi
+   del §8bis (SPRT, CUSUM) diventano obbligatori **prima del capitale**, tarati sulla misura storica del
+   gate (b) (0 trial, ancora da fare).
+4. **Gump**: **D1 decisa** — valutazione unica, holdout = 100% del campione, TRAIN vuoto, 0 round, esito
+   massimo LEAD. **D3 non misurabile**: non esiste un export piu' vecchio, quindi cancellazioni e modifiche
+   del passato non si possono verificare; resta un bias dichiarato, con direzione verso l'alto. **D2**: lo
+   slot esterno si attribuisce alla data d'approvazione, ormai nel **Q4**.
+
+---
+
+## 2026-09-30 (sera) — Mentore XAT: **gate anti-ritardo riattivato alla riconciliazione**, la raccolta live passa a noi
+
+**Nome.** Da qui il canale XAU/USD ANALYSIS TEAM (il mentore XAU) si chiama **XAT**.
+
+**Stato trovato.** L'export MT5 del conto demo del socio (22 segnali, 21-29/09) e' analizzato in
+[analysis_team_live_2026-09-30.md](docs/reviews/analysis_team_live_2026-09-30.md). Il fatto che cambia
+una decisione: **il gate C5 del 18/09 non agiva su XAT**, perche' il canale entra sul "NOW" e quel
+percorso lo spegneva. Gli esiti (n = 22) non decidono niente.
+
+**Decisione 1 — gate (b)** (utente, 30/09). Si entra sul NOW come prima. Al messaggio coi livelli, se il
+prezzo e' oltre **20 pip sfavorevoli** dall'entrata postata, le gambe si chiudono a mercato. Stessa
+regola e stessa soglia del 18/09, spostata sul percorso giusto: correzione d'esecuzione, **0 trial**.
+Implementata (`planner.late_gate` + `Executor.on_reconcile`, [mappa](mappa/_modifiche.md)).
+⚠️ La (b) **non e' l'esecuzione misurata da C5**, che entrava ai livelli: il suo E[R] storico non esiste
+ancora.
+
+**Decisione 2 — la raccolta su XAT la facciamo noi** (utente, 30/09), su un VPS o su un secondo PC
+sempre acceso. Il 01/10 l'utente fornisce l'export Telegram aggiornato di XAT.
+
+**Aperto.** Da quando parte il conteggio N = 60 di
+[COPIER_EXECUTION_PREREGISTRATION](docs/COPIER_EXECUTION_PREREGISTRATION.md). Proposta di Claude: dal
+primo segnale eseguito dal nostro copier col gate (b), con i 22 del socio come descrittivi
+pre-correzione. La variante del socio (bracket fisso 1:1 e 1:2 a 200 pip, ignorando i livelli) e' in
+valutazione e non e' adottata.
+
+---
+
 ## 2026-09-30 — Bucket B deciso: **round 3 del trend a B2**, **B5 nel bucket D**, **B6 chiusa**; buchi Quant Guild di **priorita' 1 approvati**
 
 **Contesto.** L'utente (29/09) non vuole parcheggiare le voci B: si spendono gli ultimi trial disponibili

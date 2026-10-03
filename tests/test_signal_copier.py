@@ -549,10 +549,44 @@ def test_dispatch_riconcilia_livelli_dopo_trigger(tmp_path):
     broker = _FakeBroker(price=4530.0)
     ex = Executor(mode="live", broker=broker, config={"manage": {"move_sl_to_be_on_tp": 1}})
     _dispatch(_parser(), ex, COPIER_CFG, 10000, "XAUUSD SELL NOW", broker=broker)
+    broker.price = 4535.0  # 10 pip sfavorevoli dall'entry 4536: sotto la soglia del gate
     _dispatch(_parser(), ex, COPIER_CFG, 10000, SIGNAL_TXT, broker=broker)  # entry 4536, SL 4546, TP 4531/4526/4521
     assert len(broker.modified) == 3
     assert all(m["sl"] == 4546.0 for m in broker.modified)
     assert sorted(m["tp"] for m in broker.modified) == [4521.0, 4526.0, 4531.0]
+
+
+def _trigger_poi_livelli(tmp_path, prezzo_ai_livelli):
+    """SELL NOW a 4530, poi livelli (entry 4536, TP1 4531) con il prezzo dato."""
+    from signal_copier.__main__ import _dispatch
+
+    broker = _FakeBroker(price=4530.0)
+    jpath = tmp_path / "j.jsonl"
+    ex = Executor(mode="live", broker=broker, config=COPIER_CFG, journal=TradeJournal(jpath))
+    _dispatch(_parser(), ex, COPIER_CFG, 10000, "XAUUSD SELL NOW", broker=broker)
+    broker.price = prezzo_ai_livelli
+    _dispatch(_parser(), ex, COPIER_CFG, 10000, SIGNAL_TXT, broker=broker)
+    return broker, ex, _read_jsonl(jpath)
+
+
+def test_gate_alla_riconciliazione_chiude_se_tardivo(tmp_path):
+    """Decisione (b) 2026-09-30: sul canale trigger il gate agisce ai livelli.
+    SELL con entry 4536 e prezzo 4533 = 30 pip sfavorevoli > 20 → gambe chiuse, niente modifiche."""
+    broker, ex, recs = _trigger_poi_livelli(tmp_path, 4533.0)
+    assert sorted(broker.closed) == sorted(broker.placed)
+    assert broker.modified == []
+    assert not ex.has_active(_parser().channel_id)  # canale libero per il prossimo NOW
+    rec = recs[-1]
+    assert rec["event"] == "levels_late_closed"
+    assert rec["slip_pips"] == 30.0 and "SFAVOREVOLI" in rec["gate_reason"]
+
+
+def test_gate_alla_riconciliazione_tiene_lo_scarto_favorevole(tmp_path):
+    """Il gate e' asimmetrico anche qui: 40 pip FAVOREVOLI (SELL, prezzo sopra l'entry) → si riconcilia."""
+    broker, _, recs = _trigger_poi_livelli(tmp_path, 4540.0)
+    assert broker.closed == []
+    assert len(broker.modified) == 3
+    assert recs[-1]["event"] == "levels_reconciled" and recs[-1]["slip_pips"] == 40.0
 
 
 def test_dispatch_reentry_stesso_bias_ignorato(tmp_path):

@@ -81,11 +81,22 @@ class TradeJournal:
         self._write(record)
 
     def log_reconcile(
-        self, signal: ParsedSignal, plan: Optional[TradePlan], mode: str
+        self, signal: ParsedSignal, plan: Optional[TradePlan], mode: str,
+        gate: Optional[str] = None,
     ) -> None:
-        """Registra la riconciliazione dei livelli esatti (messaggio #3) sul trade aperto."""
+        """Registra la riconciliazione dei livelli esatti (messaggio #3) sul trade aperto.
+
+        `gate` = motivo per cui il gate anti-ritardo ha fatto chiudere il trade invece di
+        riconciliarlo (evento `levels_late_closed`). `slip_pips` si registra sempre.
+        """
+        if plan is None:
+            event = "levels_no_trade"
+        elif gate is not None:
+            event = "levels_late_closed"
+        else:
+            event = "levels_reconciled"
         record: dict[str, Any] = {
-            "event": "levels_reconciled" if plan is not None else "levels_no_trade",
+            "event": event,
             "ts": _now_iso(),
             "mode": mode,
             "channel": signal.channel,
@@ -95,6 +106,8 @@ class TradeJournal:
             "sl": signal.sl,
             "tps": signal.tps,
             "tickets": [leg.ticket for leg in plan.legs] if plan is not None else None,
+            "slip_pips": plan.slip_pips if plan is not None else None,
+            "gate_reason": gate,
         }
         self._write(record)
 

@@ -119,6 +119,9 @@ restano sullo SL provvisorio e chiudono a −1R ciascuna alle 15:01. Costo: **�
 totale della settimana (−1,21R). Nel nostro `executor` il difetto e' stato corretto il 28/09 (livello
 gia' oltrepassato → chiusura a mercato). Che lo sia anche nel copier del socio non lo sappiamo.
 
+> ⚠️ **Aggiornamento 02/10:** questi 4 segnali, piu' quello del 25/09 05:54, **non sono nell'export** del canale:
+> sono stati cancellati ([xat_cancellazioni_2026-10-02.md](xat_cancellazioni_2026-10-02.md)).
+
 **4 stop pieni su 5 sono avvenuti sul bracket provvisorio** (23/09 10:59, 25/09 05:19, 08:26, 08:50
 UTC): lo SL colpito e' fill ±10 esatto, non un livello del mentore. Almeno nel caso del 25/09 08:50 il
 trade e' durato 78 minuti, quindi il messaggio coi livelli, che di solito arriva entro circa un minuto,
@@ -128,6 +131,9 @@ era 2-3 $ peggio dell'entrata, lo SL provvisorio stava 2-3 $ **piu' vicino** di 
 lo stesso meccanismo di Gump, con lo stop che cade nel rumore. Senza i messaggi non si distingue.
 
 ## 7. Cosa decide Matteo
+
+> **Deciso il 30/09 sera** ([DECISIONS](../../DECISIONS.md)): gate **(b)**, implementato; la raccolta
+> live su XAT passa al nostro copier. Resta aperto il punto 1 (da quando contare N = 60).
 
 1. **Questi dati contano per N = 60?** Il setup congelato (§2 della pre-registrazione: conto 5054470558,
    magic 27050, rischio 1%, gate a 20 pip) **non** e' quello che gira. In particolare il gate non agisce

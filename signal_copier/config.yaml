@@ -9,7 +9,12 @@ mode: "dry_run"
 # Chiave = username del canale senza @ (o id numerico). Valore = channel_id parser.
 channels:
   XAUUSD_AnalysisLab: "xauusd_analysislab"   # entry_mode=trigger (NOW + livelli separati)
-  gfetyydh8959: "gold_5tp"                    # entry_mode=signal (5 TP tutto-in-uno)
+  # gfetyydh8959: "gold_5tp"                  # entry_mode=signal (5 TP tutto-in-uno)
+  # ^ DISATTIVATO il 2026-10-02: il test di esecuzione su XAT (COPIER_EXECUTION_PREREGISTRATION §2)
+  #   prevede SOLO XAT. Attivo, aprirebbe i suoi segnali sullo stesso conto e magic: entrerebbero
+  #   nel conteggio N=60 o chiuderebbero trade XAT col flip "uno per simbolo".
+  #   Dal 02/10 sconsigliato in ogni caso: il canale ("THE GOLD SNIPER") chiede i dati dei conti e
+  #   non ammette mai uno stop (docs/reviews/gold_sniper_intake_2026-10-02.md).
 
 # Quale broker MT5 usare in live (riferito alle credenziali MT5_DEMO*_ in .env).
 # MT5_DEMO3 = MetaQuotes-Demo 5054470558, HEDGING, 100.000 EUR (conto congelato

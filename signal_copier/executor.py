@@ -31,6 +31,7 @@ from typing import Any, Optional
 from brokers.base import Order
 
 from .models import ParsedSignal, SignalUpdate, TradePlan
+from .planner import late_gate
 
 logger = logging.getLogger(__name__)
 
@@ -333,6 +334,30 @@ class Executor:
             logger.info("%s: livelli già applicati, ignoro (probabile re-entry)", signal.symbol)
             return
 
+        # Gate anti-ritardo sui canali "trigger" (decisione (b) del 2026-09-30).
+        # Si entra sul NOW, quando l'entry del mentore non e' ancora noto: il gate si
+        # puo' applicare solo qui. Stessa regola di `build_plan` (`late_gate`), sul
+        # prezzo CORRENTE: tenere la posizione equivale a entrare adesso, cioe' alla
+        # decisione misurata da C5 al messaggio coi livelli. Se scatta, si chiude.
+        if self.mode == "live" and self.broker is not None:
+            try:
+                price = float(self.broker.get_price(signal.symbol))
+            except Exception as exc:
+                logger.warning("get_price fallito, gate anti-ritardo off alla "
+                               "riconciliazione: %s", exc)
+                price = None
+            motivo, plan.slip_pips = late_gate(signal, price, self.config)
+            if motivo is not None:
+                self._close_all(plan)
+                plan.reconciled = True
+                self._active.pop(signal.channel, None)
+                msg = (f"⛔ {signal.symbol} {signal.side}: {motivo} → gambe chiuse "
+                       f"a mercato alla riconciliazione")
+                logger.warning(msg)
+                self._notify(msg)
+                self._journal_reconcile(signal, plan, gate=motivo)
+                return
+
         for i, leg in enumerate(plan.legs):
             new_tp = signal.tps[i] if i < len(signal.tps) else leg.take_profit
             leg.stop_loss = signal.sl
@@ -502,9 +527,10 @@ class Executor:
             except Exception as exc:
                 logger.warning("Journal update fallito: %s", exc)
 
-    def _journal_reconcile(self, signal: ParsedSignal, plan: Optional[TradePlan]) -> None:
+    def _journal_reconcile(self, signal: ParsedSignal, plan: Optional[TradePlan],
+                           gate: Optional[str] = None) -> None:
         if self.journal is not None:
             try:
-                self.journal.log_reconcile(signal, plan, self.mode)
+                self.journal.log_reconcile(signal, plan, self.mode, gate=gate)
             except Exception as exc:
                 logger.warning("Journal reconcile fallito: %s", exc)

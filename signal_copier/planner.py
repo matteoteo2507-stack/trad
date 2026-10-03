@@ -53,6 +53,56 @@ def _reject(signal: ParsedSignal, reason: str, slip_pips: float | None = None) -
                      slip_pips=slip_pips)
 
 
+def late_gate(
+    signal: ParsedSignal, current_price: float | None, config: dict[str, Any]
+) -> tuple[str | None, float | None]:
+    """Gate anti-ritardo. Ritorna (motivo di scarto o None, scarto misurato in pip).
+
+    Unica implementazione della regola: la usano `build_plan` (canali "signal", prima
+    di entrare) e `Executor.on_reconcile` (canali "trigger", dopo essere entrati sul
+    NOW: se scatta, le gambe si chiudono a mercato — decisione (b) del 2026-09-30).
+    `current_price=None` o gate disabilitato → nessun controllo, scarto non misurato.
+    """
+    anti = config.get("anti_late", {})
+    if not anti.get("enabled", True) or current_price is None:
+        return None, None
+    max_slip = float(anti.get("max_slippage_pips", 20))
+    slip = price_delta_pips(signal.symbol, signal.entry, current_price)
+
+    # Il gate e' ASIMMETRICO (C5, misurato il 2026-09-18 su 696 segnali).
+    #
+    # Entrare a mercato dopo il segnale non e' un rumore simmetrico: lo
+    # scostamento e' sfavorevole nel 72% dei casi, e i due lati hanno segno
+    # opposto. Scostamento FAVOREVOLE (il mercato si e' mosso dalla nostra
+    # parte, entriamo meglio del mentore): E[R] = +0,209 [+0,099 ; +0,311]
+    # su 195 segnali. Scostamento SFAVOREVOLE: E[R] = -0,337 su 501.
+    #
+    # Un gate sul valore assoluto scarta anche il primo gruppo, cioe' proprio
+    # i segnali migliori. Applicando la STESSA soglia (20 pip, quella gia'
+    # scritta in config.yaml: non e' stata ricercata sugli esiti) al solo lato
+    # sfavorevole si tengono 293 segnali su 696 con E[R] = +0,159
+    # [+0,076 ; +0,239] -- meglio del replay a limite, con fill a mercato.
+    #
+    # Dettagli in docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9.
+    sfavorevole = (
+        current_price > signal.entry if signal.side == "BUY"
+        else current_price < signal.entry
+    )
+    if sfavorevole and slip > max_slip:
+        return (f"prezzo mosso {slip:.1f} pip SFAVOREVOLI dall'entry > {max_slip} "
+                f"(segnale tardivo)"), slip
+    # Prezzo già oltre il primo TP → trade di fatto già concluso.
+    tps = _valid_tps(signal)
+    if tps:
+        first_tp = tps[0]
+        already_done = (
+            current_price <= first_tp if signal.side == "SELL" else current_price >= first_tp
+        )
+        if already_done:
+            return "prezzo già oltre TP1: segnale concluso", slip
+    return None, slip
+
+
 def build_plan(
     signal: ParsedSignal,
     balance: float,
@@ -92,46 +142,9 @@ def build_plan(
         return _reject(signal, "nessun TP coerente con la direzione")
 
     # 4. Gate anti-ritardo: se il prezzo si è già mosso troppo, non rincorriamo.
-    _slip_measured: float | None = None
-    anti = config.get("anti_late", {})
-    if anti.get("enabled", True) and current_price is not None:
-        max_slip = float(anti.get("max_slippage_pips", 20))
-        slip = price_delta_pips(signal.symbol, signal.entry, current_price)
-        _slip_measured = slip
-
-        # Il gate e' ASIMMETRICO (C5, misurato il 2026-09-18 su 696 segnali).
-        #
-        # Entrare a mercato dopo il segnale non e' un rumore simmetrico: lo
-        # scostamento e' sfavorevole nel 72% dei casi, e i due lati hanno segno
-        # opposto. Scostamento FAVOREVOLE (il mercato si e' mosso dalla nostra
-        # parte, entriamo meglio del mentore): E[R] = +0,209 [+0,099 ; +0,311]
-        # su 195 segnali. Scostamento SFAVOREVOLE: E[R] = -0,337 su 501.
-        #
-        # Un gate sul valore assoluto scarta anche il primo gruppo, cioe' proprio
-        # i segnali migliori. Applicando la STESSA soglia (20 pip, quella gia'
-        # scritta in config.yaml: non e' stata ricercata sugli esiti) al solo lato
-        # sfavorevole si tengono 293 segnali su 696 con E[R] = +0,159
-        # [+0,076 ; +0,239] -- meglio del replay a limite, con fill a mercato.
-        #
-        # Dettagli in docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9.
-        sfavorevole = (
-            current_price > signal.entry if signal.side == "BUY"
-            else current_price < signal.entry
-        )
-        if sfavorevole and slip > max_slip:
-            return _reject(
-                signal,
-                f"prezzo mosso {slip:.1f} pip SFAVOREVOLI dall'entry > {max_slip} "
-                f"(segnale tardivo)",
-                slip_pips=slip,
-            )
-        # Prezzo già oltre il primo TP → trade di fatto già concluso.
-        first_tp = tps[0]
-        already_done = (
-            current_price <= first_tp if signal.side == "SELL" else current_price >= first_tp
-        )
-        if already_done:
-            return _reject(signal, "prezzo già oltre TP1: segnale concluso", slip_pips=slip)
+    reason, _slip_measured = late_gate(signal, current_price, config)
+    if reason is not None:
+        return _reject(signal, reason, slip_pips=_slip_measured)
 
     # 5. Sizing: rischio totale splittato sulle N gambe.
     risk_total_pct = float(risk_cfg.get("risk_per_signal_pct", 0.01))

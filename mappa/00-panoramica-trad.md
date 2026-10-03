@@ -47,8 +47,10 @@ flowchart LR
   T[(trial_ledger)] -. conta i tentativi .-> P
 ```
 
-**2. La catena che tocca soldi: i segnali del mentore.** Oggi è l'unico edge con stato
-`CONFERMATO` (frontmatter di `docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md`).
+**2. La catena che tocca soldi: i segnali del mentore.** Era l'unico edge `CONFERMATO`; dal 02/10 è
+`IN REVISIONE` perché il canale cancella i segnali perdenti e lo storico è selezionato (frontmatter di
+`docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md`). Si rimisura sul forward del copier: il **journal** è
+l'unico registro non selezionato, l'export Telegram no.
 
 ```mermaid
 flowchart LR

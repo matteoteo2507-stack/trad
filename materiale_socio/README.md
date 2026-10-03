@@ -19,7 +19,17 @@
   ANALYSIS TEAM), 21-29/09/2026, con `export.py` del socio. ⚠️ Orari = server **UTC+3**. Analisi:
   [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md).
 - `Canale 2 trovato da socio/` — export Telegram di **"Ben, Gold Trader"** (08/2023 → 30/09/2026),
-  fonte **nuova**, non collegata ai trade del conto demo. Da analizzare.
+  non collegato ai trade del conto demo. Intake del 02/10: il canale **raccoglie denaro** con rendimenti
+  garantiti; **chiuso** il 02/10, 0 trial
+  ([`ben_gold_trader_intake_2026-10-02.md`](../docs/reviews/ben_gold_trader_intake_2026-10-02.md)).
+
+- `../goldsniper/` (radice del repo) — export di **"THE GOLD SNIPER"** (13/08 → 02/10/2026), quasi certamente
+  il canale `gold_5tp` del copier. Intake del 02/10: chiede i dati dei conti; **chiuso** il 02/10
+  ([`gold_sniper_intake_2026-10-02.md`](../docs/reviews/gold_sniper_intake_2026-10-02.md)).
+
+- `../Royal gold new/` (radice del repo) — export di **"ROYAL TRADING EMPIRE"** (02/04 → 02/10/2026). Intake del
+  02/10: 34,6% di id mancanti, quasi nessuno stop dichiarato; **chiuso** il 02/10
+  ([`royal_trading_empire_intake_2026-10-02.md`](../docs/reviews/royal_trading_empire_intake_2026-10-02.md)).
 
 ⚠️ Qui **mentore XAU** e **Gump** sono fonti di segnali seguite dal socio: la distinzione sotto
 (socio ≠ mentori) resta valida per il materiale *suo* (VELTRIX, NXT).

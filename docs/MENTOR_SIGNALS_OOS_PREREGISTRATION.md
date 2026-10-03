@@ -1,10 +1,10 @@
 ---
 tipo: preregistrazione
-stato: CONFERMATO
-aggiornato: 2026-09-18
-decisione: "DECISIONS 2026-09-18 (4) — OOS rifatta sulla finestra estesa"
+stato: IN REVISIONE
+aggiornato: 2026-10-02
+decisione: "DECISIONS 2026-10-02 (notte) — in revisione: il canale cancella i perdenti; si rimisura sul forward"
 metrica_corrente: "differenza appaiata +0,274 [+0,209; +0,333]; E[R] +0,173 [+0,083; +0,244] su 218 segnali"
-nota: "Verdetto del 07/08 confermato; i numeri originali (63,0% vs 35,0%, +0,194) sono superati."
+nota: "IN REVISIONE dal 02/10: il canale cancella i segnali andati male (6 su 31 registrati dal vivo, 5 stop pieni), quindi i numeri qui sono misurati su sopravvissuti e il segno non e' determinato (reviews/xat_cancellazioni_2026-10-02.md). Si rimisura sul forward del copier (dal 05/10), su segnali registrati prima della cancellazione. Il verdetto del 07/08 vale solo come storia."
 ---
 # Pre-registrazione — Validazione OOS dei segnali mentore (XAUUSD)
 

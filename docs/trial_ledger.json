@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-09-30",
+  "aggiornato": "2026-10-02",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -8,7 +8,7 @@
     "holdout_aperture_per_famiglia": 1,
     "llm_knowledge_cutoff": "2026-05-31"
   },
-  "trimestre_corrente": "2026-Q3",
+  "trimestre_corrente": "2026-Q4",
   "famiglie": [
     {
       "id": "livelli",
@@ -186,17 +186,19 @@
     {
       "id": "mentor_signals",
       "nome": "Segnali mentore XAUUSD (copier)",
-      "stato": "GO",
+      "stato": "IN REVISIONE",
       "trial_cumulati": 1,
       "round_rifinitura": 0,
       "holdout_aperto": "2026-08-07",
       "fonte_esterna": false,
-      "verdetto": "CONFERMATO fuori campione - primo OOS pre-registrato superato del workspace",
+      "verdetto": "IN REVISIONE (02/10): l'OOS del 07/08 e' misurato su un export da cui il canale cancella i perdenti; si rimisura sul forward del copier",
       "fonti": [
         "docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md",
         "docs/COPIER_EXECUTION_PREREGISTRATION.md",
         "DECISIONS.md 2026-08-07",
-        "DECISIONS.md 2026-09-18 (4)"
+        "DECISIONS.md 2026-09-18 (4)",
+        "DECISIONS.md 2026-10-02 (notte)",
+        "docs/reviews/xat_cancellazioni_2026-10-02.md"
       ],
       "note": "B7 (uscita a 1R), C3 (soglie di ritiro), C4 (sizing), C5 (gate di latenza) sono state chiuse a 0 trial: erano misure o verifiche, non ricerca di conferma (LIFECYCLE §3). La correzione del fuso e la sua doppia applicazione sono FIX, non trial.",
       "provenienza_ipotesi": "umana_esterna",
@@ -221,6 +223,29 @@
       "provenienza_ipotesi": "non_dichiarata",
       "finestra_dati_fine": "2026-05-30",
       "nota_provenienza": "Precede il ciclo di vita formalizzato. Provenienza mai registrata."
+    },
+    {
+      "id": "forexgump_signals",
+      "nome": "Forex Gump GOLD VIP — segnale copiato in ritardo",
+      "stato": "QUARANTENA",
+      "trial_cumulati": 1,
+      "trial_budget": 1,
+      "round_rifinitura": 0,
+      "holdout_aperto": "2026-10-02",
+      "gate_finale": "forward",
+      "fonte_esterna": true,
+      "prereg_esterna_trimestre": "2026-Q4",
+      "verdetto": null,
+      "fonti": [
+        "docs/FOREXGUMP_LATENCY_PREREGISTRATION.md §0 D1 (campione intero = holdout, train vuoto)",
+        "docs/FOREXGUMP_LATENCY_PREREGISTRATION.md §7 (contabilita')",
+        "DECISIONS.md 2026-10-02 (D1 decisa)",
+        "DECISIONS.md 2026-10-02 (approvazione) - pre-registrazione APPROVATA, ripresa, gate_finale"
+      ],
+      "note": "trial_budget 1 sui dati storici: le varianti sono pre-registrazioni nuove sul forward. Esito max LEAD, GO solo dal forward (gate_finale). DSR n_trial = 1; futilita' ~0,039 di Sharpe per trade.",
+      "provenienza_ipotesi": "umana_esterna",
+      "nota_provenienza": "socio, 28/09/2026: canale Forex Gump + backtest della webapp; ipotesi non proposta da LLM",
+      "finestra_dati_fine": "2026-09-28"
     }
   ],
   "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920."
