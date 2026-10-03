@@ -2,14 +2,14 @@
 tipo: analisi
 stato: quarantena
 aggiornato: 2026-09-30
-fonte_dati: "export MT5 del conto demo del socio 5056226036 (MetaQuotes-Demo, 'XAU Analysis Lab'), 21-29/09/2026: materiale_socio/dati socio 2/"
+fonte_dati: "export MT5 del conto demo del socio 5056226036 (MetaQuotes-Demo, 'XAU Analysis Lab'), 21-29/09/2026: materiale_socio/xat_conto_demo_socio_2026-09/ (cartella `dati socio 2/` fino al 03/10)"
 nota: "Descrittivo, n = 22 segnali. Non e' un verdetto. Il setup non e' quello congelato in COPIER_EXECUTION_PREREGISTRATION §2: se questi dati contino per N=60 lo decide Matteo."
 ---
 # Mentore XAU in live sul PC del socio: la prima settimana con gli esiti
 
 > Il 28/09 il log del copier del socio non conteneva chiusure ([DECISIONS 2026-09-28](../../DECISIONS.md)).
 > Il 29/09 il socio ha esportato tutto lo storico del conto demo con uno script di sola lettura
-> ([export.py](../../materiale_socio/dati%20socio%202/export.py)). Questa nota dice cosa contiene, cosa
+> ([export.py](../../materiale_socio/xat_conto_demo_socio_2026-09/export.py)). Questa nota dice cosa contiene, cosa
 > se ne puo' dire con 22 segnali e cosa manca per dirne di piu'.
 >
 > Il canale e' **XAU/USD ANALYSIS TEAM** = il **mentore XAU**, lo stesso della

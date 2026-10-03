@@ -6,33 +6,28 @@
 
 ---
 
-## 📁 Spostato qui (standalone)
+## 📥 Dati in questa cartella
 
-- [PARTNER_AI_INTEGRATION_GUIDE.md](PARTNER_AI_INTEGRATION_GUIDE.md) — guida hand-off **per l'AI del socio**: valutazione del bot VELTRIX, Level Analyzer validato, warning di sicurezza (chiave Bybit esposta in git history), opzioni di integrazione. (Era in root; nessun link entrante → spostato.)
+Ogni cartella dice nel nome **che fonte è, che tipo di dato e che periodo copre**. I contenuti sono fuori
+da git (`.gitignore`: `/materiale_socio/*/`): restano solo su questo disco.
 
-## 📥 Dati e export portati dal socio (settembre 2026)
+| Cartella | Cosa contiene | Usata da | Stato |
+|---|---|---|---|
+| `forexgump_telegram_2020-09_2026-09/` | export Telegram di **Forex Gump GOLD VIP** (21 file, 18.688 messaggi, 09/09/2020 → 28/09/2026) | [`../analysis/forexgump/parse.py`](../analysis/forexgump/parse.py) → `signals.csv` | pre-registrazione [`FOREXGUMP_LATENCY_PREREGISTRATION.md`](../docs/FOREXGUMP_LATENCY_PREREGISTRATION.md) |
+| `xat_conto_demo_socio_2026-09/` | export MT5 del conto demo del socio **5056226036** su cui girava **XAT** (il mentore XAU), 22 segnali × 3 gambe, 21-29/09/2026, con lo script `export.py` del socio. ⚠️ Orari = server **UTC+3** | [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md), [`xat_cancellazioni_2026-10-02.md`](../docs/reviews/xat_cancellazioni_2026-10-02.md) | dati descrittivi, fuori dal conteggio N = 60 |
 
-- `dati socio1/` — export Telegram di **Forex Gump GOLD VIP** (09/2020 → 09/2026). Letto da
-  [`../analysis/forexgump/parse.py`](../analysis/forexgump/parse.py); pre-registrazione
-  [`FOREXGUMP_LATENCY_PREREGISTRATION.md`](../docs/FOREXGUMP_LATENCY_PREREGISTRATION.md).
-- `dati socio 2/` — export MT5 del conto demo **5056226036** su cui gira il **mentore XAU** (XAU/USD
-  ANALYSIS TEAM), 21-29/09/2026, con `export.py` del socio. ⚠️ Orari = server **UTC+3**. Analisi:
-  [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md).
-- `Canale 2 trovato da socio/` — export Telegram di **"Ben, Gold Trader"** (08/2023 → 30/09/2026),
-  non collegato ai trade del conto demo. Intake del 02/10: il canale **raccoglie denaro** con rendimenti
-  garantiti; **chiuso** il 02/10, 0 trial
-  ([`ben_gold_trader_intake_2026-10-02.md`](../docs/reviews/ben_gold_trader_intake_2026-10-02.md)).
+**Canali chiusi all'intake (02/10, 0 trial), cartelle eliminate:** "Ben, Gold Trader", "THE GOLD SNIPER" e
+"ROYAL TRADING EMPIRE". I numeri e i motivi restano nelle note
+[Ben](../docs/reviews/ben_gold_trader_intake_2026-10-02.md),
+[Gold Sniper](../docs/reviews/gold_sniper_intake_2026-10-02.md) e
+[Royal](../docs/reviews/royal_trading_empire_intake_2026-10-02.md), e nella voce di [DECISIONS](../DECISIONS.md)
+del 02/10.
 
-- `../goldsniper/` (radice del repo) — export di **"THE GOLD SNIPER"** (13/08 → 02/10/2026), quasi certamente
-  il canale `gold_5tp` del copier. Intake del 02/10: chiede i dati dei conti; **chiuso** il 02/10
-  ([`gold_sniper_intake_2026-10-02.md`](../docs/reviews/gold_sniper_intake_2026-10-02.md)).
+⚠️ **XAT** e **Gump** sono fonti di segnali seguite dal socio, non materiale *suo*. La distinzione in fondo
+(socio ≠ mentori) vale per VELTRIX e NXT.
 
-- `../Royal gold new/` (radice del repo) — export di **"ROYAL TRADING EMPIRE"** (02/04 → 02/10/2026). Intake del
-  02/10: 34,6% di id mancanti, quasi nessuno stop dichiarato; **chiuso** il 02/10
-  ([`royal_trading_empire_intake_2026-10-02.md`](../docs/reviews/royal_trading_empire_intake_2026-10-02.md)).
-
-⚠️ Qui **mentore XAU** e **Gump** sono fonti di segnali seguite dal socio: la distinzione sotto
-(socio ≠ mentori) resta valida per il materiale *suo* (VELTRIX, NXT).
+**Rimosso il 03/10:** `PARTNER_AI_INTEGRATION_GUIDE.md` (guida di giugno per l'AI del socio su VELTRIX):
+superata, resta nella storia di git.
 
 ---
 
@@ -74,7 +69,7 @@ Cartella [`../analysis/trading-bot-eval/`](../analysis/trading-bot-eval/). **Non
 - [`../ROADMAP.md`](../ROADMAP.md) — OctoBot superato da Confluence Auto + VELTRIX.
 - [`../signal_copier/README.md`](../signal_copier/README.md) — precedente da non ripetere: chiave Bybit nella git history di VELTRIX. ⚠️ **NB**: il signal_copier riguarda i **mentori**, non il socio — non confondere.
 
-## 🧠 Memoria persistente *(fuori dal repo: `.claude/.../memory/`)*
+## 🧠 Memoria persistente *(fuori dal repo: `claude-brain/memoria/trad/`)*
 
 - `project_partner_channel_linkalphaflow.md` — VELTRIX come Confluence di riferimento.
 - `project_veltrix_bot_eval_2026_06_12.md` — valutazione bot (~53%, look-ahead, chiave esposta).
@@ -83,4 +78,4 @@ Cartella [`../analysis/trading-bot-eval/`](../analysis/trading-bot-eval/). **Non
 ---
 
 ### Distinzione importante
-**Socio** (bot/canale VELTRIX, ex-soci con NXT) ≠ **mentori** (segnali XAUUSD copiati via `signal_copier/`, primo edge reale del repo). Materiale diverso, non mescolare.
+**Socio** (bot/canale VELTRIX, ex-soci con NXT) ≠ **mentori** (segnali XAUUSD copiati via `signal_copier/`; XAT in revisione dal 02/10). Materiale diverso, non mescolare.

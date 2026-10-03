@@ -1,6 +1,6 @@
 """Parser dei segnali di Forex Gump GOLD VIP (export Telegram HTML) -> CSV strutturato.
 
-Fonte: export del canale in `materiale_socio/dati socio1/messages*.html` (09/09/2020 ->
+Fonte: export del canale in `materiale_socio/forexgump_telegram_2020-09_2026-09/messages*.html` (09/09/2020 ->
 28/09/2026), fornito dal socio il 2026-09-28. Fonte in `quarantena`.
 
 Cosa estrae
@@ -39,7 +39,7 @@ import re
 from collections import Counter
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SRC_DIR = os.path.join(ROOT, "materiale_socio", "dati socio1")
+SRC_DIR = os.path.join(ROOT, "materiale_socio", "forexgump_telegram_2020-09_2026-09")
 OUT = os.path.join(os.path.dirname(__file__), "signals.csv")
 
 MSG_SPLIT = re.compile(r'<div class="message ')
