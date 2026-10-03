@@ -159,7 +159,7 @@ oltre la soglia dichiarata, il risultato vive sul punto, non sulla regola.
 | Verdetto | Significato | Cosa succede |
 |---|---|---|
 | **GO** | Edge sopravvive a train + walk-forward + holdout + costi | Promozione a capitale, con pre-mortem ([04 §9](../fondamenti_tecnici/04_quant_metodologia/principles.md)) |
-| **LEAD** | Risultato positivo ma **data-derived** o senza OOS indipendente | **Non promuovibile.** Richiede **nuova** pre-registrazione + **forward OOS**. Stato attuale del *fade* NXT |
+| **LEAD** | Risultato positivo ma **data-derived** o senza OOS indipendente | **Non promuovibile.** Richiede **nuova** pre-registrazione + **forward OOS**. Stato attuale del *fade* NXT. Se l'holdout e' gia' aperto per costruzione (campione intero come holdout, es. Gump D1), il ledger lo ammette solo con `gate_finale: "forward"` dichiarato **prima** dell'esito (DECISIONS 2026-10-02) |
 | **NO-GO** | Questa specifica non regge | La *specifica* muore. La *famiglia* sopravvive solo se ha budget residuo |
 | **CLOSED** | L'intera direzione di ricerca è morta | Vedi §7 — non si riapre con un ritocco |
 | **INSUFFICIENT DATA** | `n_trades < 50` | **Non è un verdetto.** Si continua a raccogliere **solo se la soglia era pre-dichiarata** |

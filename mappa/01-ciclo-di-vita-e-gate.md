@@ -53,7 +53,9 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
    guardi e poi rifinisci, è diventato train (§2).
 5. **Verdetto**, dichiarato da Matteo: GO, LEAD, NO-GO, CLOSED, oppure "dati insufficienti", che non
    è un verdetto (§5).
-6. **Dopo il verdetto.** Un LEAD richiede una nuova pre-registrazione e un **forward** sul futuro,
+6. **Dopo il verdetto.** Un LEAD richiede una nuova pre-registrazione e un **forward** sul futuro
+   (se l'holdout era gia' tutto il campione, come per Gump, il contatore lo accetta solo con
+   `gate_finale: "forward"` scritto prima dell'esito, `core/trial_ledger.py`, funzione `verifica`),
    l'unico dato davvero pulito e rinnovabile. Una strategia che ha già capitale si giudica contro
    la distribuzione dei suoi drawdown attesi, non contro l'umore (§8bis).
 

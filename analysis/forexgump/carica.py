@@ -59,7 +59,8 @@ def verifica(s: pd.DataFrame | None = None) -> float:
     persi = len(carica_segnali(universo=False)) - len(pd.read_csv(os.path.join(HERE, "signals.csv")))
     print(f"allineamento: {dentro:.3f} delle entrate dentro il range dei 5 min "
           f"(soglia {SOGLIA_DENTRO}); segnali persi al cambio d'ora: {-persi}")
-    assert dentro >= SOGLIA_DENTRO, "fuso o feed disallineati: non leggere nessuna metrica"
+    if dentro < SOGLIA_DENTRO:   # non un assert: con python -O gli assert spariscono (G1 #3)
+        raise SystemExit("fuso o feed disallineati: non leggere nessuna metrica")
     return float(dentro)
 
 

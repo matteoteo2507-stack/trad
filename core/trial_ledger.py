@@ -159,9 +159,14 @@ def verifica(dati: Optional[dict] = None) -> list:
         tc = f.get("trial_cumulati")
         if tb is not None and tc is not None and tc > tb:
             problemi.append("%s trial cumulati %d > budget dichiarato %d" % (eti, tc, tb))
-        if f.get("stato") == "LEAD" and f.get("holdout_aperto"):
-            problemi.append("%s e' LEAD con holdout gia' aperto: il gate finale non c'e' piu'"
-                            % eti)
+        gf = f.get("gate_finale")
+        if gf is not None and gf != "forward":
+            problemi.append("%s gate_finale '%s' sconosciuto (ammesso solo: forward)" % (eti, gf))
+        # Un LEAD con l'holdout aperto e' legittimo solo se il gate finale dichiarato PRIMA e' il
+        # forward (es. Gump, D1: il campione intero e' l'holdout). Senza il campo resta un errore.
+        if f.get("stato") == "LEAD" and f.get("holdout_aperto") and gf != "forward":
+            problemi.append("%s e' LEAD con holdout gia' aperto: il gate finale non c'e' piu' "
+                            "(se e' un forward pre-registrato: gate_finale = \"forward\")" % eti)
         problemi += _contaminazione(f, eti, b.get("llm_knowledge_cutoff"))
 
     # quota di pre-registrazioni esterne del trimestre
