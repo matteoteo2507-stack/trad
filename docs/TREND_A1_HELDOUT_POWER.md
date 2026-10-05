@@ -138,3 +138,47 @@ Condizioni scritte **ora**, perché la prossima volta la risposta sia pronta:
 ⚠️ **Quello che non è una condizione di riapertura**: scegliere la crypto perché è l'unica casella
 positiva. Dopo aver visto la tabella del §6.3 del diagnostico, è **eleggere un vincitore dalla
 mappa** — e costerebbe il terzo e ultimo round del ramo trend.
+
+---
+
+## 8. Addendum 2026-10-03 — la condizione §7 contata gratis, prima di comprare
+
+Richiesta di Matteo (03/10): verificare la riga G9 sul broker MT5 e fare il conteggio gratuito.
+Motore: [`analysis/trend/heldout_pool_mt5.py`](../analysis/trend/heldout_pool_mt5.py)
+(`--scarica`, `--azioni`, `--futures`). **0 trial**: inventario, nessun esito di strategia.
+Stessa finestra (dal 2017-12-26), stessa soglia (20%), stessa formula `n/(1+(n−1)ρ)`.
+
+**(a) Il broker FP Markets non e' una fonte di storia.** 764 simboli, 599 candidati nuovi, ma il
+server demo conserva poco: azioni dal 2024-08, crypto e cereali dal 2022-02, metalli industriali
+dal 2023-09 (verificato con richiesta esplicita dal 2005 e M1 del 2015: assenti). **Zero**
+strumenti con storia nella finestra. Il broker serve per operare, la storia va presa altrove.
+
+**(b) Azioni USA offerte da FP Markets, storia Dukascopy.** 432 titoli: 149 assenti su Dukascopy,
+83 con storia corta, 200 con storia piena, di cui 33 esclusi per salti < −40% in un giorno (split
+non rettificati sospetti). Dei 167 restanti, **165 sopra il 20%** (vol mediana 32,9%), ma
+**ρ medio +0,323 → n_eff 3,1**, che e' anche il tetto `1/ρ`: aggiungere titoli non serve, si
+muovono col mercato.
+
+**(c) Futures pysystemtrade non in-sample (gratis, fermi al 2024-03-28).** 33 candidati, 7 con
+storia corta (metalli LME, EUA, gomma, legname). **20 sopra il 20%** in 5 classi (cereali,
+energia, metalli, soft, zootecnia), **ρ medio +0,112 → n_eff 6,4 tutto insieme** (10,7 sommando
+per classe, generoso).
+
+| braccio ALTA, strumenti nuovi indipendenti | n_eff | 7,3 (oss.) | 16,7 | **29,3 (dimezzato)** | 66,8 |
+|---|---|---|---|---|---|
+| referto §4 (Dukascopy) | 3,4 | ×2,1 | ×4,9 | ×8,6 | ×19,6 |
+| futures 6,4 + crypto 1,4 | 7,8 | **OK** | ×2,1 | **×3,8** | ×8,6 |
+| + azioni 3,1 (somma, ignora la correlazione fra classi) | 10,9 | OK | ×1,5 | ×2,7 | ×6,1 |
+
+**Lettura.** Il feed G9 **sposta** il problema ma **non lo risolve**: lo scenario ottimistico
+(effetto osservato, cioe' col winner's curse dentro) diventa finanziabile, quello di
+pianificazione onesta resta fuori scala di **~3×**. Tre limiti in piu':
+1. **pysystemtrade si ferma al 2024-03**: per un test serve il feed a pagamento (Pinnacle/Norgate,
+   riga G9); questo conteggio dice solo cosa comprerebbe.
+2. **Operabilita'**: dei 20 futures, su FP Markets ci sono solo mais e grano (e soft gia'
+   in-sample). Un A1 positivo direbbe che il gradiente esiste, non che lo possiamo operare.
+3. Il rendimento dei prezzi e' un **proxy** della correlazione della metrica (reale − random),
+   come nel §4: puo' sbagliare in entrambe le direzioni.
+
+**Decisione aperta (di Matteo):** comprare il feed vale solo se si accetta di pre-registrare A1
+punto 3 sullo scenario **ottimistico**, dichiarando prima che un nullo sarebbe "non dimostrato".

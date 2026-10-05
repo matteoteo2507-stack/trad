@@ -6,7 +6,7 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 
 ## Come è organizzata (3 nature distinte)
 
-1. **Concetti / reference** (`01_…` → `07_…`) — teoria e fondamenti **stabili**, riferimento.
+1. **Concetti / reference** (`01_…` → `09_…`) — teoria e fondamenti **stabili**, riferimento.
 2. **[blueprints/](blueprints/)** — sistemi *buildabili* (agenti/skill/infra). Sono **idee NON
    committate**: materiale di riferimento, **non** un mandato a costruire. Vedi [DECISIONS.md](../DECISIONS.md).
 3. **[strategie_candidate/](strategie_candidate/)** — spec di strategie tradabili pronte a essere
@@ -35,6 +35,7 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 | 06 | [Stock Selection](06_stock_selection/principles.md) | stock_selector, consensus |
 | 07 | [Data Sources (reference)](07_data_sources/reference.md) | stock_selector/data_sources.py |
 | 08 | [Asset Allocation Passiva (ETF/bond/fiscalità/USD)](08_asset_allocation_passiva/principles.md) | pilastro investing (PAC), INVESTING_PILLAR_PLAN |
+| 09 | [Fonti di vantaggio — come si costruisce un'ipotesi](09_fonti_di_vantaggio/principles.md) ⚠️ bozza in quarantena | fase RICERCA del ciclo di vita (STRATEGY_LIFECYCLE §1) |
 
 ### Blueprints (idee non committate)
 - [Markov regime skill](blueprints/markov_regime_skill.md) — alternativa probabilistica a `core/regime.py` (con i 3 fix della "2.0")

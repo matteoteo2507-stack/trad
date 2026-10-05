@@ -44,7 +44,13 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
 
 1. **Ricerca e formulazione.** Un razionale economico (chi sta dall'altra parte, e perché continua
    a perdere) e un'ipotesi falsificabile. Le fonti esterne entrano solo da qui, passando da
-   `fondamenti_tecnici/_INTAKE.md` (§8).
+   `fondamenti_tecnici/_INTAKE.md` (§8). **Dal 03/10 questo passo ha un metodo**:
+   `fondamenti_tecnici/09_fonti_di_vantaggio/principles.md`. *Cosa fa*: prima di cercare candidati
+   si sceglie la classe di vantaggio (premio, flusso forzato, errore comportamentale, informazione,
+   velocità) e si risponde a nove domande in ordine (§4). *Input*: un'idea o una fonte. *Output*:
+   un'ipotesi con classe, "chi paga", accessibilità e potenza già verificate, pronta per il
+   template e la G1, oppure uno stop motivato. *Come si rompe*: se lo si salta si torna a cercare
+   per elenco; e la griglia è una bozza di Claude in quarantena, da confermare con le fonti del suo §6.
 2. **[G1] Pre-registrazione**, *prima* di guardare i dati: ipotesi, metriche e soglie numeriche,
    baseline random, **budget di tentativi**, divisione dei dati, costi, criteri di morte,
    condizione di fill. Se manca anche una sola voce il gatekeeper blocca (gatekeeper, righe 77-98).

@@ -202,6 +202,11 @@ banale**: √252 = **15,87**. E' semplicemente la **de-annualizzazione** della v
 
 ### Verdetto: **CANDIDATO**, e la regola dell'1% e' il test piu' economico che abbiamo
 
+> ✅ **Aggiornamento 2026-10-03: CHIUSA all'intake, 0 trial.** 35 eventi in 14,6 anni, MDE 0,49% sul giorno
+> dopo; una misura esterna (Macroption, 1990-2013) non trova vantaggio direzionale. Vedi
+> [DECISIONS 2026-10-03 (4)](../../../../DECISIONS.md) e [ricerca_repo §1](../../../../docs/reviews/ricerca_repo_2026-10-03.md).
+> Il testo sotto e' la scheda originale.
+
 | criterio | esito |
 |---|---|
 | strumenti | **SI** — abbiamo SPX500 e NAS100 su D1. **Il VIX non ce l'abbiamo**, ma e' fra i dati storici piu' liberamente disponibili (dal 1990) |

@@ -43,6 +43,12 @@ Riferimenti teorici: [04_quant_metodologia §2](../fondamenti_tecnici/04_quant_m
                                              vive se ha budget)  vedi §7)
 ```
 
+**La fase RICERCA ha un metodo** (dal 2026-10-03): prima di cercare candidati si risponde a *chi paga,
+perche' accetta, perche' non e' gia' arbitraggiato*, e si sceglie la **classe** di vantaggio (premio, flusso
+forzato, errore comportamentale, informazione, velocita'). Le nove domande, nell'ordine, stanno in
+[`09_fonti_di_vantaggio`](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md) §4 (bozza in
+quarantena, da confermare con le fonti del suo §6). Un candidato senza classe e' un pattern, non un'ipotesi.
+
 **Due differenze rispetto al loop intuitivo:**
 
 1. **[G1] La pre-registrazione è un gate, non un passaggio.** Sta *fra* formulazione e backtest, e

@@ -1,8 +1,8 @@
 ---
 tipo: referto
-stato: da_decidere
-aggiornato: 2026-09-30
-decisione: "DECISIONS 2026-09-30 (round 3 assegnato a B2, potenza prima di spenderlo)"
+stato: chiusa_non_testabile
+aggiornato: 2026-10-03
+decisione: "DECISIONS 2026-10-03 (strada A: B2 chiusa a 0 trial, round 3 conservato alla famiglia)"
 metrica_corrente: "X=5: MDE 0,092-0,184 ATR contro costo 3x 0,081-0,099 → sotto potenza in ogni universo"
 nota: "0 trial. Nessuna media direzionale calcolata. Motore: analysis/trend/b2_potenza.py"
 ---

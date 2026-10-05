@@ -11,6 +11,8 @@ Sorgenti dati e cache locale.
 | `MT5 export` | Forex/CFD | Gratis (richiede terminale MT5) |
 | `worldmonitor` (Stage 5) | News + 7-signal radar + macro | Locale |
 | `financialdatasets.ai` | Fondamentali equities (alternativa a yfinance) | A pagamento |
+| CBOE `VIX_History.csv` | VIX giornaliero dal 1990 (backlog G4) | Gratis — `python data/scarica_serie_libere.py` |
+| CFTC Commitments of Traders | posizionamento settimanale sui futures: Legacy dal 1986, Disaggregated dal 2006 (backlog G5) | Gratis — stesso script, output in `data/cache/free/` |
 
 ## Cache
 

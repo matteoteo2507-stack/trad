@@ -11,6 +11,138 @@
 
 ---
 
+## 2026-10-03 (5) — La fase RICERCA ha un metodo: modulo `09_fonti_di_vantaggio` (bozza B, conferma A)
+
+**Constatazione di Matteo (03/10):** da tempo il lavoro era buono nell'**analizzare e dare verdetti**, ma
+mancava del tutto la parte **produttiva**: capire da dove nasce un vantaggio, con quali strumenti e dove
+costruire una strategia. Verificato nel repo: c'erano il metodo di verifica (ciclo di vita, protocollo,
+gatekeeper, `core/`) e un template per documentare, **nessun metodo per arrivare a un'ipotesi**. Cercavamo
+per elenco.
+
+**Deciso:** flusso **B → A**. Bozza di Claude subito,
+[`fondamenti_tecnici/09_fonti_di_vantaggio/principles.md`](fondamenti_tecnici/09_fonti_di_vantaggio/principles.md),
+stato `quarantena`; poi ogni voce si conferma con fonti umane (Ilmanen, Pedersen, Harris, McLean-Pontiff,
+Harvey-Liu-Zhu: piano nel §6 del modulo). Agganciato a `STRATEGY_LIFECYCLE` §1 e alla mappa.
+
+**Cosa mostra gia' la griglia sui nostri verdetti:**
+- quasi tutto il budget e' andato nella classe **errori comportamentali**, la piu' affollata;
+- i **premi** sono bloccati dal perimetro;
+- i **flussi forzati** non sono mai stati guardati;
+- l'unico binario vivo (mentore, Gump) sta nella classe **informazione comprata da terzi**.
+
+Le direzioni di lettura del §5 **non sono ipotesi**: entrano solo con una fonte umana (provenienza, §8).
+
+---
+
+## 2026-10-03 (4) — Ricerca nel repo: **regola dell'1% sul VIX** e **carry FX** chiusi all'intake, 0 trial
+
+Richiesta di Matteo dopo la voce (3). Inventario completo in [reviews/ricerca_repo_2026-10-03.md](docs/reviews/ricerca_repo_2026-10-03.md).
+
+1. **Regola dell'1% sul VIX** (funnel B1.4, *"il test piu' economico"*), chiusa per potenza. Sono
+   **35 eventi in 14,6 anni** (conteggio approssimato, 0 trial: nessun esito guardato). L'MDE sul giorno dopo
+   e' **0,49%**. Macroption (1990-2013) trova **+0,01% / −0,07%** sui giorni con S&P e VIX in salita insieme.
+   Il modo di fallire dichiarato dalla fonte (VIX che risale sui massimi storici per le coperture) e' il regime
+   descritto da Cboe per il 2026.
+2. **Carry FX** (pipeline del 02/05, voce 7), chiuso perche' il premio e' sparito dopo il 2008 secondo due fonti
+   indipendenti (Fan et al. 2022; Citi via Reuters, 15/05/2026). I nostri dati FX partono dal 2012: MDE Sharpe
+   **0,73** contro un premio atteso vicino a zero. Swap letti in MT5 il 03/10: il broker passa il carry sulle
+   coppie con lo yen (long USDJPY circa +2,3% l'anno sul nozionale, stima mia), non sugli emergenti.
+
+**Correzione della voce (3).** Ho scritto che i premi alla portata del retail sono *"gia' presi o fuori
+perimetro"*, dimenticando il carry, che invece e' alla portata. La frase corretta e': **gia' presi, fuori
+perimetro, oppure spariti dopo il 2008**. La conclusione non cambia.
+
+**Segnalato, non corretto:** la riga *"Il piu' conveniente adesso: G1 (b)"* del backlog e' **piu' vecchia** della
+voce 2026-10-02 (notte), che ha messo XAT in revisione per storico selezionato. Un replay piu' preciso di quello
+storico non misura piu' l'edge. Decide Matteo se declassarla.
+
+**Lettura d'insieme:** nel perimetro attuale (CFD retail, capitale piccolo, dati liberi) non resta un'ipotesi
+testabile a potenza utile che non sia gia' chiusa. Le leve sono note: piu' strumenti indipendenti (G9), un
+conto futures, e il tempo (forward XAT dal 05/10, Gump).
+
+---
+
+## 2026-10-03 (3) — COT / premio di copertura sulle commodity: **CHIUSO a 0 trial** (strada A)
+
+**Decisione dell'utente (03/10):** strada A del [referto di potenza](docs/COT_PRESSIONE_POTENZA.md):
+*"non testabile a potenza utile fuori campione, e non operabile alla nostra scala"*. **Non falsificato.**
+
+Il calcolo e' solo aritmetica sui numeri pubblicati: nessun prezzo nostro, nessun segnale COT guardato.
+MDE (Sharpe) = 2,80/√anni fuori dal campione delle fonti:
+- **mensile** (Fan et al. 2020, Sharpe 0,61): **1,16** coi dati liberi (5,8 anni dopo il 2018), 0,97 a pagamento;
+- **settimanale** (Kang-Rouwenhorst-Tang 2020, ~0,79 lordo, stima nostra): **0,92** coi dati liberi
+  (9,3 anni), 0,82 a pagamento.
+
+Anni necessari: 21-84 (mensile) e 12,6-49 (settimanale). Il caso migliore e' fuori scala di 1,07× e
+gia' lordo dei costi. Nel premio di liquidita' di Kang et al. un terzo del rendimento matura **prima**
+che il report sia pubblico (giorni 1-4): non e' ottenibile. In piu' il long-short su 20-40 futures non
+e' operabile alla nostra scala (su FP Markets solo mais, grano e soft).
+
+**Riapertura:** conto futures con capitale adeguato **e** ~20 anni fuori dal campione delle fonti,
+oppure una replica pubblicata dopo il 2018 con lo Sharpe ancora vicino a 0,6.
+
+**Esito della domanda del brainstorming** (*"premi invece di tempismo"*): i premi documentati e alla
+portata del retail sono gia' presi (premio azionario, nel PAC) o fuori perimetro (copertura sulle
+commodity, VRP sulle opzioni). E' un limite di perimetro, non di metodo. Nessuno slot esterno del Q4
+consumato, nessuna famiglia aperta nel ledger.
+
+---
+
+## 2026-10-03 (2) — Oro "notte positiva, giorno negativo" (Blose et al.): **CHIUSO all'intake**, 0 trial
+
+Candidato nato nel brainstorming del 03/10 dalla riga dell'intake del 29/09. Proposto come primo test
+di un **premio per il rischio**: era un errore di lettura mio. Il meccanismo della fonte e' *"prezzo
+(troppo) alto all'apertura"*, cioe' un'**anomalia di tempismo**, la categoria gia' falsificata piu'
+volte nel repo.
+
+**Criterio scritto prima del testo completo** ([nota §4](docs/reviews/oro_notturno_blose_2026-10-03.md)),
+poi applicato ai risultati di tre ricerche Comet: (a) misura senza asta d'apertura **non soddisfatta**:
+tutte le misure della fonte stanno su aperture, chiusure o fixing; (b) ultimo sotto-periodo e (c) costi
+netti **non verificabili**, perche' il testo completo e' a pagamento e i costi visibili sono solo
+commissioni retail. Il verdetto **non dipende dal paywall**: (a) cade gia' sulla parte visibile.
+
+**Non falsificato** (nessun dato nostro aperto): *non trasferibile al CFD continuo, in calo nella fonte
+(2014), in parte artefatto d'esecuzione su altre classi* (QuantPedia su GDX, Alpha Architect su SPY).
+Repliche dopo il 2015 su oro spot continuo: **nessuna** trovata. Riapertura: risultato pubblicato su spot
+continuo o GC elettronico, a orari fissi, con prezzi eseguibili e al netto dello spread. Nessuno slot
+esterno del Q4 consumato.
+
+**Proposta non decisa:** rendimento per ora del giorno sull'oro spot come **misura descrittiva**
+(baseline "noioso" per XAT e Gump, nota §5), con Iwatsubo-Watkins-Xu (RIETI 2017) come riferimento di metodo.
+
+**Quello che resta del brainstorming:** la domanda *"premi per il rischio invece di tempismo"* resta
+aperta. Il candidato che le risponde davvero e' la **pressione di copertura nei COT** (dati G5 scaricati
+oggi): e' il prossimo, e il suo primo passo e' la potenza.
+
+---
+
+## 2026-10-03 — **B2 chiusa a 0 trial** (strada A), feed G9 **non acquistato**, G6 **non disponibile dal socio**
+
+**Decisioni dell'utente (03/10):**
+1. **B2 (breakout Kichev) CHIUSA a 0 trial** come *"non testabile a potenza utile nell'universo della
+   fonte"*, **non** falsificata. Applica la regola fissata prima del calcolo ([referto di potenza](docs/B2_KICHEV_POTENZA.md)):
+   con X = 5 l'MDE supera il costo a 3x in ogni universo; l'unica configurazione con potenza (X = 2, tutti gli
+   strumenti) mette il 47% degli eventi su FX e indici, che Kichev esclude. **Il round 3 di `trend_momentum`
+   non si spende e resta alla famiglia**: la famiglia non chiude, A1 e D4 restano in piedi. Nessuno slot
+   esterno del Q4 consumato.
+2. **Feed G9 (Pinnacle/Norgate) non acquistato per ora.** Il conteggio gratuito del 03/10
+   ([referto A1 §8](docs/TREND_A1_HELDOUT_POWER.md)) dice che renderebbe finanziabile A1 punto 3 solo nello
+   scenario **ottimistico**; quello onesto resta fuori scala di ~3x. Il broker FP Markets non ha storia (solo
+   operabilita').
+3. **G6 (fondamentali point-in-time, sorprese sugli utili): il socio non li ha.** Resta l'opzione a pagamento
+   (Sharadar SF1, $39/mese letto il 29/09), non decisa; D3 (PEAD) resta nel bucket D.
+
+**Condizioni di riapertura di B2** (scritte ora): un feed con piu' commodity indipendenti ad alta volatilita'
+(G9 — stima a spanne, **non misurata**: con ~33 strumenti nell'universo della fonte X = 2 avrebbe potenza;
+va ricalcolata con `analysis/trend/b2_potenza.py` sul feed vero **prima** di spendere il round), oppure il
+forward (~270 eventi l'anno: anni). Il round 3 e' **uno solo** e va a B2 *oppure* ad A1 punto 3: la scelta
+si rifa' quando una delle due ha potenza.
+
+**Fatto lo stesso giorno, 0 trial:** VIX (CBOE) e COT CFTC scaricati (`data/scarica_serie_libere.py`, righe
+G4/G5 del backlog): dati, non test.
+
+---
+
 ## 2026-10-02 (approvazione) — Gump: **pre-registrazione APPROVATA**, procedura di ripresa confermata, **`gate_finale: "forward"`** nel ledger
 
 **Decisione dell'utente (02/10), prima di qualunque esito:**

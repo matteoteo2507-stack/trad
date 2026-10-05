@@ -55,7 +55,7 @@ Data, e se Tick Data vende XAUUSD spot.
 
 | Fonte | Cosa dice | Stato per noi |
 |---|---|---|
-| [Blose, Gondhalekar, Kort, *J. Econ. Finance* 2018](https://ideas.repec.org/a/spr/jecfin/v42y2018i3d10.1007_s12197-017-9403-0.html) | rendimenti **notturni positivi, diurni negativi**, in mercati al rialzo e al ribasso, "economicamente importanti anche dopo i costi" (grandezze non nell'abstract) | da leggere per intero; **risultato pubblicato con razionale**, replicabile con dati gratuiti. Candidato a ipotesi nuova (costa una pre-registrazione esterna) |
+| [Blose, Gondhalekar, Kort, *J. Econ. Finance* 2018](https://ideas.repec.org/a/spr/jecfin/v42y2018i3d10.1007_s12197-017-9403-0.html) | rendimenti **notturni positivi, diurni negativi**, in mercati al rialzo e al ribasso, "economicamente importanti anche dopo i costi" (grandezze non nell'abstract) | stato e verdetto in [`_INTAKE.md`](../../fondamenti_tecnici/_INTAKE.md) · ragionamento in [oro_notturno_blose_2026-10-03.md](oro_notturno_blose_2026-10-03.md) |
 | [Torul, working paper 2026-07-08](https://web.bogazici.edu.tr/torul/reflex.pdf) | la risposta dell'oro agli shock azionari 2024-26 in USD (−0,92, t −2,0) **sparisce in EUR** (−0,15, t −0,4): e' in gran parte l'effetto dollaro | non referato; utile come avvertenza su qualunque "l'oro sale nei risk-off" |
 | [Chicago Fed Letter 464, 2021](https://www.chicagofed.org/publications/chicago-fed-letter/2021/464) | tassi reali: segno negativo ma **R² = 0,012** su dati giornalieri | nell'orizzonte breve il legame spiega pochissimo: raffredda il lead "intermarket" |
 | Sobti et al. 2021; Hauptfleisch et al. 2016 | il **futures di New York** guida la scoperta del prezzo | contesto |
