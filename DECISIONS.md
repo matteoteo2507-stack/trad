@@ -11,6 +11,43 @@
 
 ---
 
+## 2026-10-05 — Gump: **NON DIMOSTRATO (MDE 0,130R)** al primo e unico trial; famiglia **CLOSED** con due condizioni di riapertura
+
+**Esito** (esecuzione unica del 02/10, [referto](docs/reviews/forexgump_esito_2026-10-02.md), G2 = PASSA con riserve
+[qui](docs/reviews/forexgump_G2_2026-10-02.md)). Caso 4 del §6: d = −0,007 [−0,082; +0,069], CI a cluster per
+giornata, n 1.774 su 574 giornate. MDE pre-registrato 0,130R su d, 0,171R su E[R]. **Non dimostrato non vuol dire
+refutato**: il CI rende poco plausibile un d sopra ~0,07R (un divario mentore − opposto sopra ~0,14R), sotto questa
+esecuzione.
+- Copiato a L = 10 s con bracket ricentrato: **E[R] −0,342R [−0,431; −0,248]** (ottimistica −0,305, stress −0,636).
+  La perdita e' il costo di transare, non un'abilita' negativa: il lato casuale perde quasi lo stesso. Cancellazioni
+  e modifiche dell'export spingerebbero verso l'alto: il numero e' conservativo rispetto a loro.
+- Ai **livelli postati** (come copia il socio): win rate 32,8%, R/R effettivo mediano **2,11** (solo il 21% dei trade
+  arriva a 1:3), pareggio senza costi al 37,3%, E[R] −0,156R [−0,226; −0,082] (appendice del referto, 05/10, 0 trial).
+- Step 3bis: prezzo postato gia' superato al momento d'agire nel **99,6%** dei trade, scarto mediano 1,73 $, presente
+  **gia' al messaggio**. Il vantaggio del mentore e' reale ma si incassa **prima** che il segnale arrivi. Il backtest
+  al prezzo postato non e' ottenibile e non si cita.
+- Descrittive (latenza, varianti, anni, categorie, post-cutoff, momentum): 0 trial, descrittive **per sempre**.
+
+**Decisione dell'utente (05/10): CLOSED**, non INSUFFICIENT DATA: quella categoria vale per n < 50 con soglia di
+raccolta dichiarata prima, qui n = 1.774. CLOSED non chiude la porta: si riapre con evidenza nuova (LIFECYCLE §7),
+sempre con una **nuova pre-registrazione**, se:
+1. **il mentore cambia formato o tempistica** dei segnali (pubblica prima di entrare, ordine limite raggiungibile,
+   feed all'istante d'ingresso): e' un generatore di segnali diverso, si misura sui segnali successivi al cambio;
+2. **il journal del socio** in configurazione "come postato" arriva a **≥ 780 trade eseguiti** e il limite inferiore
+   del CI 95% a cluster per giornata del suo E[R] **supera −0,156R** (la simulazione e' smentita dai fill veri).
+   780 = potenza 80% per 0,156R con sd efficace 1,556: circa **2,6 anni** a ~296 segnali l'anno. Prima di quella
+   soglia il journal non si legge come verdetto.
+
+Le configurazioni 8-8 e 10-7 del socio sono geometrie non testate: un loro risultato e' un'ipotesi nuova, non una
+riapertura. **La demo del socio continua** a 0 trial (spread reale, latenza, id dei messaggi per le cancellazioni).
+Nessun capitale.
+
+**Perche' non un'altra etichetta:** una famiglia aperta senza una misura in corso con una soglia scritta prima resta
+aperta per sempre. L'argomento "a 1:3 basta il 25%" e' la voce **M1** del registro dei bias: aritmetica del pareggio,
+non una misura; la misura c'e' e dice 32,8% contro 37,3% necessario a R/R 2,11.
+
+---
+
 ## 2026-10-03 (5) — La fase RICERCA ha un metodo: modulo `09_fonti_di_vantaggio` (bozza B, conferma A)
 
 **Constatazione di Matteo (03/10):** da tempo il lavoro era buono nell'**analizzare e dare verdetti**, ma

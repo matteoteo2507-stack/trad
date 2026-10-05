@@ -100,3 +100,30 @@ Holding mediano (h), M1: mentore 0.17, lato opposto 0.15, controlli 0.23
 
 **Spiegazione noiosa** (momentum a 15 minuti): d medio -0.033 su 1693 (esclusi: movimento nullo 0, barre vecchie dopo una pausa 81); d_mentore - d_momentum +0.017 [-0.121; +0.154] — il mentore aggiunge informazione al momentum solo se il limite inferiore e' > 0
 
+## Appendice (05/10) — riserve della G2 e scomposizione, 0 trial
+
+Calcolata dopo la G2 con lo stesso motore e gli stessi dati (`replay.esegui`, L = 10 s, tick in cache): solo quantita'
+pre-registrate mancanti dal referto o scomposizioni di numeri gia' riportati. Nessuna soglia, variante o universo nuovo.
+
+- **R1, grandezza dello scarto** al fill (t + 10 s, sfavorevole): mediana **1,73 $**, quartili 1,03-2,93 $, media 2,57 $;
+  quota > 0: 99,6%.
+- **R2, MDE pre-registrato di E[R]**: 0,171R (accanto al verdetto, §6).
+- **R3, E[R] in convenzione OTTIMISTA** (solo accanto): −0,305 [−0,394; −0,212], n 1.774.
+- **R4, giornate usate come cluster** nel primario: **574** su 1.774 trade.
+- **R5, volatilita' non appaiata** nei controlli: i controlli sono appaiati su ora e lato, non sulla volatilita'.
+  L'holding piu' corto dei trade reali (0,17 h contro 0,23 h) dice che i messaggi cadono in momenti piu' volatili;
+  il segno del divario non cambia, ma il confronto non e' a parita' di volatilita'.
+
+**Scomposizione per esecuzione** (lato del mentore, pessimistica):
+
+| esecuzione | eseguiti | win rate | R/R effettivo al fill (mediana, quartili) | pareggio senza costi | E[R] (CI a cluster) |
+|---|---|---|---|---|---|
+| ricentrata (primario) | 1.774 di 1.792 | 12,5% | 5,00 (4,94-5,03) | 17,5% | −0,342 [−0,431; −0,248] |
+| livelli postati (`live`, come il socio) | 1.791 di 1.792 | 32,8% | 2,11 (1,31-2,87) | 37,3% | −0,156 [−0,226; −0,082] |
+
+Ai livelli postati l'R/R non e' 1:3: il ritardo allontana lo stop e avvicina il TP. Solo il 20,9% dei trade ha R/R
+effettivo ≥ 3. `live` usa come unita' |fill − SL|, non la distanza postata (G2, punto 6).
+
+**Potenza della condizione di riapertura n. 2** (DECISIONS 2026-10-05): sd di R ai livelli postati 1,385 iid,
+**1,556 efficace a cluster** (579 giornate). Per distinguere 0,156R (da −0,156 a 0) con alpha 0,05 e potenza 80%
+servono 617 trade iid, **780 a cluster**; a ~296 segnali l'anno, circa 2,6 anni.

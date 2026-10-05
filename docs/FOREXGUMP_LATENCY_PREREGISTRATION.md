@@ -1,10 +1,10 @@
 ---
 tipo: preregistrazione
-stato: APPROVATA
-aggiornato: 2026-10-02
-decisione: "DECISIONS 2026-10-02 (approvazione)"
-metrica_corrente: "nessuna: nessun esito calcolato"
-nota: "APPROVATA da Matteo il 02/10 (G1 #4 PASSA con riserve, sistemate). Voce nel ledger con gate_finale forward; procedura di ripresa confermata. Prossimo passo: esecuzione unica di esegui_test.py."
+stato: CLOSED
+aggiornato: 2026-10-05
+decisione: "DECISIONS 2026-10-05 (CLOSED); esito 2026-10-02"
+metrica_corrente: "NON DIMOSTRATO (MDE 0,130R): d -0,007 [-0,082; +0,069]; E[R] a L=10 s -0,342 [-0,431; -0,248] (referto docs/reviews/forexgump_esito_2026-10-02.md)"
+nota: "CLOSED il 05/10 (decisione di Matteo) dopo G2 PASSA con riserve. Due condizioni di riapertura in DECISIONS 2026-10-05 e nel ledger. La demo del socio continua a 0 trial."
 ---
 # Pre-registrazione — Forex Gump GOLD VIP: il segnale copiato in ritardo vale ancora?
 
@@ -54,7 +54,9 @@ nota: "APPROVATA da Matteo il 02/10 (G1 #4 PASSA con riserve, sistemate). Voce n
 - ✅ **Approvata da Matteo il 02/10** (DECISIONS 2026-10-02, approvazione): `stato: APPROVATA`, voce
   `forexgump_signals` nel ledger con **`gate_finale: "forward"`**: un LEAD con l'holdout aperto e' previsto per
   costruzione da D1 e `trial_ledger --check` lo accetta solo con questo campo, dichiarato prima dell'esito.
-- ⏳ **Esecuzione unica** di `esegui_test.py`.
+- ✅ **Esecuzione unica** il 02/10 ([referto](reviews/forexgump_esito_2026-10-02.md)): caso 4 del §6, **NON DIMOSTRATO
+  (MDE 0,130R)**. G2 = PASSA con riserve ([qui](reviews/forexgump_G2_2026-10-02.md)); riserve R1-R5 nell'appendice del
+  referto (05/10). **CLOSED il 05/10** per decisione di Matteo, con due condizioni di riapertura (DECISIONS 2026-10-05).
 - **Procedura se l'esecuzione unica si interrompe dopo l'apertura dell'holdout** (**confermata da Matteo il
   02/10**): il referto parziale resta agli atti; il difetto si corregge come
   correzione di esecuzione (0 trial, [[feedback_correggere_non_e_cercare]]) e si rilancia **una** volta, con la
@@ -280,3 +282,4 @@ praticabile cosi' com'e': si riporta e si ferma).
 | 2026-10-02 | G1 #3: N1 (prova a secco sul percorso tick con tick sintetici) e N2 (controlli M1 contro M1) corretti; riserve chiuse; procedura in caso di interruzione proposta (§0bis) | Nessuna modifica guarda un esito |
 | 2026-10-02 | APPROVATA da Matteo; procedura di ripresa confermata; ledger con `gate_finale: "forward"` | Decisione prima dell'esecuzione: nessun esito calcolato |
 | 2026-10-03 | Solo percorso: la cartella dell'export passa da `materiale_socio/dati socio1/` a `materiale_socio/forexgump_telegram_2020-09_2026-09/` (riordino della cartella del socio). Stessi 21 file, nessun dato toccato; `parse.py` aggiornato, `signals.csv` non rigenerato | Pulizia del workspace chiesta dall'utente. L'esecuzione legge `signals.csv` tramite `carica.py`, non la cartella |
+| 2026-10-05 | Esito (02/10) NON DIMOSTRATO; famiglia CLOSED con due condizioni di riapertura | Decisione di Matteo dopo la G2; nessuna soglia cambiata |

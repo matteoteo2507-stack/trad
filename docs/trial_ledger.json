@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-10-02",
+  "aggiornato": "2026-10-05",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -227,7 +227,7 @@
     {
       "id": "forexgump_signals",
       "nome": "Forex Gump GOLD VIP — segnale copiato in ritardo",
-      "stato": "QUARANTENA",
+      "stato": "CLOSED",
       "trial_cumulati": 1,
       "trial_budget": 1,
       "round_rifinitura": 0,
@@ -235,14 +235,17 @@
       "gate_finale": "forward",
       "fonte_esterna": true,
       "prereg_esterna_trimestre": "2026-Q4",
-      "verdetto": null,
+      "verdetto": "NON DIMOSTRATO (MDE 0,130R) al primo e unico trial (02/10): d -0,007 [-0,082; +0,069]; copiato a L=10 s E[R] -0,342 [-0,431; -0,248]",
       "fonti": [
         "docs/FOREXGUMP_LATENCY_PREREGISTRATION.md §0 D1 (campione intero = holdout, train vuoto)",
         "docs/FOREXGUMP_LATENCY_PREREGISTRATION.md §7 (contabilita')",
         "DECISIONS.md 2026-10-02 (D1 decisa)",
-        "DECISIONS.md 2026-10-02 (approvazione) - pre-registrazione APPROVATA, ripresa, gate_finale"
+        "DECISIONS.md 2026-10-02 (approvazione) - pre-registrazione APPROVATA, ripresa, gate_finale",
+        "docs/reviews/forexgump_esito_2026-10-02.md",
+        "docs/reviews/forexgump_G2_2026-10-02.md",
+        "DECISIONS.md 2026-10-05 - Gump CLOSED con condizioni di riapertura"
       ],
-      "note": "trial_budget 1 sui dati storici: le varianti sono pre-registrazioni nuove sul forward. Esito max LEAD, GO solo dal forward (gate_finale). DSR n_trial = 1; futilita' ~0,039 di Sharpe per trade.",
+      "note": "trial_budget 1 sui dati storici: le varianti sono pre-registrazioni nuove sul forward. Esito max LEAD, GO solo dal forward (gate_finale). DSR n_trial = 1; futilita' ~0,039 di Sharpe per trade. Riapertura (LIFECYCLE §7, fonte nuova), solo con una nuova pre-registrazione: (1) il mentore cambia formato o tempistica dei segnali (pubblica prima di entrare, ordine limite raggiungibile, feed all'istante d'ingresso): si misura sui segnali successivi al cambio; (2) il journal del socio in configurazione 'come postato' arriva a >= 780 trade eseguiti e il limite inferiore del CI 95% a cluster per giornata del suo E[R] supera -0,156R (la simulazione e' smentita). 780 = potenza 80% per 0,156R con sd efficace 1,556 (appendice del referto, 05/10): ~2,6 anni a ~296 segnali/anno. Le configurazioni 8-8 e 10-7 sono geometrie non testate: ipotesi nuove, non riaperture.",
       "provenienza_ipotesi": "umana_esterna",
       "nota_provenienza": "socio, 28/09/2026: canale Forex Gump + backtest della webapp; ipotesi non proposta da LLM",
       "finestra_dati_fine": "2026-09-28"
