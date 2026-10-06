@@ -6,6 +6,14 @@ Ogni modifica fatta da una parte si scrive qui, cosi' l'altra parte la riporta.
 
 ## 2026-10-07 — fatte in trad (da riportare nel repo del socio)
 
+**Regolamenti, secondo passaggio Comet (`config/prop_rules.yaml`).** Voci `ftmo_*`, `fundednext_*` (+ `stellar_lite`),
+`the5ers_high_stakes` aggiornate con frasi citate (URL ancora mancanti: stato `citato_senza_url`). La consistency di
+The5ers vale nel funded e il simulatore la applicherebbe alla valutazione: spostata in un campo solo descrittivo.
+**`max_days_default` per firm**: 250 giorni dove la firm non pone limiti di tempo (FTMO 2-Step, FundedNext Stellar
+2-Step), 120 dove il limite non e' stato trovato. Con 120 fissi il simulatore contava come fallimento un'attesa che la
+firm non punisce: sulle regole FTMO con E +0,10R l'ottimo di rischio passa da 2% (59%) a 1% (77%), e il pass rate a
+vantaggio zero all'1% dal 13% al 30%.
+
 **Verdetto della conferma OOS (`lab/pipeline.py`, `lab/metrics.py`).** Prima: `DA_OSSERVARE` = attesa OOS > 0
 a prescindere dal DSR, e andava in demo; su 8 random walk senza vantaggio usciva in 5. Ora:
 - **PROMOSSA** solo se il limite basso dell'intervallo OOS, corretto con Bonferroni per il numero di candidati,

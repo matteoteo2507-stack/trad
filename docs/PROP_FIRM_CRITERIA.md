@@ -142,8 +142,8 @@ consistency, giorni minimi, funded con payout) e' `prop-lab`, raggiunto da `trad
 stima** e lo stesso calcolo a **vantaggio zero** con gli stessi percorsi; si cita `ev_vs_zero`, la parte di
 EV dovuta al vantaggio. Perche': il 05/10 una strategia a vantaggio zero passava ~30% delle due fasi
 10%+5% e aveva EV ~+1.900 € per tentativo col profilo guardia giornaliera al 3% (la challenge e'
-un'opzione). E il rischio che massimizza il pass rate **dipende dal vantaggio** (piu' e' scarso, piu' e'
-alto): scegliere il profilo che massimizza l'EV su un campione premia il gioco audace, cioe' chi un
+un'opzione). E il rischio che massimizza il pass rate **dipende dal vantaggio e dal limite di tempo** (piu' il
+vantaggio e' scarso o il tempo corto, piu' e' alto): scegliere il profilo che massimizza l'EV su un campione premia il gioco audace, cioe' chi un
 vantaggio non ce l'ha ([STRATEGY_LIFECYCLE §4quater](STRATEGY_LIFECYCLE.md)). Le regole di
 `prop-lab/config/prop_rules.yaml` sono modelli parametrici: per un numero operativo vanno allineate alla
 griglia del §3.
@@ -169,18 +169,19 @@ Non sui comparatori. Se un dato non è pubblicato, si scrive **NON PRESENTE** e 
 
 | # | Domanda | FTMO | FundedNext | The5ers | Alpha Capital | Altre |
 |---|---|---|---|---|---|---|
-| 1.1 | Daily DD su balance o equity flottante? | 🟡 **equity** (flottante incluso), 5% / 3% dal saldo di inizio giornata | 🟡 **equity** (flottante incluso); base ambigua ("initial") | 🟡 non trovato | ❓ | |
-| 1.2 | Max DD statico o trailing? | statico (2 fasi) · 🟡 **trailing di fine giornata** (1 fase) | 🟡 statico (10% 2 fasi, 6% 1 fase) | statico (🟡 confermato) | ❓ | |
-| 1.3 | Weekend/overnight consentito? | ❓ (Swing account) | ❓ | ❓ | ✅ su Pro/Swing/One/Three | |
-| 1.4 | EA MT5 senza sorgente? | ✅ senza pre-approvazione | ✅ MT4/MT5 | ✅ | ⚠️ **richiede `.mq5`** | |
-| 1.5 | Consistency rule? | 🟡 nessuna (2 fasi e 1 fase) | 🟡 **40%** (Stellar 1 e 2 fasi) | 🟡 **50%** |  ❌ **40% best day → SQUALIFICATA** (payout 14/28 gg: violeremmo il 74,7% delle volte) | |
-| 1.5b | Se c'è: si calcola dall'ultimo payout o dall'intera storia? Accumulo libero? | 🟡 accumulo libero (2 fasi), non libero (1 fase) | 🟡 **dall'ultimo payout**; accumulo non trovato | 🟡 finestra "other", non specificata | ❓ | |
-| 1.6 | News: apertura e chiusura? | ⚠️ ±2min XAUUSD/DXY, **solo funded** | ⚠️ **−40% profitti news** + SL 3min | ⚠️ varia per piano | ❓ "news gambling" vietato (vago) | |
-| 1.7 | Leva XAUUSD / NAS100 | ❓ | ⚠️ **XAUUSD 1:10** | ❓ | ❓ (1:30 su Swing) | |
-| 1.8 | Italia + postura MiFID II | ❓ | ❓ | ❓ | ❓ | |
+| 1.1 | Daily DD su balance o equity flottante? | 📎 **equity** (flottante incluso); 5% del capitale iniziale dal saldo delle 00:00 CE(S)T | 📎 **equity** (flottante incluso); 5% del saldo iniziale; livello di misura **ambiguo**, reset non trovato | 📎 5%; base, livello e flottante non pubblicati | ❓ | |
+| 1.2 | Max DD statico o trailing? | 📎 statico (2 fasi) · **trailing di fine giornata** (1 fase) | 📎 statico (10% 2-Step, 6% 1-Step, 8% Lite) | 📎 statico 10% (in parte da pagina promozionale) | ❓ | |
+| 1.3 | Weekend/overnight consentito? | 📎 valutazione sì; **funded Standard no** (overnight o weekend: la frase non distingue); **Swing sì** (non per 1-Step) | 📎 non trovato | 📎 **sì** | ✅ su Pro/Swing/One/Three | |
+| 1.4 | EA MT5 senza sorgente? | 📎 ✅ consentiti, sorgente non richiesto | 📎 ⚠️ **sotto 50k con costo extra; da 50k in su solo manuale**; vietati EA "da challenge" | 📎 non trovato | ⚠️ **richiede `.mq5`** | |
+| 1.5 | Consistency rule? | 📎 2 fasi: nessuna · **1 fase: Best Day Rule 50%** (nel 1o passaggio: "nessuna") | ⚠️ **contraddizione**: 40% nel 1o passaggio, da verificare nel 2o | 📎 **50% nel funded** (pagina promozionale) |  ❌ **40% best day → SQUALIFICATA** (payout 14/28 gg: violeremmo il 74,7% delle volte) | |
+| 1.5b | Se c'è: si calcola dall'ultimo payout o dall'intera storia? Accumulo libero? | 📎 accumulo libero (2 fasi), non libero (1 fase); Best Day sull'intera storia (lettura di Comet) | ⚠️ "dall'ultimo payout" solo nel 1o passaggio | 📎 finestra non specificata | ❓ | |
+| 1.6 | News: apertura e chiusura? | 📎 restrizioni **solo funded Standard**, ±2 min; Swing nessuna | 📎 challenge libera; **funded ±5 min, conta il 40% del profitto**, perdite piene | 📎 restrizioni nel High Stakes, finestra non trovata | ❓ "news gambling" vietato (vago) | |
+| 1.7 | Leva XAUUSD / NAS100 | 📎 conto 1:100 (Swing 1:30); per simbolo non pubblicata | 📎 non pubblicata (al 2026-01 era XAUUSD 1:10, nota precedente) | 📎 High Stakes 1:100; Hyper Growth metalli 1:10, indici 1:7,5 | ❓ (1:30 su Swing) | |
+| 1.8 | Italia + postura MiFID II | 📎 Italia ammessa; si dichiara simulazione, non broker | 📎 Italia ammessa; dichiara di non rientrare nella regolazione ordinaria | 📎 non trovato | ❓ | |
 
-🟡 = dato di **Comet del 06/10** (§3bis), **senza la citazione testuale**: da verificare prima di usarlo in una
-decisione. Il resto della griglia viene dalle verifiche precedenti.
+📎 = dato del **secondo passaggio di Comet** (06/10), con la **frase citata e il nome della pagina, senza URL**: per
+orientarsi, non per una decisione con soldi. Fonte integrale: [prop_regolamenti_comet_2026-10-06](reviews/prop_regolamenti_comet_2026-10-06.md).
+⚠️ = i due passaggi di Comet si contraddicono. Le celle senza simbolo vengono dalle verifiche precedenti.
 
 **Candidate da aggiungere alla griglia** (emerse come "no consistency rule + static DD + EA su MT5",
 tutte da verificare sui rulebook primari, nessuna approvata): Goat Funded Trader, FXIFY, Atlas
@@ -214,6 +215,30 @@ sono rifiutati, con l'elenco dei campi mancanti.
 ne' da FundedNext. ⚠️ Quel criterio era stato derivato da `nxt_fade` (posizioni fino a 20 giorni su 6
 strumenti), oggi KILL: per una strategia intraday il flottante pesa molto meno. Tutti i criteri del §1 vanno
 riletti sulla forma della prossima strategia candidata, non su quelle morte (§0).
+
+**Secondo passaggio (06/10, portato il 07/10)** — [fonte integrale](reviews/prop_regolamenti_comet_2026-10-06.md).
+Ora ogni valore ha la frase citata e il motivo dei `null`; gli URL restano nomi di pagina (stato
+`citato_senza_url`). Risolto: la perdita giornaliera **FTMO** (5% del capitale iniziale, misurata dal saldo
+delle 00:00 CE(S)T, flottante incluso: e' esattamente come la modella il simulatore); gli obiettivi FundedNext
+Stellar 2-Step (8% / 5%); il **149 di The5ers era un prezzo promozionale**. Ancora aperto:
+- **FundedNext, livello della perdita giornaliera**: "soglia fissa a 95.000" e' una deduzione di Comet, non una
+  citazione; la frase (*"in a single day"*) punta a un riferimento giornaliero e l'ora di reset non e' stata trovata.
+  E' l'unico campo che manca per simulare lo Stellar 2-Step;
+- **contraddizioni fra i due passaggi**: FundedNext consistency (40% → da verificare) e costo (549 → non trovato);
+  FTMO 1-Step consistency ("nessuna" → Best Day Rule 50%);
+- The5ers: parte dei termini viene dalla pagina promozionale "Summer Plan";
+- FTMO Standard funded: la frase non distingue overnight da weekend.
+
+**Simulabili** (07/10): solo `ftmo_2step` (pass rate; costo non trovato), con orizzonte di un anno perche' FTMO
+non pone limiti di tempo. Con 120 giorni il simulatore contava come fallimento un'attesa che la firm non punisce,
+e spostava l'ottimo di rischio verso l'alto (STRATEGY_LIFECYCLE §4quater, tabella del 07/10).
+
+**Cosa cambia per noi, se i dati reggono:**
+- **EA:** FundedNext ammette gli EA **solo sotto i 50k** (con costo extra); da 50k in su il trading deve essere
+  manuale. Per una strategia automatica FundedNext e' fuori dal 100k. FTMO li consente senza sorgente.
+- **Consistency:** il Best Day Rule al 50% dell'FTMO 1-Step tocca le strategie a payoff 1:3 (§1.5); il 2-Step no.
+- **News:** FundedNext nel funded conta solo il 40% del profitto fatto ±5 minuti dalle news, e le perdite intere.
+- **Weekend:** su FTMO serve lo Swing (leva 1:30) per tenere posizioni nel weekend da funded.
 
 ## 4. Esclusione permanente: la traccia segnali-mentore
 

@@ -194,8 +194,9 @@ def confronta_overlay_prop(day_trades, rules: dict, base_pct: float,
 
     Un overlay e' utile in prop se alza `ev_vs_zero` rispetto a 1R con un intervallo che lo regge, non se
     alza l'EV grezzo: quello sale anche a chi non ha vantaggio. Il rischio base si sceglie fra quelli che
-    restano buoni su tutto l'intervallo dell'attesa (la tabella del 06/10: piu' il vantaggio e' scarso, piu'
-    l'ottimo si sposta verso il rischio alto, quindi l'ottimo puntuale su un campione premia il rumore).
+    restano buoni su tutto l'intervallo dell'attesa (tabella del 07/10: piu' il vantaggio e' scarso, o il limite
+    di tempo corto, piu' l'ottimo si sposta verso il rischio alto; senza limite di tempo e con vantaggio vero
+    vince il rischio basso). L'orizzonte della simulazione (`max_days_default`) si sceglie sulla firm.
     `day_trades`: lista per giorno di (R, MAE in R), come `prop_sim.trades_by_day`.
     """
     _controlla(overlay, "prop")

@@ -110,3 +110,32 @@ Formato: lo stesso blocco del prompt A, punto B, piu' la tabella delle citazioni
 
 Quando torna l'output: si aggiornano `prop_rules.yaml` (voci `stato: da_verificare` → `verificato` solo con le
 citazioni) e la griglia del §3.
+
+## C. Domande mirate dopo il secondo passaggio (07/10)
+
+Solo i buchi che contano per simulare o per decidere. Una firm per volta.
+
+```text
+Solo sul sito ufficiale di {FIRM}. Per ogni risposta: la frase testuale, l'URL COMPLETO (che inizia con
+https://, non il nome della pagina) e la data. Se non trovi, scrivi NON_TROVATO e quali pagine hai aperto.
+
+FundedNext (Stellar 2-Step, Stellar 1-Step, Stellar Lite):
+1. Perdita giornaliera: la soglia e' calcolata ogni giorno partendo dal saldo (o dall'equity) di inizio giornata,
+   oppure e' una soglia fissa sotto il saldo iniziale che non si sposta mai? A che ora si azzera e in che fuso?
+   Se la pagina ha un esempio numerico, copialo intero.
+2. Consistency rule nei conti Stellar: esiste? percentuale? dall'ultimo payout o su tutta la storia?
+3. Prezzo ordinario della challenge da 100.000 per ciascun programma.
+4. Stellar 1-Step: obiettivo di profitto. Stellar Lite: profit split e frequenza dei payout.
+
+FTMO:
+5. Prezzo della challenge da 100.000, 2-Step e 1-Step.
+6. 1-Step: giorni minimi di trading e limite di tempo. Best Day Rule: testo completo, e vale in valutazione,
+   nel conto FTMO o in entrambi?
+7. Conto Standard funded: e' vietato tenere posizioni OVERNIGHT, o solo nel WEEKEND? Testo esatto.
+
+The5ers (High Stakes):
+8. Le regole del programma ORDINARIO (non promozioni): obiettivi delle fasi, perdita massima e se e' statica,
+   giorni minimi, prezzo del 100k, consistency rule.
+9. Perdita giornaliera: su cosa si calcola, da quale livello si misura, il flottante conta?
+10. Expert Advisor su MT5 consentiti? Serve il codice sorgente? L'Italia e' ammessa?
+```

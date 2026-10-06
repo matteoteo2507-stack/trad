@@ -11,6 +11,32 @@
 
 ---
 
+## 2026-10-07 (2) — Regolamenti prop, secondo passaggio Comet; l'ottimo di rischio del 06/10 dipendeva dal limite di tempo
+
+**Regolamenti** (0 trial, input). Secondo passaggio di Comet portato da Matteo, salvato integrale in
+[reviews/prop_regolamenti_comet_2026-10-06.md](docs/reviews/prop_regolamenti_comet_2026-10-06.md). Ora ogni valore
+ha la frase citata, ma gli "URL" sono nomi di pagina: stato **`citato_senza_url`**, per orientarsi e non per
+decidere con soldi. Griglia aggiornata in [PROP_FIRM_CRITERIA §3 e §3bis](docs/PROP_FIRM_CRITERIA.md).
+- Risolti: daily FTMO (5% del capitale iniziale dal saldo delle 00:00 CE(S)T, flottante incluso: come il
+  simulatore), obiettivi FundedNext 8%/5%, **The5ers 149 = prezzo promozionale**.
+- **Contraddizioni fra i due passaggi, registrate e non risolte**: FundedNext consistency e costo; FTMO 1-Step
+  "nessuna consistency" contro **Best Day Rule 50%**.
+- FundedNext, livello del daily: "soglia fissa a 95.000" e' una deduzione di Comet contro la frase *"in a single
+  day"*. Resta `null`, ed e' l'unico campo che manca per simulare lo Stellar 2-Step.
+- Per noi: FundedNext ammette EA **solo sotto i 50k**; FTMO 1-Step ha una consistency che tocca i payoff 1:3;
+  FundedNext nel funded conta il 40% dei profitti attorno alle news.
+- Domande mirate per il prossimo giro: [prompt_comet_regolamenti_prop.md](docs/prompt_comet_regolamenti_prop.md) §C.
+
+**Correzione della voce del 06/10.** Avevo scritto che il rischio fisso che massimizza il pass rate e' ~2% anche con
+E +0,10R. Quel numero veniva da un orizzonte simulato di 120 giorni, che il simulatore conta come fallimento. Sulle
+regole FTMO, che **non hanno limite di tempo**, con un orizzonte di un anno: E +0,10 → **1% (77%)**, E +0,20 → **1%
+(97%)**, E 0 → 1-2% (~30%), E −0,10 → 3% (13%). Era il limite di tempo a spingere verso il rischio alto; senza limite
+e con un vantaggio vero vince il rischio basso. Anche il **benchmark a vantaggio zero dipende dall'orizzonte**
+(all'1%: 13% con 120 giorni, 30% con un anno). L'orizzonte ora si sceglie sulla firm (`max_days_default`: 250 dove
+non c'e' limite, 120 dove il limite non e' stato trovato). Corretto in STRATEGY_LIFECYCLE §4quater.
+
+---
+
 ## 2026-10-07 — Pipeline di `prop-lab` corretta con due controlli; dati sensibili fuori dal repo pubblico; regolamenti Comet in quarantena
 
 **Decisioni di Matteo (07/10):** (1) correzioni ai difetti 1 e 2 della pipeline del socio approvate; (2) il repo

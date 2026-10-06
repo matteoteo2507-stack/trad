@@ -54,100 +54,129 @@ one_step_trailing:
 
 
 # =====================================================================================================
-# REGOLAMENTI VERI DELLE FIRM — raccolti da Comet il 2026-10-06 (prompt in trad, PROP_FIRM_CRITERIA §3bis)
-# Stato: DA VERIFICARE. Sono arrivati i blocchi YAML ma NON la tabella con citazioni, URL e date: finche'
-# non c'e', nessun numero di qui si cita come regola della firm. I campi ambigui restano null, con il valore
-# grezzo di Comet in `comet_*`: lab.prop.regole_mancanti() li elenca e evaluate() si rifiuta di simularli.
-# `funded.days` (orizzonte simulato del conto finanziato) NON e' una regola della firm: e' una scelta nostra.
+# REGOLAMENTI VERI DELLE FIRM — Comet, due passaggi (06/10). Fonte integrale:
+#   docs/reviews/prop_regolamenti_comet_2026-10-06.md (trad)
+# Stato `citato_senza_url`: ogni valore ha una frase citata e il nome della pagina, ma non l'URL. Utilizzabile per
+# orientarsi, non per una decisione con soldi. I campi ambigui o contraddittori fra i due passaggi restano null,
+# con il motivo e i valori di Comet accanto (`comet_*`): lab.prop.regole_mancanti() li elenca ed evaluate() rifiuta.
+# Campi che il simulatore NON modella (news, weekend, EA, leva, consistency nel funded): solo documentazione.
+# `funded.days` e `max_days_default` NON sono regole della firm: sono il nostro orizzonte di simulazione.
+# Giorno di trading: FTMO azzera alle 00:00 CE(S)T; il simulatore usa i giorni dell'orario server dei dati
+# (spesso EET = CE(S)T + 1h). Differenza di un'ora sul confine della giornata: piccola, ma dichiarata.
 # =====================================================================================================
 
 ftmo_2step:
-  description: "FTMO Challenge 2 fasi, 100k (Comet 06/10, da verificare)"
-  fonte: "Comet 2026-10-06, sito ufficiale FTMO secondo il prompt; citazioni non ancora riportate"
-  stato: da_verificare
+  description: "FTMO Challenge 2 fasi, 100k"
+  fonte: "Comet 06/10, FTMO Trading Objectives / FAQ (frasi citate, URL non riportati)"
+  stato: citato_senza_url
   account: 100000
-  fee: null                       # Comet: null
-  daily_loss_pct: 5
-  daily_basis: day_start          # Comet: day_start_balance. Interpretazione: 5% del saldo iniziale, misurato dal saldo di inizio giornata
-  comet_daily_includes_floating: true   # il simulatore lo approssima con la MAE del trade (vedi PROP_FIRM_CRITERIA §1.1)
+  fee: null                         # NON_TROVATO da Comet (FTMO lo pubblica: da prendere dalla pagina prezzi)
+  daily_loss_pct: 5                 # "5% of the Initial Simulated Capital"
+  daily_basis: day_start            # "account balance recorded at 00:00 CE(S)T": soglia = saldo delle 00:00 - 5% del capitale iniziale
+  comet_daily_includes_floating: true   # "Equity (Balance + Open Positions P/L ± Swaps – Commissions)"; il simulatore lo approssima con la MAE
   max_loss_pct: 10
-  max_loss_type: static
+  max_loss_type: static             # "a static limit"
   phases:
-    - {name: fase1, target_pct: 10, min_days: 4, max_days: null}
+    - {name: fase1, target_pct: 10, min_days: 4, max_days: null}   # "No time limit"
     - {name: fase2, target_pct: 5, min_days: 4, max_days: null}
-  max_days_default: 120           # nostro: orizzonte di simulazione quando la firm non pone limiti
-  funded: {days: 120, split_pct: 80, payout_every: 14, refund_fee: true}   # Comet: "on demand from day 14", accumulo libero
+  max_days_default: 250             # la firm NON pone limite di tempo: orizzonte nostro di un anno di trading (con 120 il simulatore contava come fallimento un'attesa che FTMO non punisce)
+  funded: {days: 120, split_pct: 80, payout_every: 14, refund_fee: true}   # 80% -> 90% con Reward Growth; payout dal giorno 14, accumulo libero
+  note_non_simulate: "Standard funded: restrizioni overnight/weekend (la frase citata non distingue i due) e news ±2 min; Swing: nessuna restrizione, leva 1:30. EA consentiti, sorgente non richiesto. Leva Standard 1:100, per simbolo non pubblicata. Italia ammessa."
 
 ftmo_1step:
-  description: "FTMO Challenge 1 fase, 100k (Comet 06/10, da verificare)"
-  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
-  stato: da_verificare
+  description: "FTMO Challenge 1 fase, 100k"
+  fonte: "Comet 06/10, FTMO 1-Step / Trading Objectives (frasi citate, URL non riportati)"
+  stato: citato_senza_url
   account: 100000
-  fee: null
+  fee: null                         # NON_TROVATO; fee non rimborsata
   daily_loss_pct: 3
-  daily_basis: day_start          # Comet: day_start_balance
+  daily_basis: day_start
   comet_daily_includes_floating: true
   max_loss_pct: 10
-  max_loss_type: trailing_eod
+  max_loss_type: trailing_eod       # "end-of-day trailing limit"
   trailing_lock: false
+  consistency_pct: 50               # Best Day Rule: "Best Day … not … more than 50%" (citazione troncata). Nel 1o passaggio Comet diceva "nessuna"
+  comet_consistency_window: account_lifetime
   phases:
-    - {name: fase1, target_pct: 10, min_days: null, max_days: null}   # min_days: Comet null -> NON simulabile
-  max_days_default: 120
-  funded: {days: 120, split_pct: 90, payout_every: 14, refund_fee: false}   # Comet: accumulo NON libero
+    - {name: fase1, target_pct: 10, min_days: null, max_days: null}   # min_days: NON trovato in nessuno dei due passaggi
+  max_days_default: 120             # limite di tempo NON trovato: orizzonte nostro, da rivedere
+  funded: {days: 120, split_pct: 90, payout_every: 14, refund_fee: false}   # accumulo NON libero
+  note_non_simulate: "Swing non disponibile per il 1-Step. News: come il 2-Step Standard."
 
 fundednext_stellar_2step:
-  description: "FundedNext Stellar 2-Step CFD, 100k (Comet 06/10, da verificare)"
-  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
-  stato: da_verificare
+  description: "FundedNext Stellar 2-Step CFD, 100k"
+  fonte: "Comet 06/10, Stellar 2-Step rules / trading objectives (frasi citate, URL non riportati)"
+  stato: citato_senza_url
   account: 100000
-  fee: 549
-  daily_loss_pct: 5
-  daily_basis: null               # Comet: "initial". AMBIGUO: base del 5% (saldo iniziale) o soglia fissa dal saldo iniziale?
-  comet_daily_basis: initial
+  fee: null                         # CONTRADDIZIONE: 549 nel 1o passaggio, NON_TROVATO nel 2o
+  daily_loss_pct: 5                 # "must not lose more than 5% of the initial balance in a single day"
+  daily_basis: null                 # AMBIGUO: base = saldo iniziale, ma il livello da cui si misura non e' citato
+  comet_daily_basis: "initial_balance - 5% (deduzione di Comet, non citazione: 'in a single day' punta a un riferimento giornaliero; reset NON_TROVATO)"
   comet_daily_includes_floating: true
-  max_loss_pct: 10
+  max_loss_pct: 10                  # "must not drop below 90% of its initial balance"
   max_loss_type: static
-  consistency_pct: 40             # Comet: dall'ultimo payout. Il simulatore la applica solo al passaggio della fase, non al funded
-  comet_consistency_window: since_last_payout
+  consistency_pct: null             # CONTRADDIZIONE: 40% dall'ultimo payout nel 1o passaggio, DA_VERIFICARE nel 2o
   phases:
-    - {name: fase1, target_pct: null, min_days: 5, max_days: null}   # target: Comet null
-    - {name: fase2, target_pct: null, min_days: 5, max_days: null}
-  max_days_default: 120
-  funded: {days: 120, split_pct: 80, payout_every: 21, refund_fee: null}   # Comet: "initial 21-day trading cycle"
+    - {name: fase1, target_pct: 8, min_days: 5, max_days: null}   # "8% in Phase 1", "at least 5 different days", "no time limit"
+    - {name: fase2, target_pct: 5, min_days: 5, max_days: null}
+  max_days_default: 250             # "no time limit": orizzonte nostro di un anno di trading
+  funded: {days: 120, split_pct: 80, payout_every: 21, refund_fee: null}   # primo ciclo 21 giorni; la frequenza dopo dipende dall'opzione scelta
+  note_non_simulate: "EA: sotto 50k consentiti con costo aggiuntivo, da 50k in su SOLO MANUALE; vietati gli EA fatti per passare le challenge. News funded: ±5 min, conta solo il 40% del profitto, perdite piene. Italia ammessa."
 
 fundednext_stellar_1step:
-  description: "FundedNext Stellar 1-Step CFD, 100k (Comet 06/10, da verificare)"
-  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
-  stato: da_verificare
+  description: "FundedNext Stellar 1-Step CFD, 100k"
+  fonte: "Comet 06/10 (frasi citate, URL non riportati)"
+  stato: citato_senza_url
   account: 100000
-  fee: null
-  daily_loss_pct: 3
-  daily_basis: null               # Comet: "initial", ambiguo come sopra
-  comet_daily_basis: initial
+  fee: null                         # tabella prezzi: "circa 569,99" (non citato); YAML di Comet: DA_VERIFICARE
+  daily_loss_pct: 3                 # "3% of initial balance"
+  daily_basis: null                 # stessa ambiguita' del 2-Step
+  comet_daily_basis: "initial_balance - 3% (deduzione di Comet)"
   comet_daily_includes_floating: true
   max_loss_pct: 6
   max_loss_type: static
-  consistency_pct: 40
-  comet_consistency_window: since_last_payout
+  consistency_pct: null             # come sopra: 40% nel 1o passaggio, DA_VERIFICARE nel 2o
   phases:
-    - {name: fase1, target_pct: null, min_days: 5, max_days: null}
-  max_days_default: 120
+    - {name: fase1, target_pct: null, min_days: 5, max_days: null}   # target: NON trovato in nessuno dei due passaggi
+  max_days_default: 120             # limite di tempo NON trovato: orizzonte nostro, da rivedere
   funded: {days: 120, split_pct: 80, payout_every: null, refund_fee: null}
+  note_non_simulate: "EA: solo sotto 50k. News funded: regola del 40%."
+
+fundednext_stellar_lite:
+  description: "FundedNext Stellar Lite 2 fasi, 100k (nuovo nel 2o passaggio)"
+  fonte: "Comet 06/10, pagina Stellar Lite (frasi citate, URL non riportati)"
+  stato: citato_senza_url
+  account: 100000
+  fee: null
+  daily_loss_pct: 4                 # "4% Daily Loss Limit"
+  daily_basis: null                 # stessa ambiguita'
+  comet_daily_includes_floating: true
+  max_loss_pct: 8
+  max_loss_type: static
+  phases:
+    - {name: fase1, target_pct: 8, min_days: 5, max_days: null}
+    - {name: fase2, target_pct: 4, min_days: 5, max_days: null}
+  max_days_default: 120             # limite di tempo NON trovato: orizzonte nostro, da rivedere
+  funded: {days: 120, split_pct: null, payout_every: null, refund_fee: null}
+  note_non_simulate: "EA: solo sotto 50k. News funded: regola del 40%. Overnight/weekend: NON_TROVATO."
 
 the5ers_high_stakes:
-  description: "The5ers High Stakes 2 fasi, 100k (Comet 06/10, da verificare)"
-  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
-  stato: da_verificare
+  description: "The5ers High Stakes 2 fasi, 100k"
+  fonte: "Comet 06/10, High Stakes / Help / pagina promozionale Summer Plan (frasi citate, URL non riportati)"
+  stato: citato_senza_url
   account: 100000
-  fee: 149                        # ⚠️ sospetto: per 100k sembra basso (memoria di Claude, non verificata)
-  daily_loss_pct: 5
-  daily_basis: null               # Comet: null
-  max_loss_pct: 10
-  max_loss_type: static
-  consistency_pct: 50             # Comet: finestra "other", non specificata
+  fee: null                         # 149 era un PREZZO PROMOZIONALE ("$149, on the 2-Step 10/5 tier"), non la tariffa ordinaria
+  comet_fee_promozionale: 149
+  daily_loss_pct: 5                 # "Daily Loss 5%"
+  daily_basis: null                 # base e livello NON_PUBBLICATO; flottante NON_TROVATO
+  max_loss_pct: 10                  # "wider 10% loss limit" (Summer Plan)
+  max_loss_type: static             # "10% Static Maximum" da riepilogo da verificare
+  consistency_pct: null             # nessuna in valutazione (il simulatore applica consistency_pct al passaggio delle fasi)
+  comet_consistency_funded_pct: 50  # "50% consistency rule switches on once you are funded" (Summer Plan): solo nel FUNDED, non modellato
   comet_consistency_window: other
   phases:
-    - {name: fase1, target_pct: 10, min_days: null, max_days: null}
+    - {name: fase1, target_pct: null, min_days: null, max_days: null}   # 8% o 10% secondo il piano (8/5 o 10/5)
     - {name: fase2, target_pct: 5, min_days: null, max_days: null}
-  max_days_default: 120
-  funded: {days: 120, split_pct: 80, payout_every: 14, refund_fee: null}   # Comet: "every two weeks"
+  max_days_default: 120             # limite di tempo NON trovato: orizzonte nostro, da rivedere
+  funded: {days: 120, split_pct: 80, payout_every: 14, refund_fee: null}   # 80% -> 100%; payout 14 giorni dopo il funding, poi ogni due settimane
+  note_non_simulate: "Overnight e weekend consentiti. News: restrizioni, finestra NON_TROVATO. EA: NON_TROVATO. Leva 1:100 (Hyper Growth: metalli 1:10, indici 1:7,5). Italia: NON_TROVATO."

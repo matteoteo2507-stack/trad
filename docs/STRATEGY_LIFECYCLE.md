@@ -201,10 +201,15 @@ misurano separatamente:
   di mercato ex ante, possono avere covarianza con l'esito, quindi cambiano il segnale. Sono filtri (§4) e
   si testano per ablazione (§4bis).
 - **Il rischio base si sceglie sull'intervallo, non sul picco.** Il rischio fisso che massimizza il pass
-  rate di una challenge dipende dal vantaggio: misurato il 06/10 su due fasi 10%+5% con limite 10%, l'ottimo
-  e' ~3% con E = −0,10R, ~2% con E = 0, ~2% con +0,10 e 1-2% con +0,20 (sotto lo 0,5% scatta il timeout).
-  Piu' il vantaggio e' scarso, piu' l'ottimo e' audace (Dubins-Savage, da confermare): l'ottimo puntuale su un
-  campione premia il rumore. Si sceglie il rischio che resta buono su tutto l'intervallo dell'E[R].
+  rate di una challenge dipende dal vantaggio **e dal limite di tempo**. Misurato il 07/10 sulle regole FTMO
+  2 fasi (10%+5%, daily 5%, max 10% statico, payoff 1:1), con un orizzonte di un anno perche' FTMO non pone
+  limiti: l'ottimo e' ~3% con E = −0,10R, 1-2% con E = 0, **1% con +0,10 (77%) e con +0,20 (97%)**. Con un
+  orizzonte di 120 giorni lo stesso calcolo metteva l'ottimo a 2% anche con vantaggio positivo: era il limite di
+  tempo a spingere verso il rischio alto (il numero del 06/10, scritto qui fino al 07/10, dipendeva da quello).
+  Senza limite di tempo e con un vantaggio vero vince il rischio basso; il gioco audace conviene solo a chi un
+  vantaggio non ce l'ha (Dubins-Savage, da confermare). Quindi: l'**orizzonte della simulazione si sceglie sulla
+  firm**, e l'ottimo puntuale su un campione premia il rumore. Si sceglie il rischio che resta buono su tutto
+  l'intervallo dell'E[R].
 - Scegliere fra 1R e gli overlay per operare e' una **selezione fra al massimo 5**: si dichiara, con il
   criterio "positivo ovunque" (§4ter).
 - Vale **da qui in avanti**. Una famiglia CLOSED non si riapre con un overlay (§7). Il caso delle famiglie
