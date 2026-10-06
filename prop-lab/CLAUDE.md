@@ -23,6 +23,12 @@ Tutto in una volta: `python -m lab.cli all --family <famiglia> --symbol XAUUSD -
 5. I costi (`config/symbols.yaml`) e le regole prop (`config/prop_rules.yaml`) sono **esempi**: prima di conclusioni operative vanno allineati al broker/prop reali dell'utente.
 6. Dopo aver scritto o modificato una strategia → fai controllare il codice dall'agente `quant-reviewer`.
 7. Per analizzare la fase 3 o proporre nuovi profili di rischio → agente `prop-risk-manager`.
+8. **Nessun EV senza il benchmark a vantaggio zero** (`pass_zero`, `ev_zero`, `ev_vs_zero`; per un candidato
+   vero `lab.prop.evaluate_ci`). La challenge e' un'opzione: anche chi non ha vantaggio ha EV positivo con
+   rischio alto. `DA_OSSERVARE` = "non dimostrato" (esce anche su rumore puro).
+9. Questa cartella vive anche dentro il repo `trad` (`prop-lab/`): ogni modifica va in `CHANGELOG.md`.
+   In `trad` valgono in piu' le regole di `trad/CLAUDE.md` e `docs/STRATEGY_LIFECYCLE.md` (§4quater: verdetto
+   solo sul binario a rischio fisso 1R, overlay dalla libreria dichiarata in `core/sizing.py`).
 
 ## Struttura
 - `lab/data.py` loader CSV MT5 (orario server, usa la colonna `<SPREAD>` se presente)
@@ -34,6 +40,7 @@ Tutto in una volta: `python -m lab.cli all --family <famiglia> --symbol XAUUSD -
 - `data/` CSV esportati da MT5 (`DEMO_*` = sintetici, solo per verificare che tutto giri)
 
 ## Stile
-- Rispondi in italiano. Riporta sempre: n trade, expectancy in R, PF, max DD in R, quota dei costi, pass rate, EV.
+- Rispondi in italiano. Riporta sempre: n trade, expectancy in R, PF, max DD in R, quota dei costi, pass rate
+  **accanto a pass_zero**, EV **accanto a ev_vs_zero**.
 - Non presentare MAI un risultato su dati `DEMO_*` come se avesse valore di trading.
 - Test del motore: `python tests/test_core.py`

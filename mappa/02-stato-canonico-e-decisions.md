@@ -10,7 +10,7 @@ metodo:
 
 # 2 · Stato canonico e DECISIONS
 
-← [[00-panoramica-trad]] · componente 2 di 13 · viene da [[01-ciclo-di-vita-e-gate]]
+← [[00-panoramica-trad]] · componente 2 di 14 · viene da [[01-ciclo-di-vita-e-gate]]
 
 ## Cosa fa
 

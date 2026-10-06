@@ -25,7 +25,9 @@ Sopra ~50% la strategia è fragile: basta uno spread un po' più largo per azzer
 
 **Fase 3 (`stage3_prop.csv`, `stage3_rischio_pivot.csv`)** — la parte più importante.
 - `pass_rate` (tutte le fasi), `fail_daily`, `fail_max`, `timeout`, `median_days`
-- `ev_attempt` = payout attesi nel funded − fee (in valuta del conto)
+- `ev_attempt` = payout attesi nel funded − fee (in valuta del conto). **Non si legge da solo**: `pass_zero` e
+  `ev_zero` sono gli stessi numeri con i trade a vantaggio zero, e `ev_vs_zero` = `ev_attempt` − `ev_zero` e' la
+  parte dovuta al vantaggio. I profili si scelgono su `ev_vs_zero` (06/10: a vantaggio zero EV ~+1.900)
 - Il pivot mostra il pass rate medio per **modello di rischio × rischio base**:
   rischio troppo basso → timeout; troppo alto → fail_max/fail_daily. Cerca la zona dove il pass rate
   è alto e **stabile** fra rischi vicini, non il massimo puntuale.

@@ -84,7 +84,7 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 | `signal_copier/` (configurazione propria in `signal_copier/config.yaml`), `docs/COPIER_EXECUTION_PREREGISTRATION.md` | copia dei segnali Telegram → MT5 | 3 · signal copier | vivo (demo dal 21/09) |
 | `mql5/`, `analysis/ops/`, `docs/health/`, `docs/FADE_LIVE_AUDIT_PROTOCOL.md` | Expert Advisor e loro sorveglianza | 4 · EA e VPS | sorveglianza |
 | `analysis/mentor_signals/`, `analysis/{mentor_entries,mentor_momentum,export_dataset,probe_mt5}.py`, `docs/MENTOR_*`, `docs/PROP_FIRM_CRITERIA.md`, `_export_telegram/` (dati, fuori da git) | misura del track record del mentore | 5 · segnali mentore | vivo |
-| `core/` (tranne runner, registry, regime), `core/tests/`, `config/risk.yaml` (letto da `core/risk_gate.py`) | primitive di misura e gate di rischio delle strategie meccaniche | 6 · primitive | vivo |
+| `core/` (tranne runner, registry, regime, prop_sim, sizing), `core/tests/`, `config/risk.yaml` (letto da `core/risk_gate.py`) | primitive di misura e gate di rischio delle strategie meccaniche | 6 · primitive | vivo |
 | `analysis/trend/`, `docs/TREND_*`, `docs/B2_KICHEV_POTENZA.md` | uno studio completo, usato come esempio | 7 · anatomia di uno studio | vivo |
 | `analysis/{level_research,nxt,opening_range,meanrev,round_grid,extension,trading-bot-eval,veltrix,forexgump}/`, `strategies/{tsmom,meanrev,seasonality}/`, i restanti `docs/*` di famiglia (`LEVEL_RESEARCH_PLAN`, `NXT_EXIT_CEILING_ADDENDUM`, `B3_*`) | tutte le famiglie studiate | 8 · catalogo delle famiglie | archivio, tranne `forexgump` (vivo) |
 | `fondamenti_tecnici/`, `analysis/intake/`, `materiale_socio/`, `TRADING_PRINCIPLES.md` | conoscenza distillata e porta del materiale nuovo | 9 · conoscenza e intake | vivo |
@@ -92,6 +92,7 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 | `pyproject.toml`, `conftest.py`, `tests/`, `config/markets.yaml`, `config/README.md`, `.env.example`, `.gitignore`, `data/`, `CONVENTIONS.md` | ambiente, test, configurazione | 11 · ambiente e test | vivo |
 | `core/{runner,registry}.py`, `strategies/{_base,_template,confluence_levels,confluence_auto}/`, `notifiers/`, `brokers/` (tranne mt5), `backtesters/`, `level_analyzer/`, `journals/`, `docs/{ARCHITECTURE_v2,STAGE2_TESTING_PLAN,OPERATIONAL_GUIDE,TRADING_WORKFLOW_DESIGN,PYTHON_FILES_MAP}.md`, `PROJECT.md`, `ROADMAP.md`, `README.md`, `Messaggitg.txt` | l'architettura di maggio–giugno (pre e post pivot) | 12 · sistemi dormienti | dormiente |
 | `strategies/stock_selector/`, `core/regime.py`, `docs/INVESTING_PILLAR_PLAN.md`, `docs/INVESTMENT_ALGO_DESIGN.md`, `algoritmo selezione azioni .ipynb`, `stoxs picks/` | investimento passivo e il vecchio selettore di azioni | 13 · investing | archivio (selettore), vivo (PAC) |
+| `prop-lab/` (repo condiviso col socio VELTRIX, allineato con `prop-lab/CHANGELOG.md`), `core/prop_sim.py`, `core/sizing.py` | simulatore di challenge prop, pipeline di famiglia del socio, doppio binario della gestione del rischio | 14 · prop-lab e doppio binario | vivo (dal 06/10) |
 | `mappa/` | questa mappa, il cruscotto e il registro modifiche di trad | — | vivo |
 | `backtest_results/`, `logs/`, `output/`, `socio-trading-bot/`, `28-09/` | risultati e materiale locale, quasi tutto fuori da git | — | dati |
 
@@ -125,6 +126,7 @@ un branch e tu lo trovi).
 | 11 | ambiente e test | come si lancia e come si controlla che funzioni | quiz |
 | 12 | sistemi dormienti | cosa c'è ma non gira, e perché non va toccato a caso | quiz |
 | 13 | investing | PAC e selettore archiviato | quiz |
+| 14 | prop-lab e doppio binario | il simulatore prop e la regola dei due binari, arrivati il 06/10: [[14-prop-lab-e-doppio-binario]] | spiegazione |
 
 **A che punto sei** non si scrive qui: sta nel campo `compreso` del frontmatter di ogni nota, e il
 cruscotto (`mappa/_cruscotto.base`, vista *Comprensione*) lo raccoglie da solo.

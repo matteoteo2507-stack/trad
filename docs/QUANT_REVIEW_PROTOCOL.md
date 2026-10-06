@@ -253,6 +253,23 @@ Verifica che il trade log includa:
 Se uno qualsiasi manca, **ricalcola le metriche** dopo aver applicato una
 correzione conservativa (es. -1 pip / trade) e confronta degrado.
 
+## Step 5bis — I due binari della gestione del rischio (dal 2026-10-06)
+
+Sempre, anche quando il binario 1R e' gia' negativo ([STRATEGY_LIFECYCLE §4quater](STRATEGY_LIFECYCLE.md)):
+
+```python
+from core.sizing import confronta_overlay, confronta_overlay_prop
+tab, runs = confronta_overlay(R)                       # capitale proprio: O1, O3 contro la sequenza rimescolata
+tab_prop = confronta_overlay_prop(day_trades, rules, base_pct=1.0)   # prop: 1R, O1-O4 contro il vantaggio zero
+```
+
+- [ ] Il verdetto e le metriche degli step 4-5 sono quelle del **binario 1R**.
+- [ ] Per ogni overlay: `valore_dipendenza` con la sua banda e `runs`. Un AGGIUNGE e' un'**ipotesi** da
+      forward, mai un verdetto (falso allarme 5% per overlay).
+- [ ] In prop: si cita `ev_vs_zero` con il suo intervallo e `pass_zero` accanto a `pass_rate`. **Un EV
+      senza il benchmark a vantaggio zero non si cita** (il 05/10 il vantaggio zero dava EV ~+1.900).
+- [ ] Le regole prop usate sono modelli parametrici o il regolamento primario della firm? Dirlo.
+
 ## Step 6 — Pre-mortem (10 min)
 
 Rispondi per iscritto alle 3 domande del §6 di `quant_reviewer.md`:

@@ -160,6 +160,54 @@ tutti i sottoperiodi e gruppi"**, non "massimo nel campione": la politica ottima
 verifica con `core.verifiche.test_perturbazione` (buco 33): se muovere gli input del 10% sposta l'uscita
 oltre la soglia dichiarata, il risultato vive sul punto, non sulla regola.
 
+### 4quater. La gestione del rischio si legge su DUE BINARI (dal 2026-10-06)
+
+Decisione di Matteo del 06/10, dopo la sessione col socio VELTRIX (DECISIONS 2026-10-06). Ogni test o
+backtest di una strategia riporta, **a prescindere dall'esito**:
+
+1. **binario 1R**: rischio fisso per trade. E' l'**unico** su cui si da' il verdetto sul vantaggio.
+2. **binari di overlay**: la stessa sequenza di trade sotto ogni overlay della **libreria dichiarata**
+   in [`core/sizing.py`](../core/sizing.py) (`LIBRERIA`), fissa per tutto il repo e non scelta per strategia:
+
+| overlay | cosa fa | obiettivo | perche' puo' servire | quando danneggia |
+|---|---|---|---|---|
+| **O1 cuscinetto** | rischio proporzionale alla distanza dal limite di perdita (min 0,25×) | proprio, prop | un limite duro lo giustifica anche con esiti indipendenti | costa crescita; con rischio base basso, timeout |
+| **O2 guardia giornaliera** | stop alla giornata a meta' del limite giornaliero o dopo 3 trade; mai un trade che possa sforare | prop | la perdita giornaliera chiude il conto | taglia il vantaggio se e' concentrato in pochi trade del giorno |
+| **O3 serie di perdite** | dimezza dopo 2 perdite di fila, fino a 0,25× | proprio, prop | solo se le perdite arrivano raggruppate | esiti indipendenti (recupero lento) o alternati (toglie valore) |
+| **O4 avvicinamento al target** | dimezza oltre l'80% della strada verso l'obiettivo di fase | prop | obiettivo a barriera | inutile su capitale proprio |
+
+**Il principio** (perche' il verdetto sta solo sul binario 1R): guadagno = Σ E[size]·E[R] + Σ Cov(size, R).
+Una size decisa solo dal passato non ha covarianza con un esito indipendente: un overlay **non crea
+vantaggio**, sposta il rischio nel tempo e cambia il percorso. Ha valore vero solo in due casi, che si
+misurano separatamente:
+
+- **valore di dipendenza** (capitale proprio): gli esiti sono raggruppati. Si misura con
+  `confronta_overlay`, contro la **stessa sequenza rimescolata**, che azzera la covarianza. Banda al 95%:
+  con esiti indipendenti ogni overlay da' un falso allarme con probabilita' 5% (misurato il 06/10 su 200
+  sequenze: 7,0% e 5,5%). **E' un'ipotesi sul processo, non un risultato**: si conferma solo in forward.
+- **valore di struttura** (prop): l'obiettivo e' a barriere, quindi la size ottima dipende dallo stato
+  anche con esiti indipendenti. Ma vale anche per chi non ha vantaggio: si misura con
+  `confronta_overlay_prop`, che riporta per ogni binario il benchmark a **vantaggio zero** e `ev_vs_zero`
+  con l'incertezza di stima. Si legge `ev_vs_zero`, non l'EV grezzo.
+
+**Regole:**
+- Un overlay **non salva un NO-GO e non promuove niente**. Un overlay che trasforma un 1R negativo in
+  positivo e' un campanello: o dipendenza (da confermare) o un difetto.
+- Aggiungere un overlay alla libreria dopo aver visto un risultato e' un **tentativo** (§3); `confronta_*`
+  rifiuta i nomi fuori libreria.
+- **Non sono overlay** il vol targeting, i filtri di regime e la size per "convinzione": usano informazione
+  di mercato ex ante, possono avere covarianza con l'esito, quindi cambiano il segnale. Sono filtri (§4) e
+  si testano per ablazione (§4bis).
+- **Il rischio base si sceglie sull'intervallo, non sul picco.** Il rischio fisso che massimizza il pass
+  rate di una challenge dipende dal vantaggio: misurato il 06/10 su due fasi 10%+5% con limite 10%, l'ottimo
+  e' ~3% con E = −0,10R, ~2% con E = 0, ~2% con +0,10 e 1-2% con +0,20 (sotto lo 0,5% scatta il timeout).
+  Piu' il vantaggio e' scarso, piu' l'ottimo e' audace (Dubins-Savage, da confermare): l'ottimo puntuale su un
+  campione premia il rumore. Si sceglie il rischio che resta buono su tutto l'intervallo dell'E[R].
+- Scegliere fra 1R e gli overlay per operare e' una **selezione fra al massimo 5**: si dichiara, con il
+  criterio "positivo ovunque" (§4ter).
+- Vale **da qui in avanti**. Una famiglia CLOSED non si riapre con un overlay (§7). Il caso delle famiglie
+  chiuse vicine a zero e' in [doppio_binario_closed_2026-10-06](reviews/doppio_binario_closed_2026-10-06.md).
+
 ## 5. Tassonomia dei verdetti
 
 | Verdetto | Significato | Cosa succede |

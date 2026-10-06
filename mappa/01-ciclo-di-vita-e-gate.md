@@ -10,7 +10,7 @@ metodo: spiegazione
 
 # 1 · Ciclo di vita e gate
 
-← [[00-panoramica-trad]] · componente 1 di 13
+← [[00-panoramica-trad]] · componente 1 di 14
 
 ## Cosa fa
 
@@ -85,6 +85,10 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   qualunque cosa si faccia).
 - **Una famiglia chiusa non si riapre** con un ritocco o "più dati": solo con evidenza esterna
   nuova (§7).
+- **Due binari per la gestione del rischio** (§4quater, dal 06/10): ogni test riporta il binario a
+  **rischio fisso 1R**, l'unico su cui si dà il verdetto, e gli overlay della libreria fissa di
+  `core/sizing.py`. Un overlay non salva un NO-GO; in prop si legge `ev_vs_zero`, mai l'EV da solo.
+  Componente 14: [[14-prop-lab-e-doppio-binario]].
 
 ## Come si lancia
 
@@ -147,7 +151,8 @@ di fill non ottenibili; una famiglia CLOSED che rientra "con più dati".
 ## Dipende da / chi dipende da lui
 
 - **Usa:** le primitive di misura (componente 6: `core/quant_metrics.py`, `core/random_baseline.py`,
-  `core/resolve_trade.py`, `core/data_checks.py`, `core/verifiche.py`).
+  `core/resolve_trade.py`, `core/data_checks.py`, `core/verifiche.py`) e il doppio binario con il
+  simulatore prop (componente 14: `core/sizing.py`, `core/prop_sim.py` → `prop-lab/`).
 - **Scrive in:** stato canonico e `DECISIONS.md` (componente 2).
 - **Lo applicano:** ogni studio di `analysis/` (componenti 7 e 8), il copier e gli EA nella fase
   dopo il capitale (componenti 3 e 4).

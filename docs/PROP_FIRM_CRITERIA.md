@@ -136,6 +136,18 @@ supera nel 10/18 = **~56%** dei casi. Un superamento vale come evidenza solo se 
 l'edge dichiarato e' **molto** piu' alta di quella a edge zero, e ogni regola aggiuntiva (drawdown
 giornaliero, consistency) va simulata sopra, non ignorata.
 
+**Simulata sopra, dal 2026-10-06:** il simulatore di challenge completo (fasi, giornaliero, trailing,
+consistency, giorni minimi, funded con payout) e' `prop-lab`, raggiunto da `trad` via
+[`core/prop_sim.py`](../core/prop_sim.py). `evaluate_ci` riporta pass rate ed EV con l'**incertezza di
+stima** e lo stesso calcolo a **vantaggio zero** con gli stessi percorsi; si cita `ev_vs_zero`, la parte di
+EV dovuta al vantaggio. Perche': il 05/10 una strategia a vantaggio zero passava ~30% delle due fasi
+10%+5% e aveva EV ~+1.900 € per tentativo col profilo guardia giornaliera al 3% (la challenge e'
+un'opzione). E il rischio che massimizza il pass rate **dipende dal vantaggio** (piu' e' scarso, piu' e'
+alto): scegliere il profilo che massimizza l'EV su un campione premia il gioco audace, cioe' chi un
+vantaggio non ce l'ha ([STRATEGY_LIFECYCLE §4quater](STRATEGY_LIFECYCLE.md)). Le regole di
+`prop-lab/config/prop_rules.yaml` sono modelli parametrici: per un numero operativo vanno allineate alla
+griglia del §3.
+
 ## 2. Criteri di RANKING (a parità di eliminatori)
 
 In ordine di peso. Nota che il **profit split è ultimo**: l'80% o il 90% di zero è zero.

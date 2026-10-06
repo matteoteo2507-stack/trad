@@ -19,6 +19,7 @@ FASE 4  conferma sul periodo OUT-OF-SAMPLE mai visto + Deflated Sharpe  → PROM
 ## Avvio rapido
 ```bash
 pip install pandas numpy scipy pyyaml tabulate
+python tools/make_demo_data.py          # i CSV non sono in git: rigenera data/DEMO_XAUUSD_H1.csv (identico)
 python tests/test_core.py && python tests/test_lookahead.py
 python -m lab.cli list
 python -m lab.cli all --family mean_reversion --symbol XAUUSD --data data/DEMO_XAUUSD_H1.csv
@@ -39,6 +40,14 @@ Più storia = meglio (almeno 3–5 anni su H1; per M5/M15 almeno 1–2 anni).
 - `config/prop_rules.yaml` → regole reali della tua prop (target, daily, max loss, trailing, consistency, fee)
 - `config/pipeline.yaml` → soglie dei cancelli
 - `config/risk_profiles.yaml` → gestioni del rischio da confrontare
+
+## Come si legge un risultato prop (aggiunto in trad, 06/10/2026)
+- **Mai l'EV da solo.** La challenge e' un'opzione: a vantaggio zero il profilo guardia giornaliera al 3% passava
+  ~30% e aveva EV ~+1.900 per tentativo. Si legge `ev_vs_zero` (EV meno lo stesso EV a vantaggio zero), e per un
+  candidato vero `lab.prop.evaluate_ci`, che aggiunge l'incertezza di stima.
+- `DA_OSSERVARE` vuol dire "non dimostrato": su rumore puro esce in 5 serie su 8 (misura del 05/10).
+- Su Windows: se il pool di processi da' problemi, `PROPLAB_WORKERS=1`.
+- Cosa e' cambiato e perche': `CHANGELOG.md`. In `trad` la cartella e' raggiunta da `core/prop_sim.py`.
 
 ## Approssimazioni dichiarate
 - motore bar-by-bar: se SL e TP sono nella stessa barra conta lo SL (conservativo); niente tick

@@ -154,7 +154,7 @@ def run(sym):
         if rp is None:
             continue
         adxv = float(ADX[sess[jbk]]) if np.isfinite(ADX[sess[jbk]]) else 0.0
-        trades.append({"year": int(year[f]), "side": side, "risk": risk,
+        trades.append({"date": dd, "year": int(year[f]), "side": side, "risk": risk,   # date: 06/10, per il binario prop
                        "R_pess": rp - cR,
                        # A5 (2026-09-18): era `else 0.0`, cioe' un timeout sotto la
                        # convenzione ottimistica veniva contato come pareggio invece che

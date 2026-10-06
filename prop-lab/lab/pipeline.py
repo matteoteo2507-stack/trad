@@ -12,6 +12,7 @@ import pickle
 import sqlite3
 import time
 from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 
 import numpy as np
 import pandas as pd
@@ -20,7 +21,7 @@ import yaml
 from .backtest import run_backtest
 from .data import load_mt5_csv, timeframe_label
 from .metrics import trade_metrics, plateau_scores, expand_grid, deflated_sharpe
-from .prop import trades_by_day, evaluate
+from .prop import trades_by_day, evaluate, zero_edge
 from .risk import build_profiles
 from .strategies.base import get_family
 
@@ -28,7 +29,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def cfg(name):
-    with open(os.path.join(ROOT, "config", name)) as f:
+    # encoding esplicito: su Windows il default e' cp1252 e i "⚠️" dei commenti YAML fanno crashare la fase 2
+    with open(os.path.join(ROOT, "config", name), encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -66,7 +68,7 @@ def all_trial_sharpes(family, symbol, tf):
 class Run:
     def __init__(self, run_dir):
         self.dir = run_dir
-        with open(os.path.join(run_dir, "run.json")) as f:
+        with open(os.path.join(run_dir, "run.json"), encoding="utf-8") as f:
             self.meta = json.load(f)
         self.df = load_mt5_csv(self.meta["data"])
         self.cut = pd.Timestamp(self.meta["cut_time"])
@@ -98,7 +100,7 @@ def new_run(family, symbol, data_path, run_id=None):
     os.makedirs(d, exist_ok=True)
     meta = {"run_id": run_id, "family": family, "symbol": symbol, "tf": tf, "data": os.path.abspath(data_path),
             "cut_time": str(cut_time), "start": str(df.index[0]), "end": str(df.index[-1]), "bars": len(df)}
-    with open(os.path.join(d, "run.json"), "w") as f:
+    with open(os.path.join(d, "run.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2)
     return d
 
@@ -118,8 +120,26 @@ def _bt_variant(args):
     return strat_name, params, tr[tr["entry_time"] < cut].reset_index(drop=True), tr[tr["entry_time"] >= cut].reset_index(drop=True)
 
 
-def _pool():
-    return ProcessPoolExecutor(max_workers=max(1, (os.cpu_count() or 2) - 0))
+def _workers():
+    """PROPLAB_WORKERS=1 forza l'esecuzione seriale (utile su Windows e per il debug)."""
+    try:
+        return max(1, int(os.environ.get("PROPLAB_WORKERS", os.cpu_count() or 2)))
+    except ValueError:
+        return 1
+
+
+def _map(fn, jobs, chunksize=1):
+    """Map parallelo con ricaduta seriale. Su Windows il pool di processi puo' morire con
+    'WinError 6 Handle non valido' (visto il 05/10 in fase 2 e in conferma): invece di perdere
+    il run si ricalcola tutto in serie. Il risultato non cambia: ogni job e' deterministico."""
+    jobs = list(jobs)
+    if _workers() > 1 and len(jobs) > 1:
+        try:
+            with ProcessPoolExecutor(max_workers=_workers()) as ex:
+                return list(ex.map(fn, jobs, chunksize=chunksize))
+        except (OSError, BrokenProcessPool) as e:
+            print(f"[pool] pool di processi fallito ({type(e).__name__}: {e}): ricalcolo in serie")
+    return [fn(j) for j in jobs]
 
 
 # ---------------------------------------------------------------- FASE 1: qualitativo (senza costi)
@@ -129,10 +149,9 @@ def stage1(run_dir):
     jobs = [(m["data"], m["family"], sn, p, None, m["cut_time"]) for sn, cls in fam.items() for p in expand_grid(cls.grid)]
     print(f"[fase1] {len(jobs)} varianti da {len(fam)} strategie, backtest IDEALE (no costi) su in-sample...")
     rows = []
-    with _pool() as ex:
-        for sn, p, tr_is, _ in ex.map(_bt_variant, jobs, chunksize=4):
-            met = trade_metrics(tr_is, R.days_is)
-            rows.append({"strategy": sn, "params": json.dumps(p, sort_keys=True), **{f"p_{k}": v for k, v in p.items()}, **met})
+    for sn, p, tr_is, _ in _map(_bt_variant, jobs, chunksize=4):
+        met = trade_metrics(tr_is, R.days_is)
+        rows.append({"strategy": sn, "params": json.dumps(p, sort_keys=True), **{f"p_{k}": v for k, v in p.items()}, **met})
     res = pd.DataFrame(rows)
     # plateau per strategia
     res["plateau_r"] = np.nan
@@ -167,17 +186,16 @@ def stage2(run_dir):
     jobs = [(m["data"], m["family"], r["strategy"], json.loads(r["params"]), costs, m["cut_time"]) for _, r in surv.iterrows()]
     gross = {(r["strategy"], r["params"]): r for _, r in surv.iterrows()}
     rows = []
-    with _pool() as ex:
-        for sn, p, tr_is, tr_oos in ex.map(_bt_variant, jobs):
-            pk = json.dumps(p, sort_keys=True)
-            met = trade_metrics(tr_is, R.days_is)
-            g = gross[(sn, pk)]
-            key = vkey(sn, p)
-            f_is = R.save_trades(key, "is_net", tr_is)
-            f_oos = R.save_trades(key, "oos_net", tr_oos)   # salvato ma NON valutato fino alla conferma
-            cost_share = (g["expectancy"] - met["expectancy"]) / g["expectancy"] if g["expectancy"] > 0 else np.nan
-            rows.append({"strategy": sn, "params": pk, "exp_gross": g["expectancy"], "plateau_r": g["plateau_r"],
-                         "cost_share": cost_share, **met, "file_is": f_is, "file_oos": f_oos})
+    for sn, p, tr_is, tr_oos in _map(_bt_variant, jobs):
+        pk = json.dumps(p, sort_keys=True)
+        met = trade_metrics(tr_is, R.days_is)
+        g = gross[(sn, pk)]
+        key = vkey(sn, p)
+        f_is = R.save_trades(key, "is_net", tr_is)
+        f_oos = R.save_trades(key, "oos_net", tr_oos)   # salvato ma NON valutato fino alla conferma
+        cost_share = (g["expectancy"] - met["expectancy"]) / g["expectancy"] if g["expectancy"] > 0 else np.nan
+        rows.append({"strategy": sn, "params": pk, "exp_gross": g["expectancy"], "plateau_r": g["plateau_r"],
+                     "cost_share": cost_share, **met, "file_is": f_is, "file_oos": f_oos})
     res = pd.DataFrame(rows)
     if res.empty:
         print("[fase2] nessuna variante dalla fase 1."); res.to_csv(R.path("stage2_costi.csv"), index=False); return res
@@ -195,9 +213,13 @@ def stage2(run_dir):
 # ---------------------------------------------------------------- FASE 3: prop x gestione del rischio
 def _prop_job(a):
     day_trades, rules, rname, profile, sc, tag = a
-    out = evaluate(day_trades, rules, profile, mode=sc["mode"], n_paths=sc["n_paths"], block=sc["block_days"],
-                   stride=sc.get("stride_days", 5))
-    return {"candidate": tag, "rules": rname, "risk_profile": profile["name"], **out}
+    kw = dict(mode=sc["mode"], n_paths=sc["n_paths"], block=sc["block_days"], stride=sc.get("stride_days", 5))
+    out = evaluate(day_trades, rules, profile, **kw)
+    # stessi trade a vantaggio ZERO, stessi percorsi: l'EV che resta e' valore d'opzione della challenge
+    z = evaluate(zero_edge(day_trades), rules, profile, **kw)
+    return {"candidate": tag, "rules": rname, "risk_profile": profile["name"], **out,
+            "pass_zero": z["pass_rate"], "ev_zero": z["ev_attempt"],
+            "ev_vs_zero": out["ev_attempt"] - z["ev_attempt"]}
 
 
 def stage3(run_dir, use_oos=False, only=None):
@@ -217,20 +239,22 @@ def stage3(run_dir, use_oos=False, only=None):
                 jobs.append((dt, rules_all[rn], rn, pf, sc, tag))
     lab = "OOS" if use_oos else "IS"
     print(f"[fase3-{lab}] {len(cand)} candidati x {len(sc['rules'])} regole x {len(profiles)} profili rischio = {len(jobs)} combinazioni...")
-    with _pool() as ex:
-        rows = list(ex.map(_prop_job, jobs, chunksize=8))
-    res = pd.DataFrame(rows).sort_values(["ev_attempt", "pass_rate"], ascending=False)
+    rows = _map(_prop_job, jobs, chunksize=8)
+    # ordinati per la parte di EV dovuta al VANTAGGIO: l'EV grezzo premia il rischio alto anche a vantaggio zero
+    res = pd.DataFrame(rows).sort_values(["ev_vs_zero", "pass_rate"], ascending=False)
     fn = R.path("stage3_prop_oos.csv" if use_oos else "stage3_prop.csv")
     res.to_csv(fn, index=False)
-    best = res.sort_values("ev_attempt", ascending=False).groupby(["candidate", "rules"]).head(1)
-    print(best[["candidate", "rules", "risk_profile", "pass_rate", "fail_daily", "fail_max", "median_days", "ev_attempt"]]
+    best = res.sort_values("ev_vs_zero", ascending=False).groupby(["candidate", "rules"]).head(1)
+    print(best[["candidate", "rules", "risk_profile", "pass_rate", "pass_zero", "fail_daily", "fail_max", "median_days",
+                "ev_attempt", "ev_zero", "ev_vs_zero"]]
           .head(20).round(3).to_string(index=False))
     # confronto famiglie di rischio (media su candidati e regole)
     res["risk_family"] = res["risk_profile"].str.split("|").str[0]
     res["risk_pct"] = res["risk_profile"].str.split("|").str[1]
     sfx = "_oos" if use_oos else ""
     for metric, fn_m in [("pass_rate", "stage3_rischio_pivot"), ("fail_daily", "stage3_pivot_fail_daily"),
-                         ("fail_max", "stage3_pivot_fail_max"), ("ev_attempt", "stage3_pivot_ev")]:
+                         ("fail_max", "stage3_pivot_fail_max"), ("ev_attempt", "stage3_pivot_ev"),
+                         ("ev_vs_zero", "stage3_pivot_ev_vs_zero")]:
         piv = res.pivot_table(index="risk_family", columns="risk_pct", values=metric, aggfunc="mean")
         piv = piv[sorted(piv.columns, key=lambda x: float(x.rstrip("%c")))]
         piv.to_csv(R.path(f"{fn_m}{sfx}.csv"))
@@ -259,7 +283,7 @@ def confirm(run_dir):
     res.to_csv(R.path("conferma_oos.csv"), index=False)
     print(res.round(3).to_string(index=False))
     # prop sul periodo OOS, solo per i profili migliori trovati in-sample (niente nuova ottimizzazione)
-    best_prof = s3.sort_values("ev_attempt", ascending=False).groupby(["candidate", "rules"]).head(3)
+    best_prof = s3.sort_values("ev_vs_zero", ascending=False).groupby(["candidate", "rules"]).head(3)
     profiles = {p["name"]: p for p in build_profiles(cfg("risk_profiles.yaml"))}
     rules_all = cfg("prop_rules.yaml"); sc = cfg("pipeline.yaml")["stage3_prop"]
     jobs = []
@@ -269,15 +293,15 @@ def confirm(run_dir):
             continue
         dt = trades_by_day(R.load_trades(c.iloc[0]["file_oos"]), R.days_oos)
         jobs.append((dt, rules_all[b["rules"]], b["rules"], profiles[b["risk_profile"]], sc, b["candidate"]))
-    with _pool() as ex:
-        po = pd.DataFrame(list(ex.map(_prop_job, jobs)))
+    po = pd.DataFrame(_map(_prop_job, jobs))
     if not po.empty:
-        po = po.merge(best_prof[["candidate", "rules", "risk_profile", "pass_rate", "ev_attempt"]]
-                      .rename(columns={"pass_rate": "pass_rate_is", "ev_attempt": "ev_is"}),
+        po = po.merge(best_prof[["candidate", "rules", "risk_profile", "pass_rate", "ev_attempt", "ev_vs_zero"]]
+                      .rename(columns={"pass_rate": "pass_rate_is", "ev_attempt": "ev_is", "ev_vs_zero": "ev_vs_zero_is"}),
                       on=["candidate", "rules", "risk_profile"])
         po.to_csv(R.path("conferma_prop_oos.csv"), index=False)
         print("\nProp su OOS (profili scelti in-sample):")
-        print(po[["candidate", "rules", "risk_profile", "pass_rate_is", "pass_rate", "ev_is", "ev_attempt"]].round(3).to_string(index=False))
+        print(po[["candidate", "rules", "risk_profile", "pass_rate_is", "pass_rate", "pass_zero", "ev_is", "ev_attempt",
+                  "ev_vs_zero_is", "ev_vs_zero"]].round(3).to_string(index=False))
     write_report(R)
     return res
 
@@ -304,10 +328,14 @@ def write_report(R: Run):
     add("Fase 3 · Fallimento per DAILY loss (media)", "stage3_pivot_fail_daily.csv")
     add("Fase 3 · Fallimento per MAX loss (media)", "stage3_pivot_fail_max.csv")
     add("Fase 3 · EV per tentativo (media, valuta conto)", "stage3_pivot_ev.csv")
-    add("Fase 3 · Migliori combinazioni prop", "stage3_prop.csv", ["candidate", "rules", "risk_profile", "pass_rate", "fail_daily", "fail_max", "median_days", "ev_attempt"])
+    add("Fase 3 · EV dovuto al VANTAGGIO (EV meno lo stesso EV a vantaggio zero)", "stage3_pivot_ev_vs_zero.csv")
+    add("Fase 3 · Migliori combinazioni prop (ordinate per ev_vs_zero)", "stage3_prop.csv",
+        ["candidate", "rules", "risk_profile", "pass_rate", "pass_zero", "fail_daily", "fail_max", "median_days",
+         "ev_attempt", "ev_zero", "ev_vs_zero"])
     add("Fase 4 · Conferma OOS", "conferma_oos.csv")
     add("Fase 4 · Prop su OOS (profili scelti in-sample, nessuna ri-ottimizzazione)", "conferma_prop_oos.csv",
-        ["candidate", "rules", "risk_profile", "pass_rate_is", "pass_rate", "fail_daily", "fail_max", "ev_is", "ev_attempt"])
-    with open(R.path("report.md"), "w") as f:
+        ["candidate", "rules", "risk_profile", "pass_rate_is", "pass_rate", "pass_zero", "fail_daily", "fail_max", "ev_is",
+         "ev_attempt", "ev_vs_zero_is", "ev_vs_zero"])
+    with open(R.path("report.md"), "w", encoding="utf-8") as f:   # "→" e "·" non esistono in cp1252
         f.write("\n".join(parts))
     print(f"[report] {R.path('report.md')}")

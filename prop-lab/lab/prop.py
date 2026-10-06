@@ -179,3 +179,64 @@ def evaluate(day_trades, rules: dict, profile: dict, mode="bootstrap", n_paths=3
         "cost_to_pass": (fee / p_pass) if p_pass > 0 else np.inf,
         "n_paths": n,
     }
+
+
+# ---------------------------------------------------------------- aggiunte trad (2026-10-06)
+# Perche': il 05/10 una strategia a vantaggio ZERO ha passato ~30% delle challenge con EV ~+1.900 per
+# tentativo (profilo guardia_giornaliera 3%). La challenge e' un'opzione: la firm assorbe le perdite,
+# il trader incassa i rialzi. Quindi un EV positivo non e' prova di vantaggio, e un pass rate da un solo
+# campione storico non dice quanto e' incerto. Le due funzioni sotto rispondono a queste due domande.
+
+def zero_edge(day_trades):
+    """Gli stessi trade, negli stessi giorni, con la stessa forma della distribuzione, ma attesa ZERO:
+    a ogni R si sottrae la media del campione. La MAE si riallinea dove la perdita diventa piu' grande
+    dell'escursione avversa registrata (una perdita di 1,2R ha per forza un'escursione di almeno 1,2R)."""
+    rs = [r for d in day_trades for r, _ in d]
+    if not rs:
+        return [list(d) for d in day_trades]
+    mu = float(np.mean(rs))
+    return [[(r - mu, max(m, mu - r)) for r, m in d] for d in day_trades]
+
+
+def _resample_days(day_trades, block: int, rng: np.random.Generator):
+    """Bootstrap a blocchi circolari dei GIORNI (conserva i trade dello stesso giorno e la dipendenza
+    fino a `block` giorni), stessa lunghezza del campione."""
+    n = len(day_trades)
+    nb = math.ceil(n / block)
+    st = rng.integers(0, n, nb)
+    idx = np.concatenate([np.arange(s, s + block) % n for s in st])[:n]
+    return [day_trades[i] for i in idx]
+
+
+def evaluate_ci(day_trades, rules: dict, profile: dict, mode="bootstrap", n_paths=200, block=5, seed=7,
+                n_outer=100, conf=0.90) -> dict:
+    """Pass rate ed EV con l'incertezza di STIMA, e il confronto col vantaggio zero.
+
+    `evaluate` da' la stima "plug-in": come andrebbe una strategia le cui statistiche vere fossero
+    esattamente quelle del campione. Ma il campione e' uno solo: su 336 trade l'attesa ha un errore
+    standard di ~0,055R, e fra -0,10R e +0,10R il pass rate passa dall'1,5% al 46% (misura del 05/10).
+    Qui il campione stesso si ricampiona `n_outer` volte e per ognuno si rifa' `evaluate`: la dispersione
+    e' quanto non sappiamo. Per ogni ricampionamento si calcola anche lo stesso campione a vantaggio zero,
+    con gli STESSI percorsi (numeri casuali comuni): `ev_vs_zero` e' la parte di EV dovuta al vantaggio,
+    il resto e' valore d'opzione della challenge, che avrebbe anche chi non ha nessun vantaggio."""
+    point = evaluate(day_trades, rules, profile, mode, n_paths, block, seed)
+    zero = evaluate(zero_edge(day_trades), rules, profile, mode, n_paths, block, seed)
+    rng = np.random.default_rng(seed + 1)
+    pr, ev, dpr, dev = [], [], [], []
+    for k in range(n_outer):
+        s = _resample_days(day_trades, block, rng)
+        a = evaluate(s, rules, profile, mode, n_paths, block, seed + 2 + k)
+        z = evaluate(zero_edge(s), rules, profile, mode, n_paths, block, seed + 2 + k)
+        pr.append(a["pass_rate"]); ev.append(a["ev_attempt"])
+        dpr.append(a["pass_rate"] - z["pass_rate"]); dev.append(a["ev_attempt"] - z["ev_attempt"])
+    q = [(1 - conf) / 2 * 100, (1 + conf) / 2 * 100]
+    pct = lambda x: [float(v) for v in np.percentile(x, q)]
+    return {
+        "pass_rate": point["pass_rate"], "pass_ci": pct(pr),
+        "ev_attempt": point["ev_attempt"], "ev_ci": pct(ev),
+        "pass_zero": zero["pass_rate"], "ev_zero": zero["ev_attempt"],
+        "pass_vs_zero": point["pass_rate"] - zero["pass_rate"], "pass_vs_zero_ci": pct(dpr),
+        "ev_vs_zero": point["ev_attempt"] - zero["ev_attempt"], "ev_vs_zero_ci": pct(dev),
+        "p_ev_vs_zero_pos": float(np.mean(np.asarray(dev) > 0)),
+        "conf": conf, "n_outer": n_outer, "n_paths": n_paths,
+    }

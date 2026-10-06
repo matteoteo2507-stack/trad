@@ -11,6 +11,53 @@
 
 ---
 
+## 2026-10-06 — `prop-lab` del socio entra in `trad`; la gestione del rischio si legge su **due binari**
+
+**Origine.** Sessione del 04-05/10 col socio **VELTRIX** (non il socio discrezionale): un'AI ha generato `prop-lab`, una pipeline
+"famiglia di strategie → backtest ideale → costi → prop × 35 profili di rischio → conferma OOS", e la
+sessione ha distillato due video. Valutazione del 05/10 (prove nello scratchpad, riassunte in
+[`prop-lab/CHANGELOG.md`](prop-lab/CHANGELOG.md)):
+- **motore sano**: nessun look-ahead; su un random walk a passi di un minuto l'attesa lorda e' −0,0004R;
+- **un EV prop positivo non prova niente**: a vantaggio zero il profilo guardia giornaliera al 3% passava ~30%
+  delle due fasi con EV ~+1.900 € per tentativo. La challenge e' un'opzione, e scegliere il profilo con l'EV piu'
+  alto premia il rischio alto;
+- **il funnel non filtra il rumore**: su 8 random walk senza vantaggio almeno un candidato arriva a
+  DA_OSSERVARE in 5 serie su 8 (0 PROMOSSA, DSR massimo 0,24);
+- due crash su Windows (YAML in cp1252, pool di processi).
+
+**Decisioni di Matteo (06/10):**
+1. **Il materiale del socio entra nel repo come nostro, in git.** Due repo distinti (protezione dagli errori)
+   tenuti allineati come se fossero uno: ogni modifica va in `prop-lab/CHANGELOG.md`. Commit di provenienza
+   con il materiale com'era arrivato, poi le nostre modifiche.
+2. **Doppio binario, sempre, a prescindere dall'esito**: rischio fisso 1R (l'unico per il verdetto) piu' gli
+   overlay di una libreria fissa, approvata cosi': **O1 cuscinetto, O2 guardia giornaliera, O3 serie di
+   perdite, O4 avvicinamento al target** (O2 e O4 solo prop); anti-martingala esclusa. Regola completa in
+   [STRATEGY_LIFECYCLE §4quater](docs/STRATEGY_LIFECYCLE.md), step 5bis del protocollo.
+3. Vale **da qui in avanti**; sulle famiglie CLOSED la domanda e' stata se l'aritmetica lasciasse un dubbio
+   (sotto).
+
+**Cosa e' stato costruito (0 trial):** `zero_edge` ed `evaluate_ci` nel simulatore di `prop-lab` (proprietario
+unico della logica), ponte [`core/prop_sim.py`](core/prop_sim.py), libreria e confronti in
+[`core/sizing.py`](core/sizing.py); fase 3 della pipeline ordinata per `ev_vs_zero`; correzioni Windows.
+Gli EV del report demo del socio si riproducono al centesimo. Test: 247 passati, 2 saltati.
+
+**Il principio** che regge il doppio binario: guadagno = Σ E[size]·E[R] + Σ Cov(size, R). Una size decisa dal
+passato non ha covarianza con esiti indipendenti, quindi un overlay non crea vantaggio. Ha valore solo con esiti
+raggruppati (si misura contro la sequenza rimescolata; falso allarme 5% per overlay, verificato su 200 sequenze)
+o con un obiettivo a barriere (si misura contro il vantaggio zero). Misurato il 06/10 su due fasi 10%+5%: il
+rischio fisso che massimizza il pass rate e' ~3% con E −0,10R e 1-2% con E +0,20R. Piu' il vantaggio e' scarso,
+piu' l'ottimo e' audace.
+
+**Non integrati:** i prompt del video 2 (le 9.000 sono ~300 configurazioni × 30 asset, selezione fatta sul fuori
+campione, bootstrap che non puo' cambiare lo Sharpe); nautilus_trader (nessun adattatore MT5: riapre con un conto
+futures); LuxAlgo prop-firm-sim (stesso punto cieco). Righe in `_INTAKE.md` e nella memoria delle repo.
+
+**Famiglie CLOSED** ([referto](docs/reviews/doppio_binario_closed_2026-10-06.md)): per aritmetica solo **ORB su
+NAS100** (1R −0,056, MDE 0,135) e' abbastanza vicino a zero perche' una dipendenza forte possa cambiare il quadro;
+le altre o non sono sequenze di trade o stanno oltre −0,11R. Misura descrittiva dichiarata prima: esito nel referto.
+
+---
+
 ## 2026-10-05 — Gump: **NON DIMOSTRATO (MDE 0,130R)** al primo e unico trial; famiglia **CLOSED** con due condizioni di riapertura
 
 **Esito** (esecuzione unica del 02/10, [referto](docs/reviews/forexgump_esito_2026-10-02.md), G2 = PASSA con riserve

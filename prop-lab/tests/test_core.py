@@ -72,6 +72,60 @@ def test_dd_linear_reduces_risk():
     assert m.risk_amount(down) < m.risk_amount(full)
 
 
+# ---------------------------------------------------------------- aggiunte trad (2026-10-06)
+def _giorni(r_list, mae_loss=1.0):
+    return [[(r, mae_loss if r < 0 else 0.0)] for r in r_list]
+
+
+def test_zero_edge_media_zero_e_mae_coerente():
+    from lab.prop import zero_edge
+    rng = np.random.default_rng(3)
+    days = [[(float(x), 1.0 if x < 0 else 0.3)] for x in rng.choice([2.0, -1.0], 300)] + [[]] * 20
+    z = zero_edge(days)
+    rs = [r for d in z for r, _ in d]
+    assert abs(np.mean(rs)) < 1e-12
+    assert all(m >= -r - 1e-12 for d in z for r, m in d)    # una perdita di xR ha escursione >= xR
+    assert sum(len(d) for d in z) == sum(len(d) for d in days)
+
+
+def test_vantaggio_zero_due_barriere_come_la_rovina_del_giocatore():
+    """+10% / -10% statico, 1% a trade, niente limite giornaliero ne' timeout: a vantaggio zero si passa
+    nel 50% dei casi (rovina del giocatore). Se questo numero si sposta, il simulatore ha un difetto."""
+    from lab.prop import evaluate, zero_edge
+    rules = {"account": 100000, "daily_loss_pct": 100, "max_loss_pct": 10, "max_loss_type": "static",
+             "phases": [{"target_pct": 10, "min_days": 0}], "max_days_default": 5000}
+    rng = np.random.default_rng(11)
+    days = zero_edge(_giorni(rng.choice([1.0, -1.0], 400)))
+    prof = {"name": "s", "base": {"type": "fixed_pct", "pct": 1.0, "of": "initial"}}
+    p = evaluate(days, rules, prof, n_paths=2000, block=1, seed=5)["pass_rate"]
+    assert abs(p - 0.5) < 0.04, p
+
+
+def test_evaluate_ci_separa_vantaggio_da_valore_opzione():
+    from lab.prop import evaluate_ci
+    rules = {"account": 100000, "fee": 500, "daily_loss_pct": 5, "max_loss_pct": 10, "max_loss_type": "static",
+             "phases": [{"target_pct": 8, "min_days": 0}], "max_days_default": 120,
+             "funded": {"days": 60, "split_pct": 80, "payout_every": 20, "refund_fee": True}}
+    prof = {"name": "s", "base": {"type": "fixed_pct", "pct": 1.0, "of": "initial"}}
+    rng = np.random.default_rng(2)
+    buono = _giorni(np.where(rng.random(300) < 0.62, 1.0, -1.0))        # E ~ +0,24R
+    o = evaluate_ci(buono, rules, prof, n_paths=80, n_outer=15, seed=1)
+    assert o["ev_vs_zero"] > 0 and o["p_ev_vs_zero_pos"] >= 0.8
+    assert o["pass_rate"] > o["pass_zero"]
+    lo, hi = o["pass_ci"]
+    assert lo <= hi and 0.0 <= lo and hi <= 1.0
+
+
+def test_map_ricade_in_serie():
+    import os
+    from lab import pipeline as P
+    os.environ["PROPLAB_WORKERS"] = "1"
+    try:
+        assert P._map(abs, [-1, -2, 3]) == [1, 2, 3]
+    finally:
+        del os.environ["PROPLAB_WORKERS"]
+
+
 if __name__ == "__main__":
     for k, v in list(globals().items()):
         if k.startswith("test_"):
