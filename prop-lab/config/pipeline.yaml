@@ -1,0 +1,29 @@
+# Soglie dei "cancelli" della pipeline. Tarale tu: sono il tuo standard di qualità.
+
+split:
+  holdout_frac: 0.30        # ultimo 30% dei dati = OUT-OF-SAMPLE, non si tocca fino alla conferma
+
+stage1_qualitativo:         # backtest IDEALE: senza spread/commissioni/swap
+  min_trades: 80
+  min_expectancy_r: 0.05
+  min_pf: 1.10
+  min_plateau_r: 0.0        # la media dei vicini di griglia deve essere > 0 (no picchi isolati)
+  top_per_strategy: 5       # quante varianti per strategia passano alla fase 2
+
+stage2_costi:               # stesso set di varianti, con costi reali
+  min_trades: 80
+  min_expectancy_r: 0.03
+  min_pf: 1.05
+  max_cost_share: 0.6       # i costi non devono mangiare più del 60% del vantaggio lordo
+  top_total: 8              # candidati totali che passano alle prop
+
+stage3_prop:
+  mode: bootstrap           # bootstrap | storico
+  n_paths: 300
+  block_days: 5
+  stride_days: 5            # solo per mode=storico
+  rules: [two_step_classic, two_step_tight, one_step_trailing]
+
+conferma_oos:               # fase finale sul periodo mai visto
+  min_expectancy_r: 0.0
+  min_dsr: 0.5              # Deflated Sharpe: corregge per il numero di varianti provate

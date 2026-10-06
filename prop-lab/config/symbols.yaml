@@ -1,0 +1,83 @@
+# Specifiche dei simboli = COSTI del broker/prop.
+# ⚠️ Valori di ESEMPIO: copia i tuoi da MT5 (tasto destro sul simbolo -> Specifiche)
+#   point                 dimensione del point (es. XAUUSD 0.01, EURUSD 0.00001)
+#   contract_size         dimensione contratto per 1 lotto
+#   spread_points         spread tipico in points (usato se il CSV non ha la colonna <SPREAD>)
+#   min_spread_frac       lo spread per barra del CSV non scende sotto frac*spread_points
+#   spread_mult           stress test (es. 1.5 = spread +50%)
+#   commission_per_lot_rt commissione andata+ritorno per lotto, in valuta di quotazione
+#   slippage_points       slippage stimato per lato
+#   swap_long/short_points swap per notte in points (negativo = paghi)
+#   triple_swap_dow       giorno della tripla (0=lun ... 2=mer, 4=ven)
+
+XAUUSD:
+  point: 0.01
+  contract_size: 100
+  spread_points: 25
+  min_spread_frac: 0.5
+  spread_mult: 1.0
+  commission_per_lot_rt: 7.0
+  slippage_points: 5
+  swap_long_points: -45
+  swap_short_points: 20
+  triple_swap_dow: 2
+
+EURUSD:
+  point: 0.00001
+  contract_size: 100000
+  spread_points: 3
+  min_spread_frac: 0.5
+  spread_mult: 1.0
+  commission_per_lot_rt: 7.0
+  slippage_points: 1
+  swap_long_points: -7
+  swap_short_points: 2
+  triple_swap_dow: 2
+
+GBPUSD:
+  point: 0.00001
+  contract_size: 100000
+  spread_points: 6
+  min_spread_frac: 0.5
+  spread_mult: 1.0
+  commission_per_lot_rt: 7.0
+  slippage_points: 1
+  swap_long_points: -4
+  swap_short_points: -2
+  triple_swap_dow: 2
+
+NAS100:
+  point: 0.01
+  contract_size: 1
+  spread_points: 150
+  min_spread_frac: 0.5
+  spread_mult: 1.0
+  commission_per_lot_rt: 0.0
+  slippage_points: 50
+  swap_long_points: -2000
+  swap_short_points: 500
+  triple_swap_dow: 4
+
+US30:
+  point: 0.01
+  contract_size: 1
+  spread_points: 250
+  min_spread_frac: 0.5
+  spread_mult: 1.0
+  commission_per_lot_rt: 0.0
+  slippage_points: 80
+  swap_long_points: -3500
+  swap_short_points: 800
+  triple_swap_dow: 4
+
+GER40:
+  point: 0.01
+  contract_size: 1
+  spread_points: 120
+  min_spread_frac: 0.5
+  spread_mult: 1.0
+  commission_per_lot_rt: 0.0
+  slippage_points: 50
+  swap_long_points: -1800
+  swap_short_points: 300
+  triple_swap_dow: 4

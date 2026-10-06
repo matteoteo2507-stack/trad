@@ -1,0 +1,53 @@
+# Regole prop PARAMETRICHE (modelli generici, NON il regolamento ufficiale di una firm).
+# ⚠️ Prima di usare un risultato, aggiorna questi valori col regolamento attuale della tua prop.
+#
+# daily_basis:     day_start = limite calcolato dal saldo di inizio giornata
+#                  initial   = limite fisso rispetto al saldo iniziale
+# max_loss_type:   static | trailing (segue il picco intraday a trade chiuso) | trailing_eod (picco a fine giorno)
+# trailing_lock:   il trailing si ferma al saldo iniziale
+# consistency_pct: miglior giorno <= X% del profitto totale per passare (null = nessuna regola)
+# max_days:        limite di giorni di calendario di trading per fase (null = illimitato -> max_days_default)
+# funded:          simulazione dopo il passaggio: giorni, split, payout ogni N giorni, rimborso fee
+
+two_step_classic:
+  description: "2 fasi 10%/5%, daily 5% da inizio giornata, max 10% statico"
+  account: 100000
+  fee: 540
+  daily_loss_pct: 5
+  daily_basis: day_start
+  max_loss_pct: 10
+  max_loss_type: static
+  phases:
+    - {name: fase1, target_pct: 10, min_days: 4, max_days: null}
+    - {name: fase2, target_pct: 5, min_days: 4, max_days: null}
+  max_days_default: 120
+  funded: {days: 120, split_pct: 80, payout_every: 20, refund_fee: true}
+
+two_step_tight:
+  description: "2 fasi 8%/5%, daily 4%, max 8% statico"
+  account: 100000
+  fee: 500
+  daily_loss_pct: 4
+  daily_basis: day_start
+  max_loss_pct: 8
+  max_loss_type: static
+  phases:
+    - {name: fase1, target_pct: 8, min_days: 3, max_days: null}
+    - {name: fase2, target_pct: 5, min_days: 3, max_days: null}
+  max_days_default: 120
+  funded: {days: 120, split_pct: 80, payout_every: 20, refund_fee: true}
+
+one_step_trailing:
+  description: "1 fase 10%, daily 3%, max 6% trailing (lock al saldo iniziale), consistency 50%"
+  account: 100000
+  fee: 600
+  daily_loss_pct: 3
+  daily_basis: day_start
+  max_loss_pct: 6
+  max_loss_type: trailing
+  trailing_lock: true
+  consistency_pct: 50
+  phases:
+    - {name: fase1, target_pct: 10, min_days: 3, max_days: null}
+  max_days_default: 120
+  funded: {days: 120, split_pct: 80, payout_every: 20, refund_fee: false}

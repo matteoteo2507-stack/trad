@@ -1,0 +1,35 @@
+# Profili di gestione del rischio da confrontare sulle prop.
+# Vedi lab/risk.py per tutti i modificatori disponibili.
+# La GRIGLIA genera automaticamente: base_pcts x modifier_sets  (5 x 7 = 35 profili)
+
+grid:
+  base_pcts: [0.5, 1.0, 1.5, 2.0, 3.0]
+  of: [initial]                 # aggiungi "balance" per il rischio composto sul saldo
+  modifier_sets:
+    statico: []
+
+    dd_lineare:                 # più ti avvicini al max loss, meno rischi (fino a 1/4)
+      - {type: dd_linear, min_mult: 0.25}
+
+    dd_scaglioni:               # -2% dal picco -> 0.75x, -4% -> 0.5x, -6% -> 0.25x
+      - {type: dd_tiers, tiers: [[2, 0.75], [4, 0.5], [6, 0.25]]}
+
+    streak_perdite:             # dopo 2 loss di fila dimezza, poi ancora, min 0.25x
+      - {type: loss_streak, after: 2, factor: 0.5, min_mult: 0.25}
+
+    guardia_giornaliera:        # stop giornata al 50% del daily limit o dopo 3 trade; mai un trade che può sforare
+      - {type: daily_guard, stop_at: 0.5, max_trades: 3}
+      - {type: floor_cap, frac: 0.9}
+
+    dd_lineare+guardia+coast:   # combinato "difensivo": protegge DD, giornata e target
+      - {type: dd_linear, min_mult: 0.25}
+      - {type: floor_cap, frac: 0.9}
+      - {type: daily_guard, stop_at: 0.5, max_trades: 3}
+      - {type: target_coast, near: 0.8, mult: 0.5}
+
+    anti_martingala:            # aumenta dopo i win (max 2x), riduce col DD
+      - {type: win_boost, mult: 1.5, cap: 2.0}
+      - {type: dd_tiers, tiers: [[2, 0.75], [4, 0.5]]}
+
+# Profili scritti a mano (opzionali), si aggiungono alla griglia
+profiles: []

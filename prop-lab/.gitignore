@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+results/*/trades/
+# Dati OHLC (export MT5 o sintetici): fuori da git come nel resto di trad.
+# I DEMO_* si rigenerano identici con tools/make_demo_data.py (seed 42).
+data/*.csv
