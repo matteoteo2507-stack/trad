@@ -50,6 +50,7 @@ Lo stato di ciascuna sta nel suo frontmatter (`stato`), non qui.
 - [NYSE Scalping (VWAP + TPO + OTF)](strategie_candidate/nyse_scalping.md)
 - [NXT — Fibonacci + Elliott trend-pullback](strategie_candidate/nxt_fib_trend_pullback.md)
 - [FADE mean-reversion — spec walk-forward per il socio](strategie_candidate/fade_mr_walkforward_socio.md)
+- [Strategia manuale di Matteo (livelli + limit order, RR 1:3)](strategie_candidate/strategia_manuale_matteo.md)
 
 ## Convenzione dei file
 
