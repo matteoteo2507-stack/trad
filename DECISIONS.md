@@ -54,7 +54,11 @@ futures); LuxAlgo prop-firm-sim (stesso punto cieco). Righe in `_INTAKE.md` e ne
 
 **Famiglie CLOSED** ([referto](docs/reviews/doppio_binario_closed_2026-10-06.md)): per aritmetica solo **ORB su
 NAS100** (1R −0,056, MDE 0,135) e' abbastanza vicino a zero perche' una dipendenza forte possa cambiare il quadro;
-le altre o non sono sequenze di trade o stanno oltre −0,11R. Misura descrittiva dichiarata prima: esito nel referto.
+le altre o non sono sequenze di trade o stanno oltre −0,11R. Misura descrittiva dichiarata prima (commit
+`7458b1c`), 0 trial: **nessuna dipendenza fra gli esiti** (runs z −0,08; O1 e O3 dentro la banda del rimescolato).
+Il dubbio era l'unico e si chiude: nessuna CLOSED cambia quadro. Di contorno, SPX500 (refutato, −0,094R) mostra
+in prop un EV di +339…+783 € per tentativo con `ev_vs_zero` tutto sotto zero: il caso da manuale del perche' un EV
+prop non si cita da solo.
 
 ---
 

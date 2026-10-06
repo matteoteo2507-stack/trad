@@ -66,6 +66,42 @@ gia' speso, la famiglia resta CLOSED qualunque cosa esca.
 - Binario prop: conta `ev_vs_zero` con il suo intervallo. Un EV positivo con `ev_vs_zero_lo` ≤ 0 si scrive
   *"EV dovuto al vantaggio non dimostrato"*.
 
-## 3. Risultati
+## 3. Risultati (eseguito il 06/10 dopo il commit `7458b1c`, 6'31")
 
-*(da compilare dopo l'esecuzione, nel commit successivo)*
+**Primario: NAS100, `R_pess`, blocco 1.** 1.195 trade primari, 20/01/2012 → 15/07/2026. 1R **−0,0125R**.
+Runs test **z = −0,08** (p = 0,94): nessuna traccia di esiti raggruppati.
+
+| binario | E per unita' di rischio | banda 95% del rimescolato | valore di dipendenza | maxDD (R) | maxDD mediano rimescolato | lettura |
+|---|---|---|---|---|---|---|
+| 1R | −0,0125 | — | — | 79,9 | 69,2 | verdetto |
+| O1 cuscinetto | −0,0243 | [−0,0434; +0,0283] | −0,0072 | **25,1** | 22,8 | nessun valore di dipendenza |
+| O3 serie di perdite | −0,0265 | [−0,0712; +0,0446] | −0,0125 | 48,9 | 48,2 | nessun valore di dipendenza |
+
+**Lettura dichiarata: il dubbio aritmetico era l'unico, e la misura lo chiude.** Nessuna famiglia CLOSED
+cambierebbe quadro con il doppio binario. ORB resta CLOSED; nessuna ipotesi nuova nel backlog.
+
+Cosa si vede in piu', senza che cambi la risposta: il cuscinetto taglia il drawdown di due terzi (79,9R → 25,1R)
+al costo di 0,012R per unita'. E' **struttura del rischio**, non vantaggio: lo stesso taglio c'e' sulla sequenza
+rimescolata (22,8R).
+
+**Descrittivi** (non valgono come risultato):
+- `R_opt` e blocco 20: stessa lettura su NAS100.
+- **SPX500, controllo:** esiti **raggruppati** (z = −2,21, p = 0,027). O3 ha +0,056 di valore di dipendenza a
+  blocco 1 (percentile 96,6, appena dentro la banda), che sparisce a blocco 20 (−0,003): il raggruppamento e'
+  corto, entro una ventina di trade. Anche cosi' O3 resta a **−0,039R** per unita': una dipendenza vera ma
+  modesta non porta a zero un verdetto di −0,094R. E' esattamente la previsione del §1.
+- **Binario prop** (`two_step_classic`, regole modello di `prop-lab`): la dimostrazione del perche' si legge
+  `ev_vs_zero` e mai l'EV da solo.
+
+| | rischio | EV per tentativo (range sui binari) | `ev_vs_zero` (range) | intervallo 90% di `ev_vs_zero` |
+|---|---|---|---|---|
+| SPX500 (1R −0,094, refutato) | 2% | **da +339 a +783 €** | da −898 a −1.475 € | **tutto sotto zero** in ogni binario (p > 0: 0,03-0,05) |
+| NAS100 (1R −0,013) | 2% | da +400 a +1.105 € | da −166 a +5 € | contiene lo zero in ogni binario (p > 0: 0,42-0,50) |
+
+  Una strategia refutata mostra un EV positivo in ogni binario perche' la challenge e' un'opzione; misurata
+  contro il vantaggio zero **toglie** valore. Su NAS100 la scritta corretta e' *"EV dovuto al vantaggio non
+  dimostrato"*.
+
+**Limite di questa esecuzione:** 60 ricampionamenti × 200 percorsi. Con 200 percorsi anche la stima puntuale ha
+rumore Monte Carlo (in una riga, SPX500 O3 al 2%, il punto cade appena fuori dal suo intervallo). Per un numero
+da citare in una decisione servono almeno 500 percorsi.
