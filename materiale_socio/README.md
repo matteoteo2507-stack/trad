@@ -14,7 +14,7 @@ da git (`.gitignore`: `/materiale_socio/*/`): restano solo su questo disco.
 | Cartella | Cosa contiene | Usata da | Stato |
 |---|---|---|---|
 | `forexgump_telegram_2020-09_2026-09/` | export Telegram di **Forex Gump GOLD VIP** (21 file, 18.688 messaggi, 09/09/2020 → 28/09/2026) | [`../analysis/forexgump/parse.py`](../analysis/forexgump/parse.py) → `signals.csv` | pre-registrazione [`FOREXGUMP_LATENCY_PREREGISTRATION.md`](../docs/FOREXGUMP_LATENCY_PREREGISTRATION.md) |
-| `xat_conto_demo_socio_2026-09/` | export MT5 del conto demo del socio **5056226036** su cui girava **XAT** (il mentore XAU), 22 segnali × 3 gambe, 21-29/09/2026, con lo script `export.py` del socio. ⚠️ Orari = server **UTC+3** | [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md), [`xat_cancellazioni_2026-10-02.md`](../docs/reviews/xat_cancellazioni_2026-10-02.md) | dati descrittivi, fuori dal conteggio N = 60 |
+| `xat_conto_demo_socio_2026-09/` | export MT5 del conto demo del socio (numero omesso) su cui girava **XAT** (il mentore XAU), 22 segnali × 3 gambe, 21-29/09/2026, con lo script `export.py` del socio. ⚠️ Orari = server **UTC+3** | [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md), [`xat_cancellazioni_2026-10-02.md`](../docs/reviews/xat_cancellazioni_2026-10-02.md) | dati descrittivi, fuori dal conteggio N = 60 |
 
 **Canali chiusi all'intake (02/10, 0 trial), cartelle eliminate:** "Ben, Gold Trader", "THE GOLD SNIPER" e
 "ROYAL TRADING EMPIRE". I numeri e i motivi restano nelle note

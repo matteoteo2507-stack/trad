@@ -2,7 +2,7 @@
 tipo: analisi
 stato: quarantena
 aggiornato: 2026-09-30
-fonte_dati: "export MT5 del conto demo del socio 5056226036 (MetaQuotes-Demo, 'XAU Analysis Lab'), 21-29/09/2026: materiale_socio/xat_conto_demo_socio_2026-09/ (cartella `dati socio 2/` fino al 03/10)"
+fonte_dati: "export MT5 del conto demo del socio (numero omesso) (MetaQuotes-Demo, 'XAU Analysis Lab'), 21-29/09/2026: materiale_socio/xat_conto_demo_socio_2026-09/ (cartella `dati socio 2/` fino al 03/10)"
 nota: "Descrittivo, n = 22 segnali. Non e' un verdetto. Il setup non e' quello congelato in COPIER_EXECUTION_PREREGISTRATION §2: se questi dati contino per N=60 lo decide Matteo."
 ---
 # Mentore XAU in live sul PC del socio: la prima settimana con gli esiti
