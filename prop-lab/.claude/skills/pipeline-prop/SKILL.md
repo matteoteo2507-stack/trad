@@ -37,7 +37,7 @@ Sopra ~50% la strategia è fragile: basta uno spread un po' più largo per azzer
 **Fase 4 (`conferma_oos.csv`, `conferma_prop_oos.csv`)**
 - `exp_oos` > 0 e coerente con `exp_is` → il vantaggio regge
 - `dsr_is` (Deflated Sharpe) corregge per il numero di varianti provate (`trials`): è severo apposta
-- verdetto: PROMOSSA (OOS ok + DSR ≥ soglia) · DA_OSSERVARE (OOS ok, DSR basso → incubazione in demo) · SCARTATA
+- verdetto (dal 07/10): **PROMOSSA** (limite basso dell'intervallo OOS > 0, corretto per il numero di candidati; il DSR si riporta come diagnostica, non e' richiesto) · **NON_DIMOSTRATA** (l'intervallo contiene lo zero o il DSR non regge: **non va in demo**, e non si scrive "refutata": si riporta `mde_oos`) · **SCARTATA** (intervallo OOS tutto sotto zero). Il vecchio DA_OSSERVARE usciva anche su rumore puro, 5 random walk su 8
 
 ## Per l'utente
 Riassumi sempre: quali strategie della famiglia sopravvivono a ogni cancello, quale gestione del rischio

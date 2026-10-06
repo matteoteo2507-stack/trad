@@ -134,7 +134,7 @@ def simulate_path(day_seq, rules: dict, model: RiskModel) -> dict:
     if funded:
         status, days, payout = run_stage(None, 0, None, None, funded_cfg=funded)
         if payout > 0 and funded.get("refund_fee"):
-            payout += rules.get("fee", 0.0)
+            payout += rules.get("fee") or 0.0
         res["payout"] = payout
         res["funded_status"] = status
     return res
@@ -153,7 +153,36 @@ def make_paths(n_days: int, mode: str, n_paths: int, horizon: int, block: int, r
     return paths
 
 
+_BASI = ("day_start", "initial")
+_TIPI_MAX = ("static", "trailing", "trailing_eod")
+
+
+def regole_mancanti(rules: dict) -> list:
+    """Campi necessari alla simulazione che mancano o hanno un valore che il simulatore non modella.
+    Aggiunta trad (07/10): i regolamenti veri delle firm arrivano con buchi (dato non pubblicato o non
+    trovato) e un default inventato al loro posto produrrebbe un pass rate plausibile e sbagliato."""
+    miss = [k for k in ("account", "daily_loss_pct", "daily_basis", "max_loss_pct", "max_loss_type", "phases")
+            if rules.get(k) is None]
+    if rules.get("daily_basis") is not None and rules["daily_basis"] not in _BASI:
+        miss.append(f"daily_basis={rules['daily_basis']!r} non modellato (ammessi: {_BASI})")
+    if rules.get("max_loss_type") is not None and rules["max_loss_type"] not in _TIPI_MAX:
+        miss.append(f"max_loss_type={rules['max_loss_type']!r} non modellato (ammessi: {_TIPI_MAX})")
+    for i, ph in enumerate(rules.get("phases") or []):
+        for k in ("target_pct", "min_days"):
+            if ph.get(k) is None:
+                miss.append(f"phases[{i}].{k}")
+    f = rules.get("funded")
+    if f:
+        for k in ("days", "split_pct", "payout_every"):
+            if not isinstance(f.get(k), (int, float)):
+                miss.append(f"funded.{k}")
+    return miss
+
+
 def evaluate(day_trades, rules: dict, profile: dict, mode="bootstrap", n_paths=300, block=5, seed=7, stride=5) -> dict:
+    miss = regole_mancanti(rules)
+    if miss:
+        raise ValueError(f"regolamento non simulabile, mancano: {miss}")
     model = RiskModel(profile)
     horizon = sum((p.get("max_days") or rules.get("max_days_default", 120)) for p in rules["phases"])
     horizon += (rules.get("funded") or {}).get("days", 0) + 30
@@ -163,6 +192,8 @@ def evaluate(day_trades, rules: dict, profile: dict, mode="bootstrap", n_paths=3
     n = len(out)
     passed = [o for o in out if o["passed"]]
     fee = rules.get("fee", 0.0)
+    if fee is None:            # costo ignoto: il pass rate si calcola, l'EV no (non si inventa un costo)
+        fee = float("nan")
     payouts = np.array([o["payout"] for o in out])
     dtp = [o["days_to_pass"] for o in passed]
     p_pass = len(passed) / n

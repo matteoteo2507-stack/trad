@@ -51,3 +51,103 @@ one_step_trailing:
     - {name: fase1, target_pct: 10, min_days: 3, max_days: null}
   max_days_default: 120
   funded: {days: 120, split_pct: 80, payout_every: 20, refund_fee: false}
+
+
+# =====================================================================================================
+# REGOLAMENTI VERI DELLE FIRM — raccolti da Comet il 2026-10-06 (prompt in trad, PROP_FIRM_CRITERIA §3bis)
+# Stato: DA VERIFICARE. Sono arrivati i blocchi YAML ma NON la tabella con citazioni, URL e date: finche'
+# non c'e', nessun numero di qui si cita come regola della firm. I campi ambigui restano null, con il valore
+# grezzo di Comet in `comet_*`: lab.prop.regole_mancanti() li elenca e evaluate() si rifiuta di simularli.
+# `funded.days` (orizzonte simulato del conto finanziato) NON e' una regola della firm: e' una scelta nostra.
+# =====================================================================================================
+
+ftmo_2step:
+  description: "FTMO Challenge 2 fasi, 100k (Comet 06/10, da verificare)"
+  fonte: "Comet 2026-10-06, sito ufficiale FTMO secondo il prompt; citazioni non ancora riportate"
+  stato: da_verificare
+  account: 100000
+  fee: null                       # Comet: null
+  daily_loss_pct: 5
+  daily_basis: day_start          # Comet: day_start_balance. Interpretazione: 5% del saldo iniziale, misurato dal saldo di inizio giornata
+  comet_daily_includes_floating: true   # il simulatore lo approssima con la MAE del trade (vedi PROP_FIRM_CRITERIA §1.1)
+  max_loss_pct: 10
+  max_loss_type: static
+  phases:
+    - {name: fase1, target_pct: 10, min_days: 4, max_days: null}
+    - {name: fase2, target_pct: 5, min_days: 4, max_days: null}
+  max_days_default: 120           # nostro: orizzonte di simulazione quando la firm non pone limiti
+  funded: {days: 120, split_pct: 80, payout_every: 14, refund_fee: true}   # Comet: "on demand from day 14", accumulo libero
+
+ftmo_1step:
+  description: "FTMO Challenge 1 fase, 100k (Comet 06/10, da verificare)"
+  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
+  stato: da_verificare
+  account: 100000
+  fee: null
+  daily_loss_pct: 3
+  daily_basis: day_start          # Comet: day_start_balance
+  comet_daily_includes_floating: true
+  max_loss_pct: 10
+  max_loss_type: trailing_eod
+  trailing_lock: false
+  phases:
+    - {name: fase1, target_pct: 10, min_days: null, max_days: null}   # min_days: Comet null -> NON simulabile
+  max_days_default: 120
+  funded: {days: 120, split_pct: 90, payout_every: 14, refund_fee: false}   # Comet: accumulo NON libero
+
+fundednext_stellar_2step:
+  description: "FundedNext Stellar 2-Step CFD, 100k (Comet 06/10, da verificare)"
+  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
+  stato: da_verificare
+  account: 100000
+  fee: 549
+  daily_loss_pct: 5
+  daily_basis: null               # Comet: "initial". AMBIGUO: base del 5% (saldo iniziale) o soglia fissa dal saldo iniziale?
+  comet_daily_basis: initial
+  comet_daily_includes_floating: true
+  max_loss_pct: 10
+  max_loss_type: static
+  consistency_pct: 40             # Comet: dall'ultimo payout. Il simulatore la applica solo al passaggio della fase, non al funded
+  comet_consistency_window: since_last_payout
+  phases:
+    - {name: fase1, target_pct: null, min_days: 5, max_days: null}   # target: Comet null
+    - {name: fase2, target_pct: null, min_days: 5, max_days: null}
+  max_days_default: 120
+  funded: {days: 120, split_pct: 80, payout_every: 21, refund_fee: null}   # Comet: "initial 21-day trading cycle"
+
+fundednext_stellar_1step:
+  description: "FundedNext Stellar 1-Step CFD, 100k (Comet 06/10, da verificare)"
+  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
+  stato: da_verificare
+  account: 100000
+  fee: null
+  daily_loss_pct: 3
+  daily_basis: null               # Comet: "initial", ambiguo come sopra
+  comet_daily_basis: initial
+  comet_daily_includes_floating: true
+  max_loss_pct: 6
+  max_loss_type: static
+  consistency_pct: 40
+  comet_consistency_window: since_last_payout
+  phases:
+    - {name: fase1, target_pct: null, min_days: 5, max_days: null}
+  max_days_default: 120
+  funded: {days: 120, split_pct: 80, payout_every: null, refund_fee: null}
+
+the5ers_high_stakes:
+  description: "The5ers High Stakes 2 fasi, 100k (Comet 06/10, da verificare)"
+  fonte: "Comet 2026-10-06; citazioni non ancora riportate"
+  stato: da_verificare
+  account: 100000
+  fee: 149                        # ⚠️ sospetto: per 100k sembra basso (memoria di Claude, non verificata)
+  daily_loss_pct: 5
+  daily_basis: null               # Comet: null
+  max_loss_pct: 10
+  max_loss_type: static
+  consistency_pct: 50             # Comet: finestra "other", non specificata
+  comet_consistency_window: other
+  phases:
+    - {name: fase1, target_pct: 10, min_days: null, max_days: null}
+    - {name: fase2, target_pct: 5, min_days: null, max_days: null}
+  max_days_default: 120
+  funded: {days: 120, split_pct: 80, payout_every: 14, refund_fee: null}   # Comet: "every two weeks"

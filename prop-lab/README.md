@@ -13,16 +13,17 @@ FASE 2  stesse varianti con costi reali (spread bid/ask da MT5, commissioni, sli
 FASE 3  candidati × regole prop × profili di rischio (statico, DD-lineare, scaglioni, streak, guardia giornaliera, …)
         Monte Carlo di challenge complete + funded  → pass rate, cause di fallimento, giorni, EV per tentativo
    ▼
-FASE 4  conferma sul periodo OUT-OF-SAMPLE mai visto + Deflated Sharpe  → PROMOSSA / DA_OSSERVARE / SCARTATA
+FASE 4  conferma sul periodo OUT-OF-SAMPLE mai visto + Deflated Sharpe  → PROMOSSA / NON_DIMOSTRATA / SCARTATA
 ```
 
 ## Avvio rapido
 ```bash
 pip install pandas numpy scipy pyyaml tabulate
-python tools/make_demo_data.py          # i CSV non sono in git: rigenera data/DEMO_XAUUSD_H1.csv (identico)
+python tools/make_demo_data.py --mode null   # controllo NEGATIVO: random walk, la pipeline non deve promuovere niente
+python tools/make_demo_data.py --mode mr     # controllo POSITIVO: mean reversion iniettata (--forza per renderla piu' forte)
 python tests/test_core.py && python tests/test_lookahead.py
 python -m lab.cli list
-python -m lab.cli all --family mean_reversion --symbol XAUUSD --data data/DEMO_XAUUSD_H1.csv
+python -m lab.cli all --family mean_reversion --symbol XAUUSD --data data/DEMO_NULL_XAUUSD_H1.csv
 ```
 Poi apri la cartella con **Claude Code**: legge `CLAUDE.md`, ha le skill `famiglia-strategie` e `pipeline-prop`
 e gli agenti `quant-reviewer` e `prop-risk-manager`. Esempi di richieste:
@@ -45,14 +46,17 @@ Più storia = meglio (almeno 3–5 anni su H1; per M5/M15 almeno 1–2 anni).
 - **Mai l'EV da solo.** La challenge e' un'opzione: a vantaggio zero il profilo guardia giornaliera al 3% passava
   ~30% e aveva EV ~+1.900 per tentativo. Si legge `ev_vs_zero` (EV meno lo stesso EV a vantaggio zero), e per un
   candidato vero `lab.prop.evaluate_ci`, che aggiunge l'incertezza di stima.
-- `DA_OSSERVARE` vuol dire "non dimostrato": su rumore puro esce in 5 serie su 8 (misura del 05/10).
+- Verdetto della conferma (dal 07/10): **PROMOSSA** solo se il limite basso dell'intervallo OOS, corretto per il numero
+  di candidati, supera zero (il DSR si riporta come diagnostica); **NON_DIMOSTRATA** (non va in demo, si legge l'MDE accanto);
+  **SCARTATA** se l'intervallo e' tutto sotto zero. Il vecchio DA_OSSERVARE usciva su rumore puro in 5 serie su 8.
+- `ev_vs_zero` toglie il valore d'opzione della challenge, **non il caso**: su un candidato NON_DIMOSTRATA non dice niente.
 - Su Windows: se il pool di processi da' problemi, `PROPLAB_WORKERS=1`.
 - Cosa e' cambiato e perche': `CHANGELOG.md`. In `trad` la cartella e' raggiunta da `core/prop_sim.py`.
 
 ## Approssimazioni dichiarate
 - motore bar-by-bar: se SL e TP sono nella stessa barra conta lo SL (conservativo); niente tick
 - DD intraday nella prop stimato con la MAE del trade; una posizione alla volta per strategia
-- i dati `DEMO_*` sono **sintetici**: servono solo a verificare che la pipeline giri
+- i dati `DEMO_*` sono **sintetici** e sono due controlli: `DEMO_NULL` (niente da trovare) e `DEMO_MR` (vantaggio iniettato)
 
 ## Prossimi passi possibili
 portafoglio di più strategie sullo stesso conto · motore multi-simbolo · filtro news ·

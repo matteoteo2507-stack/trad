@@ -169,21 +169,51 @@ Non sui comparatori. Se un dato non è pubblicato, si scrive **NON PRESENTE** e 
 
 | # | Domanda | FTMO | FundedNext | The5ers | Alpha Capital | Altre |
 |---|---|---|---|---|---|---|
-| 1.1 | Daily DD su balance o equity flottante? | ❓ | ❓ | ❓ | ❓ | |
-| 1.2 | Max DD statico o trailing? | statico | ❓ | statico | ❓ | |
+| 1.1 | Daily DD su balance o equity flottante? | 🟡 **equity** (flottante incluso), 5% / 3% dal saldo di inizio giornata | 🟡 **equity** (flottante incluso); base ambigua ("initial") | 🟡 non trovato | ❓ | |
+| 1.2 | Max DD statico o trailing? | statico (2 fasi) · 🟡 **trailing di fine giornata** (1 fase) | 🟡 statico (10% 2 fasi, 6% 1 fase) | statico (🟡 confermato) | ❓ | |
 | 1.3 | Weekend/overnight consentito? | ❓ (Swing account) | ❓ | ❓ | ✅ su Pro/Swing/One/Three | |
 | 1.4 | EA MT5 senza sorgente? | ✅ senza pre-approvazione | ✅ MT4/MT5 | ✅ | ⚠️ **richiede `.mq5`** | |
-| 1.5 | Consistency rule? | ❓ | ❓ | ❓ | ❌ **40% best day → SQUALIFICATA** (payout 14/28 gg: violeremmo il 74,7% delle volte) | |
-| 1.5b | Se c'è: si calcola dall'ultimo payout o dall'intera storia? Accumulo libero? | ❓ | ❓ | ❓ | ❓ | |
+| 1.5 | Consistency rule? | 🟡 nessuna (2 fasi e 1 fase) | 🟡 **40%** (Stellar 1 e 2 fasi) | 🟡 **50%** |  ❌ **40% best day → SQUALIFICATA** (payout 14/28 gg: violeremmo il 74,7% delle volte) | |
+| 1.5b | Se c'è: si calcola dall'ultimo payout o dall'intera storia? Accumulo libero? | 🟡 accumulo libero (2 fasi), non libero (1 fase) | 🟡 **dall'ultimo payout**; accumulo non trovato | 🟡 finestra "other", non specificata | ❓ | |
 | 1.6 | News: apertura e chiusura? | ⚠️ ±2min XAUUSD/DXY, **solo funded** | ⚠️ **−40% profitti news** + SL 3min | ⚠️ varia per piano | ❓ "news gambling" vietato (vago) | |
 | 1.7 | Leva XAUUSD / NAS100 | ❓ | ⚠️ **XAUUSD 1:10** | ❓ | ❓ (1:30 su Swing) | |
 | 1.8 | Italia + postura MiFID II | ❓ | ❓ | ❓ | ❓ | |
+
+🟡 = dato di **Comet del 06/10** (§3bis), **senza la citazione testuale**: da verificare prima di usarlo in una
+decisione. Il resto della griglia viene dalle verifiche precedenti.
 
 **Candidate da aggiungere alla griglia** (emerse come "no consistency rule + static DD + EA su MT5",
 tutte da verificare sui rulebook primari, nessuna approvata): Goat Funded Trader, FXIFY, Atlas
 Funded, Blueberry Funded.
 
 ---
+
+### 3bis. Esito della raccolta Comet del 2026-10-06 (FTMO, FundedNext, The5ers)
+
+Matteo ha fatto girare un prompt su propfirmtrader.com con rimando ai siti ufficiali. Il prompt corretto
+(versione 2, con il completamento per queste tre firm) e' in [prompt_comet_regolamenti_prop.md](prompt_comet_regolamenti_prop.md). I valori sono in
+`prop-lab/config/prop_rules.yaml` (voci `ftmo_*`, `fundednext_*`, `the5ers_*`, `stato: da_verificare`).
+
+**Cosa manca per poterli usare:**
+1. **La prova.** Sono arrivati solo i blocchi YAML: niente citazioni, URL, date, e niente campi 1.3, 1.4, 1.6,
+   1.7, 1.8 (stavano nella tabella A, non riportata). Le 5 firm candidate sotto la griglia non sono state fatte.
+2. **Un'ambiguita' nata dal prompt.** "Su cosa si calcola il daily loss" mescola la **base** della percentuale
+   (es. 5% del saldo iniziale) col **punto da cui si misura** (saldo o equity di inizio giornata). FundedNext
+   risulta `initial`: puo' voler dire la prima cosa (come FTMO) o una soglia fissa dal saldo iniziale, che il
+   simulatore tratta in modo diverso. Va chiesto separatamente.
+3. **I null senza motivo.** Comet ha definito tre stati (non trovato / non pubblicato / non applicabile) ma non
+   dice quale vale per ogni null.
+4. **Un valore sospetto:** The5ers High Stakes a **149** per il conto da 100k (dalla memoria di Claude, non
+   verificata, sembra il prezzo di un conto piu' piccolo).
+
+**Simulabilita'** (`lab.prop.regole_mancanti`, 07/10): solo `ftmo_2step`, per il pass rate; senza costo l'EV non
+si calcola. Coincide col modello `two_step_classic` tranne costo e frequenza dei payout. Gli altri quattro
+sono rifiutati, con l'elenco dei campi mancanti.
+
+**Cosa si vede gia', se i dati reggono:** il criterio **1.1** (daily su balance) **non e' soddisfatto** da FTMO
+ne' da FundedNext. ⚠️ Quel criterio era stato derivato da `nxt_fade` (posizioni fino a 20 giorni su 6
+strumenti), oggi KILL: per una strategia intraday il flottante pesa molto meno. Tutti i criteri del §1 vanno
+riletti sulla forma della prossima strategia candidata, non su quelle morte (§0).
 
 ## 4. Esclusione permanente: la traccia segnali-mentore
 

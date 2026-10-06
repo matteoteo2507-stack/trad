@@ -1,6 +1,6 @@
 """Test anti look-ahead per TUTTE le strategie registrate:
 i segnali fino alla barra t non devono cambiare se tagliamo via il futuro dopo t.
-python tests/test_lookahead.py data/DEMO_XAUUSD_H1.csv"""
+python tests/test_lookahead.py data/DEMO_NULL_XAUUSD_H1.csv"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np
@@ -27,6 +27,6 @@ def check(path, n_bars=3000, cuts=(1500, 2200)):
 
 
 if __name__ == "__main__":
-    bad = check(sys.argv[1] if len(sys.argv) > 1 else "data/DEMO_XAUUSD_H1.csv")
+    bad = check(sys.argv[1] if len(sys.argv) > 1 else "data/DEMO_NULL_XAUUSD_H1.csv")
     print("OK: nessun look-ahead rilevato" if not bad else f"LOOK-AHEAD in: {bad}")
     sys.exit(1 if bad else 0)

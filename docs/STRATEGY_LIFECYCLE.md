@@ -188,7 +188,9 @@ misurano separatamente:
 - **valore di struttura** (prop): l'obiettivo e' a barriere, quindi la size ottima dipende dallo stato
   anche con esiti indipendenti. Ma vale anche per chi non ha vantaggio: si misura con
   `confronta_overlay_prop`, che riporta per ogni binario il benchmark a **vantaggio zero** e `ev_vs_zero`
-  con l'incertezza di stima. Si legge `ev_vs_zero`, non l'EV grezzo.
+  con l'incertezza di stima. Si legge `ev_vs_zero`, non l'EV grezzo. ⚠️ `ev_vs_zero` toglie il valore
+  d'opzione, **non il caso**: su un random walk i candidati usciti positivi per fortuna hanno `ev_vs_zero`
+  fuori campione positivo al 100% (07/10). Senza il suo intervallo (`evaluate_ci`) non si cita.
 
 **Regole:**
 - Un overlay **non salva un NO-GO e non promuove niente**. Un overlay che trasforma un 1R negativo in

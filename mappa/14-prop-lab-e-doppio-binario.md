@@ -98,9 +98,21 @@ Esempio completo su dati veri: `analysis/opening_range/doppio_binario.py`.
   `WinError 6`. Riparati in `lab/pipeline.py` (UTF-8 esplicito, `_map` con ricaduta seriale).
 - *Il profilo "migliore" era quello piu' audace.* Ordinamento per `ev_attempt`; ora per `ev_vs_zero`.
 
-**Ancora aperti (decisione di Matteo):**
-- `DA_OSSERVARE` esce anche su rumore puro (5 serie nulle su 8): nel funnel del socio non e' un filtro.
-- I dati `DEMO_*` hanno mean reversion iniettata dal generatore: il loro report e' per costruzione.
+**Riparati il 07/10 (Matteo: "condivido la correzione"):**
+- *DA_OSSERVARE usciva su rumore puro* (5 serie nulle su 8 mandavano un candidato in demo). Ora il verdetto e'
+  PROMOSSA / NON_DIMOSTRATA / SCARTATA, deciso dall'intervallo OOS corretto per i candidati; il DSR resta come
+  diagnostica (`lab/metrics.py`: `mean_ci`, `verdetto_oos`). Controlli: 0 promosse su 9 random walk, 2 su 8 con
+  la mean reversion iniettata debole, 8 su 8 con quella forte. Con DSR ≥ 0,95 obbligatorio (la prima versione
+  del 07/10) non si promuoveva nemmeno quella forte: un gate irraggiungibile e' rotto quanto uno che fa passare
+  il rumore.
+- *I dati demo avevano il vantaggio dentro* (mean reversion non dichiarata e massimi/minimi staccati dal percorso).
+  Ora sono due controlli costruiti su un percorso a passi di un minuto: `DEMO_NULL` e `DEMO_MR` (con `--forza`).
+- *Regolamenti incompleti simulati con default.* `lab.prop.regole_mancanti` li rifiuta con l'elenco dei campi.
+
+**Limite da sapere:** `ev_vs_zero` toglie il valore d'opzione della challenge, **non il caso**. Decide il verdetto
+della conferma; per un candidato vero serve `evaluate_ci`.
+
+**Ancora aperti:**
 - Il motore riempie lo stop **esattamente al livello**: sui dati veri e' ottimista quanto lo slittamento degli
   stop sulle news.
 - Il DD dentro la giornata e' stimato con la MAE del trade e un trade conta nel giorno in cui chiude: sottostima

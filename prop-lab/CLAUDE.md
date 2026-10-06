@@ -25,7 +25,8 @@ Tutto in una volta: `python -m lab.cli all --family <famiglia> --symbol XAUUSD -
 7. Per analizzare la fase 3 o proporre nuovi profili di rischio → agente `prop-risk-manager`.
 8. **Nessun EV senza il benchmark a vantaggio zero** (`pass_zero`, `ev_zero`, `ev_vs_zero`; per un candidato
    vero `lab.prop.evaluate_ci`). La challenge e' un'opzione: anche chi non ha vantaggio ha EV positivo con
-   rischio alto. `DA_OSSERVARE` = "non dimostrato" (esce anche su rumore puro).
+   rischio alto. `ev_vs_zero` toglie l'opzione ma non il caso: decide il verdetto (PROMOSSA / NON_DIMOSTRATA / SCARTATA,
+   con intervallo OOS corretto per i candidati; DSR come diagnostica). NON_DIMOSTRATA non va in demo.
 9. Questa cartella vive anche dentro il repo `trad` (`prop-lab/`): ogni modifica va in `CHANGELOG.md`.
    In `trad` valgono in piu' le regole di `trad/CLAUDE.md` e `docs/STRATEGY_LIFECYCLE.md` (§4quater: verdetto
    solo sul binario a rischio fisso 1R, overlay dalla libreria dichiarata in `core/sizing.py`).
@@ -37,7 +38,8 @@ Tutto in una volta: `python -m lab.cli all --family <famiglia> --symbol XAUUSD -
 - `lab/strategies/` una famiglia per file (`base.py` = interfaccia)
 - `lab/risk.py` modelli di rischio componibili · `lab/prop.py` simulatore challenge + funded
 - `config/` soglie dei cancelli, simboli/costi, regole prop, profili di rischio
-- `data/` CSV esportati da MT5 (`DEMO_*` = sintetici, solo per verificare che tutto giri)
+- `data/` CSV esportati da MT5 (fuori da git). `DEMO_NULL_*` e `DEMO_MR_*` = controlli sintetici negativo e positivo
+  (`tools/make_demo_data.py`): una modifica alla pipeline che promuove qualcosa su DEMO_NULL e' un difetto
 
 ## Stile
 - Rispondi in italiano. Riporta sempre: n trade, expectancy in R, PF, max DD in R, quota dei costi, pass rate

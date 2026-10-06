@@ -91,7 +91,7 @@ def test_esiti_alternati_la_serie_toglie():
 def test_confronta_overlay_prop_riporta_il_benchmark_zero():
     rng = np.random.default_rng(4)
     days = [[(1.0, 0.0)] if rng.random() < 0.6 else [(-1.0, 1.0)] for _ in range(250)]
-    rules = {"account": 100000, "fee": 500, "daily_loss_pct": 5, "max_loss_pct": 10, "max_loss_type": "static",
+    rules = {"account": 100000, "fee": 500, "daily_loss_pct": 5, "daily_basis": "day_start", "max_loss_pct": 10, "max_loss_type": "static",
              "phases": [{"target_pct": 8, "min_days": 0}], "max_days_default": 120}
     tab = sizing.confronta_overlay_prop(days, rules, 1.0, overlay=("O1_cuscinetto",), n_paths=60, n_outer=8)
     assert list(tab["binario"]) == ["1R", "O1_cuscinetto"]

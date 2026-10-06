@@ -98,3 +98,38 @@ def plateau_scores(res: pd.DataFrame, grid: dict, metric: str = "expectancy") ->
 def expand_grid(grid: dict) -> list[dict]:
     keys = list(grid.keys())
     return [dict(zip(keys, combo)) for combo in itertools.product(*[grid[k] for k in keys])]
+
+
+# ---------------------------------------------------------------- aggiunte trad (2026-10-07)
+def mean_ci(r, alpha: float = 0.05, m: int = 1) -> tuple[float, float, float]:
+    """Intervallo t della media di R con correzione di Bonferroni per `m` candidati, e MDE (potenza 80%).
+    Serve alla conferma OOS: fra 8 candidati scelti come migliori, almeno uno esce positivo per caso con
+    probabilita' alta (5 random walk su 8 il 05/10). Un numero > 0 senza intervallo non e' un verdetto."""
+    r = np.asarray(r, dtype=float)
+    r = r[np.isfinite(r)]
+    n = r.size
+    if n < 3:
+        return np.nan, np.nan, np.nan
+    se = r.std(ddof=1) / np.sqrt(n)
+    a = alpha / (2 * max(1, m))
+    t = stats.t.ppf(1 - a, n - 1)
+    mde = (stats.norm.ppf(1 - a) + stats.norm.ppf(0.80)) * se
+    return float(r.mean() - t * se), float(r.mean() + t * se), float(mde)
+
+
+def verdetto_oos(lo: float, hi: float, dsr: float, min_exp: float = 0.0, min_dsr: float | None = None) -> str:
+    """PROMOSSA solo se il limite basso dell'intervallo OOS (gia' corretto per il numero di candidati) sta
+    sopra la soglia; con `min_dsr` impostato, serve anche il DSR in-sample. SCARTATA solo se l'intervallo OOS
+    sta tutto sotto. Tutto il resto e' NON_DIMOSTRATA: non va in demo e non si scrive "refutata".
+
+    Perche' il DSR non e' obbligatorio (controlli del 07/10): il test OOS sui candidati scelti PRIMA di guardare
+    l'OOS, con Bonferroni, e' gia' il test valido. Con DSR >= 0,95 obbligatorio la pipeline non promuoveva
+    nemmeno una mean reversion iniettata fortissima (OOS +0,85R, limite basso +0,68R, DSR 0,90): un gate
+    irraggiungibile e' rotto quanto uno che fa passare il rumore. Senza DSR: 0 promosse su 9 random walk,
+    8 su 8 sui controlli forti."""
+    dsr_ok = min_dsr is None or (np.isfinite(dsr) and dsr >= min_dsr)
+    if np.isfinite(lo) and lo > min_exp and dsr_ok:
+        return "PROMOSSA"
+    if np.isfinite(hi) and hi < min_exp:
+        return "SCARTATA"
+    return "NON_DIMOSTRATA"

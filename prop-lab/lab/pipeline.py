@@ -20,7 +20,7 @@ import yaml
 
 from .backtest import run_backtest
 from .data import load_mt5_csv, timeframe_label
-from .metrics import trade_metrics, plateau_scores, expand_grid, deflated_sharpe
+from .metrics import trade_metrics, plateau_scores, expand_grid, deflated_sharpe, mean_ci, verdetto_oos
 from .prop import trades_by_day, evaluate, zero_edge
 from .risk import build_profiles
 from .strategies.base import get_family
@@ -269,17 +269,22 @@ def confirm(run_dir):
     top = cfg("pipeline.yaml")["stage2_costi"]["top_total"]
     cand = s2[s2["pass"]].head(top)
     sr_trials = all_trial_sharpes(m["family"], m["symbol"], m["tf"])
+    n_cand = len(cand)          # l'intervallo OOS si corregge per quanti candidati arrivano qui (Bonferroni)
     rows = []
     for _, c in cand.iterrows():
         key = vkey(c["strategy"], json.loads(c["params"]))
         oos = R.load_trades(c["file_oos"]); met_o = trade_metrics(oos, R.days_oos)
         dsr = deflated_sharpe(c["sharpe_d"], sr_trials, int(c["n_days"]), c["skew_d"], c["kurt_d"])
+        lo, hi, mde = mean_ci(oos["r"] if not oos.empty else [], th.get("alpha", 0.05), n_cand)
         rows.append({"candidate": key, "n_is": c["n"], "exp_is": c["expectancy"], "n_oos": met_o["n"],
-                     "exp_oos": met_o["expectancy"], "pf_oos": met_o["pf"], "dd_oos_r": met_o["max_dd_r"],
-                     "dsr_is": dsr, "trials": len(sr_trials)})
+                     "exp_oos": met_o["expectancy"], "exp_oos_lo": lo, "exp_oos_hi": hi, "mde_oos": mde,
+                     "pf_oos": met_o["pf"], "dd_oos_r": met_o["max_dd_r"],
+                     "dsr_is": dsr, "trials": len(sr_trials), "n_candidati": n_cand})
     res = pd.DataFrame(rows)
-    res["verdetto"] = np.where((res["exp_oos"] > th["min_expectancy_r"]) & (res["dsr_is"] >= th["min_dsr"]), "PROMOSSA",
-                       np.where(res["exp_oos"] > th["min_expectancy_r"], "DA_OSSERVARE", "SCARTATA"))
+    # 07/10: prima "DA_OSSERVARE" = exp_oos > 0 a prescindere dal DSR, e andava in demo. Su rumore puro usciva in
+    # 5 random walk su 8. Ora: PROMOSSA / NON_DIMOSTRATA / SCARTATA, con l'intervallo e l'MDE accanto.
+    res["verdetto"] = [verdetto_oos(r.exp_oos_lo, r.exp_oos_hi, r.dsr_is, th["min_expectancy_r"], th.get("min_dsr"))
+                       for r in res.itertuples()] if not res.empty else []
     res.to_csv(R.path("conferma_oos.csv"), index=False)
     print(res.round(3).to_string(index=False))
     # prop sul periodo OOS, solo per i profili migliori trovati in-sample (niente nuova ottimizzazione)
@@ -298,10 +303,13 @@ def confirm(run_dir):
         po = po.merge(best_prof[["candidate", "rules", "risk_profile", "pass_rate", "ev_attempt", "ev_vs_zero"]]
                       .rename(columns={"pass_rate": "pass_rate_is", "ev_attempt": "ev_is", "ev_vs_zero": "ev_vs_zero_is"}),
                       on=["candidate", "rules", "risk_profile"])
+        # 07/10: ev_vs_zero toglie il valore d'opzione, NON il caso. Su un random walk i candidati usciti positivi per
+        # fortuna hanno ev_vs_zero OOS positivo al 100%. Accanto a ogni riga va il verdetto del candidato.
+        po = po.merge(res[["candidate", "verdetto"]], on="candidate", how="left")
         po.to_csv(R.path("conferma_prop_oos.csv"), index=False)
-        print("\nProp su OOS (profili scelti in-sample):")
-        print(po[["candidate", "rules", "risk_profile", "pass_rate_is", "pass_rate", "pass_zero", "ev_is", "ev_attempt",
-                  "ev_vs_zero_is", "ev_vs_zero"]].round(3).to_string(index=False))
+        print("\nProp su OOS (profili scelti in-sample). DESCRITTIVO: decide il verdetto, non l'EV:")
+        print(po[["candidate", "verdetto", "rules", "risk_profile", "pass_rate_is", "pass_rate", "pass_zero", "ev_is",
+                  "ev_attempt", "ev_vs_zero_is", "ev_vs_zero"]].round(3).to_string(index=False))
     write_report(R)
     return res
 
@@ -332,10 +340,13 @@ def write_report(R: Run):
     add("Fase 3 · Migliori combinazioni prop (ordinate per ev_vs_zero)", "stage3_prop.csv",
         ["candidate", "rules", "risk_profile", "pass_rate", "pass_zero", "fail_daily", "fail_max", "median_days",
          "ev_attempt", "ev_zero", "ev_vs_zero"])
+    parts.extend(["> Come si legge: decide il **verdetto** della conferma (intervallo OOS corretto per i candidati; il DSR e' diagnostica).",
+                  "> `ev_vs_zero` toglie il valore d'opzione della challenge ma **non il caso**: su un candidato",
+                  "> NON_DIMOSTRATA non dice niente. Per un candidato vero: `lab.prop.evaluate_ci`.", ""])
     add("Fase 4 · Conferma OOS", "conferma_oos.csv")
     add("Fase 4 · Prop su OOS (profili scelti in-sample, nessuna ri-ottimizzazione)", "conferma_prop_oos.csv",
-        ["candidate", "rules", "risk_profile", "pass_rate_is", "pass_rate", "pass_zero", "fail_daily", "fail_max", "ev_is",
-         "ev_attempt", "ev_vs_zero_is", "ev_vs_zero"])
+        ["candidate", "verdetto", "rules", "risk_profile", "pass_rate_is", "pass_rate", "pass_zero", "fail_daily", "fail_max",
+         "ev_is", "ev_attempt", "ev_vs_zero_is", "ev_vs_zero"])
     with open(R.path("report.md"), "w", encoding="utf-8") as f:   # "→" e "·" non esistono in cp1252
         f.write("\n".join(parts))
     print(f"[report] {R.path('report.md')}")

@@ -92,7 +92,7 @@ def test_vantaggio_zero_due_barriere_come_la_rovina_del_giocatore():
     """+10% / -10% statico, 1% a trade, niente limite giornaliero ne' timeout: a vantaggio zero si passa
     nel 50% dei casi (rovina del giocatore). Se questo numero si sposta, il simulatore ha un difetto."""
     from lab.prop import evaluate, zero_edge
-    rules = {"account": 100000, "daily_loss_pct": 100, "max_loss_pct": 10, "max_loss_type": "static",
+    rules = {"account": 100000, "daily_loss_pct": 100, "daily_basis": "day_start", "max_loss_pct": 10, "max_loss_type": "static",
              "phases": [{"target_pct": 10, "min_days": 0}], "max_days_default": 5000}
     rng = np.random.default_rng(11)
     days = zero_edge(_giorni(rng.choice([1.0, -1.0], 400)))
@@ -103,7 +103,7 @@ def test_vantaggio_zero_due_barriere_come_la_rovina_del_giocatore():
 
 def test_evaluate_ci_separa_vantaggio_da_valore_opzione():
     from lab.prop import evaluate_ci
-    rules = {"account": 100000, "fee": 500, "daily_loss_pct": 5, "max_loss_pct": 10, "max_loss_type": "static",
+    rules = {"account": 100000, "fee": 500, "daily_loss_pct": 5, "daily_basis": "day_start", "max_loss_pct": 10, "max_loss_type": "static",
              "phases": [{"target_pct": 8, "min_days": 0}], "max_days_default": 120,
              "funded": {"days": 60, "split_pct": 80, "payout_every": 20, "refund_fee": True}}
     prof = {"name": "s", "base": {"type": "fixed_pct", "pct": 1.0, "of": "initial"}}
@@ -124,6 +124,35 @@ def test_map_ricade_in_serie():
         assert P._map(abs, [-1, -2, 3]) == [1, 2, 3]
     finally:
         del os.environ["PROPLAB_WORKERS"]
+
+
+def test_verdetto_oos_non_promuove_senza_intervallo_e_dsr():
+    from lab.metrics import mean_ci, verdetto_oos
+    rng = np.random.default_rng(0)
+    rumore = rng.choice([1.0, -1.0], 120) + 0.0
+    lo, hi, mde = mean_ci(rumore, 0.05, m=8)
+    assert lo < 0 < hi and mde > 0
+    assert verdetto_oos(lo, hi, dsr=0.99) == "NON_DIMOSTRATA"          # intervallo contiene lo zero
+    assert verdetto_oos(0.05, 0.40, dsr=0.10) == "PROMOSSA"             # default: decide l'OOS, il DSR e' diagnostica
+    assert verdetto_oos(0.05, 0.40, dsr=0.50, min_dsr=0.95) == "NON_DIMOSTRATA"   # se si chiede il DSR, conta
+    assert verdetto_oos(0.05, 0.40, dsr=0.96, min_dsr=0.95) == "PROMOSSA"
+    assert verdetto_oos(-0.40, -0.05, dsr=0.99) == "SCARTATA"
+    # Bonferroni: piu' candidati, intervallo piu' largo
+    assert mean_ci(rumore, 0.05, m=8)[0] < mean_ci(rumore, 0.05, m=1)[0]
+
+
+def test_regolamento_incompleto_rifiutato_con_elenco():
+    import pytest
+    from lab.prop import evaluate, regole_mancanti
+    r = {"account": 100000, "fee": None, "daily_loss_pct": 5, "daily_basis": None, "max_loss_pct": 10,
+         "max_loss_type": "static", "phases": [{"target_pct": None, "min_days": 5}]}
+    miss = regole_mancanti(r)
+    assert "daily_basis" in miss and "phases[0].target_pct" in miss
+    with pytest.raises(ValueError):
+        evaluate(_giorni([1.0, -1.0] * 20), r, {"name": "s", "base": {"type": "fixed_pct", "pct": 1.0}})
+    r.update(daily_basis="day_start", phases=[{"target_pct": 8, "min_days": 0}])
+    o = evaluate(_giorni([1.0, -1.0] * 20), r, {"name": "s", "base": {"type": "fixed_pct", "pct": 1.0}}, n_paths=20)
+    assert np.isnan(o["ev_attempt"]) and 0.0 <= o["pass_rate"] <= 1.0   # costo ignoto: niente EV inventato
 
 
 if __name__ == "__main__":

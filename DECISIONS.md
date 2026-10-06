@@ -11,6 +11,43 @@
 
 ---
 
+## 2026-10-07 — Pipeline di `prop-lab` corretta con due controlli; dati sensibili fuori dal repo pubblico; regolamenti Comet in quarantena
+
+**Decisioni di Matteo (07/10):** (1) correzioni ai difetti 1 e 2 della pipeline del socio approvate; (2) il repo
+e' pubblico e deve restarlo (i soci lo consultano), ma **senza dati sensibili**: nomi, export di chat, orari.
+`prop-lab` va su GitHub; (3) la sua strategia manuale va nel workspace.
+
+**Pipeline (0 trial, strumenti).** Il verdetto della conferma diventa PROMOSSA / NON_DIMOSTRATA / SCARTATA, deciso
+dal limite basso dell'intervallo fuori campione corretto con Bonferroni per i candidati, con l'MDE accanto.
+NON_DIMOSTRATA non va in demo. I dati demo diventano due controlli su un percorso a passi di un minuto: random
+walk (niente da trovare) e mean reversion dichiarata (`--forza`). Esiti: **0 promosse su 9 random walk** (il
+vecchio DA_OSSERVARE mandava un candidato in demo in 5 su 8), **2 su 8** con la mean reversion debole,
+**8 su 8** con quella forte.
+- ⚠️ **Errore mio, trovato dal controllo positivo.** Avevo proposto anche DSR ≥ 0,95 obbligatorio: con quella
+  soglia la pipeline non promuoveva nemmeno un vantaggio iniettato enorme (fuori campione +0,85R, limite basso
+  +0,68R, DSR 0,90). Il test fuori campione sui candidati scelti prima di guardarlo, con Bonferroni, e' gia' il
+  test valido. Il DSR resta riportato come diagnostica (`min_dsr: null`).
+- **Limite di `ev_vs_zero`**, misurato sui controlli: toglie il valore d'opzione della challenge ma **non il
+  caso** (sul random walk e' positivo al 100% fuori campione sui candidati usciti fortunati). Decide il verdetto;
+  per un candidato vero serve `evaluate_ci`. Scritto in STRATEGY_LIFECYCLE §4quater.
+
+**Privacy.** Riscritti i 4 commit locali del 06/10 (mai pushati) per togliere due righe di chat (nomi e orari) e
+due nomi di persona: non esistono in nessuna versione. Il numero del conto demo del socio era **gia' pubblico** dal
+commit `c10b846`: tolto dai documenti attuali; dalla storia di GitHub solo con un force push, non fatto.
+
+**Regolamenti delle firm (Comet, 06/10):** FTMO, FundedNext, The5ers in `prop-lab/config/prop_rules.yaml`,
+`stato: da_verificare`, perche' sono arrivati senza citazioni, con un campo ambiguo per colpa del prompt (base
+contro punto di misura della perdita giornaliera) e un costo sospetto (The5ers 149 per 100k). Il simulatore ora
+rifiuta un regolamento incompleto con l'elenco dei campi: simulabile solo `ftmo_2step`, per il pass rate. Griglia
+in [PROP_FIRM_CRITERIA §3 e §3bis](docs/PROP_FIRM_CRITERIA.md); prompt corretto in
+[prompt_comet_regolamenti_prop.md](docs/prompt_comet_regolamenti_prop.md). Gia' visibile, se i dati reggono:
+FTMO e FundedNext contano il flottante nel daily (criterio 1.1), ma quel criterio era nato da `nxt_fade`, oggi KILL.
+
+**Strategia manuale di Matteo** in `fondamenti_tecnici/strategie_candidate/`: il nucleo meccanico e' la famiglia
+livelli (CLOSED); le parti discrezionali si misurano solo in forward.
+
+---
+
 ## 2026-10-06 — `prop-lab` del socio entra in `trad`; la gestione del rischio si legge su **due binari**
 
 **Origine.** Sessione del 04-05/10 col socio **VELTRIX** (non il socio discrezionale): un'AI ha generato `prop-lab`, una pipeline

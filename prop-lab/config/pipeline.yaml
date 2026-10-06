@@ -25,5 +25,7 @@ stage3_prop:
   rules: [two_step_classic, two_step_tight, one_step_trailing]
 
 conferma_oos:               # fase finale sul periodo mai visto
-  min_expectancy_r: 0.0
-  min_dsr: 0.5              # Deflated Sharpe: corregge per il numero di varianti provate
+  min_expectancy_r: 0.0     # il LIMITE BASSO dell'intervallo OOS deve superarla (non la media)
+  alpha: 0.05               # intervallo bilaterale, corretto con Bonferroni per il numero di candidati
+  min_dsr: null             # Deflated Sharpe: riportato come diagnostica, NON richiesto (null). Era 0.5 fino al 06/10;
+                            # con 0.95 obbligatorio nessun controllo positivo veniva promosso (07/10, CHANGELOG)
