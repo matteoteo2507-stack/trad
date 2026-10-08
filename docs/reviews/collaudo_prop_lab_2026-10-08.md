@@ -59,6 +59,38 @@ verificare prima di un test vero su EURUSD.
 si annulla a direzione casuale), costo per trade in R, e `ev_vs_zero` della fase 3 (sui candidati scelti in-sample
 e' gonfiato dalla selezione: e' il motivo per cui non decide).
 
-## 3. Risultati
+## 3. Risultati (eseguito il 08/10 dopo il commit `1a32307`)
 
-*(da compilare dopo l'esecuzione, nel commit successivo)*
+**ESITO POSITIVO: i quattro criteri dichiarati sono soddisfatti su entrambi i simboli.**
+
+| criterio | XAUUSD | EURUSD |
+|---|---|---|
+| pipeline completa (fasi 1-4, report) | si' | si' |
+| zero PROMOSSA | si' (2 NON_DIMOSTRATA) | si' (3 NON_DIMOSTRATA) |
+| `core.trial_ledger --check` a exit 0 | si' | si' |
+| nessun percorso assoluto nei file del run | si' | si' |
+
+Il registro contiene i trial con etichetta `controllo` e le due aperture (`controllo`): nessuna famiglia toccata.
+
+**Descrittivo:**
+
+| | XAUUSD (36.212 barre, IS fino al 30/08/2024) | EURUSD (90.000 barre, IS fino al 02/03/2022) |
+|---|---|---|
+| fase 1: varianti con attesa lorda > 0 | 23 su 36 (64%), mediana +0,021R | 17 su 36 (47%), mediana −0,004R |
+| fase 1: passano le soglie | 6 | 6 |
+| fase 2: attesa lorda → netta (mediane) | +0,114 → +0,035R, costi 69% del lordo | +0,084 → +0,038R, costi 59% |
+| conferma: attesa fuori campione dei candidati | −0,335 e −0,197R | −0,023, −0,009, +0,017R |
+
+- **Le varianti non sono indipendenti.** Per seme: sull'oro il seme 1 ha 12 varianti positive su 12, il seme 3 3 su
+  12; su EURUSD il seme 2 ha 12 su 12. Le 36 varianti sono **3 estrazioni indipendenti** per simbolo, e i
+  sopravvissuti sono tutti dello stesso seme. "Il 64% delle varianti e' positivo" significa "2 semi su 3": e' la
+  lettura "vantaggio diffuso" del funnel originale, e su un controllo casuale e' falsa per costruzione. Anche per
+  questo il verdetto sta sull'intervallo fuori campione, non sulla quota di varianti positive.
+- **Costi.** Con i costi d'esempio di `symbols.yaml` (non quelli del broker), a H1 con stop di 1,5-2,5 ATR il costo
+  vale circa **0,05-0,08R per trade** (differenza fra attesa lorda e netta dei sopravvissuti). Un candidato vero a
+  questo orizzonte ha bisogno di un vantaggio lordo ben sopra questa cifra.
+- `ev_vs_zero` della fase 3 e' positivo nell'88% delle combinazioni su entrambi i simboli: e' la selezione in-sample
+  (candidati scelti perche' positivi nell'IS), il motivo per cui non decide.
+
+**L'infrastruttura e' chiusa per i test veri.** Restano annotati: costi reali del broker in `symbols.yaml` (e i nomi
+US100/US500), e la lunghezza reale della storia EURUSD (90.000 righe = probabile limite dell'export).

@@ -11,6 +11,28 @@
 
 ---
 
+## 2026-10-08 — Infrastruttura chiusa per i test veri; collaudo su dati reali POSITIVO (0 trial)
+
+**I tre punti bloccanti chiusi** (richiesta di Matteo, 08/10): (1) `prop-lab` registra ogni variante e ogni apertura
+del fuori campione con l'id della famiglia, e `core.trial_ledger --check` confronta registro e contatore; (2) su dati
+reali niente test senza famiglia nel contatore con pre-registrazione **APPROVATA**, fuori campione una volta,
+`all` che si ferma prima della conferma (`prop-lab/lab/gate.py`); (3) gatekeeper con la checklist 8 (doppio binario,
+prop). **Prova di catena** in una copia isolata: quattro dipendenze trovate e corrette (percorsi relativi, niente nome
+utente nei file, giorni con barre, zero candidati: ora la famiglia muore senza aprire il fuori campione).
+
+**Collaudo** ([referto](docs/reviews/collaudo_prop_lab_2026-10-08.md)) con la famiglia di controllo `controllo_casuale`
+(ingressi e direzione a caso) su XAUUSD H1 ed EURUSD H1 reali, criteri dichiarati prima (commit `1a32307`):
+**zero PROMOSSA** (2 e 3 NON_DIMOSTRATA), pipeline completa, contatore a exit 0, nessun percorso assoluto.
+Due letture utili: le 36 varianti di un controllo casuale sono **3 estrazioni indipendenti** (per seme si muovono
+insieme), quindi la "quota di varianti positive" non e' evidenza; e con i costi d'esempio il costo a H1 vale
+~0,05-0,08R per trade.
+
+**Annotati, non risolti:** costi del broker reale in `symbols.yaml` (mancano US100/US500); `EURUSD_H1.csv` ha 90.000 righe
+esatte (probabile limite dell'export MT5) da verificare prima di un test su EURUSD. Prossimo passo: scelta del primo
+candidato di ricerca con Matteo.
+
+---
+
 ## 2026-10-07 (2) — Regolamenti prop, secondo passaggio Comet; l'ottimo di rischio del 06/10 dipendeva dal limite di tempo
 
 **Regolamenti** (0 trial, input). Secondo passaggio di Comet portato da Matteo, salvato integrale in

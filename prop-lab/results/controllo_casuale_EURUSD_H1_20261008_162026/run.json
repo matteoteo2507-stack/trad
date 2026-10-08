@@ -1,0 +1,12 @@
+{
+  "run_id": "controllo_casuale_EURUSD_H1_20261008_162026",
+  "family": "controllo_casuale",
+  "symbol": "EURUSD",
+  "tf": "H1",
+  "data": "../analysis/trading-bot-eval/data/EURUSD_H1.csv",
+  "ledger_id": "controllo",
+  "cut_time": "2022-03-02 12:00:00",
+  "start": "2012-01-05 17:00:00",
+  "end": "2026-07-06 11:00:00",
+  "bars": 90000
+}
