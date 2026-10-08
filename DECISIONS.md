@@ -11,6 +11,25 @@
 
 ---
 
+## 2026-10-08 (2) — Candidato A: RSI(2) sugli indici USA, test unico sulla storia (pre-registrazione in BOZZA)
+
+**Decisione di Matteo (08/10):** dopo il referto di potenza ([MR_INDICI_POTENZA](docs/MR_INDICI_POTENZA.md)), test sulla
+storia *"per sicurezza e per avere una misura nostra, a prescindere dall'esito"*, accettando il costo del trial.
+Famiglia `mr_indici_rsi2` nel contatore (0/1 trial, **secondo slot esterno del 2026-Q4**, `gate_finale: forward`).
+Pre-registrazione: [MR_INDICI_RSI2_PREREGISTRATION.md](docs/MR_INDICI_RSI2_PREREGISTRATION.md).
+
+**Supera lo scarto del 17/08**, che bocciava questa regola senza test come *"beta-trap"* (long-only su indice in
+rialzo): l'obiezione vale contro zero, e il baseline primario la neutralizza (ingresso casuale long nello stesso regime,
+tenuto **gli stessi giorni**: beta e deriva per giorno stanno in entrambi i bracci). **Non e' una riapertura** di
+`meanrev_vol` (regola diversa, fonte esterna che sceglie gli indici indipendentemente, tetto LEAD con forward).
+
+**Revisione G1 del gatekeeper: BLOCCA**, tre bloccanti. Corretti: cluster per episodio (quello per data lasciava fuori
+il 37% di trade sovrapposti fra indici) e questa voce. **Aperto**: la soglia di CLOSED confrontava il lordo assoluto
+pubblicato con un divario al netto della deriva; la sceglie Matteo prima dell'approvazione. Controlli sintetici dopo le
+correzioni: 0 LEAD su 8 nulli con deriva e correlazione, LEAD sul ritorno alla media iniettato; MDE del divario ~0,55-0,65%.
+
+---
+
 ## 2026-10-08 — Infrastruttura chiusa per i test veri; collaudo su dati reali POSITIVO (0 trial)
 
 **I tre punti bloccanti chiusi** (richiesta di Matteo, 08/10): (1) `prop-lab` registra ogni variante e ogni apertura

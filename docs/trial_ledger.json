@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-10-05",
+  "aggiornato": "2026-10-08",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -249,6 +249,28 @@
       "provenienza_ipotesi": "umana_esterna",
       "nota_provenienza": "socio, 28/09/2026: canale Forex Gump + backtest della webapp; ipotesi non proposta da LLM",
       "finestra_dati_fine": "2026-09-28"
+    },
+    {
+      "id": "mr_indici_rsi2",
+      "nome": "RSI(2) di Connors su SPX500/NAS100 giornalieri (candidato A)",
+      "stato": "QUARANTENA",
+      "trial_cumulati": 0,
+      "trial_budget": 1,
+      "round_rifinitura": 0,
+      "holdout_aperto": null,
+      "gate_finale": "forward",
+      "fonte_esterna": true,
+      "prereg_esterna_trimestre": "2026-Q4",
+      "verdetto": null,
+      "fonti": [
+        "docs/MR_INDICI_RSI2_PREREGISTRATION.md",
+        "docs/MR_INDICI_POTENZA.md",
+        "docs/reviews/rsi2_fonti_comet_2026-10-08.md"
+      ],
+      "note": "Test unico sulla storia 2012-2026, gia' vista da meanrev_vol (08/07) e B1 (17/09): massimo LEAD. Baseline a durata copiata. Soglia di chiusura 0,50% (replica pubblicata piu' bassa); MDE ~0,5%.",
+      "provenienza_ipotesi": "umana_esterna",
+      "finestra_dati_fine": "2026-08-13",
+      "nota_provenienza": "Video 2 della sessione col socio VELTRIX (04-05/10) e Connors-Alvarez 2008 (di seconda mano)."
     }
   ],
   "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920."

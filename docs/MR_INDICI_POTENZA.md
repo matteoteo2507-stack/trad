@@ -91,6 +91,8 @@ la stima era leggermente ottimista (anni × ~1,33).
 0,90% → 1,8 anni · 0,75% → 2,7 · 0,60% → 4,4 · 0,51% → 6,4 · **meta' di 0,60% (decadimento dal 2014) → 22 anni**.
 Con sigma 1,73% un terzo in piu'. **Sulla storia 2012-2026** l'MDE di R2 e' 0,30%: sotto l'effetto pubblicato, attorno
 alla sua meta'.
+⚠️ **Superato** dalla pre-registrazione (§6): sui dati sintetici con la regola esatta (senza stop, tenuta ~5 giorni)
+l'MDE e' **~0,5%**. La stima qui sopra usava una tenuta di 3 giorni. Fonte unica dell'MDE: la pre-registrazione.
 
 **Tre fatti che pesano piu' dei numeri:**
 1. **Tutte le fonti testano la regola SENZA stop-loss** (o con un time stop a 10 giorni): il vantaggio dichiarato vive
