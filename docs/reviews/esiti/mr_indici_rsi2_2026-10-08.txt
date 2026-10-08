@@ -1,0 +1,67 @@
+=== RSI(2) indici USA — DATI REALI ===
+CHECKLIST DATI: a posto, CON RISERVA su barre/anno
+  [ok] monotonia          4452 righe, tempo crescente
+  [ok] duplicati          nessun timestamp ripetuto
+  [riserva] barre/anno         15 anni, da 257 a 358 barre/anno (esclusi primo e ultimo) - nessun atteso dichiarato
+  [ok] monotonia          4462 righe, tempo crescente
+  [ok] duplicati          nessun timestamp ripetuto
+  [riserva] barre/anno         15 anni, da 257 a 358 barre/anno (esclusi primo e ultimo) - nessun atteso dichiarato
+  [ok] finestra comune    2012-01-19 -> 2026-08-13
+  [ok] partenze           allineate entro 3 giorni
+  SPX500 grezzo: {'righe_grezze': 4452, 'barre_weekend_scartate': 670, 'duplicati_scartati': 0}
+  NAS100 grezzo: {'righe_grezze': 4462, 'barre_weekend_scartate': 685, 'duplicati_scartati': 0}
+
+MATCHING DEL BASELINE: a posto
+  [ok] n_events     233 eventi, 4651 controlli, mediana 20.0 per evento
+  [ok] asset        coincide su tutte le coppie
+  [ok] side         coincide su tutte le coppie
+  [ok] hold         ESITO, non matchabile: mediana reale 4.00 vs random 4.00 (+0%)
+  [ok] atr          ESITO, non matchabile: mediana reale 1.17 vs random 1.19 (+2%)
+
+Trade reali: 233 (SPX 117, NAS 116); controlli: 4651; eventi SENZA controlli (esclusi dal divario): 0
+Fill non ottenibili: 0 su 233 (per costruzione: ingresso e uscita a mercato all'apertura successiva)
+Tenuta mediana: reale 4 giorni, casuale 4; notti medie 6.2 contro 6.2
+Episodi (trade sovrapposti fra indici = un episodio): 142 su 233 trade
+
+[1] Attesa NETTA reale: +0.462% a trade  IC95 [+0.152; +0.764]  (episodi 142, MDE 0.438%)
+    con costi 3x: +0.263%   |   LORDA: +0.561% IC95 [+0.258; +0.859]
+[2] Divario reale − casuale a durata copiata (netto): +0.307%  IC95 [-0.009; +0.615]  (MDE 0.446%)
+    media casuale +0.155% a trade (lordo +0.255%)
+    divario LORDO: +0.306%  IC95 [-0.010; +0.615]
+    divario puntuale per indice: SPX500 +0.282%, NAS100 +0.331%
+    descrittivo, divario in unita' di ATR al segnale: +0.293
+    descrittivo, baseline con la STESSA regola d'uscita (confuso dalla durata): divario +0.313%, tenuta mediana casuale 2 giorni contro 4
+
+VERDETTO DA REGOLA: NON DIMOSTRATO (MDE del divario 0.446%)
+
+Tabella di esclusione. Nostro lordo assoluto: IC95 [+0.258; +0.859]; nostro divario lordo: IC95 [-0.010; +0.615]
+  fonte                                                     pubbl.  nel loro metro    tradotto, crescita x1            x2 (prudente)
+  Murtazin 2000-2026                                         0.51%     non escluso     0.39% -> non escluso     0.27% -> non escluso
+  Quantitativo 1999-2024                                     0.60%     non escluso          non traducibile          non traducibile
+  BacktestEverything 2000-2024                               0.75%     non escluso          non traducibile          non traducibile
+  QuantifiedStrategies 1993-2026 (SMA200, uscita RSI>80)     0.95%         ESCLUSO          non traducibile          non traducibile
+  Lettura (§6): il nostro periodo ha probabilmente piu' crescita di quello delle fonti, quindi ESCLUSO nel loro
+  metro e' conservativo e 'superato' e' ottimista: un 'superato' NON si cita come effetto pubblicato confermato.
+  Nella colonna TRADOTTA e' il contrario (la crescita della fonte e' sottostimata): un ESCLUSO tradotto si cita solo
+  se regge anche con la crescita doppia (colonna x2).
+
+Descrittivi (non decidono): Sharpe per trade 0.243 (pavimento 1,65/sqrt(episodi) = 0.138), PSR sugli episodi 0.990 (1 trial: DSR = PSR)
+  SPX500: n 117, netto medio +0.412%, win 80%
+  NAS100: n 116, netto medio +0.513%, win 78%
+  anni con somma netta positiva: 11 su 15
+  runs test vinto/perso: z -3.87, p 0.000 (esiti RAGGRUPPATI: le soglie i.i.d. sono ottimiste)
+  per giorno in mercato (somma/somma): reale +0.1053%, casuale a durata copiata +0.0353%
+
+Doppio binario, capitale proprio (unita' = ATR% al segnale):
+         binario  e_per_unita  e_lo  e_hi  valore_dipendenza  max_dd_r                                                   lettura
+              1R        0.392 0.392 0.392             -0.000    15.249                                    verdetto sul vantaggio
+   O1_cuscinetto        0.417 0.349 0.449              0.032     8.838                               nessun valore di dipendenza
+O3_serie_perdite        0.423 0.376 0.417              0.032    10.533 AGGIUNGE per dipendenza (ipotesi: si conferma in forward)
+
+Doppio binario, prop FTMO 2 fasi: ILLUSTRATIVO, non se ne trae nulla (regola senza stop, ~14 trade l'anno):
+                binario  pass_rate  pass_lo  pass_hi  pass_zero
+                     1R      0.230    0.100    0.329      0.020
+          O1_cuscinetto      0.233    0.100    0.322      0.020
+ O2_guardia_giornaliera      0.240    0.106    0.354      0.023
+       O3_serie_perdite      0.227    0.096    0.328      0.013
+O4_avvicinamento_target      0.210    0.076    0.291      0.013

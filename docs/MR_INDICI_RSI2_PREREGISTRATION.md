@@ -1,9 +1,9 @@
 ---
-stato: APPROVATA
+stato: CLOSED
 approvata: "2026-10-08, Matteo, dopo la terza passata G1 (passa con riserve, riserve applicate)"
 aggiornato: 2026-10-08
 decisione: "Matteo (08/10): test sulla storia 'per sicurezza e per avere una misura nostra', a prescindere dall'esito, accettando il costo del trial"
-metrica_corrente: null
+metrica_corrente: "NON DIMOSTRATO (MDE 0,446%): divario netto +0,307% [-0,009; +0,615]; chiusa per potenza, non refutata (referto docs/reviews/rsi2_indici_esito_2026-10-08.md)"
 nota: "Una sola esecuzione. Massimo esito: LEAD con gate finale forward (storia gia' vista). Script: analysis/meanrev_indici/esegui_test.py"
 ---
 

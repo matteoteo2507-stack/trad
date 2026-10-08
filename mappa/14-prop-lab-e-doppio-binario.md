@@ -132,6 +132,11 @@ della conferma; per un candidato vero serve `evaluate_ci`.
   stop sulle news.
 - Il DD dentro la giornata e' stimato con la MAE del trade e un trade conta nel giorno in cui chiude: sottostima
   le violazioni giornaliere delle firm che contano il flottante (PROP_FIRM_CRITERIA §1.1).
+- *Trade sovrapposti nel binario capitale proprio* (G2 del 08/10, candidato A). `confronta_overlay` legge una sequenza
+  e fissa la size di ogni trade con l'esito del precedente: se due trade sono aperti insieme (due indici nello stesso
+  episodio) il precedente non era ancora chiuso all'ingresso, e l'overlay vede il futuro. Su sequenze sintetiche senza
+  dipendenza: falsi AGGIUNGE di O3 nel 36% invece del ~2,5%. Finche' non c'e' un controllo, il binario capitale proprio
+  si legge solo su sequenze **senza sovrapposizioni** (una posizione alla volta).
 
 **Sintomi da riconoscere:** un EV prop citato senza `ev_zero` accanto; un overlay che "salva" un 1R negativo;
 un overlay nuovo aggiunto dopo aver visto il risultato; un AGGIUNGE letto come verdetto invece che come ipotesi

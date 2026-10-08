@@ -11,6 +11,30 @@
 
 ---
 
+## 2026-10-08 (4) — Candidato A: **NON DIMOSTRATO (MDE 0,446%)** al primo e unico trial; famiglia **CLOSED** per potenza
+
+**Esito** (esecuzione unica del 08/10 dopo l'approvazione di Matteo, committata con trial e apertura prima del test;
+[referto](docs/reviews/rsi2_indici_esito_2026-10-08.md), G2 = CORREGGI la lettura, 0 bloccanti sul verdetto,
+[qui](docs/reviews/rsi2_indici_G2_2026-10-08.md)). Divario reale − casuale a durata copiata, netto: **+0,307% a trade
+[−0,009; +0,615]**, 233 trade in 142 episodi. LEAD mancato sul solo limite basso del divario (soglia B_NULL 0,09),
+CLOSED come etichetta mancato perche' il limite alto supera 0,50. Per il §8 della pre-registrazione la famiglia si
+chiude, **senza round di rifinitura**: **non refutata**, il test non poteva distinguere un eccesso sul caso fra 0 e ~0,6%.
+- **Nessuna fonte confermata**, nessuna smentita sulla regola testata: Murtazin non escluso ne' nel suo metro ne'
+  tradotto; QuantifiedStrategies 0,95% escluso al margine, ma la sua variante esce piu' tardi (referto §3).
+- **Attesa netta +0,462% e win rate ~80% sono contro zero**: contengono la crescita degli indici (il casuale fa
+  +0,155%). Non si citano come vantaggio (voce **M1**).
+- **Doppio binario non interpretabile su questo test**: l'overlay ha visto trade sovrapposti fra indici (look-ahead di
+  informazione, falsi AGGIUNGE 36% nei sintetici). L'AGGIUNGE di O3 non si cita. Errore mio nella pre-registrazione,
+  non visto nelle passate G1.
+
+**Riapre** solo con evidenza esterna nuova (LIFECYCLE §7): un eccesso pubblicato **contro un ingresso casuale a durata
+copiata**, su dati indipendenti. Il forward su questi due indici non e' praticabile: ~17 trade l'anno, MDE ~0,74% in
+5 anni, ~18 anni per arrivare a 0,39%. Per la regola "stessa grandezza = stessa famiglia" (voce (3)) un altro
+oscillatore di spostamento dalla media sugli stessi indici non la riapre. **Debito emerso** (referto §8): controllo dei
+trade sovrapposti in `confronta_overlay`, unita' del runs test, NON DIMOSTRATO assente dalla tassonomia del LIFECYCLE §5.
+
+---
+
 ## 2026-10-08 (2) — Candidato A: RSI(2) sugli indici USA, test unico sulla storia (pre-registrazione in BOZZA)
 
 **Decisione di Matteo (08/10):** dopo il referto di potenza ([MR_INDICI_POTENZA](docs/MR_INDICI_POTENZA.md)), test sulla

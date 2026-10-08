@@ -253,7 +253,7 @@
     {
       "id": "mr_indici_rsi2",
       "nome": "RSI(2) di Connors su SPX500/NAS100 giornalieri (candidato A)",
-      "stato": "QUARANTENA",
+      "stato": "CLOSED",
       "trial_cumulati": 1,
       "trial_budget": 1,
       "round_rifinitura": 0,
@@ -261,13 +261,17 @@
       "gate_finale": "forward",
       "fonte_esterna": true,
       "prereg_esterna_trimestre": "2026-Q4",
-      "verdetto": null,
+      "verdetto": "NON DIMOSTRATO (MDE 0,446%) al primo e unico trial (08/10): divario netto +0,307% [-0,009; +0,615]; chiusa per potenza, non refutata",
       "fonti": [
         "docs/MR_INDICI_RSI2_PREREGISTRATION.md",
         "docs/MR_INDICI_POTENZA.md",
-        "docs/reviews/rsi2_fonti_comet_2026-10-08.md"
+        "docs/reviews/rsi2_fonti_comet_2026-10-08.md",
+        "docs/reviews/rsi2_indici_esito_2026-10-08.md",
+        "docs/reviews/rsi2_indici_G2_2026-10-08.md",
+        "docs/reviews/esiti/mr_indici_rsi2_2026-10-08.txt",
+        "DECISIONS.md#2026-10-08-4"
       ],
-      "note": "Test unico sulla storia 2012-2026, gia' vista da meanrev_vol (08/07) e B1 (17/09): massimo LEAD. Baseline a durata copiata. CLOSED = escluso un eccesso sul caso >= 0,50% (opzione c, 08/10, su delega di Matteo) + tabella di esclusione delle fonti; LEAD contro la distorsione del nullo B_NULL; MDE: pre-registrazione §6.",
+      "note": "Test unico sulla storia 2012-2026, gia' vista da meanrev_vol (08/07) e B1 (17/09): massimo LEAD. Baseline a durata copiata. CLOSED = escluso un eccesso sul caso >= 0,50% (opzione c, 08/10, su delega di Matteo) + tabella di esclusione delle fonti; LEAD contro la distorsione del nullo B_NULL; MDE: pre-registrazione §6. Riapre solo con evidenza esterna nuova (LIFECYCLE §7): un eccesso pubblicato contro un ingresso casuale a durata copiata su dati indipendenti; il forward su questi indici non e' praticabile (~18 anni per un MDE di 0,39%, referto §7).",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-08-13",
       "nota_provenienza": "Video 2 della sessione col socio VELTRIX (04-05/10) e Connors-Alvarez 2008 (di seconda mano)."
