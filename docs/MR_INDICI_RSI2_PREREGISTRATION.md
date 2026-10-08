@@ -115,15 +115,18 @@ uscita RSI > 80):
   se il limite basso e' sopra; altrimenti "non escluso".
 - **tradotto nel nostro**, solo dove la fonte da' i numeri per calcolare la crescita del **suo** campione nei giorni
   tenuti: Murtazin (buy & hold da $1 a $8,68 in 26 anni, tenuta 3,7 giorni → ~0,12%, crescita non condizionata, che
-  sottostima quella sopra la SMA200: traduzione ottimista per la fonte). Si confronta il nostro **divario lordo** con
-  0,51% − 0,12%. Per le altre fonti: "non traducibile". ⚠️ La prima versione traduceva con la **nostra** crescita
+  sottostima quella sopra la SMA200). Si confronta il nostro **divario lordo** con 0,51% − 0,12% = 0,39% e, come limite
+  prudente, con la crescita doppia: 0,51% − 0,24% = 0,27%. **In questa colonna la direzione e' opposta**: con la crescita
+  sottostimata l'eccesso attribuito alla fonte e' gonfiato, quindi un ESCLUSO tradotto e' **ottimista** e si cita solo se
+  regge anche con la crescita doppia; un "superato" tradotto e' prudente. Per le altre fonti: "non traducibile". ⚠️ La prima versione traduceva con la **nostra** crescita
   misurata: era un'identita' (la crescita si toglieva da tutti e due i lati) e ripeteva la colonna "nel loro metro".
 - **Direzione dell'errore**: il nostro periodo (2012-2026) ha probabilmente piu' crescita di quello delle fonti (che
   comprende il 2000-2012 piatto); se le fonti sono nette di costi, va nello stesso verso. Quindi ESCLUSO nel loro metro e'
   **conservativo**, "superato" e' **ottimista**: un "superato" **non si cita** come effetto pubblicato confermato.
 Il referto riporta la tabella intera accanto all'etichetta. Esempio dal controllo sintetico (nullo con sola crescita,
-seme 1): lordo assoluto +0,515% [+0,09; +0,90] (sembra Murtazin) ma divario +0,19% [−0,28; +0,61]: NON DIMOSTRATO, nessuna
-fonte esclusa ne' confermata. E' il "beta-trap" del 17/08 in cifre, ed e' il motivo della tabella.
+seme 1): lordo assoluto +0,515% [+0,09; +0,90] (sembra Murtazin) ma divario +0,19% [−0,28; +0,61]: NON DIMOSTRATO;
+QuantifiedStrategies (0,95%) risulta ESCLUSO nel loro metro, le altre fonti non escluse ne' confermate. Un mercato con
+sola crescita riproduce lo 0,51% pubblicato: e' il "beta-trap" del 17/08 in cifre, ed e' il motivo della tabella.
 
 **Distorsione del nullo (B_NULL).** Sotto il nullo il divario a durata copiata esce in media **positivo**: la durata e' un
 esito del cammino del trade reale, e il pool dello stesso anno contiene finestre sovrapposte a quel cammino selezionato
@@ -131,12 +134,19 @@ dal segnale (seconda passata G1, ~+0,05%). Misurata **prima** del test con il co
 (`analysis/meanrev_indici/calibra_nullo.py`, 200 serie per condizione): **B_NULL = 0,09%** (distorsione misurata +0,063% [+0,038; +0,088] con crescita 0,05%/giorno e indici a 0,9; +0,047%
 [+0,018; +0,075] senza crescita; scelto il limite alto della condizione piu' vicina ai dati veri, arrotondato in su). Il LEAD richiede il
 limite basso del divario sopra B_NULL. CLOSED e NON DIMOSTRATO non la correggono: la distorsione li sposta nella
-direzione prudente.
+direzione prudente. **Ipotesi dichiarata:** B_NULL viene da serie con volatilita' costante (t5, 1,1% al giorno) e crescita
+costante; sui dati veri (volatilita' a grappoli, crescita variabile, volatilita' piu' bassa sopra la SMA200) la
+distorsione puo' essere diversa, in direzione ignota. Misure indipendenti del gatekeeper: +0,052 ± 0,022 e +0,063 ± 0,014.
 
 **Potenza: fonte unica di questo numero.** MDE del divario sui nulli sintetici col codice del test (deriva 0,05%/giorno,
 indici correlati a 0,9, cluster per episodio): **0,53-0,66%** (§9). Sostituisce lo 0,30% del referto di potenza (tenuta
 di 3 giorni, nessun raggruppamento). Il valore sui dati reali si legge nel referto dell'esito. Gli altri documenti
 rimandano qui.
+
+**Potenza del LEAD** (terza passata G1). Errore standard del divario ~0,19-0,24% (MDE / 2,80). Con B_NULL la soglia del
+LEAD sale: per vederlo con l'80% di probabilita' serve un **eccesso vero sul caso di circa 0,62-0,75%** a trade. Con
+l'eccesso di Murtazin tradotto (0,27-0,39%) la probabilita' di un LEAD e' ~15-30%. Un esito diverso da LEAD **non
+smentisce** Murtazin: lo dice la tabella, non l'etichetta.
 
 **Controlli del verdetto** (sintetici, 08/10, prima del mercato, con deriva 0,05%/giorno e indici correlati a 0,9
 dopo la revisione G1): riportati nel §9.
@@ -183,3 +193,17 @@ grezzo, precedenza LEAD e ampiezza su entrambi gli indici, PSR e futilita', cost
 | nullo, 8 semi | **0 LEAD**; divario puntuale da −0,05% a +0,21%; MDE del divario **0,53-0,66%**; 4 CLOSED e 4 NON DIMOSTRATO con soglia provvisoria 0,50% |
 | distorsione del nullo, 200 serie per condizione (`calibra_nullo.py`) | +0,063% [+0,038; +0,088] con crescita; +0,047% [+0,018; +0,075] senza → **B_NULL = 0,09%** |
 | ritorno alla media forte | **LEAD**: divario +1,03% [+0,84; +1,23], matching a posto su durata (3 contro 3 giorni) e ATR (1,42 contro 1,41) |
+
+**Gatekeeper, terza passata: PASSA CON RISERVE, 0 bloccanti.** Riserve accolte prima dell'approvazione:
+1. Se `checklist_dati` o `check_matching` e' ROTTO, o piu' del 5% di eventi resta senza controlli, lo script esce
+   (codice 3) **prima di stampare un solo rendimento**: un NESSUN VERDETTO non deve mostrare l'esito che poi si corregge.
+   Controllo negativo con i due controlli forzati ROTTI: uscita 3, nessun rendimento a schermo. Controlli dei dati sul
+   grezzo dei file reali gia' eseguiti: a posto, con riserva su barre/anno (257-358: nei file ci sono barre di weekend).
+2. Colonna tradotta della tabella con la crescita di Murtazin semplice e **doppia** (0,39% e 0,27%): un ESCLUSO tradotto
+   si cita solo se regge con la doppia (§6).
+3. Potenza del LEAD dichiarata (§6): eccesso necessario ~0,62-0,75%, probabilita' di LEAD ~15-30% se vale l'eccesso
+   tradotto di Murtazin.
+4. Ipotesi di B_NULL dichiarata (§6): volatilita' costante; sui dati veri la distorsione puo' differire, direzione ignota.
+5. Esempio del seme 1 corretto (§6).
+Dopo le correzioni: nullo seme 1 NON DIMOSTRATO (divario +0,19% [−0,28; +0,61]); ritorno alla media iniettato (forza 0,3,
+seme 3) **LEAD**, divario +1,11% [+0,85; +1,35].

@@ -251,6 +251,9 @@ def main(argv=None) -> int:
     print(f"=== RSI(2) indici USA — {etichetta} ===")
     esito_dati = dc.checklist_dati({s: g for s, (_, g, _) in sorgenti.items()})
     print(esito_dati)
+    if not esito_dati.ok:
+        print("NESSUN VERDETTO: controllo dei dati ROTTO. Uscita PRIMA di calcolare un solo rendimento (§6, §8).")
+        return 3
     for s, (_, _, info) in sorgenti.items():
         print(f"  {s} grezzo: {info}")
     rng = np.random.default_rng(SEME)
@@ -278,6 +281,11 @@ def main(argv=None) -> int:
     print(f"Fill non ottenibili: 0 su {len(R)} (per costruzione: ingresso e uscita a mercato all'apertura successiva)")
     print(f"Tenuta mediana: reale {R.giorni.median():.0f} giorni, casuale {C.giorni.median():.0f}; "
           f"notti medie {R.notti.mean():.1f} contro {C.notti.mean():.1f}")
+    # fin qui solo tenuta, ATR e conteggi: nessun rendimento stampato. Se il baseline e' rotto ci si ferma QUI.
+    if (not esito_match.ok) or senza > 0.05 * len(R):
+        print("NESSUN VERDETTO: matching del baseline ROTTO o piu' del 5% di eventi senza controlli. "
+              "Uscita PRIMA di stampare un solo rendimento (§6, §8): si corregge come esecuzione, 0 trial.")
+        return 3
 
     ep = episodi(R)
     R["episodio"] = ep
@@ -311,11 +319,7 @@ def main(argv=None) -> int:
     # verdetto (§6): LEAD ha la precedenza; poi CLOSED; il resto e' NON DIMOSTRATO
     b_null = B_NULL if B_NULL is not None else 0.05
     lead = (netto["low"] > 0 and gap["low"] > b_null and netto3 > 0 and all(v > 0 for v in per_ind.values()))
-    rotto = (not esito_dati.ok) or (not esito_match.ok) or senza > 0.05 * len(R)
-    if rotto:
-        v = ("NESSUN VERDETTO: controllo dei dati o del baseline ROTTO, o piu' del 5% di eventi senza controlli. "
-             "Si corregge come esecuzione (0 trial) e si rilancia una volta (§8)")
-    elif lead:
+    if lead:
         v = f"LEAD (gate finale: forward). Limite basso del divario sopra la distorsione del nullo ({b_null:.3f}%)"
     elif gap["high"] < soglia:
         v = f"CLOSED: escluso un eccesso sul caso >= {soglia:.2f}% a trade"
@@ -326,17 +330,22 @@ def main(argv=None) -> int:
     # tabella di esclusione (§6): ogni fonte nel suo metro; tradotta nel nostro solo con la crescita del SUO campione
     print(f"\nTabella di esclusione. Nostro lordo assoluto: IC95 [{lordo['low']:+.3f}; {lordo['high']:+.3f}]; "
           f"nostro divario lordo: IC95 [{gap_l['low']:+.3f}; {gap_l['high']:+.3f}]")
-    print(f"  {'fonte':56s} {'pubbl.':>7s} {'nel loro metro':>15s} {'tradotto (crescita della fonte)':>32s}")
+    print(f"  {'fonte':56s} {'pubbl.':>7s} {'nel loro metro':>15s} {'tradotto, crescita x1':>24s} {'x2 (prudente)':>24s}")
 
     def esito(lo_, hi_, x):
         return "ESCLUSO" if hi_ < x else ("superato" if lo_ > x else "non escluso")
     for nome, (val, cresc) in PUBBLICATI.items():
         e1 = esito(lordo["low"], lordo["high"], val)
-        e2 = (f"{val - cresc:.2f}% -> {esito(gap_l['low'], gap_l['high'], val - cresc)}" if cresc is not None
-              else "non traducibile")
-        print(f"  {nome:56s} {val:6.2f}% {e1:>15s} {e2:>32s}")
+        if cresc is None:
+            e2 = e3 = "non traducibile"
+        else:
+            e2 = f"{val - cresc:.2f}% -> {esito(gap_l['low'], gap_l['high'], val - cresc)}"
+            e3 = f"{val - 2 * cresc:.2f}% -> {esito(gap_l['low'], gap_l['high'], val - 2 * cresc)}"
+        print(f"  {nome:56s} {val:6.2f}% {e1:>15s} {e2:>24s} {e3:>24s}")
     print("  Lettura (§6): il nostro periodo ha probabilmente piu' crescita di quello delle fonti, quindi ESCLUSO nel loro\n"
-          "  metro e' conservativo e 'superato' e' ottimista: un 'superato' NON si cita come effetto pubblicato confermato.")
+          "  metro e' conservativo e 'superato' e' ottimista: un 'superato' NON si cita come effetto pubblicato confermato.\n"
+          "  Nella colonna TRADOTTA e' il contrario (la crescita della fonte e' sottostimata): un ESCLUSO tradotto si cita solo\n"
+          "  se regge anche con la crescita doppia (colonna x2).")
 
     sr = netto["media"] / R.netto.std(ddof=1)
     n_ep = netto["n_episodi"]
