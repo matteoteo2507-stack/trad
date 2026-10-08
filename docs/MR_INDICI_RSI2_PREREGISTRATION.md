@@ -1,5 +1,6 @@
 ---
-stato: BOZZA
+stato: APPROVATA
+approvata: "2026-10-08, Matteo, dopo la terza passata G1 (passa con riserve, riserve applicate)"
 aggiornato: 2026-10-08
 decisione: "Matteo (08/10): test sulla storia 'per sicurezza e per avere una misura nostra', a prescindere dall'esito, accettando il costo del trial"
 metrica_corrente: null
