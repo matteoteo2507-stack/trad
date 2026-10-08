@@ -1,0 +1,14 @@
+# Cancello verso il contatore dei tentativi di trad (aggiunta trad, 08/10/2026).
+#
+# Su DATI REALI una famiglia di strategie puo' girare solo se:
+#   1. esiste nel contatore (`ledger`) con `registro_prop_lab: true` e uno stato non chiuso;
+#   2. il campo `preregistrazione` della famiglia punta a un file con `stato: APPROVATA` nel frontmatter;
+#   3. per la conferma OOS: il fuori campione della famiglia non e' gia' stato aperto (una volta sola).
+# Esenti: i dati sintetici (`data/DEMO_*`) e le famiglie di CONTROLLO (`controllo = True` nelle strategie).
+#
+# Nel repo del socio, dove trad non c'e', si mette `attivo: false`: la pipeline gira come prima, ma niente
+# di quello che produce su dati reali conta come test per trad.
+attivo: true
+ledger: ../docs/trial_ledger.json     # relativo alla cartella prop-lab
+stati_chiusi: [CLOSED, KILL, NO-GO, NULL]
+stato_preregistrazione_richiesto: APPROVATA

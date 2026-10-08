@@ -426,6 +426,37 @@ Budget in vigore (li stampa il comando, non fidarti di questa riga se diverge):
   `round_grid`, `trend_momentum`);
 - **holdout: una apertura per famiglia**, non per variante.
 
+**Test passati da `prop-lab`** (dal 2026-10-08). La pipeline del socio registra ogni variante e ogni apertura del
+fuori campione in `prop-lab/results/registry.sqlite`, con l'id della famiglia del contatore, e su dati reali **non
+parte** senza una famiglia `registro_prop_lab: true` con `preregistrazione` in stato `APPROVATA`
+(`prop-lab/lab/gate.py`). `python -m core.trial_ledger --check` confronta registro e contatore: trial diversi,
+fuori campione aperto in prop-lab ma `holdout_aperto` vuoto, o una famiglia che il contatore non ha, sono errori.
+Se la verifica fallisce, il test non ha contabilita' e il verdetto e' **BLOCCA**. Le etichette `controllo` e
+`sintetico` non sono famiglie e non contano.
+
+---
+
+# Checklist 8 — Gestione del rischio e prop (dal 2026-10-06)
+
+Regola completa: [`STRATEGY_LIFECYCLE.md`](../../docs/STRATEGY_LIFECYCLE.md) §4quater; procedura: Step 5bis del
+protocollo. Si controlla in G1 (la pre-registrazione la prevede?) e in G2 (il referto la rispetta?).
+
+1. **Verdetto solo sul binario 1R.** Un overlay (O1-O4 di `core/sizing.py`) che "salva" un 1R negativo e' un
+   campanello, non un risultato. Un overlay fuori libreria e' un tentativo: `confronta_*` lo rifiuta.
+2. **Valore di dipendenza** (`confronta_overlay`): banda al 95% del rimescolato, falso allarme 5% per overlay, ~1 −
+   0,95^k con k overlay. Un AGGIUNGE e' un'ipotesi per il forward, mai un verdetto.
+3. **Nessun EV prop senza benchmark a vantaggio zero.** Accanto a `pass_rate` va `pass_zero`, accanto all'EV va
+   `ev_vs_zero` **con il suo intervallo** (`evaluate_ci`). `ev_vs_zero` toglie il valore d'opzione della challenge
+   ma **non il caso**: da solo non dice niente su un candidato non dimostrato.
+4. **Le regole della firm** usate sono modelli parametrici o un regolamento reale? Con che stato (`da_verificare`,
+   `citato_senza_url`, verificato)? `lab.prop.regole_mancanti` deve dare lista vuota.
+5. **Orizzonte simulato** (`max_days_default`): coerente col limite di tempo della firm? Senza limite, un orizzonte
+   corto conta come fallimento un'attesa che la firm non punisce, e sposta l'ottimo di rischio verso l'alto.
+6. **Rischio base** scelto sull'intervallo dell'E[R], non sul picco puntuale di un campione.
+7. **Verdetto della pipeline di `prop-lab`**: PROMOSSA solo con il limite basso dell'intervallo OOS (Bonferroni sui
+   candidati) sopra soglia; NON_DIMOSTRATA non va in demo. Un gate nuovo o cambiato si valida su
+   `DEMO_NULL` (niente deve passare) **e** `DEMO_MR` (deve passare).
+
 ---
 
 # Checklist 7 — Statistiche dichiarate da terzi
@@ -468,6 +499,11 @@ CONTABILITA'
   - trial di questo test: N · cumulato famiglia: M · budget residuo: K
   - holdout famiglia: sigillato / gia' aperto il <data>
   - budget pre-reg esterne: 2 di 2-3
+  - registro prop-lab coerente col contatore: si' / no (`core.trial_ledger --check`)
+
+RISCHIO E PROP (checklist 8, se il test li tocca)
+  - binario 1R: verdetto · overlay: lettura per ciascuno · pass_rate / pass_zero · ev_vs_zero [intervallo]
+  - regole della firm: modello / reale (stato) · orizzonte simulato coerente: si' / no
 
 DEBITO DI PROTOCOLLO
   - cose che mancano nell'infrastruttura e che hai dovuto verificare a mano

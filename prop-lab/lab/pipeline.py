@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from . import gate
 from .backtest import run_backtest
 from .data import load_mt5_csv, timeframe_label
 from .metrics import trade_metrics, plateau_scores, expand_grid, deflated_sharpe, mean_ci, verdetto_oos
@@ -43,25 +44,50 @@ def registry():
     con = sqlite3.connect(os.path.join(ROOT, "results", "registry.sqlite"))
     con.execute("""CREATE TABLE IF NOT EXISTS trials(run_id TEXT, ts REAL, family TEXT, symbol TEXT, tf TEXT,
                    strategy TEXT, params TEXT, stage TEXT, n INT, expectancy REAL, pf REAL, sharpe_d REAL)""")
+    # 08/10 (trad): ogni tentativo porta la famiglia del contatore (o sintetico/controllo) e il file di dati.
+    cols = {r[1] for r in con.execute("PRAGMA table_info(trials)")}
+    for c in ("ledger_id", "dati"):
+        if c not in cols:
+            con.execute(f"ALTER TABLE trials ADD COLUMN {c} TEXT")
+    con.execute("""CREATE TABLE IF NOT EXISTS aperture(ledger_id TEXT, ts REAL, run_id TEXT, dati TEXT, cut_time TEXT)""")
     return con
 
 
 def log_trials(run, rows: pd.DataFrame, stage):
     con = registry()
-    con.executemany("INSERT INTO trials VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", [
+    con.executemany("""INSERT INTO trials(run_id, ts, family, symbol, tf, strategy, params, stage, n, expectancy, pf,
+                       sharpe_d, ledger_id, dati) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", [
         (run["run_id"], time.time(), run["family"], run["symbol"], run["tf"], r["strategy"], r["params"], stage,
          int(r["n"]), float(r["expectancy"]) if pd.notna(r["expectancy"]) else None,
          float(r["pf"]) if pd.notna(r["pf"]) and np.isfinite(r["pf"]) else None,
-         float(r["sharpe_d"]) if pd.notna(r["sharpe_d"]) else None) for _, r in rows.iterrows()])
+         float(r["sharpe_d"]) if pd.notna(r["sharpe_d"]) else None,
+         run.get("ledger_id"), os.path.basename(run["data"])) for _, r in rows.iterrows()])
     con.commit(); con.close()
 
 
-def all_trial_sharpes(family, symbol, tf):
+def all_trial_sharpes(meta):
+    """Sharpe di tutti i tentativi che pesano sul DSR di questo run. Su una famiglia del contatore: tutti i suoi
+    tentativi, su ogni simbolo e run (la molteplicita' e' della famiglia). Altrimenti: stessa famiglia di codice,
+    simbolo, timeframe e file di dati (un run demo non deve sgonfiare il DSR di un run reale, ne' viceversa)."""
     con = registry()
-    v = [x[0] for x in con.execute("SELECT sharpe_d FROM trials WHERE family=? AND symbol=? AND tf=? AND stage='stage1'",
-                                   (family, symbol, tf)) if x[0] is not None]
+    tag = meta.get("ledger_id")
+    if tag and tag not in (gate.TAG_SINTETICO, gate.TAG_CONTROLLO, gate.TAG_FUORI):
+        q = con.execute("SELECT sharpe_d FROM trials WHERE ledger_id=? AND stage='stage1'", (tag,))
+    else:
+        q = con.execute("SELECT sharpe_d FROM trials WHERE family=? AND symbol=? AND tf=? AND dati=? AND stage='stage1'",
+                        (meta["family"], meta["symbol"], meta["tf"], os.path.basename(meta["data"])))
+    v = [x[0] for x in q if x[0] is not None]
     con.close()
     return np.array(v)
+
+
+def _dati_path(p):
+    """Percorso dei dati relativo a prop-lab quando possibile: nel run.json non finisce il percorso assoluto
+    (conteneva il nome utente, e il repo e' pubblico)."""
+    try:
+        return os.path.relpath(os.path.abspath(p), ROOT).replace(os.sep, "/")   # "/" funziona ovunque, "\\" no
+    except ValueError:          # altro disco su Windows
+        return os.path.abspath(p)
 
 
 # ---------------------------------------------------------------- run
@@ -70,27 +96,33 @@ class Run:
         self.dir = run_dir
         with open(os.path.join(run_dir, "run.json"), encoding="utf-8") as f:
             self.meta = json.load(f)
+        self.meta["data"] = os.path.normpath(os.path.join(ROOT, self.meta["data"]))   # relativo a prop-lab (o assoluto)
         self.df = load_mt5_csv(self.meta["data"])
         self.cut = pd.Timestamp(self.meta["cut_time"])
-        self.days_is = pd.DatetimeIndex(sorted({d for d in self.df.index.normalize() if d < self.cut.normalize() and d.dayofweek < 5}))
-        self.days_oos = pd.DatetimeIndex(sorted({d for d in self.df.index.normalize() if d >= self.cut.normalize() and d.dayofweek < 5}))
+        # 08/10 (trad): giorni = tutti quelli con barre, non solo lun-ven. Con dati in UTC le barre della domenica sera
+        # esistono, e un trade chiuso di domenica spariva in silenzio dalla simulazione prop e dallo Sharpe giornaliero.
+        giorni = self.df.index.normalize()
+        self.days_is = pd.DatetimeIndex(sorted({d for d in giorni if d < self.cut.normalize()}))
+        self.days_oos = pd.DatetimeIndex(sorted({d for d in giorni if d >= self.cut.normalize()}))
 
     def path(self, *p):
         return os.path.join(self.dir, *p)
 
     def save_trades(self, key, tag, trades):
         os.makedirs(self.path("trades"), exist_ok=True)
-        fn = self.path("trades", f"{hashlib.md5(key.encode()).hexdigest()[:12]}_{tag}.pkl")
-        with open(fn, "wb") as f:
+        rel = f"trades/{hashlib.md5(key.encode()).hexdigest()[:12]}_{tag}.pkl"
+        with open(self.path(*rel.split("/")), "wb") as f:
             pickle.dump({"key": key, "trades": trades}, f)
-        return fn
+        return rel      # 08/10 (trad): relativo al run. Prima era assoluto: non portabile e col nome utente nei CSV
 
     def load_trades(self, fn):
-        with open(fn, "rb") as f:
+        p = fn if os.path.isabs(fn) else self.path(*fn.replace("\\", "/").split("/"))   # i run vecchi hanno l'assoluto
+        with open(p, "rb") as f:
             return pickle.load(f)["trades"]
 
 
-def new_run(family, symbol, data_path, run_id=None):
+def new_run(family, symbol, data_path, run_id=None, ledger_id=None):
+    tag = gate.tag_avvio(family, data_path, ledger_id)     # GateError su dati reali senza contatore/pre-registrazione
     df = load_mt5_csv(data_path)
     tf = timeframe_label(df)
     holdout = cfg("pipeline.yaml")["split"]["holdout_frac"]
@@ -98,8 +130,9 @@ def new_run(family, symbol, data_path, run_id=None):
     run_id = run_id or f"{family}_{symbol}_{tf}_{time.strftime('%Y%m%d_%H%M%S')}"
     d = os.path.join(ROOT, "results", run_id)
     os.makedirs(d, exist_ok=True)
-    meta = {"run_id": run_id, "family": family, "symbol": symbol, "tf": tf, "data": os.path.abspath(data_path),
-            "cut_time": str(cut_time), "start": str(df.index[0]), "end": str(df.index[-1]), "bars": len(df)}
+    meta = {"run_id": run_id, "family": family, "symbol": symbol, "tf": tf, "data": _dati_path(data_path),
+            "ledger_id": tag, "cut_time": str(cut_time), "start": str(df.index[0]), "end": str(df.index[-1]),
+            "bars": len(df)}
     with open(os.path.join(d, "run.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2)
     return d
@@ -145,6 +178,8 @@ def _map(fn, jobs, chunksize=1):
 # ---------------------------------------------------------------- FASE 1: qualitativo (senza costi)
 def stage1(run_dir):
     R = Run(run_dir); m = R.meta; th = cfg("pipeline.yaml")["stage1_qualitativo"]
+    if m.get("ledger_id") not in (gate.TAG_SINTETICO, gate.TAG_CONTROLLO, gate.TAG_FUORI, None):
+        gate.tag_avvio(m["family"], m["data"], m["ledger_id"])    # ricontrollo: i tentativi si spendono qui
     fam = get_family(m["family"])
     jobs = [(m["data"], m["family"], sn, p, None, m["cut_time"]) for sn, cls in fam.items() for p in expand_grid(cls.grid)]
     print(f"[fase1] {len(jobs)} varianti da {len(fam)} strategie, backtest IDEALE (no costi) su in-sample...")
@@ -198,6 +233,8 @@ def stage2(run_dir):
                      "cost_share": cost_share, **met, "file_is": f_is, "file_oos": f_oos})
     res = pd.DataFrame(rows)
     if res.empty:
+        # 08/10 (trad): tabella vuota MA con le colonne, altrimenti le fasi dopo crashano leggendola
+        res = pd.DataFrame(columns=["strategy", "params", "n", "expectancy", "pass", "file_is", "file_oos"])
         print("[fase2] nessuna variante dalla fase 1."); res.to_csv(R.path("stage2_costi.csv"), index=False); return res
     res["pass"] = ((res["n"] >= th["min_trades"]) & (res["expectancy"] >= th["min_expectancy_r"]) &
                    (res["pf"] >= th["min_pf"]) & (res["cost_share"] <= th["max_cost_share"]))
@@ -225,7 +262,15 @@ def _prop_job(a):
 def stage3(run_dir, use_oos=False, only=None):
     R = Run(run_dir); sc = cfg("pipeline.yaml")["stage3_prop"]; top = cfg("pipeline.yaml")["stage2_costi"]["top_total"]
     s2 = pd.read_csv(R.path("stage2_costi.csv"))
-    cand = s2[s2["pass"]].head(top) if only is None else s2[s2.apply(lambda r: vkey(r["strategy"], json.loads(r["params"])) in only, axis=1)]
+    if s2.empty:
+        cand = s2
+    else:
+        cand = s2[s2["pass"].astype(bool)].head(top) if only is None else s2[s2.apply(lambda r: vkey(r["strategy"], json.loads(r["params"])) in only, axis=1)]
+    if cand.empty:
+        print("[fase3] nessun candidato dalla fase 2: niente da simulare sulle prop.")
+        res = pd.DataFrame(columns=["candidate", "rules", "risk_profile", "pass_rate", "pass_zero", "ev_attempt", "ev_zero", "ev_vs_zero"])
+        res.to_csv(R.path("stage3_prop_oos.csv" if use_oos else "stage3_prop.csv"), index=False)
+        return res
     rules_all = cfg("prop_rules.yaml")
     profiles = build_profiles(cfg("risk_profiles.yaml"))
     days = R.days_oos if use_oos else R.days_is
@@ -267,8 +312,29 @@ def confirm(run_dir):
     R = Run(run_dir); m = R.meta; th = cfg("pipeline.yaml")["conferma_oos"]
     s2 = pd.read_csv(R.path("stage2_costi.csv")); s3 = pd.read_csv(R.path("stage3_prop.csv"))
     top = cfg("pipeline.yaml")["stage2_costi"]["top_total"]
-    cand = s2[s2["pass"]].head(top)
-    sr_trials = all_trial_sharpes(m["family"], m["symbol"], m["tf"])
+    cand = s2[s2["pass"].astype(bool)].head(top) if not s2.empty else s2
+    if cand.empty:
+        # STRATEGY_LIFECYCLE §2: una famiglia che non porta candidati alla conferma muore SENZA aprire il fuori campione
+        print("[conferma] nessun candidato: il fuori campione resta SIGILLATO, nessuna apertura registrata.")
+        pd.DataFrame(columns=["candidate", "n_is", "exp_is", "n_oos", "exp_oos", "exp_oos_lo", "exp_oos_hi", "mde_oos",
+                              "dsr_is", "verdetto"]).to_csv(R.path("conferma_oos.csv"), index=False)
+        write_report(R)
+        return pd.DataFrame()
+    # 08/10 (trad): il fuori campione di una famiglia del contatore si apre UNA volta. Si controlla e si registra
+    # PRIMA di leggere un solo trade OOS: se il calcolo poi si interrompe, l'apertura resta comunque registrata.
+    tag = m.get("ledger_id") or gate.TAG_FUORI
+    con = registry()
+    try:
+        gate.verifica_apertura(tag, con)
+        con.execute("INSERT INTO aperture VALUES (?,?,?,?,?)",
+                    (tag, time.time(), m["run_id"], os.path.basename(m["data"]), m["cut_time"]))
+        con.commit()
+    finally:
+        con.close()
+    if tag not in (gate.TAG_SINTETICO, gate.TAG_CONTROLLO, gate.TAG_FUORI):
+        print(f"[conferma] fuori campione di '{tag}' APERTO e registrato. Da fare: holdout_aperto = "
+              f"{time.strftime('%Y-%m-%d')} nel contatore (core.trial_ledger --check lo segnala finche' manca)")
+    sr_trials = all_trial_sharpes(m)
     n_cand = len(cand)          # l'intervallo OOS si corregge per quanti candidati arrivano qui (Bonferroni)
     rows = []
     for _, c in cand.iterrows():

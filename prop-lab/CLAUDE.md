@@ -28,6 +28,8 @@ Tutto in una volta: `python -m lab.cli all --family <famiglia> --symbol XAUUSD -
    rischio alto. `ev_vs_zero` toglie l'opzione ma non il caso: decide il verdetto (PROMOSSA / NON_DIMOSTRATA / SCARTATA,
    con intervallo OOS corretto per i candidati; DSR come diagnostica). NON_DIMOSTRATA non va in demo.
 9. Questa cartella vive anche dentro il repo `trad` (`prop-lab/`): ogni modifica va in `CHANGELOG.md`.
+   In trad su dati reali serve `--famiglia` (cancello `lab/gate.py`): mai aggirarlo, e mai lanciare `confirm` su una
+   famiglia vera senza che Matteo l'abbia chiesto (apre il fuori campione, una volta sola).
    In `trad` valgono in piu' le regole di `trad/CLAUDE.md` e `docs/STRATEGY_LIFECYCLE.md` (§4quater: verdetto
    solo sul binario a rischio fisso 1R, overlay dalla libreria dichiarata in `core/sizing.py`).
 

@@ -42,6 +42,12 @@ Più storia = meglio (almeno 3–5 anni su H1; per M5/M15 almeno 1–2 anni).
 - `config/pipeline.yaml` → soglie dei cancelli
 - `config/risk_profiles.yaml` → gestioni del rischio da confrontare
 
+## Dati reali dentro trad: il cancello (08/10/2026)
+In trad, su dati reali la pipeline parte solo con `--famiglia <id del contatore>` e una pre-registrazione APPROVATA
+(`config/gate.yaml`, `lab/gate.py`); `all` si ferma prima della conferma, che apre il fuori campione una volta sola.
+Per collaudare senza ipotesi: `--family controllo_casuale` (ingressi casuali, esente). Nel repo del socio:
+`attivo: false`.
+
 ## Come si legge un risultato prop (aggiunto in trad, 06/10/2026)
 - **Mai l'EV da solo.** La challenge e' un'opzione: a vantaggio zero il profilo guardia giornaliera al 3% passava
   ~30% e aveva EV ~+1.900 per tentativo. Si legge `ev_vs_zero` (EV meno lo stesso EV a vantaggio zero), e per un

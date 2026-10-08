@@ -32,6 +32,8 @@ Risponde a due domande che `trad` prima non sapeva fare con un numero:
 | **Ponte** | `core/prop_sim.py` | l'unico punto di `trad` che arriva a `prop-lab` (`sys.path` in coda) |
 | **Doppio binario** | `core/sizing.py` (`LIBRERIA`, `confronta_overlay`, `confronta_overlay_prop`) | la libreria dichiarata e i due confronti |
 | **La pipeline del socio** | `prop-lab/lab/pipeline.py`, `cli.py`, `strategies/` | famiglia → backtest ideale → costi → prop × rischio → conferma OOS |
+| **Il cancello** | `prop-lab/lab/gate.py`, `prop-lab/config/gate.yaml` | su dati reali: niente test senza famiglia nel contatore e pre-registrazione APPROVATA; fuori campione aperto una volta (dal 08/10) |
+| **Il controllo** | `prop-lab/lab/strategies/controllo_casuale.py` | ingressi casuali: collauda la pipeline su dati veri senza ipotesi |
 | **La regola** | `docs/STRATEGY_LIFECYCLE.md` §4quater, `docs/QUANT_REVIEW_PROTOCOL.md` Step 5bis | quando e come si usa |
 
 ## Perché esiste
@@ -57,6 +59,18 @@ la covarianza e' zero: un overlay **non crea vantaggio**. Aiuta solo se gli esit
 si misura contro il vantaggio zero).
 
 ## Come si lancia
+
+Su dati reali, dentro trad (dal 08/10): prima la famiglia nel contatore (`registro_prop_lab: true`,
+`preregistrazione` APPROVATA), poi
+
+```
+cd prop-lab
+python -m lab.cli all --family <famiglia di codice> --symbol XAUUSD --data ../analysis/trading-bot-eval/data/XAUUSD_H1.csv --famiglia <id del contatore>
+python -m lab.cli confirm --run results/<run>      # APRE il fuori campione: una volta sola, su richiesta di Matteo
+cd .. && python -m core.trial_ledger --check        # registro e contatore devono dire la stessa cosa
+```
+
+Per collaudare senza ipotesi: `--family controllo_casuale` (nessun `--famiglia` richiesto).
 
 ```
 python -m pytest -q prop-lab/tests core/tests/test_sizing.py      # i test di questo componente
@@ -85,6 +99,7 @@ Esempio completo su dati veri: `analysis/opening_range/doppio_binario.py`.
 
 | Cosa | Valore atteso | Come si controlla | Chi |
 |---|---|---|---|
+| Registro di prop-lab e contatore | coerenti | `python -m core.trial_ledger --check` → exit 0 | Claude |
 | Test del componente | tutti passati | `python -m pytest -q prop-lab/tests core/tests/test_sizing.py` (06/10: 11 + 8 passati) | Claude |
 | Vantaggio zero, barriere ±10%, niente timeout | pass ≈ 0,5 | `test_vantaggio_zero_due_barriere_come_la_rovina_del_giocatore` | Claude |
 | Libreria degli overlay | identica alla dichiarazione del §4quater | `test_libreria_dichiarata_non_cambia_di_nascosto` | Claude |

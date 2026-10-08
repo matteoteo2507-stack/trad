@@ -98,6 +98,11 @@ ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 > non si inventa un numero, si applica la raccomandazione Bailey-LdP (100 × N_params) e
 > lo si dichiara.
 
+> **Test passati da `prop-lab`** (dal 2026-10-08): ogni variante e ogni apertura del fuori campione finiscono nel
+> registro di `prop-lab` con l'id della famiglia; su dati reali la pipeline non parte senza una famiglia nel
+> contatore con pre-registrazione APPROVATA, e `--check` segnala ogni differenza fra registro e contatore
+> (`prop-lab/lab/gate.py`, `core.trial_ledger.registro_prop_lab`). Il registro e' il diario, il contatore la fonte.
+
 | Azione | Conta come trial? |
 |---|---|
 | Correzione di un **bug**: il codice non implementava la regola pre-registrata | **No** — è la prima esecuzione valida del trial originale. Va documentata |

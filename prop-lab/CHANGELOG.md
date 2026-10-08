@@ -4,6 +4,21 @@
 allineati come se fossero uno solo, ma separati per protezione dagli errori (decisione di Matteo, 06/10/2026).
 Ogni modifica fatta da una parte si scrive qui, cosi' l'altra parte la riporta.
 
+## 2026-10-08 — fatte in trad (da riportare nel repo del socio)
+
+**Cancello verso il contatore di trad** (`lab/gate.py`, `config/gate.yaml`). Su dati reali una famiglia gira solo se
+esiste nel contatore (`../docs/trial_ledger.json`) con `registro_prop_lab: true` e una pre-registrazione in stato
+APPROVATA (`--famiglia <id>` sulla riga di comando); il fuori campione si apre una volta; `all` su una famiglia vera si
+ferma prima della conferma. Esenti: dati `DEMO_*` e famiglie di controllo. **Nel repo del socio: `attivo: false`**
+in `config/gate.yaml` (la pipeline gira come prima, ma niente conta come test per trad).
+**Registro:** colonne `ledger_id` e `dati` nei trial (migrazione automatica), tabella `aperture`. Il DSR pesca i
+tentativi della stessa famiglia del contatore, o dello stesso file di dati per i run non legati a una famiglia.
+**Famiglia di controllo** `controllo_casuale` (ingressi e direzione a caso): collaudo su dati reali senza ipotesi.
+**Dipendenze corrette:** percorsi relativi e con "/" in `run.json` e nei CSV dei run (prima assoluti, col nome utente);
+giorni = tutti quelli con barre (prima solo lun-ven: con dati UTC i trade chiusi di domenica sparivano); zero
+candidati non fa piu' crashare le fasi 3-4, e la famiglia muore senza aprire il fuori campione.
+**Test:** 15 in `tests/test_core.py`.
+
 ## 2026-10-07 — fatte in trad (da riportare nel repo del socio)
 
 **Regolamenti, secondo passaggio Comet (`config/prop_rules.yaml`).** Voci `ftmo_*`, `fundednext_*` (+ `stellar_lite`),

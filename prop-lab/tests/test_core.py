@@ -159,3 +159,35 @@ if __name__ == "__main__":
     for k, v in list(globals().items()):
         if k.startswith("test_"):
             v(); print("ok", k)
+
+
+def test_cancello_dati_reali(tmp_path):
+    """Su dati reali: senza famiglia no; famiglia chiusa no; pre-registrazione in bozza no; approvata si'.
+    Il fuori campione si apre una volta sola. Contatore e pre-registrazione FINTI in una cartella temporanea."""
+    import json, sqlite3, pytest
+    from lab import gate
+    (tmp_path / "docs").mkdir()
+    pre = tmp_path / "docs" / "P.md"
+    led = tmp_path / "docs" / "trial_ledger.json"
+    fam = {"id": "prova", "stato": "IN TEST", "registro_prop_lab": True, "preregistrazione": "docs/P.md"}
+    led.write_text(json.dumps({"famiglie": [fam, {"id": "morta", "stato": "CLOSED"}]}), encoding="utf-8")
+    cfg = {"attivo": True, "ledger": str(led), "stati_chiusi": ["CLOSED"], "stato_preregistrazione_richiesto": "APPROVATA"}
+    reale = "x/XAUUSD_H1.csv"
+    with pytest.raises(gate.GateError):
+        gate.tag_avvio("mean_reversion", reale, None, cfg)
+    with pytest.raises(gate.GateError):
+        gate.tag_avvio("mean_reversion", reale, "morta", cfg)
+    pre.write_text("---\nstato: BOZZA\n---\n# P\n", encoding="utf-8")
+    with pytest.raises(gate.GateError):
+        gate.tag_avvio("mean_reversion", reale, "prova", cfg)
+    pre.write_text("---\nstato: APPROVATA\n---\n# P\n", encoding="utf-8")
+    assert gate.tag_avvio("mean_reversion", reale, "prova", cfg) == "prova"
+    assert gate.tag_avvio("mean_reversion", "data/DEMO_NULL_XAUUSD_H1.csv", None, cfg) == gate.TAG_SINTETICO
+    assert gate.tag_avvio("controllo_casuale", reale, None, cfg) == gate.TAG_CONTROLLO
+    con = sqlite3.connect(":memory:")
+    con.execute("CREATE TABLE aperture(ledger_id TEXT, ts REAL, run_id TEXT, dati TEXT, cut_time TEXT)")
+    gate.verifica_apertura("prova", con, cfg)                      # prima apertura: consentita
+    con.execute("INSERT INTO aperture VALUES ('prova', 0, 'run_1', 'x', 'y')")
+    with pytest.raises(gate.GateError):
+        gate.verifica_apertura("prova", con, cfg)                  # seconda: rifiutata
+    gate.verifica_apertura(gate.TAG_CONTROLLO, con, cfg)           # il controllo non ha un fuori campione da proteggere

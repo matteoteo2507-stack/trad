@@ -19,3 +19,33 @@ def test_lead_con_holdout_aperto_e_gate_forward_passa():
 
 def test_gate_finale_sconosciuto_e_errore():
     assert any("gate_finale" in p for p in verifica(_dati(gate_finale="speranza")))
+
+
+# ---- collegamento col registro di prop-lab (08/10/2026) ----------------------------------------
+def _fam_prop(**kw):
+    d = _dati()
+    base = dict(registro_prop_lab=True, trial_cumulati=36, holdout_aperto=None, stato="IN TEST")
+    base.update(kw)
+    d["famiglie"][0].update(base)
+    return d
+
+
+def test_registro_prop_lab_coerente_nessun_problema():
+    reg = {"x": {"trial": 36, "aperture": []}, "controllo": {"trial": 36, "aperture": [("r1", 0.0)]}}
+    assert verifica(_fam_prop(id="x"), registro=reg) == []
+
+
+def test_trial_diversi_dal_registro_sono_un_problema():
+    reg = {"x": {"trial": 72, "aperture": []}}
+    assert any("trial_cumulati 36" in p for p in verifica(_fam_prop(id="x"), registro=reg))
+
+
+def test_holdout_aperto_in_prop_lab_ma_non_nel_contatore():
+    reg = {"x": {"trial": 36, "aperture": [("run_1", 0.0)]}}
+    assert any("holdout_aperto vuoto" in p for p in verifica(_fam_prop(id="x"), registro=reg))
+    assert verifica(_fam_prop(id="x", holdout_aperto="2026-10-08"), registro=reg) == []
+
+
+def test_famiglia_sconosciuta_nel_registro():
+    reg = {"fantasma": {"trial": 10, "aperture": []}}
+    assert any("fantasma" in p for p in verifica(_dati(), registro=reg))

@@ -141,11 +141,70 @@ def _contaminazione(f: dict, eti: str, cutoff: Optional[str]) -> list:
     return []
 
 
-def verifica(dati: Optional[dict] = None) -> list:
-    """Controlli di coerenza del registro. Lista vuota = tutto torna."""
+PROP_LAB_REGISTRO = os.path.join(ROOT, "prop-lab", "results", "registry.sqlite")
+TAG_ESENTI = {"sintetico", "controllo", "fuori_gate"}     # etichette di prop-lab/lab/gate.py che non sono famiglie
+
+
+def registro_prop_lab(path: str = PROP_LAB_REGISTRO) -> dict:
+    """Eventi del registro di prop-lab per etichetta: {id: {"trial": n, "aperture": [(run_id, ts), ...]}}.
+
+    `trial` = combinazioni distinte (strategia, parametri, simbolo, timeframe) provate in fase 1: rigirare la stessa
+    variante sugli stessi dati non e' un tentativo nuovo, la stessa variante su un altro simbolo si' (§3).
+    Il registro e' il diario degli eventi; il contatore resta la fonte dei numeri (08/10/2026)."""
+    if not os.path.exists(path):
+        return {}
+    import sqlite3
+    con = sqlite3.connect(path)
+    try:
+        cols = {r[1] for r in con.execute("PRAGMA table_info(trials)")}
+        out: dict = {}
+        if "ledger_id" in cols:
+            q = ("SELECT ledger_id, COUNT(DISTINCT strategy || '|' || params || '|' || symbol || '|' || tf) "
+                 "FROM trials WHERE stage='stage1' AND ledger_id IS NOT NULL GROUP BY ledger_id")
+            for lid, n in con.execute(q):
+                out.setdefault(lid, {"trial": 0, "aperture": []})["trial"] = n
+        tabelle = {r[0] for r in con.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        if "aperture" in tabelle:
+            for lid, run_id, ts in con.execute("SELECT ledger_id, run_id, ts FROM aperture"):
+                out.setdefault(lid, {"trial": 0, "aperture": []})["aperture"].append((run_id, ts))
+        return out
+    finally:
+        con.close()
+
+
+def _verifica_prop_lab(dati: dict, reg: dict) -> list:
+    """Il registro di prop-lab e il contatore dicono la stessa cosa? (08/10/2026)"""
+    problemi = []
+    ids = {f["id"]: f for f in dati["famiglie"]}
+    for lid in reg:
+        if lid not in TAG_ESENTI and lid not in ids:
+            problemi.append("%-16s tentativi nel registro di prop-lab per una famiglia che il contatore non ha"
+                            % lid[:16])
+    lim = dati["budget"].get("holdout_aperture_per_famiglia", 1)
+    for f in dati["famiglie"]:
+        if not f.get("registro_prop_lab"):
+            continue
+        eti = "%-16s" % f["id"]
+        r = reg.get(f["id"], {"trial": 0, "aperture": []})
+        attesi = r["trial"] + int(f.get("trial_fuori_prop_lab", 0))
+        if f.get("trial_cumulati") != attesi:
+            problemi.append("%s trial_cumulati %s, ma il registro di prop-lab ne conta %d%s: aggiornare il contatore"
+                            % (eti, f.get("trial_cumulati"), r["trial"],
+                               " (+%d fuori prop-lab)" % f["trial_fuori_prop_lab"] if f.get("trial_fuori_prop_lab") else ""))
+        if r["aperture"] and not f.get("holdout_aperto"):
+            problemi.append("%s fuori campione aperto in prop-lab (run %s) ma holdout_aperto vuoto nel contatore"
+                            % (eti, r["aperture"][0][0]))
+        if len(r["aperture"]) > lim:
+            problemi.append("%s fuori campione aperto %d volte in prop-lab (budget %d)" % (eti, len(r["aperture"]), lim))
+    return problemi
+
+
+def verifica(dati: Optional[dict] = None, registro: Optional[dict] = None) -> list:
+    """Controlli di coerenza del registro. Lista vuota = tutto torna.
+    `registro`: eventi di prop-lab (default: letti da `prop-lab/results/registry.sqlite`)."""
     dati = dati or load()
     b = dati["budget"]
-    problemi = []
+    problemi = _verifica_prop_lab(dati, registro_prop_lab() if registro is None else registro)
 
     for f in dati["famiglie"]:
         eti = "%-16s" % f["id"]
