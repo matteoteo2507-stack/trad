@@ -70,3 +70,33 @@ netto: R1 in forward ~7 anni, R2 ~26.
 
 Con questi tre dati si sceglie fra: (a) test sulla storia pre-registrato sapendo che vale al massimo un LEAD; (b) solo
 forward, piu' indici, regola R1; (c) chiudere A a 0 trial per potenza, come COT e carry il 03/10.
+
+## 5. Effetto pubblicato (Comet, 08/10) e potenza ricalcolata
+
+Fonte integrale: [rsi2_fonti_comet_2026-10-08](reviews/rsi2_fonti_comet_2026-10-08.md) (statistiche di terzi, usate solo
+come effetto atteso). Effetto per trade sulla regola **R2** (sopra SMA 200, RSI(2) < 10), SPY:
+
+| fonte | campione | effetto per trade | come |
+|---|---|---|---|
+| QuantifiedStrategies | 1993-2026 | 0,90-0,95% | dichiarato |
+| BacktestEverything | 2000-2024, 387 trade | **0,75%** | ricavato: 0,73 × 1,8 − 0,27 × 2,1 |
+| Quantitativo | 1999-2024 | 0,60%, **sotto l'S&P dal 2014** | dichiarato |
+| Murtazin (GuruFinanceInsights) | 2000-2026, 181 trade | **0,51%** | ricavato: $1 → $2,49 in 181 trade |
+| Quant4Free | singole azioni S&P 1500, 2015-2026, netto 10 bps | PF 0,99: **zero** | universo diverso (azioni, non indice) |
+
+Controllo della mia stima: da BacktestEverything la dispersione per trade e' **1,73%** contro l'1,50% stimato con l'ATR:
+la stima era leggermente ottimista (anni × ~1,33).
+
+**Anni di forward per R2 su SPX500 + NAS100** (13,9 eventi indipendenti l'anno, sigma 1,50%, swap ~0,06% sottratto):
+0,90% → 1,8 anni · 0,75% → 2,7 · 0,60% → 4,4 · 0,51% → 6,4 · **meta' di 0,60% (decadimento dal 2014) → 22 anni**.
+Con sigma 1,73% un terzo in piu'. **Sulla storia 2012-2026** l'MDE di R2 e' 0,30%: sotto l'effetto pubblicato, attorno
+alla sua meta'.
+
+**Tre fatti che pesano piu' dei numeri:**
+1. **Tutte le fonti testano la regola SENZA stop-loss** (o con un time stop a 10 giorni): il vantaggio dichiarato vive
+   in un win rate alto con perdite piu' grandi delle vincite (payoff ~0,5-0,9). Una versione da prop, con uno stop che
+   rispetti la perdita giornaliera, e' una **regola diversa** che nessuna fonte ha misurato.
+2. **E' lenta**: 7-16 trade l'anno su un indice. A rischio 1% per trade, per fare +10% servono decine di trade, cioe'
+   anni; FTMO non ha limite di tempo, ma la challenge diventa un investimento pluriennale.
+3. **Il decadimento** dal 2014 (Quantitativo, QuantifiedStrategies) e lo zero di Quant4Free sulle singole azioni
+   indicano che l'effetto vero oggi e' piu' vicino alla meta' che al numero pubblicato: allora il forward e' fuori scala.
