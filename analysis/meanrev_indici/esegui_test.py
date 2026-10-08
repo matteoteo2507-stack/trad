@@ -40,7 +40,21 @@ COSTI = {"SPX500": {"spread_pt": 0.25, "swap_notte_pct": 0.0152},
          "NAS100": {"spread_pt": 0.60, "swap_notte_pct": 0.0143}}
 RSI_IN, RSI_OUT, MAX_GIORNI, SMA_N = 10, 70, 10, 200
 M_CONTROLLI, SEME, N_BOOT = 20, 42, 5000
-SOGLIA_CHIUSURA = None     # la fissa Matteo prima dell'approvazione (bloccante 1 della revisione G1, §6)
+SOGLIA_CHIUSURA = 0.50     # opzione (c) del 08/10: etichetta sul DIVARIO (eccesso sul caso); cosa esclude lo dice la tabella
+# Effetti pubblicati per trade, LORDI e ASSOLUTI (referto Comet del 08/10, statistiche di terzi), con la crescita del
+# mercato nel campione DELLA FONTE per i giorni tenuti, solo dove la fonte da' i numeri per calcolarla. Seconda passata G1:
+# tradurre con la NOSTRA crescita misurata era un'identita' (la crescita si toglieva da tutti e due i lati).
+#   Murtazin: buy & hold da $1 a $8,68 in 26 anni, tenuta media 3,7 giorni -> crescita non condizionata per trade
+#   (sottostima quella sopra la SMA200: la traduzione e' ottimista per la fonte).
+CRESCITA_MURTAZIN = (np.log(8.68) / 26 / 252 * 3.7) * 100
+PUBBLICATI = {"Murtazin 2000-2026": (0.51, CRESCITA_MURTAZIN), "Quantitativo 1999-2024": (0.60, None),
+              "BacktestEverything 2000-2024": (0.75, None),
+              "QuantifiedStrategies 1993-2026 (SMA200, uscita RSI>80)": (0.95, None)}
+# Distorsione del divario a durata copiata sotto il nullo, misurata da calibra_nullo.py PRIMA del test (§6): il LEAD
+# richiede limite basso del divario > B_NULL. Misurata il 08/10 (200 serie per condizione): +0,063% [+0,038; +0,088] con
+# deriva 0,05%/g e rho 0,9; +0,047% [+0,018; +0,075] senza deriva. Scelta prudente: limite alto della condizione piu'
+# vicina ai dati veri, arrotondato in su.
+B_NULL = 0.09
 K = 2.80                   # alpha 0,05 bilaterale, potenza 80%
 
 
@@ -227,15 +241,16 @@ def main(argv=None) -> int:
         if str((fm or {}).get("stato", "")).upper() != "APPROVATA":
             print(f"La pre-registrazione e' in stato '{(fm or {}).get('stato')}': il test sui dati reali parte solo se APPROVATA.")
             return 2
-        if SOGLIA_CHIUSURA is None:
-            print("SOGLIA_CHIUSURA non fissata: va scritta prima dell'esecuzione (§6).")
+        if SOGLIA_CHIUSURA is None or B_NULL is None:
+            print("SOGLIA_CHIUSURA o B_NULL non fissati: vanno scritti prima dell'esecuzione (§6).")
             return 2
     soglia = SOGLIA_CHIUSURA if SOGLIA_CHIUSURA is not None else 0.50
     etichetta = (f"SINTETICO (forza {a.forza}, rho {a.rho}, deriva {a.deriva}, seme {a.seme})" if a.sintetico
                  else "DATI REALI")
     sorgenti = sintetico_coppia(a.seme, a.forza, a.rho, a.deriva) if a.sintetico else {s: carica(s) for s in COSTI}
     print(f"=== RSI(2) indici USA — {etichetta} ===")
-    print(dc.checklist_dati({s: g for s, (_, g, _) in sorgenti.items()}))
+    esito_dati = dc.checklist_dati({s: g for s, (_, g, _) in sorgenti.items()})
+    print(esito_dati)
     for s, (_, _, info) in sorgenti.items():
         print(f"  {s} grezzo: {info}")
     rng = np.random.default_rng(SEME)
@@ -256,7 +271,8 @@ def main(argv=None) -> int:
     for X in (R, C):
         X["side"] = "long"; X["asset"] = X["sym"]; X["hold"] = X["giorni"]; X["atr"] = X["atr_pct"]
     print()
-    print(check_matching(R, C, link="evento", exact=("asset", "side"), numeric=(), observed=("hold", "atr")))
+    esito_match = check_matching(R, C, link="evento", exact=("asset", "side"), numeric=(), observed=("hold", "atr"))
+    print(esito_match)
     print(f"\nTrade reali: {len(R)} (SPX {int((R.sym == 'SPX500').sum())}, NAS {int((R.sym == 'NAS100').sum())}); "
           f"controlli: {len(C)}; eventi SENZA controlli (esclusi dal divario): {senza}")
     print(f"Fill non ottenibili: 0 su {len(R)} (per costruzione: ingresso e uscita a mercato all'apertura successiva)")
@@ -278,7 +294,10 @@ def main(argv=None) -> int:
     print(f"    con costi 3x: {netto3:+.3f}%   |   LORDA: {lordo['media']:+.3f}% IC95 [{lordo['low']:+.3f}; {lordo['high']:+.3f}]")
     print(f"[2] Divario reale − casuale a durata copiata (netto): {gap['media']:+.3f}%  IC95 [{gap['low']:+.3f}; "
           f"{gap['high']:+.3f}]  (MDE {gap['mde']:.3f}%)")
-    print(f"    media casuale {C.netto.mean():+.3f}% a trade")
+    print(f"    media casuale {C.netto.mean():+.3f}% a trade (lordo {C.lordo.mean():+.3f}%)")
+    med_cl = C.groupby("evento")["lordo"].mean()
+    gap_l = ci_episodi(con.lordo.to_numpy() - med_cl.loc[con.evento].to_numpy(), con.episodio.to_numpy())
+    print(f"    divario LORDO: {gap_l['media']:+.3f}%  IC95 [{gap_l['low']:+.3f}; {gap_l['high']:+.3f}]")
     per_ind = {s: float(np.mean(gap_v[con.sym.to_numpy() == s])) for s in COSTI}
     print("    divario puntuale per indice: " + ", ".join(f"{s} {v:+.3f}%" for s, v in per_ind.items()))
     c_atr = C.assign(r=C.netto / C.atr_pct).groupby("evento").r.mean()
@@ -290,19 +309,40 @@ def main(argv=None) -> int:
           f"tenuta mediana casuale {C2.giorni.median():.0f} giorni contro {R.giorni.median():.0f}")
 
     # verdetto (§6): LEAD ha la precedenza; poi CLOSED; il resto e' NON DIMOSTRATO
-    lead = (netto["low"] > 0 and gap["low"] > 0 and netto3 > 0 and all(v > 0 for v in per_ind.values()))
-    if lead:
-        v = "LEAD (gate finale: forward)"
+    b_null = B_NULL if B_NULL is not None else 0.05
+    lead = (netto["low"] > 0 and gap["low"] > b_null and netto3 > 0 and all(v > 0 for v in per_ind.values()))
+    rotto = (not esito_dati.ok) or (not esito_match.ok) or senza > 0.05 * len(R)
+    if rotto:
+        v = ("NESSUN VERDETTO: controllo dei dati o del baseline ROTTO, o piu' del 5% di eventi senza controlli. "
+             "Si corregge come esecuzione (0 trial) e si rilancia una volta (§8)")
+    elif lead:
+        v = f"LEAD (gate finale: forward). Limite basso del divario sopra la distorsione del nullo ({b_null:.3f}%)"
     elif gap["high"] < soglia:
-        v = f"CLOSED: escluso un divario di {soglia:.2f}%"
+        v = f"CLOSED: escluso un eccesso sul caso >= {soglia:.2f}% a trade"
     else:
         v = f"NON DIMOSTRATO (MDE del divario {gap['mde']:.3f}%)"
     print(f"\nVERDETTO DA REGOLA: {v}")
 
+    # tabella di esclusione (§6): ogni fonte nel suo metro; tradotta nel nostro solo con la crescita del SUO campione
+    print(f"\nTabella di esclusione. Nostro lordo assoluto: IC95 [{lordo['low']:+.3f}; {lordo['high']:+.3f}]; "
+          f"nostro divario lordo: IC95 [{gap_l['low']:+.3f}; {gap_l['high']:+.3f}]")
+    print(f"  {'fonte':56s} {'pubbl.':>7s} {'nel loro metro':>15s} {'tradotto (crescita della fonte)':>32s}")
+
+    def esito(lo_, hi_, x):
+        return "ESCLUSO" if hi_ < x else ("superato" if lo_ > x else "non escluso")
+    for nome, (val, cresc) in PUBBLICATI.items():
+        e1 = esito(lordo["low"], lordo["high"], val)
+        e2 = (f"{val - cresc:.2f}% -> {esito(gap_l['low'], gap_l['high'], val - cresc)}" if cresc is not None
+              else "non traducibile")
+        print(f"  {nome:56s} {val:6.2f}% {e1:>15s} {e2:>32s}")
+    print("  Lettura (§6): il nostro periodo ha probabilmente piu' crescita di quello delle fonti, quindi ESCLUSO nel loro\n"
+          "  metro e' conservativo e 'superato' e' ottimista: un 'superato' NON si cita come effetto pubblicato confermato.")
+
     sr = netto["media"] / R.netto.std(ddof=1)
-    psr = qm.probabilistic_sharpe_ratio(sr, 0.0, len(R), float(R.netto.skew()), float(R.netto.kurt()))
-    print(f"\nDescrittivi (non decidono): Sharpe per trade {sr:.3f} (pavimento 1,65/sqrt(n) = {1.65 / np.sqrt(len(R)):.3f}), "
-          f"PSR {psr:.3f} (1 trial: DSR = PSR)")
+    n_ep = netto["n_episodi"]
+    psr = qm.probabilistic_sharpe_ratio(sr, 0.0, n_ep, float(R.netto.skew()), float(R.netto.kurt()))
+    print(f"\nDescrittivi (non decidono): Sharpe per trade {sr:.3f} (pavimento 1,65/sqrt(episodi) = "
+          f"{1.65 / np.sqrt(n_ep):.3f}), PSR sugli episodi {psr:.3f} (1 trial: DSR = PSR)")
     for s in COSTI:
         x = R[R.sym == s]
         print(f"  {s}: n {len(x)}, netto medio {x.netto.mean():+.3f}%, win {100 * (x.netto > 0).mean():.0f}%")

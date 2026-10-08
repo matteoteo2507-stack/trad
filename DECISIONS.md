@@ -24,9 +24,15 @@ tenuto **gli stessi giorni**: beta e deriva per giorno stanno in entrambi i brac
 `meanrev_vol` (regola diversa, fonte esterna che sceglie gli indici indipendentemente, tetto LEAD con forward).
 
 **Revisione G1 del gatekeeper: BLOCCA**, tre bloccanti. Corretti: cluster per episodio (quello per data lasciava fuori
-il 37% di trade sovrapposti fra indici) e questa voce. **Aperto**: la soglia di CLOSED confrontava il lordo assoluto
-pubblicato con un divario al netto della deriva; la sceglie Matteo prima dell'approvazione. Controlli sintetici dopo le
-correzioni: 0 LEAD su 8 nulli con deriva e correlazione, LEAD sul ritorno alla media iniettato; MDE del divario ~0,55-0,65%.
+il 37% di trade sovrapposti fra indici) e questa voce. **Soglia di CLOSED** (confrontava il lordo assoluto pubblicato con un
+divario al netto della deriva): Matteo ha **delegato la scelta** chiedendo la massima trasparenza sui risultati; scelta
+l'**opzione (c)**: CLOSED se escluso un **eccesso sul caso** di almeno 0,50%, piu' una **tabella di esclusione** che giudica
+ogni fonte nel suo metro (lordo assoluto) e, solo per Murtazin, tradotta con la crescita del suo campione.
+**Seconda passata G1: BLOCCA** su tre punti, corretti: la prima tabella traduceva con la nostra crescita ed era un'identita'
+(errore mio); tre testi dicevano ancora la soglia vecchia; il divario a durata copiata ha una **distorsione positiva sotto il
+nullo** (~+0,05%), ora misurata prima del test (`calibra_nullo.py`) e usata come soglia del LEAD (B_NULL). Corretto anche il
+**PSR in `core/quant_metrics.py`** (mancava 0,5·SR²; verdetti storici invariati, effetto < 0,005 su Sharpe giornalieri).
+MDE e controlli: pre-registrazione §6 e §9.
 
 ---
 

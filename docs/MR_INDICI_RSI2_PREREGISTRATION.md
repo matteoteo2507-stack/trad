@@ -17,8 +17,9 @@ Referto di potenza: [MR_INDICI_POTENZA.md](MR_INDICI_POTENZA.md). Fonti dell'eff
 rende, al netto dei costi CFD, **piu' di un ingresso casuale nello stesso indice, anno e regime, tenuto gli stessi
 giorni**.
 
-**Cosa la falsifica.** Un intervallo del divario (reale − casuale) che esclude l'effetto pubblicato piu' basso
-(0,50% a trade): §6.
+**Cosa la falsifica.** Un intervallo del divario (reale − casuale) il cui limite alto sta sotto 0,50% a trade:
+escluso un **eccesso sul caso** di almeno 0,50% (§6). Cosa significa per ciascuna fonte pubblicata lo dice la tabella di
+esclusione del §6, non questa frase.
 
 **Razionale (classe, chi paga).** Ritorno alla media di breve: chi vende in fretta nei giorni di ribasso (vincoli di
 rischio, margini, mandati) paga chi fornisce liquidita'; oppure reazione eccessiva. Limite all'arbitraggio: serve
@@ -94,17 +95,48 @@ superava 0 nel 7,5% dei nulli invece del 2,5%.
 
 | esito | condizione | conseguenza |
 |---|---|---|
-| **LEAD** (ha la precedenza) | limite basso dell'attesa netta > 0 **e** limite basso del divario > 0 **e** attesa netta con costi 3x > 0 **e** divario puntuale > 0 su **entrambi** gli indici | gate finale forward, nuova pre-registrazione per il forward |
-| **CLOSED** | limite alto del divario < **SOGLIA DA FISSARE** (bloccante 1 della revisione G1) | famiglia chiusa |
+| **NESSUN VERDETTO** (prima di tutto) | `checklist_dati` o `check_matching` ROTTO, o piu' del 5% di eventi senza controlli | si corregge come esecuzione (0 trial) e si rilancia una volta (§8) |
+| **LEAD** (ha la precedenza sugli altri) | limite basso dell'attesa netta > 0 **e** limite basso del divario > **B_NULL** **e** attesa netta con costi 3x > 0 **e** divario puntuale > 0 su **entrambi** gli indici | gate finale forward, nuova pre-registrazione per il forward |
+| **CLOSED** | limite alto del divario (netto) < **0,50%**: escluso un **eccesso sul caso** di almeno 0,50% a trade | famiglia chiusa; cosa significa per le fonti lo dice la tabella di esclusione, non l'etichetta |
 | **NON DIMOSTRATO** | il resto | si scrive con l'MDE accanto; famiglia chiusa per potenza, non refutata |
 
-⚠️ **Soglia di CLOSED da fissare prima dell'approvazione.** Le fonti riportano un rendimento **lordo assoluto** per
-trade (0,51-0,95%); il divario a durata copiata e' quel rendimento **meno la deriva** per i giorni tenuti (~0,05% x ~4-5
-giorni). Uno 0,51% pubblicato vale circa +0,25-0,30% di divario, quindi "limite alto del divario < 0,50%" dichiarerebbe
-"escluso l'effetto pubblicato" anche quando e' vero (18% dei casi nel controllo del gatekeeper).
+**Scelta della soglia (opzione c, 08/10).** Matteo ha chiesto l'opzione con la massima trasparenza sui risultati e mi
+ha delegato la scelta. Valutate: (a) soglia 0,50% sul divario; (b) soglia tradotta dalla replica piu' bassa (sotto
+l'MDE: quasi sempre NON DIMOSTRATO); (d) rapporto di verosimiglianza (metodo nuovo, non tarato nel repo); (e) test di
+equivalenza (coincide con a). Scelta: **(c) = l'etichetta di (a) + una tabella di esclusione obbligatoria**, perche'
+le fonti e il test misurano cose diverse: le fonti un rendimento **lordo assoluto**, che contiene la crescita del
+mercato nei giorni tenuti; il test un **eccesso sul caso**, che non la contiene. Una soglia sola giudicherebbe una
+delle due con il metro dell'altra.
 
-**Potenza** (dai dati sintetici, da riportare sul reale; sostituisce l'MDE 0,30% del referto di potenza, stimato su
-una tenuta di 3 giorni e senza la dispersione di una regola senza stop): MDE **~0,5%** sull'attesa e sul divario.
+**Tabella di esclusione** (sempre stampata, decisa ora; corretta nella seconda passata G1). Per ogni effetto pubblicato
+(Murtazin 0,51%, Quantitativo 0,60%, BacktestEverything 0,75%, QuantifiedStrategies 0,95% nella variante con SMA200 e
+uscita RSI > 80):
+- **nel loro metro**: ESCLUSO se il limite alto del nostro rendimento **lordo assoluto** e' sotto il valore; "superato"
+  se il limite basso e' sopra; altrimenti "non escluso".
+- **tradotto nel nostro**, solo dove la fonte da' i numeri per calcolare la crescita del **suo** campione nei giorni
+  tenuti: Murtazin (buy & hold da $1 a $8,68 in 26 anni, tenuta 3,7 giorni → ~0,12%, crescita non condizionata, che
+  sottostima quella sopra la SMA200: traduzione ottimista per la fonte). Si confronta il nostro **divario lordo** con
+  0,51% − 0,12%. Per le altre fonti: "non traducibile". ⚠️ La prima versione traduceva con la **nostra** crescita
+  misurata: era un'identita' (la crescita si toglieva da tutti e due i lati) e ripeteva la colonna "nel loro metro".
+- **Direzione dell'errore**: il nostro periodo (2012-2026) ha probabilmente piu' crescita di quello delle fonti (che
+  comprende il 2000-2012 piatto); se le fonti sono nette di costi, va nello stesso verso. Quindi ESCLUSO nel loro metro e'
+  **conservativo**, "superato" e' **ottimista**: un "superato" **non si cita** come effetto pubblicato confermato.
+Il referto riporta la tabella intera accanto all'etichetta. Esempio dal controllo sintetico (nullo con sola crescita,
+seme 1): lordo assoluto +0,515% [+0,09; +0,90] (sembra Murtazin) ma divario +0,19% [−0,28; +0,61]: NON DIMOSTRATO, nessuna
+fonte esclusa ne' confermata. E' il "beta-trap" del 17/08 in cifre, ed e' il motivo della tabella.
+
+**Distorsione del nullo (B_NULL).** Sotto il nullo il divario a durata copiata esce in media **positivo**: la durata e' un
+esito del cammino del trade reale, e il pool dello stesso anno contiene finestre sovrapposte a quel cammino selezionato
+dal segnale (seconda passata G1, ~+0,05%). Misurata **prima** del test con il codice del test
+(`analysis/meanrev_indici/calibra_nullo.py`, 200 serie per condizione): **B_NULL = 0,09%** (distorsione misurata +0,063% [+0,038; +0,088] con crescita 0,05%/giorno e indici a 0,9; +0,047%
+[+0,018; +0,075] senza crescita; scelto il limite alto della condizione piu' vicina ai dati veri, arrotondato in su). Il LEAD richiede il
+limite basso del divario sopra B_NULL. CLOSED e NON DIMOSTRATO non la correggono: la distorsione li sposta nella
+direzione prudente.
+
+**Potenza: fonte unica di questo numero.** MDE del divario sui nulli sintetici col codice del test (deriva 0,05%/giorno,
+indici correlati a 0,9, cluster per episodio): **0,53-0,66%** (§9). Sostituisce lo 0,30% del referto di potenza (tenuta
+di 3 giorni, nessun raggruppamento). Il valore sui dati reali si legge nel referto dell'esito. Gli altri documenti
+rimandano qui.
 
 **Controlli del verdetto** (sintetici, 08/10, prima del mercato, con deriva 0,05%/giorno e indici correlati a 0,9
 dopo la revisione G1): riportati nel §9.
@@ -125,6 +157,7 @@ pre-registrazione, perche' danno RSI diversi; in FTMO serve il conto Swing (la r
 
 - **1 trial**, budget 1. Nessuna variante: soglie, finestre, uscita e costi sono questi. Qualunque modifica dopo
   l'esito e' una pre-registrazione nuova.
+- **Descrittivi su episodi:** PSR e pavimento di futilita' 1,65/sqrt(n) con n = episodi, non trade.
 - **Assunzioni e direzione dell'errore:** trade non indipendenti fra indici → CI a cluster per episodio; swap attuale
   su tutta la storia → costo sovrastimato in media (pessimista), sottostimato nel 2023-2025; dividendi sul CFD long non
   accreditati (pessimista); spread alle 00:00 UTC piu' largo di quello letto (coperto dal 3x); chiusura Dukascopy alle 00:00 UTC invece della chiusura di
@@ -136,8 +169,8 @@ pre-registrazione, perche' danno RSI diversi; in FTMO serve il conto Swing (la r
 ## 9. Revisione G1 (08/10) e controlli del verdetto
 
 **Gatekeeper, prima passata: BLOCCA** con tre bloccanti, nessuno sui dati reali (eseguito solo il sintetico).
-1. Soglia di CLOSED in unita' sbagliate (lordo assoluto pubblicato contro divario al netto della deriva): **aperto,
-   decide Matteo** (§6).
+1. Soglia di CLOSED in unita' sbagliate (lordo assoluto pubblicato contro divario al netto della deriva): **chiuso con
+   l'opzione (c)** (§6), scelta su delega di Matteo.
 2. Cluster per data d'ingresso insufficiente con indici sovrapposti: **corretto**, cluster per episodio.
 3. Regola scartata il 17/08 senza voce che registri il ripensamento: **corretto**, §1 e DECISIONS 2026-10-08 (2).
 Riserve accolte: ATR nel matching, niente `trim_tail` per anno, eventi senza controlli stampati, controlli dati sul
@@ -148,4 +181,5 @@ grezzo, precedenza LEAD e ampiezza su entrambi gli indici, PSR e futilita', cost
 | serie | esito |
 |---|---|
 | nullo, 8 semi | **0 LEAD**; divario puntuale da −0,05% a +0,21%; MDE del divario **0,53-0,66%**; 4 CLOSED e 4 NON DIMOSTRATO con soglia provvisoria 0,50% |
+| distorsione del nullo, 200 serie per condizione (`calibra_nullo.py`) | +0,063% [+0,038; +0,088] con crescita; +0,047% [+0,018; +0,075] senza → **B_NULL = 0,09%** |
 | ritorno alla media forte | **LEAD**: divario +1,03% [+0,84; +1,23], matching a posto su durata (3 contro 3 giorni) e ATR (1,42 contro 1,41) |

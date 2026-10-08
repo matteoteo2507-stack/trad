@@ -66,7 +66,10 @@ def probabilistic_sharpe_ratio(
     if n < 2:
         return float("nan")
     num = (sr_observed - sr_benchmark) * sqrt(n - 1)
-    den = sqrt(1 - skew * sr_observed + (kurt_excess / 4.0) * sr_observed ** 2)
+    # Bailey-LdP: (gamma4 - 1)/4 con gamma4 = curtosi GREZZA = eccesso + 3, quindi (eccesso + 2)/4.
+    # Fino al 2026-10-08 qui c'era eccesso/4: mancava 0,5*SR^2 e il PSR usciva un po' ottimista (trovato dal
+    # gatekeeper). Su Sharpe per periodo dell'ordine di 0,01-0,1 la differenza e' sotto 0,005: verdetti storici invariati.
+    den = sqrt(1 - skew * sr_observed + ((kurt_excess + 2.0) / 4.0) * sr_observed ** 2)
     if den <= 0:
         return float("nan")
     return float(_norm_cdf(num / den))

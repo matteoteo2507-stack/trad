@@ -97,3 +97,13 @@ def test_confronta_overlay_prop_riporta_il_benchmark_zero():
     assert list(tab["binario"]) == ["1R", "O1_cuscinetto"]
     assert (tab["pass_rate"] >= tab["pass_zero"]).all()
     assert {"ev_vs_zero", "ev_vs_zero_lo", "ev_vs_zero_hi", "p_ev_vs_zero_pos"} <= set(tab.columns)
+
+
+def test_psr_formula_bailey_lopez_de_prado():
+    """PSR con (gamma4 - 1)/4, gamma4 = curtosi grezza: con distribuzione normale (eccesso 0) il termine e' SR^2/2."""
+    from math import sqrt
+    from scipy.stats import norm
+    from core.quant_metrics import probabilistic_sharpe_ratio
+    sr, n, skew, k_ex = 0.30, 100, -0.5, 1.2
+    atteso = norm.cdf(sr * sqrt(n - 1) / sqrt(1 - skew * sr + (k_ex + 3 - 1) / 4 * sr ** 2))
+    assert abs(probabilistic_sharpe_ratio(sr, 0.0, n, skew, k_ex) - atteso) < 1e-12
