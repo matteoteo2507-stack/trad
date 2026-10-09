@@ -11,6 +11,29 @@
 
 ---
 
+## 2026-10-09 — PAC: budget fissato, rata **confermata a 100 €/mese**, il margine va in top-up; partenza a ottobre
+
+**Fatti (dichiarati da Matteo il 09/10).** Matteo ha atteso l'ultima rata dello stipendio estivo per fissare il budget
+dell'anno: con la rata da 100 €/mese **resta margine**. IBAN del conto Trade Republic **italiano**; promo 3% per nuovi
+clienti **attiva** (interessi gia' accreditati per due mesi); il conto Trade Republic serve **solo al PAC**, le spese
+passano da un altro conto, quindi il vincolo del serbatoio e' separato per costruzione.
+
+**Nessuna decisione nuova: si applica il §0 del 07/08** ([INVESTING_PILLAR_PLAN §0](docs/INVESTING_PILLAR_PLAN.md)).
+- La rata resta **100 €/mese**. Il margine e' calcolato su entrate ormai note ma su spese ancora **pianificate**: la
+  rata si rivede solo alla revisione di settembre, su surplus **verificato** da un anno di spese reali, e solo per reddito.
+- Il margine entra come **top-up** quando il mese lo permette, cioe' a consuntivo e non in anticipo sul budget, in
+  ordini manuali da **almeno €150** (l'ordine manuale costa €1).
+- Gli interessi, compresi i due mesi gia' maturati, entrano come top-up a fine ciclo.
+
+**Partenza slittata** da fine settembre a ottobre: costo nullo. Il ciclo diventa ott 2026 – set 2027, 12 rate = €1.200,
+e la revisione resta a settembre 2027.
+
+**Aperti** (checklist del §0): creazione del piano in app con pagamento dal saldo, scadenza della promo, costi ex-ante e
+sede di esecuzione al primo ordine, bollo sull'estratto. Il regime amministrato resta `verificabile` fino alla prima
+certificazione fiscale (2027): l'IBAN italiano e' necessario, non sufficiente.
+
+---
+
 ## 2026-10-08 (4) — Candidato A: **NON DIMOSTRATO (MDE 0,446%)** al primo e unico trial; famiglia **CLOSED** per potenza
 
 **Esito** (esecuzione unica del 08/10 dopo l'approvazione di Matteo, committata con trial e apertura prima del test;

@@ -1,4 +1,4 @@
-# Pilastro Investing — Piano OPERATIVO — agg. 2026-08-07
+# Pilastro Investing — Piano OPERATIVO — agg. 2026-10-09
 
 > **Stato: ESECUTIVO.** La categoria A (input personali) è stata chiusa il 2026-08-04/07 e il piano
 > operativo è in **§0**. Il resto del documento resta come traccia del percorso: architettura (§1),
@@ -9,7 +9,7 @@
 
 ---
 
-## §0 — PIANO OPERATIVO (attivo da fine settembre 2026)
+## §0 — PIANO OPERATIVO (partenza ottobre 2026)
 
 ### Input personali (categoria A — chiusi)
 
@@ -40,7 +40,7 @@ prescindere da come va, e non dipende più dalla disciplina mese per mese.
 | **Strumento** | **VWCE** — Vanguard FTSE All-World UCITS ETF (USD) **Accumulating**, `IE00BK5BQT80`, TER 0,22%, domicilio Irlanda. **Verificato presente nel PAC dell'app** |
 | **Rata** | **100 €/mese**, data fissa del mese, mai spostata |
 | **Esecuzione** | XETRA, 09:00-17:30. Frazionario → i €100 entrano interi ogni mese |
-| **Partenza** | **Fine settembre 2026** |
+| **Partenza** | **Ottobre 2026** — prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../DECISIONS.md)) |
 | **Ribilancio** | **Nessuno.** Un solo strumento, 100% azionario, fase 1: non c'è niente da ribilanciare |
 
 ### Regola dei top-up
@@ -86,8 +86,12 @@ post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide
 
 ### Verifiche residue prima dell'attivazione
 
-- [ ] Conto effettivamente **migrato alla succursale italiana**: IBAN italiano, deposito italiano, certificazione fiscale italiana.
-- [ ] Verificare se si applica la **promo 3%** per nuovi clienti e la sua data di scadenza (tasso ordinario: 2%, legato BCE, accredito mensile, senza tetto per IBAN IT).
+- [x] **IBAN italiano** (verificato dall'utente, 2026-10-09).
+- [ ] **Regime amministrato effettivo** (deposito italiano, certificazione fiscale italiana): `verificabile` solo con la prima certificazione annuale, nel 2027. L'IBAN italiano è necessario, non sufficiente.
+- [x] **Conto dedicato**: il conto Trade Republic serve solo al PAC, le spese passano da un altro conto (2026-10-09) → il vincolo è separato per costruzione.
+- [x] **Promo 3%** per nuovi clienti: si applica, interessi già accreditati per due mesi (2026-10-09).
+- [ ] **Scadenza della promo** da annotare (poi tasso ordinario: 2%, legato BCE, accredito mensile, senza tetto per IBAN IT).
+- [ ] **Piano creato in app**: VWCE, 100 €, mensile, data fissa, pagamento **dal saldo** del conto dedicato; saldo ≥ €1.200 alla creazione.
 - [ ] Verificare come viene applicata l'**imposta di bollo 0,2%/anno** sul dossier e che compaia nella certificazione fiscale.
 - [ ] Schermata costi ex-ante e sede di esecuzione al primo ordine.
 
