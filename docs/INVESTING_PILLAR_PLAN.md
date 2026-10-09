@@ -37,7 +37,7 @@ prescindere da come va, e non dipende più dalla disciplina mese per mese.
 | Voce | Decisione |
 |---|---|
 | **Broker** | **Trade Republic** — regime amministrato (post-migrazione succursale italiana), PAC senza commissioni, frazionario, canone €0 |
-| **Strumento** | **VWCE** — Vanguard FTSE All-World UCITS ETF (USD) **Accumulating**, `IE00BK5BQT80`, TER 0,22%, domicilio Irlanda. **Verificato presente nel PAC dell'app** |
+| **Strumento** | **VWCE** — Vanguard FTSE All-World UCITS ETF (USD) **Accumulating**, `IE00BK5BQT80`, **OCF 0,14%** (factsheet Vanguard, dati al 31/08/2026; il piano del 07/08 riportava 0,22%, già superato), domicilio Irlanda. **Verificato presente nel PAC dell'app** |
 | **Rata** | **100 €/mese**, il **2 del mese**, mai spostata |
 | **Esecuzione** | Sede: "borsa europea" nell'app (2026-10-09); il piano assumeva XETRA (09:00-17:30), non confermato. Frazionario → i €100 entrano interi ogni mese (verificato sull'ordine di ottobre: €150 → 0,869061 quote) |
 | **Partenza** | **Avviato il 2026-10-09**: ottobre con un ordine manuale, piano automatico dal **2 novembre 2026**. Prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../DECISIONS.md)) |
@@ -97,11 +97,14 @@ post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide
 - [x] **ISIN della posizione** = `IE00BK5BQT80`, identico a quello del piano (confermato dall'utente, 2026-10-09). In app il nome è "FTSE All-World USD (Acc)".
 - [ ] Verificare come viene applicata l'**imposta di bollo 0,2%/anno** sul dossier e che compaia nella certificazione fiscale.
 - [x] **Costo dell'ordine manuale**: €1 (confermato sull'ordine di ottobre, 2026-10-09).
+- [x] **Foglio costi ex-ante** dell'ordine di ottobre (2026-10-09): acquisto €1, vendita €1, prodotto €0,21/anno su €150 (= OCF 0,14%), incentivi da terzi €0. Non mostra **bollo** né **spread**: tassa e costo implicito restano fuori dal foglio. Il "2,03% in 5 anni" che riporta vale per un ordine manuale isolato da €150 (€1 in entrata + €1 in uscita), non per le rate del piano.
+- [ ] **Prima rata automatica** (2 novembre): il foglio costi deve mostrare **commissione €0**. È la verifica sul campo del "PAC senza commissioni".
 - [ ] **Nome esatto della sede di esecuzione**: l'app dice "borsa europea"; il nome si legge sulla conferma d'ordine. Non bloccante.
 
-> ⚠️ **Commissione zero ≠ costo zero.** I costi reali del piano sono: **TER 0,22%**, **spread** in
+> ⚠️ **Commissione zero ≠ costo zero.** I costi reali del piano sono: **OCF 0,14%**, **spread** in
 > esecuzione, **bollo 0,2%/anno**. Nessuno dei tre si evita cambiando broker — il bollo è una tassa,
-> non una tariffa.
+> non una tariffa. Dal taglio dell'OCF il **bollo è il costo annuo più grande** (OCF + bollo ≈ 0,34%/anno, spread a parte),
+> e il foglio costi del broker non lo mostra.
 
 ---
 
