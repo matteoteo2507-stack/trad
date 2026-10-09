@@ -38,9 +38,9 @@ prescindere da come va, e non dipende più dalla disciplina mese per mese.
 |---|---|
 | **Broker** | **Trade Republic** — regime amministrato (post-migrazione succursale italiana), PAC senza commissioni, frazionario, canone €0 |
 | **Strumento** | **VWCE** — Vanguard FTSE All-World UCITS ETF (USD) **Accumulating**, `IE00BK5BQT80`, TER 0,22%, domicilio Irlanda. **Verificato presente nel PAC dell'app** |
-| **Rata** | **100 €/mese**, data fissa del mese, mai spostata |
-| **Esecuzione** | XETRA, 09:00-17:30. Frazionario → i €100 entrano interi ogni mese |
-| **Partenza** | **Ottobre 2026** — prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../DECISIONS.md)) |
+| **Rata** | **100 €/mese**, il **2 del mese**, mai spostata |
+| **Esecuzione** | Sede: "borsa europea" nell'app (2026-10-09); il piano assumeva XETRA (09:00-17:30), non confermato. Frazionario → i €100 entrano interi ogni mese (verificato sull'ordine di ottobre: €150 → 0,869061 quote) |
+| **Partenza** | **Avviato il 2026-10-09**: ottobre con un ordine manuale, piano automatico dal **2 novembre 2026**. Prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../DECISIONS.md)) |
 | **Ribilancio** | **Nessuno.** Un solo strumento, 100% azionario, fase 1: non c'è niente da ribilanciare |
 
 ### Regola dei top-up
@@ -90,10 +90,14 @@ post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide
 - [ ] **Regime amministrato effettivo** (deposito italiano, certificazione fiscale italiana): `verificabile` solo con la prima certificazione annuale, nel 2027. L'IBAN italiano è necessario, non sufficiente.
 - [x] **Conto dedicato**: il conto Trade Republic serve solo al PAC, le spese passano da un altro conto (2026-10-09) → il vincolo è separato per costruzione.
 - [x] **Promo 3%** per nuovi clienti: si applica, interessi già accreditati per due mesi (2026-10-09).
-- [ ] **Scadenza della promo** da annotare (poi tasso ordinario: 2%, legato BCE, accredito mensile, senza tetto per IBAN IT).
-- [ ] **Piano creato in app**: VWCE, 100 €, mensile, data fissa, pagamento **dal saldo** del conto dedicato; saldo ≥ €1.200 alla creazione.
+- [x] **Scadenza della promo**: non dichiarata da Trade Republic (2026-10-09). Il passaggio al tasso ordinario (2%, legato BCE, accredito mensile, senza tetto per IBAN IT) si vedrà dagli accrediti; non cambia nulla, gli interessi non sono una leva.
+- [x] **Piano creato in app** (2026-10-09): 100 €/mese il 2 del mese, prima esecuzione automatica il 2 novembre, pagamento dal saldo del conto dedicato; saldo ≥ €1.200 alla creazione.
+- [x] **Ordine di ottobre** (manuale, 2026-10-09): €150 a €172,60, 0,869061 quote.
+- [ ] **Vincolo dopo l'ordine di ottobre**: saldo ≥ €1.100 (11 rate, nov 2026 – set 2027). L'ordine da €150 più €1 di regolamento esce dallo stesso saldo.
+- [ ] **ISIN della posizione** = `IE00BK5BQT80`: in app il nome è "FTSE All-World USD (Acc)", che da solo non identifica l'ETF.
 - [ ] Verificare come viene applicata l'**imposta di bollo 0,2%/anno** sul dossier e che compaia nella certificazione fiscale.
-- [ ] Schermata costi ex-ante e sede di esecuzione al primo ordine.
+- [x] **Costo dell'ordine manuale**: €1 (confermato sull'ordine di ottobre, 2026-10-09).
+- [ ] **Nome esatto della sede di esecuzione**: l'app dice "borsa europea"; il nome si legge sulla conferma d'ordine. Non bloccante.
 
 > ⚠️ **Commissione zero ≠ costo zero.** I costi reali del piano sono: **TER 0,22%**, **spread** in
 > esecuzione, **bollo 0,2%/anno**. Nessuno dei tre si evita cambiando broker — il bollo è una tassa,
