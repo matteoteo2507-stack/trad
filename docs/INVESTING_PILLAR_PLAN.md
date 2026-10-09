@@ -93,8 +93,8 @@ post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide
 - [x] **Scadenza della promo**: non dichiarata da Trade Republic (2026-10-09). Il passaggio al tasso ordinario (2%, legato BCE, accredito mensile, senza tetto per IBAN IT) si vedrà dagli accrediti; non cambia nulla, gli interessi non sono una leva.
 - [x] **Piano creato in app** (2026-10-09): 100 €/mese il 2 del mese, prima esecuzione automatica il 2 novembre, pagamento dal saldo del conto dedicato; saldo ≥ €1.200 alla creazione.
 - [x] **Ordine di ottobre** (manuale, 2026-10-09): €150 a €172,60, 0,869061 quote.
-- [ ] **Vincolo dopo l'ordine di ottobre**: saldo ≥ €1.100 (11 rate, nov 2026 – set 2027). L'ordine da €150 più €1 di regolamento esce dallo stesso saldo.
-- [ ] **ISIN della posizione** = `IE00BK5BQT80`: in app il nome è "FTSE All-World USD (Acc)", che da solo non identifica l'ETF.
+- [x] **Vincolo dopo l'ordine di ottobre**: €1.200 restano vincolati per le rate fino a settembre 2027, sopra le 11 rate necessarie (€1.100, nov 2026 – set 2027) (confermato dall'utente, 2026-10-09).
+- [x] **ISIN della posizione** = `IE00BK5BQT80`, identico a quello del piano (confermato dall'utente, 2026-10-09). In app il nome è "FTSE All-World USD (Acc)".
 - [ ] Verificare come viene applicata l'**imposta di bollo 0,2%/anno** sul dossier e che compaia nella certificazione fiscale.
 - [x] **Costo dell'ordine manuale**: €1 (confermato sull'ordine di ottobre, 2026-10-09).
 - [ ] **Nome esatto della sede di esecuzione**: l'app dice "borsa europea"; il nome si legge sulla conferma d'ordine. Non bloccante.
