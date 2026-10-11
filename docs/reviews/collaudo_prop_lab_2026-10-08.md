@@ -59,7 +59,7 @@ verificare prima di un test vero su EURUSD.
 si annulla a direzione casuale), costo per trade in R, e `ev_vs_zero` della fase 3 (sui candidati scelti in-sample
 e' gonfiato dalla selezione: e' il motivo per cui non decide).
 
-## 3. Risultati (eseguito il 08/10 dopo il commit `1a32307`)
+## 3. Risultati (eseguito il 08/10 dopo il commit `a1259bd`, gia' `1a32307`)
 
 **ESITO POSITIVO: i quattro criteri dichiarati sono soddisfatti su entrambi i simboli.**
 

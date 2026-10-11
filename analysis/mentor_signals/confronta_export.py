@@ -13,6 +13,7 @@ Confronta per id del messaggio:
 - id nuovi con data DENTRO la finestra del vecchio               -> inseriti a posteriori (sospetti).
 
 I cancellati e i modificati si salvano in `deleted_signals/` (jsonl), come il 07/07.
+Dall'11/10 quei file restano fuori da git (testo e orari dei messaggi, repo pubblico): i conteggi stanno nei referti.
 
 Uso: python analysis/mentor_signals/confronta_export.py <cartella_vecchia> <cartella_nuova> [--salva]
 """

@@ -75,6 +75,9 @@ analysis/trading-bot-eval/data/
 # Export chat mentore (dati di terzi/personali — MAI su git) + segnali parsati
 Dati su segnali mentore/
 analysis/mentor_signals/signals.csv
+# Messaggi cancellati o modificati dal canale (testo e orari dei messaggi): fuori da git dal 2026-10-11.
+# Il file del 07/07 era gia' pubblico e resta tracciato.
+analysis/mentor_signals/deleted_signals/*.jsonl
 
 # Repo del socio clonato (codice di terzi, ha un proprio .git)
 socio-trading-bot/

@@ -1,7 +1,7 @@
 # RSI(2) sugli indici USA (candidato A) — esito del test pre-registrato (2026-10-08)
 
 Pre-registrazione: [MR_INDICI_RSI2_PREREGISTRATION.md](../MR_INDICI_RSI2_PREREGISTRATION.md), approvata da Matteo il
-08/10 e committata con trial e apertura **prima** dell'esecuzione (commit `8b5f726`). Esecuzione unica, semi fissi
+08/10 e committata con trial e apertura **prima** dell'esecuzione (commit `13f7edd`; era `8b5f726` prima della riscrittura dell'11/10 che ha tolto dati sensibili dai commit locali; date e contenuto del test invariati). Esecuzione unica, semi fissi
 (42/43). Output integrale: [esiti/mr_indici_rsi2_2026-10-08.txt](esiti/mr_indici_rsi2_2026-10-08.txt).
 Revisione G2: [rsi2_indici_G2_2026-10-08.md](rsi2_indici_G2_2026-10-08.md) (CORREGGI la lettura, 0 bloccanti sul
 verdetto). Tutti i numeri qui sotto vengono da quell'output, misurati il 08/10.

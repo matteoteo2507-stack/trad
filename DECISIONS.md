@@ -93,7 +93,7 @@ prop). **Prova di catena** in una copia isolata: quattro dipendenze trovate e co
 utente nei file, giorni con barre, zero candidati: ora la famiglia muore senza aprire il fuori campione).
 
 **Collaudo** ([referto](docs/reviews/collaudo_prop_lab_2026-10-08.md)) con la famiglia di controllo `controllo_casuale`
-(ingressi e direzione a caso) su XAUUSD H1 ed EURUSD H1 reali, criteri dichiarati prima (commit `1a32307`):
+(ingressi e direzione a caso) su XAUUSD H1 ed EURUSD H1 reali, criteri dichiarati prima (commit `a1259bd`, gia' `1a32307`):
 **zero PROMOSSA** (2 e 3 NON_DIMOSTRATA), pipeline completa, contatore a exit 0, nessun percorso assoluto.
 Due letture utili: le 36 varianti di un controllo casuale sono **3 estrazioni indipendenti** (per seme si muovono
 insieme), quindi la "quota di varianti positive" non e' evidenza; e con i costi d'esempio il costo a H1 vale
