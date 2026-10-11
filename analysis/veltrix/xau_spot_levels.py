@@ -29,7 +29,7 @@ def load_candles(csv_path: str) -> list[dict]:
 
 def bot_futures_pd(target_day) -> dict:
     """Estrae PDH/PDL/PDC futures riportati dal bot per il giorno dato (dall'export)."""
-    src = sorted(glob.glob("alphanalist_chat_*.jsonl"))
+    src = sorted(glob.glob("materiale_socio/veltrix_alphanalist_chat_*/alphanalist_chat_*.jsonl"))
     if not src:
         return {}
     out = {}

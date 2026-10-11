@@ -65,7 +65,7 @@ def _classify(line: str) -> str | None:
 
 def extract_levels(asset="XAUUSD"):
     """Ritorna lista di dict: ts_pub, price, side (R/S/N), type."""
-    src = sorted(glob.glob("alphanalist_chat_*.jsonl"))[0]
+    src = sorted(glob.glob("materiale_socio/veltrix_alphanalist_chat_*/alphanalist_chat_*.jsonl"))[0]
     out = []
     for line in open(src, encoding="utf-8"):
         r = json.loads(line)

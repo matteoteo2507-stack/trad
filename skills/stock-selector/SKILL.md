@@ -6,7 +6,7 @@ description: Eseguire o modificare la selezione azionaria SP500 basata sul siste
 # Skill — Stock Selector
 
 Questa skill agentizza il sistema di selezione azionaria V6.0 (file originale:
-`algoritmo selezione azioni.ipynb` al top level del workspace).
+`strategies/stock_selector/algoritmo selezione azioni.ipynb`).
 
 ## Cosa fa il sistema V6.0
 
@@ -43,7 +43,7 @@ result: SelectionResult = run_selection(
 
 Quando si attiva questa skill:
 
-1. **Leggere il notebook originale** `algoritmo selezione azioni.ipynb` per capire la logica esatta.
+1. **Leggere il notebook originale** `strategies/stock_selector/algoritmo selezione azioni.ipynb` per capire la logica esatta.
    Il notebook è autorevole — la sua logica è già validata da Matteo.
 2. **Estrarre la logica in un modulo Python** sotto `strategies/stock_selector/`:
    - `strategy.py` — classe `StockSelector` con metodi pubblici.
@@ -65,6 +65,6 @@ Quando si attiva questa skill:
 
 ## Riferimenti
 
-- Notebook originale: `algoritmo selezione azioni.ipynb` al top level.
+- Notebook originale: `strategies/stock_selector/algoritmo selezione azioni.ipynb`.
 - Output di esempio già esistenti: `Top_Picks sp500 30-12-25.ods`, `Analisi_Completa sp500 30-12-25.ods`.
 - Stage successivo (Stage 4) → `skills/stock-selector-consensus/` invocherà 4 personas su queste top picks.

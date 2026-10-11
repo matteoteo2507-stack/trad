@@ -15,6 +15,10 @@ da git (`.gitignore`: `/materiale_socio/*/`): restano solo su questo disco.
 |---|---|---|---|
 | `forexgump_telegram_2020-09_2026-09/` | export Telegram di **Forex Gump GOLD VIP** (21 file, 18.688 messaggi, 09/09/2020 → 28/09/2026) | [`../analysis/forexgump/parse.py`](../analysis/forexgump/parse.py) → `signals.csv` | pre-registrazione [`FOREXGUMP_LATENCY_PREREGISTRATION.md`](../docs/FOREXGUMP_LATENCY_PREREGISTRATION.md) |
 | `xat_conto_demo_socio_2026-09/` | export MT5 del conto demo del socio (numero omesso) su cui girava **XAT** (il mentore XAU), 22 segnali × 3 gambe, 21-29/09/2026, con lo script `export.py` del socio. ⚠️ Orari = server **UTC+3** | [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md), [`xat_cancellazioni_2026-10-02.md`](../docs/reviews/xat_cancellazioni_2026-10-02.md) | dati descrittivi, fuori dal conteggio N = 60 |
+| `veltrix_alphanalist_chat_2026-06-08/` | export della chat Telegram privata con il bot **VELTRIX** (AlphaAnalist), esportato l'08/06/2026 in quattro formati (md, jsonl, json, html) + il suo README | [`../analysis/veltrix/parse_alphanalist.py`](../analysis/veltrix/parse_alphanalist.py) → `signals.csv`; `validate_levels.py`, `xau_spot_levels.py` | valutazione del bot chiusa il 12/06 ([memoria e DECISIONS](../DECISIONS.md)); dati di lavoro del parser |
+| `veltrix_webapp_conti_2026-09-28/` | export dalla webapp **VELTRIX** del 28/09/2026: due schermate del cruscotto (`dash1.jpg`, `dash2.jpg`) e `operazioni_conti_aggiuntivi.csv` (314 operazioni sui conti aggiuntivi) | nessuno script | citato in [`_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md) (riga Forex Gump): il backtest della webapp **non e' un risultato** |
+
+**Spostate qui l'11/10** dalla radice del repo (`alphanalist_chat_*`, `28-09/`): stessi file, nessuna modifica al contenuto.
 
 **Canali chiusi all'intake (02/10, 0 trial), cartelle eliminate:** "Ben, Gold Trader", "THE GOLD SNIPER" e
 "ROYAL TRADING EMPIRE". I numeri e i motivi restano nelle note

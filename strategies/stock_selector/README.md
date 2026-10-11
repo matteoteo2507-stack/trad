@@ -4,7 +4,7 @@
 > **Quant review:** — · **Fondamenti:** [stock selection](../../fondamenti_tecnici/06_stock_selection/), [portfolio/rischio](../../fondamenti_tecnici/05_portfolio_rischio/), [data sources](../../fondamenti_tecnici/07_data_sources/)
 > Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../DECISIONS.md) · Parallelo a PAC + worldmonitor (pilastro investing conclusivo)
 
-Versione modulare e callable del notebook `algoritmo selezione azioni.ipynb`.
+Versione modulare e callable del notebook `algoritmo selezione azioni.ipynb` (in questa cartella).
 Replica fedelmente la logica V6.0: scenario macro → scoring fondamentale (0-6) +
 quadrante RRG vs benchmark + filtro di scenario.
 

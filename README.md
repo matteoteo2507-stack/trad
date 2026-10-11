@@ -30,7 +30,8 @@ Piattaforma modulare per costruire, testare e mettere in produzione strategie di
 I documenti sorgente densi (PDF, `.txt`, immagini) sono stati **spostati** in
 [`fondamenti_tecnici/_sorgenti/`](fondamenti_tecnici/_sorgenti/) e distillati in `principles.md`
 strutturati (vedi [fondamenti_tecnici/README.md](fondamenti_tecnici/README.md)). Il notebook
-`algoritmo selezione azioni.ipynb` resta al top level (sorgente dello Stock Selector).
+sorgente dello Stock Selector sta in
+[`strategies/stock_selector/algoritmo selezione azioni.ipynb`](strategies/stock_selector/algoritmo%20selezione%20azioni.ipynb).
 
 ## Documenti chiave
 
