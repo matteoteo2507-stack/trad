@@ -109,6 +109,10 @@ analysis/trend/trades_*.csv
 # WIP utente non committabile (committato per errore il 2026-08-24 con git add -A docs/)
 docs/VPS_COPIER_SETUP.md
 
+# Cartella di arrivo del materiale esterno: tutto fuori da git, tranne la sua descrizione.
+# Il materiale arriva prima di essere controllato (nomi, chat, conti) e il repo e' pubblico.
+/Da distillare/*
+!/Da distillare/README.md
 # Export Telegram/MT5 portati dal socio (chat, conti): dati, non codice. Tracciati solo i .md alla radice.
 /materiale_socio/*/
 analysis/forexgump/signals.csv

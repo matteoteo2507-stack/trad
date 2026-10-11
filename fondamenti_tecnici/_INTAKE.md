@@ -11,7 +11,8 @@ riprendibile e verificabile. È anche l'**imbocco del loop di apprendimento** fu
 `nuovo materiale → intake → triage → distilla / parcheggia`.
 
 ## Come si usa (procedura di triage)
-1. **Cattura** la fonte grezza in [`_sorgenti/`](_sorgenti/) (lossless, sempre).
+1. **Cattura** la fonte grezza in [`_sorgenti/`](_sorgenti/) (lossless, sempre). Il materiale appena arrivato
+   aspetta in [`Da distillare/`](../Da%20distillare/README.md) alla radice, che a fine sessione deve essere vuota.
 2. **Triage**: decidi lo stato — `grezzo` (da valutare) · `distillato` (integrato in un modulo
    `0X`/blueprint) · `parcheggiato` (reference/catalogo, approfondito on-demand).
 3. **Distilla solo il necessario** (ciò che tocca i sistemi attivi). Il resto resta reference.
