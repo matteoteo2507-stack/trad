@@ -1,0 +1,60 @@
+Eseguito il 2026-10-12 sul commit 2b66e653bbfb32afa2123368b48889bf35893117
+SPX500: impronta de2fe88843cf98a2 | sedute dal 2020-06-01 1539, finestra completa 1538, escluse per barre mancanti 2 | deviazione di r_LH 26.4 pb (referto 09/10: 26.4 pb, 1538 sedute -> torna) | fill non ottenibili: 0 su 1537 per costruzione (ordine a mercato alla prima barra dopo il segnale); scarto fra chiusura del segnale e apertura dell'entrata: mediana 0.46 pb, massimo 2.8 pb
+NAS100: impronta a0631ad091f820c6 | sedute dal 2020-06-01 1539, finestra completa 1538, escluse per barre mancanti 2 | deviazione di r_LH 30.7 pb (referto 09/10: 30.7 pb, 1538 sedute -> torna) | fill non ottenibili: 0 su 1537 per costruzione (ordine a mercato alla prima barra dopo il segnale); scarto fra chiusura del segnale e apertura dell'entrata: mediana 0.14 pb, massimo 2.0 pb
+CHECKLIST DATI: a posto, CON RISERVA su barre/anno
+  [ok] monotonia          948616 righe, tempo crescente
+  [ok] duplicati          nessun timestamp ripetuto
+  [riserva] barre/anno         15 anni, da 42854 a 93712 barre/anno (esclusi primo e ultimo) - nessun atteso dichiarato
+  [ok] monotonia          949241 righe, tempo crescente
+  [ok] duplicati          nessun timestamp ripetuto
+  [riserva] barre/anno         15 anni, da 42808 a 93276 barre/anno (esclusi primo e ultimo) - nessun atteso dichiarato
+  [ok] finestra comune    2012-01-19 -> 2026-07-16
+  [ok] partenze           allineate entro 3 giorni
+  [ok] file               SPX500_M5.csv (60.3 MB) e' il piu' completo dei 1 candidati
+  [ok] file               NAS100_M5.csv (62.2 MB) e' il piu' completo dei 1 candidati
+Famiglia momentum_ultima_mezzora, gruppo train, strumenti primari ['SPX500', 'NAS100'], sedute 1537 (2020-06-01 -> 2026-07-16)
+
+--- Confronto casuale: taglia identica per giorno nei due bracci (media 0.74); esposizione netta media reale +0.072, casuale +0.076; media dell'ultima mezz'ora -0.14 pb (tolta dal divario: r_LH centrato)
+effetto atteso dalla fonte: 4.56 pb (rho 0.172 x media di |w| x |z| x deviazione mobile dell'ultima mezz'ora = 26.4), meta' 2.28 pb
+
+=== PRIMARIA: posizione proporzionale con tetto
+divario dal casuale (direzione): -0.51 [-2.01; +0.99] pb (n 1537, MDE 2.15)   soglia B_NULL +0.20
+attesa netta per seduta:         -0.97 [-2.43; +0.50] pb (n 1537, MDE 2.11)
+attesa netta con costi 3x:       -1.71 pb
+p dagli spostamenti circolari:   0.7742 [0.7468; 0.7996] su 1000 (non decide)
+  SPX500: divario -0.75 pb, netto -1.21 pb, sedute 1537
+  NAS100: divario -0.27 pb, netto -0.73 pb, sedute 1537
+
+=== GUARDIA A TAGLIA FISSA (binario 1R): solo segno
+divario dal casuale: -0.07 [-1.38; +1.28] pb (n 1537, MDE 1.89)   rapporto con l'errore standard -0.10 (soglia 1.645: NON superata)
+attesa netta:        -0.57 [-1.84; +0.77] pb (n 1537, MDE 1.86)
+
+=== TABELLA DI ESCLUSIONE (divario contro rho pubblicata x media di |w| x |z| x deviazione mobile)
+  ES in campione (pieno, 4.89 pb): ESCLUSO
+  ES in campione (meta', 2.44 pb): ESCLUSO
+  ES fuori campione (pieno, 3.99 pb): ESCLUSO
+  ES fuori campione (meta', 1.99 pb): ESCLUSO
+  NQ in campione (pieno, 5.33 pb): ESCLUSO
+  NQ in campione (meta', 2.67 pb): ESCLUSO
+  NQ fuori campione (pieno, 5.12 pb): ESCLUSO
+  NQ fuori campione (meta', 2.56 pb): ESCLUSO
+
+*** VERDETTO TRAIN: CLOSED ***
+
+--- DESCRITTIVI (non decidono)
+limite basso del divario su 10 semi (bootstrap e spostamenti): da -2.06 a -1.96 pb (seme dichiarato 42: -2.01)
+per anno (divario medio pb | netto medio pb | sedute): 2020: -2.36 | -3.08 | 150 ; 2021: -2.33 | -2.81 | 252 ; 2022: +4.89 | +4.42 | 251 ; 2023: +0.14 | -0.36 | 248 ; 2024: -1.69 | -2.26 | 252 ; 2025: -2.17 | -2.48 | 250 ; 2026: -1.07 | -1.11 | 134
+anni con divario positivo: 2 su 7
+Sharpe per seduta -0.033 (annuo -0.52), PSR 0.099 (1 trial: DSR = PSR), pavimento di futilita' 0.042
+proporzionale senza tetto, netto: -0.93 pb
+ablazione della taglia (lordo, proporzionale meno solo segno a pari taglia media 0.74): -0.55 [-1.39; +0.31] pb (n 1537, MDE 1.21)
+  giorni con movimento piccolo: solo segno lordo +1.02 pb (n 1025)
+  giorni con movimento medio: solo segno lordo +0.01 pb (n 1024)
+  giorni con movimento grande: solo segno lordo -1.23 pb (n 1025)
+inversione il giorno dopo (posizione di oggi x r_ROD di domani, lordo): -3.59 pb (il meccanismo di copertura la vuole negativa)
+doppio binario sulla taglia fissa (unita' = deviazione mobile dell'ultima mezz'ora, 60 sedute):
+         binario  e_per_unita      e_lo      e_hi  valore_dipendenza  percentile_reale                                             lettura
+              1R    -0.036075 -0.036075 -0.036075           0.000000         50.000000 binario 1R: qui e' la guardia, non il verdetto (§6)
+   O1_cuscinetto    -0.029274 -0.049142 -0.016218           0.008850         83.554817                         nessun valore di dipendenza
+O3_serie_perdite    -0.027771 -0.051087 -0.019916           0.007841         81.229236                         nessun valore di dipendenza
+runs test sugli esiti a taglia fissa: {'n': 1537, 'sequenze': 731, 'attese': 769.0546519193233, 'z': -1.9430954986439113, 'p': 0.052004620806823464, 'lettura': 'indipendenza non respinta'}
