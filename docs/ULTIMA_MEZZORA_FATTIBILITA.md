@@ -1,7 +1,7 @@
 ---
 tipo: referto
-stato: in corso
-aggiornato: 2026-10-09
+stato: chiuso
+aggiornato: 2026-10-12
 strada: "BACKLOG_RICERCA §H, H1 (momentum dell'ultima mezz'ora)"
 nota: "Passi a 0 trial prima della G1. Fatti il 09/10: famiglia (1, nuova), costi (2, sotto la soglia), dati (3, reggono con quattro condizioni), potenza (4: USA solo a effetto pieno, oro no, serve un indice europeo). Restano slot (5), download europei e metrica primaria."
 ---
@@ -207,3 +207,5 @@ della pre-registrazione e' il DAX, e gli altri due restano repliche descrittive.
 - **Metrica primaria** — ✅ Matteo, 11/10: proporzionale con tetto. Bozza della pre-registrazione scritta lo stesso
   giorno ([ULTIMA_MEZZORA_PREREGISTRATION](ULTIMA_MEZZORA_PREREGISTRATION.md)); revisione G1: **BLOCCA**, stato e
   correzioni nel suo §9.
+- **Seguito** — approvata e testata il 12/10: **CLOSED** al train, holdout mai aperto (pre-registrazione §10,
+  DECISIONS 2026-10-12 (2)). Questo referto resta valido per costi, dati e scarto del server.

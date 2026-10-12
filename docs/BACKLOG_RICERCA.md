@@ -98,15 +98,18 @@ Sequenza proposta dal gatekeeper: nessuna approvazione nel Q3 (nessuna bozza pro
 > Fonte: [10_indicatori_tecnici](../fondamenti_tecnici/10_indicatori_tecnici/principles.md) (ricerca di Claude e di
 > Comet, 08/10). Ogni strada e' passata per la griglia del [09_fonti_di_vantaggio](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md)
 > §4 (classe → chi paga → limite all'arbitraggio → dove si vede → accessibilita' → potenza → dove muore → provenienza)
-> e per la regola **stessa grandezza = stessa famiglia** (DECISIONS 2026-10-08 (3)). **Nessun trial speso.**
+> e per la regola **stessa grandezza = stessa famiglia** (DECISIONS 2026-10-08 (3)). **Un trial speso** (H1, 12/10).
 >
 > **Esito onesto:** la ricerca produce **una strada vera** (H1), tre bloccate dalle nostre stesse regole (H2 dopo la
 > chiusura del candidato A, H3, H4), una nota di metodo (H5) e uno strumento di preparazione (H6). Tutto il resto e'
 > chiuso in partenza, con il motivo, in fondo alla sezione.
+>
+> **Aggiornamento 12/10:** H1 e' stata testata ed e' **CLOSED** (DECISIONS 2026-10-12 (2)). La sezione non ha piu'
+> strade vive; restano le due voci senza costo (H5, divergenza Hudson-Urquhart) e H6.
 
 | # | strada | grandezza → famiglia | classe e chi paga | bucket | primo passo | costo |
 |---|---|---|---|---|---|---|
-| **H1** | **Momentum dell'ultima mezz'ora** (coperture di gamma) | rendimento intraday gia' fatto, parente dell'ORB: **famiglia nuova `momentum_ultima_mezzora`** (Matteo, 09/10: meccanismo indipendente), con parentela dichiarata e senza holdout sui dati dell'ORB | **2**: chi e' corto di gamma (market maker di opzioni, ETF a leva) deve comprare quando sale e vendere quando scende, a ridosso della chiusura | candidata, **pre-B** | ✅ famiglia, costi, dati e potenza fatti il 09/10 ([referto](ULTIMA_MEZZORA_FATTIBILITA.md)); ora: scaricare un indice europeo per l'holdout, metrica primaria, slot | 0 trial fino alla G1, poi 1 slot esterno |
+| **H1** | **Momentum dell'ultima mezz'ora** (coperture di gamma) | rendimento intraday gia' fatto, parente dell'ORB: **famiglia nuova `momentum_ultima_mezzora`** (Matteo, 09/10: meccanismo indipendente), con parentela dichiarata e senza holdout sui dati dell'ORB | **2**: chi e' corto di gamma (market maker di opzioni, ETF a leva) deve comprare quando sale e vendere quando scende, a ridosso della chiusura | ❌ **CLOSED il 12/10** al train, holdout mai aperto ([pre-registrazione](ULTIMA_MEZZORA_PREREGISTRATION.md) §10, DECISIONS 2026-10-12 (2)) | nessuno: riapre solo per §7 | 1 trial speso, terzo slot esterno del 2026-Q4 |
 | **H2** | **Inversione di breve condizionata alla turbolenza** (VIX) | spostamento dalla media → **`mr_indici_rsi2`** (candidato A), non famiglia nuova | **2-3**: chi chiede immediatezza paga chi fornisce liquidita'; il compenso sale col VIX (Nagel 2012) | **D**: A e' **CLOSED per potenza** (DECISIONS 2026-10-08 (4)), nessun round residuo | nessuno | — |
 | **H3** | **Accelerazione dopo l'attraversamento di un numero tondo** (stop appena oltre, Osler 2003) | livelli → `livelli` e `round_grid`, **CLOSED** | **5**: chi ha lo stop appena oltre il tondo; vince chi arriva prima | **D** | nessuno | — |
 | **H4** | **Pitchfork / median line** (e ogni livello disegnato a mano) | livelli inclinati → `livelli` e **B6**, **CLOSED** | nessuna: e' un pattern | **D** | misurare il socio, non lo strumento (proposta B) | — |
@@ -227,9 +230,11 @@ bottiglia sono **i passi 1 e 2**: famiglia e spread. Costano poco e decidono se 
 3. ✅ **H1 passi 3-4 — dati e potenza** (09/10).
 4. **Prima della G1**: ✅ indici europei per l'holdout scaricati e verificati l'11/10 (DAX, Euro Stoxx 50, FTSE 100:
    [referto](ULTIMA_MEZZORA_FATTIBILITA.md)), sigillati; resta da fissare la metrica primaria (regressione o posizione
-   proporzionale, contro solo segno).
-5. ✅ **H1 passo 5 — slot**: adesso, terzo slot del 2026-Q4 (Matteo, 11/10). Prossimo: bozza G1 e gatekeeper.
-5. In parallelo, senza costo: acquisire *Boundaries of TSMOM* (H5) e chiudere la divergenza su Hudson-Urquhart (modulo 10 §3).
+   proporzionale, contro solo segno): ✅ proporzionale con tetto (Matteo, 11/10).
+5. ✅ **H1 passo 5 — slot**: adesso, terzo slot del 2026-Q4 (Matteo, 11/10).
+6. ✅ **H1 — pre-registrazione, due passate G1, approvazione, train** (11-12/10): **CLOSED**, holdout mai aperto
+   (DECISIONS 2026-10-12 (2)). H1 non ha altro lavoro.
+7. In parallelo, senza costo: acquisire *Boundaries of TSMOM* (H5) e chiudere la divergenza su Hudson-Urquhart (modulo 10 §3).
 
 ---
 

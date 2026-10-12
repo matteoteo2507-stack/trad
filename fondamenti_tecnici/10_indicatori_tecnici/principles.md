@@ -264,7 +264,7 @@ Un indicatore non dimostrato non e' refutato ([[feedback_verdetto_con_la_forza_d
 | **Medie mobili, breakout di canale, momentum di serie storica** | 1 | **tenere, uno solo**: sono la stessa cosa | evidenza piu' lunga (1880-oggi) ma su panieri ampi a orizzonte di mesi; asset per asset debole (Huang 2020) |
 | **Oscillatore corto (RSI 2-3, z-score) come fornitura di liquidita'** | 2 | **tenere come ipotesi sulle azioni singole** (fuori perimetro) | Nagel 2012 sulle azioni; sugli indici il candidato A e' **CLOSED per potenza** (DECISIONS 2026-10-08 (4)) |
 | **Numeri tondi** | 5 | **tenere come meccanismo**, non come regola | Osler 2003 sul forex; nostro primo test sul Nasdaq NULL |
-| **Momentum dell'ultima mezz'ora** | tempo | **tenere come direzione di lettura** (classe 2) | Baltussen 2021: 60+ futures, chi paga = chi copre la gamma; accessibilita' da verificare per prima → [backlog H1](../../docs/BACKLOG_RICERCA.md) |
+| **Momentum dell'ultima mezz'ora** | tempo | **tenere come direzione di lettura** (classe 2) | Baltussen 2021: 60+ futures, chi paga = chi copre la gamma; accessibilita' da verificare per prima → [backlog H1](../../docs/BACKLOG_RICERCA.md). **Nostro test sugli indici USA dal 2020: CLOSED il 12/10** (DECISIONS 2026-10-12 (2)): l'effetto pubblicato non si ritrova sui CFD dopo il campione del paper |
 | MACD, RSI 14 a 30/70, Stocastico, Williams %R, CCI | 2 (MACD: 1) | **cautela** (RD) | varianti delle grandezze 1-2; poche prove positive, senza correzione per i tentativi multipli |
 | Bollinger come segnale di ingresso | 2 | **cautela** | non battono il buy-and-hold dopo i costi (Lento 2007) |
 | Ichimoku | 1 | **cautela** | coi parametri standard funzionava nel primo sottoperiodo e non nel secondo; sul forex nessuna regola profittevole nemmeno variando i parametri (Deng et al. 2021) |
@@ -290,7 +290,8 @@ giornaliero, pochi strumenti) gli indicatori sono soprattutto **strumenti di ris
 di segnale. Le grandezze con evidenza di segnale (1 e 2) l'hanno su panieri ampi o su azioni singole, cioe'
 dove noi non siamo; dove siamo, le abbiamo gia' misurate e sono chiuse (l'ultima, RSI(2) sugli indici, l'08/10). L'unica pista
 nuova emersa da questa ricerca **con un "chi paga" misurato** e' il tempo (ultima mezz'ora, coperture di
-gamma), che e' un flusso, non un indicatore.
+gamma), che e' un flusso, non un indicatore. L'abbiamo misurata il 12/10 su S&P 500 e Nasdaq dal 2020: chiusa anche
+questa (DECISIONS 2026-10-12 (2)).
 
 ### 10. Come smistare un indicatore di TradingView in cinque minuti
 

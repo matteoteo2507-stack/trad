@@ -279,7 +279,7 @@
     {
       "id": "momentum_ultima_mezzora",
       "nome": "Momentum dell'ultima mezz'ora da coperture di gamma (backlog H1): posizione proporzionale con tetto su indici azionari",
-      "stato": "QUARANTENA",
+      "stato": "CLOSED",
       "trial_cumulati": 1,
       "trial_budget": 1,
       "round_rifinitura": 0,
@@ -287,16 +287,18 @@
       "gate_finale": "forward",
       "fonte_esterna": true,
       "prereg_esterna_trimestre": "2026-Q4",
-      "verdetto": "",
+      "verdetto": "CLOSED al train (12/10), primo e unico trial: divario dal casuale -0,51 pb [-2,01; +0,99] (MDE 2,15), limite alto sotto la meta' dell'effetto atteso dalla fonte (2,28 pb); holdout DAX mai aperto. Esito: docs/reviews/esiti/ultima_mezzora_train.txt",
       "fonti": [
         "docs/ULTIMA_MEZZORA_PREREGISTRATION.md",
         "docs/ULTIMA_MEZZORA_FATTIBILITA.md",
         "docs/BACKLOG_RICERCA.md",
         "fondamenti_tecnici/10_indicatori_tecnici/principles.md",
         "DECISIONS.md#2026-10-09",
-        "DECISIONS.md#2026-10-11"
+        "DECISIONS.md#2026-10-11",
+        "DECISIONS.md#2026-10-12",
+        "docs/reviews/esiti/ultima_mezzora_train.txt"
       ],
-      "note": "Pre-registrazione in BOZZA dall'11/10, non ancora approvata. Famiglia nuova per decisione di Matteo (09/10), parente di opening_range (CLOSED): parentela dichiarata e niente holdout sui dati dell'ORB. Due stadi dello stesso trial: train SPX500+NAS100 da 06/2020, poi, solo se PASSA, holdout DAX (sigillato, scaricato l'11/10). Primaria: proporzionale con tetto contro direzione casuale a pari taglia; guardia: divario a taglia fissa positivo al 5% a una coda (strada B, eccezione dichiarata a LIFECYCLE 4quater, DECISIONS 2026-10-11). Massimo esito LEAD, gate finale forward. Terzo slot esterno del 2026-Q4.",
+      "note": "Pre-registrazione approvata il 12/10, train eseguito una volta lo stesso giorno: CLOSED, holdout rimasto sigillato (DECISIONS 2026-10-12 (2)). Famiglia nuova per decisione di Matteo (09/10), parente di opening_range (CLOSED): parentela dichiarata e niente holdout sui dati dell'ORB. Due stadi dello stesso trial: train SPX500+NAS100 da 06/2020, poi, solo se PASSA, holdout DAX (sigillato, scaricato l'11/10). Primaria: proporzionale con tetto contro direzione casuale a pari taglia; guardia: divario a taglia fissa positivo al 5% a una coda (strada B, eccezione dichiarata a LIFECYCLE 4quater, DECISIONS 2026-10-11). Massimo esito LEAD, gate finale forward. Terzo slot esterno del 2026-Q4.",
       "provenienza_ipotesi": "letteratura",
       "finestra_dati_fine": "2026-10-09",
       "nota_provenienza": "Baltussen, Da, Lammers, Martens, Journal of Financial Economics 142 (2021) 377-403, letto sul testo il 09/10; Gao, Han, Li, Zhou 2018 di seconda mano. Campione della fonte fino a 05/2020: il test e' tutto fuori campione rispetto al paper, ma in gran parte prima del cutoff del modello."

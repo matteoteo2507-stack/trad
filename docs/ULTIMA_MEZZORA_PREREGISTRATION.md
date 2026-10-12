@@ -1,9 +1,10 @@
 ---
 tipo: preregistrazione
-stato: APPROVATA
+stato: CLOSED
+approvata: "2026-10-12, Matteo, dopo la seconda passata G1 (passa con riserve, riserve chiuse)"
 aggiornato: 2026-10-12
 decisione: "Matteo: famiglia nuova (09/10); metrica primaria proporzionale con tetto, pre-registrazione subito nel terzo slot esterno del 2026-Q4, guardia a taglia fissa al 5% a una coda (strada B) (11/10); testo approvato il 12/10 dopo la seconda passata G1. DECISIONS 2026-10-09, 2026-10-11 e 2026-10-12"
-metrica_corrente: null
+metrica_corrente: "CLOSED al train (12/10): divario dal casuale -0,51 pb [-2,01; +0,99], MDE 2,15; limite alto sotto la meta' dell'effetto atteso (2,28 pb). Holdout DAX mai aperto (esito docs/reviews/esiti/ultima_mezzora_train.txt)"
 nota: "Due stadi, una esecuzione ciascuno: train (SPX500 + NAS100) e, solo se PASSA, holdout (DAX). Massimo esito LEAD con gate finale forward. Script: analysis/ultima_mezzora/esegui_test.py"
 ---
 
@@ -288,3 +289,10 @@ posto, segnaposto con e senza `--ripresa`, seconda ripresa, verdetto esistente, 
 **Approvata da Matteo il 12/10/2026** sul testo uscito dalla seconda passata G1 ("procedi con l'ordine proposto":
 stato ad APPROVATA, trial segnato come speso nel contatore, commit, esecuzione del train una volta). Da questo
 commit testo, codice e contatore sono congelati: l'esito di ogni stadio sta in `docs/reviews/esiti/`.
+
+## 10. Esito (12/10/2026)
+
+Train eseguito **una volta** sul commit `2b66e65`, dopo l'approvazione: **CLOSED**. Il limite alto del divario dal
+casuale sta sotto la meta' dell'effetto atteso dalla fonte (§6), quindi la famiglia e' chiusa e **l'holdout sul DAX non
+e' stato aperto**. Numeri e descrittivi: [esito](reviews/esiti/ultima_mezzora_train.txt). Lettura, limiti e condizioni
+di riapertura: DECISIONS 2026-10-12 (2).

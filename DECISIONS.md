@@ -11,6 +11,49 @@
 
 ---
 
+## 2026-10-12 (2) — H1 momentum dell'ultima mezz'ora: **CLOSED** al train, primo e unico trial; holdout sul DAX **mai aperto**
+
+**Esito** (esecuzione unica del 12/10 sul commit `2b66e65`, dopo l'approvazione;
+[esito](docs/reviews/esiti/ultima_mezzora_train.txt), fonte di tutti i numeri di questa voce). SPX500 + NAS100,
+1.537 sedute dal 01/06/2020 al 16/07/2026. Divario fra la posizione proporzionale con tetto e la stessa taglia con
+direzione casuale: **−0,51 pb a seduta [−2,01; +0,99], MDE 2,15**. L'effetto atteso dalla fonte, nelle stesse unita',
+era 4,56 pb; la soglia di CLOSED e' la meta', 2,28. Il limite alto sta sotto: **l'effetto pubblicato e la sua meta'
+sono esclusi** su questi dati (tutte le otto righe della tabella di esclusione).
+
+- **Nessuna condizione di PASSA e' soddisfatta**: attesa netta −0,97 pb [−2,43; +0,50], −1,71 a costi tripli; divario
+  negativo su entrambi gli indici; guardia a taglia fissa −0,07 pb [−1,38; +1,28], a −0,10 errori standard (soglia
+  +1,645). La scelta fra proporzionale e solo segno non ha cambiato l'esito.
+- **Controlli prima del verdetto**: numeri noti riprodotti (deviazione dell'ultima mezz'ora 26,4 e 30,7 pb, 1.538
+  sedute), 2 sedute escluse per barre mancanti, fill non ottenibili 0 per costruzione, p dagli spostamenti 0,77
+  [0,75; 0,80], limite basso stabile su 10 semi.
+- **Ampiezza**: divario positivo in 2 anni su 7 e su 0 indici su 2.
+
+**Cosa dice e cosa non dice.**
+- Dice che **su questi CFD, dopo il campione del paper, l'effetto della grandezza pubblicata non c'e'**. Sul sintetico
+  il CLOSED scattava a torto nel 2,7% dei casi con un effetto dimezzato (pre-registrazione §9).
+- Non dice che l'effetto e' zero: un divario sotto circa 1 pb a seduta non e' escluso. Ma a quel livello sta sotto i
+  costi.
+- Non smentisce il paper sul suo campione (futures, 1974-2020). Decadimento dopo la pubblicazione, CFD al posto dei
+  futures, barre a 5 minuti: il test non distingue fra queste tre spiegazioni.
+- **Il 2022** e' l'unico anno nettamente positivo (+4,89 pb di divario). E' un descrittivo, un anno su sette, guardato
+  dopo. Un filtro di regime scelto adesso sarebbe un parametro scelto sull'esito, su una famiglia chiusa.
+
+**Conseguenze.** Famiglia `momentum_ultima_mezzora` **CLOSED** nel contatore, 1 trial su 1, nessun round di
+rifinitura. I file europei restano in casa ma **sigillati**: usarli e' una riapertura. La sezione H del backlog non ha
+piu' strade vive. Le pre-registrazioni da fonte esterna del 2026-Q4 sono 3 su 2-3: quota piena
+(`python -m core.trial_ledger`).
+
+**Riapre** solo con evidenza esterna nuova (LIFECYCLE §7): una replica pubblicata **dopo il 2020** che mostri
+l'effetto contro un controllo a direzione casuale, o dati di futures veri con un motivo dichiarato prima per cui il CFD
+lo nasconde. Per la regola "stessa grandezza = stessa famiglia" non la riaprono un'altra finestra, il segnale della
+prima mezz'ora (Gao et al. 2018) o un filtro di volatilita' sugli stessi indici.
+
+**Revisione.** I controlli della G2 li ho letti io sull'esito (fill, baseline accanto al risultato, intervalli a
+blocchi, MDE, costi 3x, ampiezza). La **passata indipendente del gatekeeper non e' stata fatta**. Non cambia il
+seguito: CLOSED e NON DIMOSTRATO chiudono entrambi la famiglia e lasciano l'holdout sigillato (pre-registrazione §8).
+
+---
+
 ## 2026-10-12 — H1: pre-registrazione **APPROVATA**, trial speso, esecuzione del train autorizzata
 
 **Decisione di Matteo (12/10).** Approvato il testo della [pre-registrazione](docs/ULTIMA_MEZZORA_PREREGISTRATION.md)
@@ -25,7 +68,7 @@ primo stadio una volta.
   se uno dei tre ha modifiche, e non riesegue uno stadio che ha gia' un verdetto.
 - L'holdout sul DAX resta sigillato: si apre solo se il train da' PASSA, una volta.
 
-Esito del train: in `docs/reviews/esiti/ultima_mezzora_train.txt`, con una voce propria qui sotto la data di esecuzione.
+Esito del train: voce 2026-10-12 (2).
 
 ---
 
