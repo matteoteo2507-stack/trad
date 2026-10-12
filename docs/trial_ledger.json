@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-10-08",
+  "aggiornato": "2026-10-12",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -275,6 +275,31 @@
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-08-13",
       "nota_provenienza": "Video 2 della sessione col socio VELTRIX (04-05/10) e Connors-Alvarez 2008 (di seconda mano)."
+    },
+    {
+      "id": "momentum_ultima_mezzora",
+      "nome": "Momentum dell'ultima mezz'ora da coperture di gamma (backlog H1): posizione proporzionale con tetto su indici azionari",
+      "stato": "QUARANTENA",
+      "trial_cumulati": 1,
+      "trial_budget": 1,
+      "round_rifinitura": 0,
+      "holdout_aperto": null,
+      "gate_finale": "forward",
+      "fonte_esterna": true,
+      "prereg_esterna_trimestre": "2026-Q4",
+      "verdetto": "",
+      "fonti": [
+        "docs/ULTIMA_MEZZORA_PREREGISTRATION.md",
+        "docs/ULTIMA_MEZZORA_FATTIBILITA.md",
+        "docs/BACKLOG_RICERCA.md",
+        "fondamenti_tecnici/10_indicatori_tecnici/principles.md",
+        "DECISIONS.md#2026-10-09",
+        "DECISIONS.md#2026-10-11"
+      ],
+      "note": "Pre-registrazione in BOZZA dall'11/10, non ancora approvata. Famiglia nuova per decisione di Matteo (09/10), parente di opening_range (CLOSED): parentela dichiarata e niente holdout sui dati dell'ORB. Due stadi dello stesso trial: train SPX500+NAS100 da 06/2020, poi, solo se PASSA, holdout DAX (sigillato, scaricato l'11/10). Primaria: proporzionale con tetto contro direzione casuale a pari taglia; guardia: divario a taglia fissa positivo al 5% a una coda (strada B, eccezione dichiarata a LIFECYCLE 4quater, DECISIONS 2026-10-11). Massimo esito LEAD, gate finale forward. Terzo slot esterno del 2026-Q4.",
+      "provenienza_ipotesi": "letteratura",
+      "finestra_dati_fine": "2026-10-09",
+      "nota_provenienza": "Baltussen, Da, Lammers, Martens, Journal of Financial Economics 142 (2021) 377-403, letto sul testo il 09/10; Gao, Han, Li, Zhou 2018 di seconda mano. Campione della fonte fino a 05/2020: il test e' tutto fuori campione rispetto al paper, ma in gran parte prima del cutoff del modello."
     }
   ],
   "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920."

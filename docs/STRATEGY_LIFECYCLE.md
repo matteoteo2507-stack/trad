@@ -109,6 +109,7 @@ ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 | Modellazione **più realistica** di costi/slippage/esecuzione | **No** — può solo peggiorare il risultato, non è ricerca di conferma |
 | Cambio di **parametro** dopo aver visto l'esito | **Sì**, uno per variante |
 | Cambio di **asset o timeframe** dopo aver visto l'esito | **Sì**, uno per combinazione |
+| Passaggio a un **indicatore diverso che misura la stessa grandezza** (RSI → Stocastico, media mobile → Donchian; le grandezze in [10_indicatori_tecnici §2](../fondamenti_tecnici/10_indicatori_tecnici/principles.md)) | **Sì**, ed e' un trial **della stessa famiglia**: non ne apre una nuova (dal 2026-10-08, DECISIONS 2026-10-08 (3)). Un **meccanismo economico** diverso resta una nuova ipotesi (ultima riga della tabella), con parentela dichiarata e senza usare come holdout i dati della famiglia simile (primo caso: DECISIONS 2026-10-09) |
 | Aggiunta di un **filtro** | **Sì** — ed è il più pericoloso (vedi §4) |
 | **Nuova ipotesi** con razionale economico indipendente | **Sì**, ma apre una **nuova pre-registrazione** |
 
@@ -284,6 +285,9 @@ Si riapre **solo** con **evidenza esterna nuova**:
 - una fonte dati nuova che prima non avevamo (non gli stessi dati riorganizzati);
 - una classe di strumenti realmente diversa;
 - un risultato pubblicato e verificabile che contraddice il nostro null.
+
+Un indicatore diverso che misura la **stessa grandezza** non e' evidenza esterna nuova: appartiene alla stessa famiglia
+(§3, dal 2026-10-08).
 
 Qualunque altra riapertura è il bias di conferma che si ripresenta col cappello. *Precedente
 vincolante: la ricerca livelli è CHIUSA — non riproporre "testiamo i livelli".*

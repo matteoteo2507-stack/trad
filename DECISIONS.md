@@ -11,6 +11,66 @@
 
 ---
 
+## 2026-10-12 — H1: pre-registrazione **APPROVATA**, trial speso, esecuzione del train autorizzata
+
+**Decisione di Matteo (12/10).** Approvato il testo della [pre-registrazione](docs/ULTIMA_MEZZORA_PREREGISTRATION.md)
+uscito dalla seconda passata G1, con l'ordine: stato ad APPROVATA, trial segnato come speso, commit, esecuzione del
+primo stadio una volta.
+
+- Il trial e' **speso da questo commit**, prima di vedere un solo rendimento (`python -m core.trial_ledger`): la
+  famiglia `momentum_ultima_mezzora` e' a 1 di 1.
+- L'eccezione a STRATEGY_LIFECYCLE §4quater (strada B, voce dell'11/10) e' **registrata** e vale solo per questa
+  famiglia.
+- Testo, codice (`analysis/ultima_mezzora/`) e contatore sono congelati da questo commit. Lo script rifiuta di partire
+  se uno dei tre ha modifiche, e non riesegue uno stadio che ha gia' un verdetto.
+- L'holdout sul DAX resta sigillato: si apre solo se il train da' PASSA, una volta.
+
+Esito del train: in `docs/reviews/esiti/ultima_mezzora_train.txt`, con una voce propria qui sotto la data di esecuzione.
+
+---
+
+## 2026-10-11 — H1: pre-registrazione in **BOZZA** (terzo slot del 2026-Q4), metrica **proporzionale con tetto**, holdout sul **DAX**
+
+**Decisioni di Matteo (11/10).** (1) Scaricare gli indici europei per l'holdout. (2) Metrica che decide il verdetto:
+**posizione proporzionale al movimento della giornata, con un tetto**; il solo segno resta come controllo. (3)
+Pre-registrare **adesso**: e' la terza pre-registrazione da fonte esterna del 2026-Q4, che con questa e' pieno
+(`python -m core.trial_ledger`).
+
+**Cosa ne e' uscito** ([pre-registrazione](docs/ULTIMA_MEZZORA_PREREGISTRATION.md), stato BOZZA: non e' approvata e
+nessun dato reale e' stato toccato):
+- **Due stadi dello stesso trial**: train su SPX500 + NAS100 da 06/2020; solo se PASSA, holdout sul DAX (sigillato,
+  scaricato e verificato l'11/10). Massimo esito **LEAD**, gate finale forward.
+- **Holdout sul DAX e non sull'Euro Stoxx 50**: su FP Markets l'Euro Stoxx costa 2,58 pb a operazione, quasi tutto il
+  lordo stimato; il DAX 0,20 ([referto](docs/ULTIMA_MEZZORA_FATTIBILITA.md)). Scelta fatta sui costi, prima di
+  qualunque rendimento. Euro Stoxx e FTSE restano repliche descrittive.
+- **Conflitto con la regola del 06/10, dichiarato e risolto nella bozza.** STRATEGY_LIFECYCLE §4quater dice che il
+  verdetto sul vantaggio si da' a taglia fissa e che la taglia "per convinzione" e' un pezzo del segnale. La scelta
+  (2) di oggi e' proprio una taglia per convinzione, e io l'avevo consigliata senza controllare quella regola. Nella
+  bozza le due stanno insieme cosi': **la proporzionale decide, ma non promuove se il divario a taglia fissa e'
+  negativo**. Vale solo per questa famiglia; se Matteo approva la bozza, questa voce e' l'eccezione registrata.
+- Codice del test validato **solo sul sintetico** (controllo negativo e positivo, §9 della bozza).
+
+**Revisione G1 del gatekeeper (11/10 sera): BLOCCA**, due bloccanti, nove riserve; nessun difetto che promuova il
+rumore (PASSA a torto 1,3-2,0% sui nulli provati). (1) La soglia di CLOSED era in unita' sbagliate: si corregge senza
+decisioni. (2) La guardia a taglia fissa non protegge come dichiarato, e sul sintetico la taglia fissa ha **la stessa
+potenza** della proporzionale: il motivo con cui avevo consigliato la proporzionale non era misurato. Tre strade (A
+verdetto a taglia fissa, B proporzionale con guardia vera, C eccezione dichiarata): **decide Matteo**. Dettaglio nel §9
+della bozza. Nessun dato reale toccato.
+
+**Decisione di Matteo sul bloccante 2 (11/10): strada B.** La proporzionale decide, ma con una **guardia vera**: il
+divario a taglia fissa deve essere positivo al 5% a una coda (sopra 1,645 errori standard). E' l'eccezione registrata a
+STRATEGY_LIFECYCLE §4quater, valida solo per questa famiglia: il verdetto non si da' sul binario a taglia fissa, ma il
+binario a taglia fissa deve reggere da solo perche' ci sia un LEAD. Io consigliavo la A (verdetto a taglia fissa).
+
+**Seconda passata G1 (12/10): PASSA CON RISERVE, 0 bloccanti.** I due bloccanti sono chiusi e rimisurati dal
+gatekeeper sul codice corretto; le cinque riserve residue (guardia che partiva se git non rispondeva, ripresa non
+fatta rispettare, tre di testo) sono chiuse lo stesso giorno. Dettaglio nel §9 della bozza. Nessun dato reale toccato.
+
+Prossimo: **approvazione di Matteo sul testo**; solo dopo, contatore e commit, poi l'esecuzione (una volta per stadio).
+Approvazione arrivata il 12/10: voce 2026-10-12.
+
+---
+
 ## 2026-10-09 — PAC: budget fissato, rata **confermata a 100 €/mese**, il margine va in top-up; partenza a ottobre
 
 **Fatti (dichiarati da Matteo il 09/10).** Matteo ha atteso l'ultima rata dello stipendio estivo per fissare il budget
@@ -31,6 +91,33 @@ e la revisione resta a settembre 2027.
 **Aperti** (checklist del §0): creazione del piano in app con pagamento dal saldo, scadenza della promo, costi ex-ante e
 sede di esecuzione al primo ordine, bollo sull'estratto. Il regime amministrato resta `verificabile` fino alla prima
 certificazione fiscale (2027): l'IBAN italiano e' necessario, non sufficiente.
+
+---
+
+## 2026-10-09 — H1 (momentum dell'ultima mezz'ora) e' una **famiglia nuova**; costi e dati verificati a 0 trial
+
+**Decisione di Matteo (09/10):** H1 e' una famiglia nuova, `momentum_ultima_mezzora`, non una riapertura di
+`opening_range`: *"si assomiglia per principio all'ORB"*, ma e' un'altra ipotesi. La mia raccomandazione era la
+riapertura via §7 (backlog H1, passo 1); la decisione e' sua.
+
+**Perche' e' coerente con la regola del 08/10 (stessa grandezza = stessa famiglia).** La regola impedisce di aprire
+una famiglia cambiando **indicatore**. Qui cambia il **meccanismo**: l'ORB poggiava sull'asta d'apertura, H1 sulle
+coperture obbligate di chi e' corto di gamma a ridosso della chiusura (classe 2, Baltussen et al. 2021), con una
+finestra di segnale diversa. E' l'ultima riga della tabella di STRATEGY_LIFECYCLE §3: nuova ipotesi con razionale
+economico indipendente, quindi nuova pre-registrazione.
+
+**Le due condizioni che tengono in piedi la regola** (il gatekeeper le verifica alla G1):
+1. la pre-registrazione **dichiara la parentela** con `opening_range`;
+2. i dati gia' attraversati dall'ORB (SPX500 e NAS100 Dukascopy 2012-2026, US100 e US500 MT5) **non possono fare da
+   holdout sigillato**: al massimo da campione di sviluppo. L'holdout va su strumenti mai usati dall'ORB, o su un forward.
+
+**Fatto a 0 trial (09/10)**, numeri in [ULTIMA_MEZZORA_FATTIBILITA](docs/ULTIMA_MEZZORA_FATTIBILITA.md):
+- **passo 2, costi**: sotto la soglia dichiarata l'08/10 su US500 e US100;
+- **passo 3, dati**: i file in casa reggono; l'oro M1 Dukascopy (2020-2026) e' l'unico strumento in casa sia fuori dal
+  campione della fonte sia mai usato dall'ORB. **Il server FP Markets non ha uno scarto fisso** (New York + 7 ore, ma +6
+  dal 10 al 13 marzo 2025): il fuso si verifica **giorno per giorno** con la pausa dei futures, mai con una regola fissa.
+
+Restano: potenza (passo 4) e slot (passo 5). Nessun trial speso; la famiglia entra nel contatore con la bozza G1.
 
 ---
 
@@ -55,6 +142,37 @@ copiata**, su dati indipendenti. Il forward su questi due indici non e' praticab
 5 anni, ~18 anni per arrivare a 0,39%. Per la regola "stessa grandezza = stessa famiglia" (voce (3)) un altro
 oscillatore di spostamento dalla media sugli stessi indici non la riapre. **Debito emerso** (referto §8): controllo dei
 trade sovrapposti in `confronta_overlay`, unita' del runs test, NON DIMOSTRATO assente dalla tassonomia del LIFECYCLE §5.
+
+---
+
+## 2026-10-08 (3) — Indicatori tecnici: **stessa grandezza = stessa famiglia** (regola approvata); strade testabili nel backlog, sezione H
+
+**Decisione di Matteo (08/10):** vale anche per gli indicatori la regola per cui due strumenti che misurano la **stessa
+grandezza** sono **una sola famiglia** nel contatore. Le grandezze sono sei, piu' il tempo come condizionamento
+([10_indicatori_tecnici §2](fondamenti_tecnici/10_indicatori_tecnici/principles.md)): tendenza, spostamento dalla media,
+volatilita', volume, livelli, forma della candela.
+
+**Cosa cambia in pratica.**
+- RSI, Stocastico, Williams %R, CCI, %B di Bollinger e z-score sono una famiglia; medie mobili, MACD, Donchian, momentum
+  di serie storica, Supertrend, SAR e ADX un'altra (Levine-Pedersen 2016: sono filtri equivalenti dei rendimenti passati).
+- Un indicatore nuovo che misura la grandezza di una famiglia **CLOSED** non la riapre: e' un ritocco (STRATEGY_LIFECYCLE §7).
+  Esempio: la pitchfork e' un livello inclinato, quindi `livelli` e B6, chiuse; senza evidenza esterna non si testa
+  (backlog H4).
+- Vale anche per la strada piu' promettente uscita dalla ricerca: il momentum dell'ultima mezz'ora (Baltussen et al.
+  2021) usa il rendimento intraday gia' fatto, come l'ORB, quindi si tratta come possibile **riapertura di
+  `opening_range` via §7** (risultato pubblicato), non come famiglia nuova che ricarica il budget. La decisione finale si
+  prende alla G1, col parere del gatekeeper (backlog H1).
+
+**Razionale.** Un indicatore e' un riassunto del prezzo: cambiare indicatore dentro la stessa grandezza equivale a cambiare
+un parametro. Contarli come famiglie diverse ricaricherebbe il budget di tentativi senza informazione nuova; e' lo stesso
+motivo per cui B2 non poteva essere una famiglia a se' (29/09).
+
+**Dove e' scritta:** [STRATEGY_LIFECYCLE](docs/STRATEGY_LIFECYCLE.md) §3 (tabella dei trial) e §7; gatekeeper (budget);
+modulo 10 (Regole operative). Nessun trial speso, nessun verdetto toccato.
+
+**Strade testabili** distillate dalla ricerca dell'08/10 in [BACKLOG_RICERCA §H](docs/BACKLOG_RICERCA.md): una strada vera
+(H1, momentum dell'ultima mezz'ora), una che dipende dal verdetto del candidato A (H2), il resto bloccato o chiuso con il
+motivo.
 
 ---
 

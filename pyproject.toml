@@ -15,6 +15,7 @@ pandas = "^2.2.0"
 numpy = "^1.26.0"
 scipy = "^1.13.0"
 pandas-ta = "^0.3.14b"
+exchange-calendars = "^4.13"  # calendari di borsa (festivita', chiusure anticipate): analysis/ultima_mezzora/
 
 # Output Excel (usato dal notebook V6.0)
 xlsxwriter = "^3.2.0"

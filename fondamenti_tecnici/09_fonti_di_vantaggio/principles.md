@@ -56,7 +56,7 @@ quelle che descrivono un **meccanismo economico**.
 |---|---|---|---|---|---|
 | 1 | **Premio per il rischio** | chi vuole scaricare un rischio (si copre, vuole liquidita', non sopporta i crolli) | compra un'**assicurazione**: non e' un errore | media positiva, **asimmetria negativa**, crolli rari e grandi | quando il rischio smette di esserci o il premio si affolla (il carry G10 dopo il 2008) |
 | 2 | **Flusso forzato / vincolo** | chi **deve** comprare o vendere a prescindere dal prezzo (ribilanciamenti, roll, coperture obbligate, liquidazioni, fixing) | il vincolo e' istituzionale (prospetto, mandato, margine, regola) | piccolo, frequente, **ancorato al calendario o all'orario**, capacita' limitata | quando il flusso diventa prevedibile e troppi lo anticipano |
-| 3 | **Errore comportamentale** | chi reagisce in modo sistematicamente sbagliato (in ritardo, in eccesso, per attenzione o disposizione) | non sa di sbagliare | dipende: il momentum ha code negative, la reversione e' piu' simmetrica | **dopo la pubblicazione** (McLean-Pontiff 2016, da confermare) e con l'automazione |
+| 3 | **Errore comportamentale** | chi reagisce in modo sistematicamente sbagliato (in ritardo, in eccesso, per attenzione o disposizione) | non sa di sbagliare | dipende: il momentum ha code negative, la reversione e' piu' simmetrica | **dopo la pubblicazione** (McLean-Pontiff 2016, abstract letto l'08/10: [[10_indicatori_tecnici]] §3.4) e con l'automazione |
 | 4 | **Informazione o analisi** | chi e' meno informato o elabora peggio | non lo sa o non puo' fare altrimenti | dipende dall'informazione | quando l'informazione diventa pubblica o economica |
 | 5 | **Velocita' / microstruttura** | chi arriva dopo | non ha l'infrastruttura | molti piccoli guadagni | con la corsa tecnologica: vince chi e' piu' veloce |
 
@@ -113,7 +113,9 @@ Servono a scegliere **cosa leggere** nelle fonti del §6, non cosa testare. Ognu
   - ribilanciamenti di fine mese o di fine trimestre dei fondi bilanciati (indici, obbligazionario);
   - fixing delle valute delle 16 di Londra (FX);
   - coperture di fine giornata degli ETF a leva e dei market maker (indici, ultima mezz'ora; momentum
-    intraday: Gao-Han-Li-Zhou 2018, Baltussen et al. 2021, da confermare);
+    intraday: Gao-Han-Li-Zhou 2018 da confermare; Baltussen et al. 2021 abstract letto l'08/10, lega il
+    momentum dell'ultima mezz'ora alle coperture di gamma dei market maker di opzioni e degli ETF a leva:
+    [[10_indicatori_tecnici]] §2);
   - scadenze delle opzioni sugli indici.
 
   ⚠️ Tutti cadono vicino al perimetro gia' chiuso dell'intraday sugli indici (ORB, London breakout), dove i
@@ -149,6 +151,7 @@ campione.
 
 - [STRATEGY_LIFECYCLE §1](../../docs/STRATEGY_LIFECYCLE.md): questo modulo e' la fase RICERCA del loop; §8 per la provenienza.
 - [[04_quant_metodologia]] (verifica), [[05_portfolio_rischio]] (premi, VRP, asimmetria), [[03_regimi_macro]] (canali macro).
+- [[10_indicatori_tecnici]]: questa griglia applicata agli indicatori (quale grandezza misurano, chi paga). Le sue Fonti danno il livello di verifica di McLean-Pontiff 2016 e Baltussen et al. 2021 (abstract letto) e di Gao-Han-Li-Zhou 2018 (ancora solo sintesi del motore di ricerca).
 - [Mappa del ciclo di vita](../../mappa/01-ciclo-di-vita-e-gate.md), passo 1.
 - [Ricerca nel repo del 03/10](../../docs/reviews/ricerca_repo_2026-10-03.md): l'inventario che ha mostrato il buco.
 - Kichev ([insight_da_yt](../_sorgenti/insight_da_yt/kichev_first_principles_+_yush_orderflow_2026-08-14.md) §3-4): concorrenza e decadimento, la fonte umana gia' in casa piu' vicina a questa griglia.

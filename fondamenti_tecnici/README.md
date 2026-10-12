@@ -36,6 +36,7 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 | 07 | [Data Sources (reference)](07_data_sources/reference.md) | stock_selector/data_sources.py |
 | 08 | [Asset Allocation Passiva (ETF/bond/fiscalità/USD)](08_asset_allocation_passiva/principles.md) | pilastro investing (PAC), INVESTING_PILLAR_PLAN |
 | 09 | [Fonti di vantaggio — come si costruisce un'ipotesi](09_fonti_di_vantaggio/principles.md) ⚠️ bozza in quarantena | fase RICERCA del ciclo di vita (STRATEGY_LIFECYCLE §1) |
+| 10 | [Indicatori tecnici — cosa misurano, quali tenere e quali scartare](10_indicatori_tecnici/principles.md) ⚠️ quarantena | intake di indicatori e materiale TradingView, smistamento per grandezza |
 
 ### Blueprints (idee non committate)
 - [Markov regime skill](blueprints/markov_regime_skill.md) — alternativa probabilistica a `core/regime.py` (con i 3 fix della "2.0")

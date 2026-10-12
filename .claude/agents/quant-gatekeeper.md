@@ -424,7 +424,15 @@ Budget in vigore (li stampa il comando, non fidarti di questa riga se diverge):
 - **max 3 round di rifinitura** per famiglia;
 - **2-3 pre-registrazioni da fonte esterna per trimestre** (2026-Q3: **2 usate** —
   `round_grid`, `trend_momentum`);
-- **holdout: una apertura per famiglia**, non per variante.
+- **holdout: una apertura per famiglia**, non per variante;
+- **stessa grandezza = stessa famiglia** (dal 2026-10-08, DECISIONS 2026-10-08 (3)): un indicatore diverso che misura la
+  grandezza di una famiglia esistente (`fondamenti_tecnici/10_indicatori_tecnici/principles.md` §2) **non** apre una
+  famiglia nuova e **non** riapre una CLOSED. Se una pre-registrazione dichiara una famiglia nuova, chiedi quale grandezza
+  misura il segnale; se coincide con quella di una famiglia del contatore, la contabilita' e' sbagliata → **BLOCCA**.
+  **Eccezione**: una famiglia nuova decisa da Matteo in `DECISIONS.md` perche' ha un **meccanismo economico
+  indipendente** (STRATEGY_LIFECYCLE §3, ultima riga). Allora verifica che la pre-registrazione dichiari la parentela
+  con la famiglia simile e che **non usi come holdout** dati gia' attraversati da quella famiglia; se manca una delle
+  due → **BLOCCA**. Primo caso: `momentum_ultima_mezzora`, parente di `opening_range` (DECISIONS 2026-10-09).
 
 **Test passati da `prop-lab`** (dal 2026-10-08). La pipeline del socio registra ogni variante e ogni apertura del
 fuori campione in `prop-lab/results/registry.sqlite`, con l'id della famiglia del contatore, e su dati reali **non

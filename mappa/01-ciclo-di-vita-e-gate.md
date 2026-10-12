@@ -26,7 +26,7 @@ macchina di rifiuto attorno al modello"* (`.claude/agents/quant-gatekeeper.md`, 
 | **La legge** | `docs/STRATEGY_LIFECYCLE.md` | il loop, cosa conta come tentativo, i verdetti possibili, quando si uccide |
 | **La procedura di misura** | `docs/QUANT_REVIEW_PROTOCOL.md` | gli step di una review: gradi di libertà, fill ottenibili, metriche, costi, pre-mortem, verdetto |
 | **Il guardiano** | `.claude/agents/quant-gatekeeper.md` | l'agente che controlla G1 e G2 e **blocca**; non decide il verdetto, che dichiara Matteo |
-| **Il contatore** | `core/trial_ledger.py` + `docs/trial_ledger.json` | quanti tentativi ha speso ogni famiglia, e quale Sharpe servirebbe ancora |
+| **Il contatore** | `core/trial_ledger.py` + `docs/trial_ledger.json` | quanti tentativi ha speso ogni famiglia, e quale Sharpe servirebbe ancora. *Cos'è una famiglia*: un'ipotesi con il suo razionale; dal 08/10 due indicatori che misurano la **stessa grandezza** sono la stessa famiglia (`STRATEGY_LIFECYCLE.md` §3), così cambiare indicatore non ricarica il budget |
 
 ## Perché esiste
 
@@ -51,6 +51,14 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
    un'ipotesi con classe, "chi paga", accessibilità e potenza già verificate, pronta per il
    template e la G1, oppure uno stop motivato. *Come si rompe*: se lo si salta si torna a cercare
    per elenco; e la griglia è una bozza di Claude in quarantena, da confermare con le fonti del suo §6.
+   **Dal 08/10, per gli indicatori tecnici** (materiale TradingView incluso):
+   `fondamenti_tecnici/10_indicatori_tecnici/principles.md`. *Cosa fa*: riconduce ogni indicatore a
+   una di sei grandezze (tendenza, spostamento dalla media, volatilità, volume, livelli, forma della
+   candela), ne eredita il verdetto della letteratura e dei nostri test, e lo smista con sei domande
+   (§10: grandezza, ridisegno, prezzi veri, ancore scelte a occhio, chi paga, quante varianti).
+   *Input*: un indicatore o uno script Pine. *Output*: tenere, cautela o scartare, con il motivo.
+   *Come si rompe*: se si contano come candidati diversi due indicatori della stessa grandezza; ed è
+   in quarantena, con molte fonti lette solo come sintesi del motore di ricerca.
 2. **[G1] Pre-registrazione**, *prima* di guardare i dati: ipotesi, metriche e soglie numeriche,
    baseline random, **budget di tentativi**, divisione dei dati, costi, criteri di morte,
    condizione di fill. Se manca anche una sola voce il gatekeeper blocca (gatekeeper, righe 77-98).

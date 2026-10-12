@@ -5,6 +5,7 @@
 >
 > Ordine dei bucket: **A** ha un numero da confermare · **B** ha una specifica meccanica completa e
 > dati per testarla · **C** migliora qualcosa che già gira · **D** non ha un percorso di test oggi.
+> **H** (dal 2026-10-08): le strade uscite dalla ricerca sugli indicatori tecnici, classificate negli stessi bucket.
 >
 > **Vincoli di budget in vigore** — da tenere presenti in ogni decisione:
 > pre-registrazioni da fonte esterna **2 di 2-3 usate nel trimestre** · max **3 round di rifinitura**
@@ -89,6 +90,146 @@ Sequenza proposta dal gatekeeper: nessuna approvazione nel Q3 (nessuna bozza pro
 | **D6** | **Livelli condizionati al calendario macro** | **porta chiusa per decisione** (2026-08-22): moltiplica la ricerca su 384 trial di NULL, e il calendario è il posto più pubblico del mercato | solo con evidenza esterna **quantitativa** nuova |
 | **D7** | **Riflessività / affollamento come misura** | servono open interest, positioning, short interest | dati non disponibili sul nostro perimetro. ➡️ **03/10**: col COT in casa (G5) e' arrivata un'ipotesi con fonte, il **premio di copertura** sulle commodity → passo di potenza a 0 trial: [COT_PRESSIONE_POTENZA.md](COT_PRESSIONE_POTENZA.md) → ✅ **chiusa a 0 trial** (DECISIONS 2026-10-03 (3)): non testabile a potenza utile, non operabile alla nostra scala |
 | **D8** | **Low volume node (ex B5)** | classificata il 2026-09-30 "non falsificabile coi nostri dati": cella della famiglia `livelli` (CLOSED), test amputato senza flusso, volume tick-proxy; per la fonte "il FVG e' un LVN" e il FVG e' gia' nullo | volume vero intraday da borsa (fonte dati nuova, §7), oppure un risultato pubblicato con campione |
+
+---
+
+## H — STRADE DALLA RICERCA SUGLI INDICATORI TECNICI (2026-10-08)
+
+> Fonte: [10_indicatori_tecnici](../fondamenti_tecnici/10_indicatori_tecnici/principles.md) (ricerca di Claude e di
+> Comet, 08/10). Ogni strada e' passata per la griglia del [09_fonti_di_vantaggio](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md)
+> §4 (classe → chi paga → limite all'arbitraggio → dove si vede → accessibilita' → potenza → dove muore → provenienza)
+> e per la regola **stessa grandezza = stessa famiglia** (DECISIONS 2026-10-08 (3)). **Nessun trial speso.**
+>
+> **Esito onesto:** la ricerca produce **una strada vera** (H1), tre bloccate dalle nostre stesse regole (H2 dopo la
+> chiusura del candidato A, H3, H4), una nota di metodo (H5) e uno strumento di preparazione (H6). Tutto il resto e'
+> chiuso in partenza, con il motivo, in fondo alla sezione.
+
+| # | strada | grandezza → famiglia | classe e chi paga | bucket | primo passo | costo |
+|---|---|---|---|---|---|---|
+| **H1** | **Momentum dell'ultima mezz'ora** (coperture di gamma) | rendimento intraday gia' fatto, parente dell'ORB: **famiglia nuova `momentum_ultima_mezzora`** (Matteo, 09/10: meccanismo indipendente), con parentela dichiarata e senza holdout sui dati dell'ORB | **2**: chi e' corto di gamma (market maker di opzioni, ETF a leva) deve comprare quando sale e vendere quando scende, a ridosso della chiusura | candidata, **pre-B** | ✅ famiglia, costi, dati e potenza fatti il 09/10 ([referto](ULTIMA_MEZZORA_FATTIBILITA.md)); ora: scaricare un indice europeo per l'holdout, metrica primaria, slot | 0 trial fino alla G1, poi 1 slot esterno |
+| **H2** | **Inversione di breve condizionata alla turbolenza** (VIX) | spostamento dalla media → **`mr_indici_rsi2`** (candidato A), non famiglia nuova | **2-3**: chi chiede immediatezza paga chi fornisce liquidita'; il compenso sale col VIX (Nagel 2012) | **D**: A e' **CLOSED per potenza** (DECISIONS 2026-10-08 (4)), nessun round residuo | nessuno | — |
+| **H3** | **Accelerazione dopo l'attraversamento di un numero tondo** (stop appena oltre, Osler 2003) | livelli → `livelli` e `round_grid`, **CLOSED** | **5**: chi ha lo stop appena oltre il tondo; vince chi arriva prima | **D** | nessuno | — |
+| **H4** | **Pitchfork / median line** (e ogni livello disegnato a mano) | livelli inclinati → `livelli` e **B6**, **CLOSED** | nessuna: e' un pattern | **D** | misurare il socio, non lo strumento (proposta B) | — |
+| **H5** | **Tendenza: baseline "media storica"** (Huang et al. 2020) e pista *Boundaries of TSMOM* | tendenza → `trend_momentum` (LEAD, round 3 disponibile) | 3 / 1 (da confermare) | nota per **A1** + **D** | acquisire il paper *Boundaries* | 0 |
+| **H6** | **Analizzatori del codice Pine** (ridisegno, look-ahead) | — (preparazione) | — | **C** (quando arriva il codice del socio) | valutare licenza e cosa eseguono | 0 |
+
+### H1 — Momentum dell'ultima mezz'ora: la scheda
+
+**Fonte, letta sul testo** (Baltussen, Da, Lammers, Martens, *Journal of Financial Economics* 142, 377-403, 2021,
+PDF dal sito di uno degli autori; livello T del modulo 10). Su oltre 60 futures (azioni, obbligazioni, materie prime, valute),
+dicembre 1974 - maggio 2020, il rendimento dalla chiusura di ieri a mezz'ora dalla chiusura di oggi predice quello
+dell'ultima mezz'ora. Sui futures azionari (Tab. 6, portafoglio 1/N) la strategia "lungo se il giorno e' positivo, corto se
+negativo, solo nell'ultima mezz'ora" rende **+6,86% annuo**, deviazione **3,96%**, Sharpe **1,73**, giorni giusti **55%**;
+il confronto "sempre lungo nell'ultima mezz'ora" fa **+0,44%**, Sharpe 0,11. Effetto simile nei sottocampioni 1974-1999 e
+2000-2020 (Tab. 5). **Senza costi**: gli autori scrivono che con un tick di costo sui futures S&P lo Sharpe netto resta
+positivo (p. 386). Conferma indipendente sull'ETF S&P 500 1993-2013: Gao, Han, Li, Zhou 2018 (livello S).
+
+**Perche' e' l'unica strada vera.** E' l'unico risultato della ricerca con un **"chi paga" misurato** (Tab. 9 e Fig. 4
+legano l'effetto alla quota di mercato degli ETF a leva; §4 alla posizione in gamma dei market maker), su **molti mercati**,
+in una **classe che non abbiamo mai guardato** (flussi forzati, [09](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md) §3).
+
+**Le domande aperte, in ordine** (ci si ferma alla prima che chiude):
+
+1. **Famiglia.** Con la regola di oggi il segnale (rendimento intraday gia' fatto) ha la grandezza dell'ORB, CLOSED con
+   holdout aperto. Due letture: (a) **riapertura di `opening_range` via §7**, punto 3 (risultato pubblicato), con i trial
+   che si sommano a quelli dell'ORB; (b) famiglia nuova con razionale indipendente (flusso di chiusura contro asta
+   d'apertura), che pero' ricarica il budget. **Raccomandata (a)**; decide Matteo col parere di contabilita' del gatekeeper.
+   ✅ **Deciso il 09/10: (b), famiglia nuova** (DECISIONS 2026-10-09), con due condizioni: parentela dichiarata e niente
+   holdout sui dati gia' attraversati dall'ORB.
+2. **Accessibilita'** (va fatta per prima: e' quella che ha chiuso COT e carry). Effetto lordo a spanne: 6,86% / ~252
+   giorni ≈ **2,7 punti base per operazione**, cioe' circa **2 punti di US500** e **8 di NAS100** ai prezzi di luglio 2026
+   dei nostri dati. Va confrontato con lo **spread di US500 e US100 nelle barre 15:30 e 16:00 ET**, dall'export MT5
+   (`<SPREAD>`, come fa `prop-lab`). Se lo spread si mangia la meta' del lordo, la strada chiude qui. ⚠️ L'ORB e il London
+   breakout sono morti proprio sui costi dell'intraday sugli indici.
+   ✅ **Fatto il 09/10, sotto la soglia**: misurato dai tick (non dalle barre) sul demo FP Markets, 159 giorni; il costo
+   e' una frazione piccola del lordo su entrambi gli indici. Numeri e limiti (conto demo, slittamento e commissione non
+   misurati) nel [referto](ULTIMA_MEZZORA_FATTIBILITA.md).
+3. **Dati puliti.** Il campione del paper finisce a maggio 2020: da giugno 2020 e' fuori campione per la fonte. Ma i nostri
+   NAS100 e SPX500 M5 2012-2026 sono gia' stati visti dall'ORB. Finestra davvero pulita: **strumenti mai usati dall'ORB**
+   (altri indici o futures da Dukascopy, oro M1 gia' in casa, con la chiusura del future di riferimento) oppure un
+   **forward**. Controlli obbligatori: fuso e **ora legale** (la chiusura delle 16:00 ET cambia ora in UTC due volte
+   l'anno), copertura delle barre nella finestra, `core/data_checks.py` ([[feedback_verifica_i_dati_prima]]).
+   ✅ **Fatto il 09/10**: i dati reggono, con quattro condizioni per la G1 (fuso MT5 verificato giorno per giorno perche'
+   il server FP Markets non ha uno scarto fisso; calendario con chiusure anticipate; l'oro M1 e' l'unico strumento in casa
+   pulito rispetto sia alla fonte sia all'ORB; CFD contro futures). Dettaglio nel [referto](ULTIMA_MEZZORA_FATTIBILITA.md).
+4. **Potenza** (stima a spanne di Claude, 08/10, da rifare in un referto come [MR_INDICI_POTENZA](MR_INDICI_POTENZA.md)).
+   Dalla Tab. 6: media ~2,7 pb e deviazione ~25 pb al giorno (3,96% / √252). Con il fattore 2,80 (alfa 5%, potenza 80%)
+   servono **~660 giorni** a effetto pieno e **~2.600** a effetto dimezzato; da giugno 2020 a luglio 2026 ce ne sono
+   **~1.500**. ⚠️ I numeri del paper sono un portafoglio di piu' indici: su un indice solo la deviazione e' piu' alta e i
+   giorni necessari di piu'. Probabile esito: **potenza sufficiente solo se l'effetto non si e' dimezzato**.
+   ✅ **Fatto il 09/10** ([referto](ULTIMA_MEZZORA_FATTIBILITA.md), passo 4): confermato per gli indici USA con la metrica
+   di solo segno (SPX e NAS valgono **un solo strumento**); l'oro **non** puo' fare da holdout (il suo effetto pubblicato e'
+   ~15 volte piu' debole); un **indice europeo** da 06/2020 darebbe un holdout con potenza, ma va scaricato.
+5. **Slot.** Sarebbe la **terza** pre-registrazione esterna del 2026-Q4, con la soglia di allarme gia' raggiunta
+   (`python -m core.trial_ledger`): Q1-2027 oppure una decisione esplicita di Matteo.
+   ✅ **Deciso l'11/10 da Matteo: adesso**, terzo slot del 2026-Q4. Con questo il trimestre e' pieno.
+
+**Dove muore — il meccanismo, non il pattern.** Tre predizioni che il flusso fa e il rumore no:
+- l'effetto **si inverte nei giorni successivi** (lo dice l'abstract): se non si inverte, non e' un flusso di copertura;
+- e' **piu' forte nei giorni con rendimento grande**, perche' il ribilanciamento degli ETF a leva cresce col rendimento del
+  giorno (da verificare nel §4.2 del paper);
+- **dopo il 2021 puo' essere cambiato di segno**: con le opzioni a scadenza giornaliera (0DTE) i market maker possono essere
+  **lunghi** di gamma, e allora il prezzo viene trattenuto invece che spinto. E' il meccanismo di Siento gia' discusso nel
+  caso ORB (§F). La finestra pulita **e'** l'era 0DTE: il test distingue le due storie.
+
+**Disegno minimo, da fissare alla G1:** segnale = segno del rendimento fino alle 15:30 ET; posizione solo 15:30-16:00 ET;
+baseline primaria **"sempre lungo nell'ultima mezz'ora"** (Tab. 6) piu' segno casuale; esecuzione a prezzo ottenibile
+(apertura della barra delle 15:30, mai la chiusura della barra del segnale: Step 3bis).
+
+### H2-H6 — le altre, in breve
+
+- **H2.** Il condizionamento al VIX ha una fonte (Nagel 2012, rendimenti attesi e Sharpe dell'inversione di breve che salgono
+  con la turbolenza) e il dato gratis gia' in casa (G4). Ma e' la stessa grandezza del candidato A, quindi **non e' una
+  famiglia**: poteva essere solo un round di rifinitura di `mr_indici_rsi2`. ✅ **Aggiornata la sera dell'08/10**: A e'
+  **CLOSED per potenza**, NON DIMOSTRATO, 1 trial su 1 e nessun round previsto (DECISIONS 2026-10-08 (4)), quindi H2 resta
+  possibile **solo come riapertura §7**. Nagel non basta come chiave: misura le **azioni singole**, non contraddice il nostro
+  null sugli indici. **Si sblocca se** esce un risultato pubblicato contro un ingresso casuale a durata copiata, su indici e
+  dati indipendenti (le condizioni di riapertura di A). Collegata a D5.
+- **H3.** Il nostro null sui numeri tondi misura la **reazione**; Osler predice anche l'**accelerazione** dopo
+  l'attraversamento, che non abbiamo misurato. Ma Osler documenta **ordini**, non un rendimento: per §7 non "contraddice il
+  nostro null", quindi **non riapre** `livelli` ne' `round_grid`. In piu' e' classe 5 (velocita'), quasi sempre persa per un
+  retail su CFD. **Si sblocca se** arriva un risultato pubblicato con un rendimento misurato dopo il 2010.
+- **H4.** Nessuno studio, nessun repository e nessun post confronta la pitchfork con linee casuali (ricerca 08/10). Senza
+  evidenza esterna, §7 non permette di riaprire `livelli` ne' B6 (linee inclinate, chiusa il 30/09): **non e' testabile come
+  regola per i nostri criteri**. La strada aperta e' misurare **la persona**: il track record prospettico del socio
+  (proposta B, parcheggiata finche' non torna a operare).
+- **H5.** Huang et al. 2020: la strategia di tendenza guadagna quasi quanto una che usa solo la **media storica** di ogni
+  asset. E' coerente col diagnostico A1 (il vantaggio era il tempo in mercato, DECISIONS 2026-09-21). **Regola per il round 3
+  di `trend_momentum`**, se mai si apre: oltre all'ingresso casuale a parita' di tempo in mercato, la baseline "media
+  storica". Pista da acquisire (oggi solo da X): *Boundaries of Time Series Momentum* (Suominen, Hjalmarsson), secondo cui la
+  tendenza si rompe agli estremi di valutazione; servirebbero dati di valutazione mensili che non abbiamo → D.
+- **H6.** `edgeless-ai/pinescript-mcp`, `MoDarK-MK/PineScript-Skill` (controllo statico di ridisegno e look-ahead) e
+  `PyneSys/pynecore` (Pine → Python). **Catalogati, non installati**: si valutano (licenza, cosa eseguono, se leggono
+  credenziali) solo quando arriva uno script del socio, al passo 2 dello smistamento ([10](../fondamenti_tecnici/10_indicatori_tecnici/principles.md) §10).
+
+### Chiuse in partenza (nessun lavoro previsto)
+
+| cosa | perche' | si riapre se |
+|---|---|---|
+| oscillatori classici (RSI 14, Stocastico, CCI, Williams %R, MACD) come famiglie a se' | stessa grandezza di famiglie esistenti (regola del 08/10) | mai come famiglia nuova |
+| Fibonacci | refutato fuori (Tsinaslanidis et al. 2022: non batte livelli casuali) e dentro (NXT, livelli) | — |
+| Elliott, Gann, armonici | non falsificabili | — |
+| pattern a candela | nessuna capacita' predittiva al bootstrap (Marshall, Young, Rose 2006) | — |
+| Volume Profile, POC, VWAP come zone | 0 celle su 48 (DECISIONS 2026-07-07) | volume vero intraday (vedi D8) |
+| regole tecniche sul forex | vantaggi a tratti, non consistenti (Zarrabi 2017, Neely 2009) | — |
+| regole tecniche sulle criptovalute | fuori perimetro; divergenza aperta su Bitcoin fuori campione (modulo 10 §3) | se la traccia crypto si riattiva |
+| massimo a 52 settimane, media mobile su azioni ad alta volatilita', OBV per il premio mensile | azioni singole o orizzonte mensile: fuori perimetro | universo azionario (D2, D3, G6) |
+| gestione per volatilita' come segnale | e' rischio, non direzione; non batte sistematicamente fuori campione (Cederburg 2020); libreria O1-O4 fissa | decisione esplicita di allargare la libreria degli overlay |
+
+### Sequenza proposta (dall'obiettivo all'indietro)
+
+Obiettivo: un vantaggio con un "chi paga" **dentro il nostro perimetro**. L'unico candidato e' H1, e il suo collo di
+bottiglia sono **i passi 1 e 2**: famiglia e spread. Costano poco e decidono se H1 vive. Tutto il resto o aspetta
+(H6 aspetta il codice del socio) o non ha lavoro (H2, H3, H4, H5).
+
+1. ✅ **H1 passo 2 — spread MT5 nella finestra**: fatto il 09/10, sotto la soglia, H1 resta aperta.
+2. ✅ **H1 passo 1 — famiglia**: nuova, decisione di Matteo del 09/10.
+3. ✅ **H1 passi 3-4 — dati e potenza** (09/10).
+4. **Prima della G1**: ✅ indici europei per l'holdout scaricati e verificati l'11/10 (DAX, Euro Stoxx 50, FTSE 100:
+   [referto](ULTIMA_MEZZORA_FATTIBILITA.md)), sigillati; resta da fissare la metrica primaria (regressione o posizione
+   proporzionale, contro solo segno).
+5. ✅ **H1 passo 5 — slot**: adesso, terzo slot del 2026-Q4 (Matteo, 11/10). Prossimo: bozza G1 e gatekeeper.
+5. In parallelo, senza costo: acquisire *Boundaries of TSMOM* (H5) e chiudere la divergenza su Hudson-Urquhart (modulo 10 §3).
 
 ---
 
