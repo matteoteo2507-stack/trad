@@ -74,3 +74,4 @@ Il modulo assume che l'utente compri **tutte le top picks** di ogni run. La "ven
 
 - Stage 4 → `skills/stock-selector-consensus` invocherà 4 personas (Damodaran, Buffett,
   Burry, Taleb) sulle top picks restituite da questo modulo.
+  ⚠️ Mai costruito: selettore archiviato a giugno 2026, prompt delle personas ritirati il 2026-10-13.

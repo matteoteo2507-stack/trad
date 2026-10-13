@@ -5,7 +5,7 @@
 > ([LEVEL_ANALYZER_SPEC.md](LEVEL_ANALYZER_SPEC.md)) in una regola di sizing che
 > massimizza la crescita **geometrica**, non l'EV aritmetico. Teoria:
 > [05_portfolio_rischio](../../fondamenti_tecnici/05_portfolio_rischio/principles.md)
-> (volatility drag), quant `agents/quant_reviewer.md` §4.
+> (volatility drag), revisore `.claude/agents/quant-gatekeeper.md` (Checklist 9).
 
 ## Perche' non "rischio fisso a caso"
 

@@ -31,7 +31,7 @@
 |---|---|---|---|---|---|
 | **Stock Selector V6.0** | [strategies/stock_selector/](../strategies/stock_selector/) | Headless screening | SP500 | n/a (yfinance) | 13/13 verdi |
 | **Confluence Levels** | [strategies/confluence_levels/](../strategies/confluence_levels/) | Semiautomatica (notifica) | EURUSD, XAUUSD | DEMO1 (AvaTrade) | 24/24 verdi |
-| **London Open Breakout** | [strategies/london_breakout/](../strategies/london_breakout/) | Automatica | GBPUSD | DEMO2 (MetaQuotes) | 16/16 verdi |
+| **London Open Breakout** | `strategies/london_breakout/` (non più nel repo) | Automatica | GBPUSD | DEMO2 (MetaQuotes) | 16/16 verdi |
 
 **Totale test offline: 88/88 verdi.**
 
@@ -44,7 +44,7 @@
 | [config/markets.yaml](../config/markets.yaml) | Mercati abilitati per scopo | Se cambi simboli di default |
 | [strategies/confluence_levels/config.yaml](../strategies/confluence_levels/config.yaml) | Flag mode (notify/auto/BE), soglie pip, sessione, news block | Quando attivi Fase B/C/D |
 | [strategies/confluence_levels/levels.yaml](../strategies/confluence_levels/levels.yaml) | **Input umano settimanale**: livelli S/R + S/D + Fib | **Ogni weekend** |
-| [strategies/london_breakout/config.yaml](../strategies/london_breakout/config.yaml) | Range Asia, finestre, ATR multiplier, FOMC blacklist | Quando aggiorni date FOMC o cambi simboli |
+| `strategies/london_breakout/config.yaml` (non più nel repo) | Range Asia, finestre, ATR multiplier, FOMC blacklist | Quando aggiorni date FOMC o cambi simboli |
 | [data/news_calendar.csv](../data/news_calendar.csv) | Stub vuoto (header only) | A mano se vuoi testare il filtro news prima di Stage 5 |
 
 ---
@@ -57,7 +57,7 @@
 
 - [ ] MetaTrader 5 desktop installato e loggato sul demo AvaTrade (login 107054945, server `Ava-Demo 1-MT5`).
 - [ ] Verifica visivamente che EURUSD e XAUUSD siano nel Market Watch del terminale MT5.
-- [ ] Compila [strategies/confluence_levels/levels.yaml](../strategies/confluence_levels/levels.yaml) con la mappa dei livelli reali della settimana corrente. Vedi il formato in [levels.example.yaml](../strategies/confluence_levels/levels.example.yaml).
+- [ ] Compila [strategies/confluence_levels/levels.yaml](../strategies/confluence_levels/levels.yaml) con la mappa dei livelli reali della settimana corrente. Vedi il formato in `levels.example.yaml` (non più nel repo).
 - [ ] Esegui `python -m strategies.confluence_levels validate-levels` → tabella deve mostrare livelli accettati senza errori.
 - [ ] Esegui `python -m strategies.confluence_levels dry-run --symbol EURUSD --price <prezzo_attuale>` → verifica che la decisione mostrata sia coerente con quello che ti aspetti.
 
@@ -123,7 +123,7 @@ Se tutti soddisfatti → si può attivare `auto_place_pending: true` in `config.
 
 #### Criteri di completamento Stage 2.5
 
-Definiti in [strategies/london_breakout/README.md](../strategies/london_breakout/README.md):
+Definiti in `strategies/london_breakout/README.md` (non più nel repo):
 
 - [ ] Almeno **3-5 trade eseguiti** in 1 settimana (frequenza attesa ~15-20/mese).
 - [ ] Win rate 45-55% (3-5 trade non basta per statistica robusta, ma orientativo).
@@ -151,7 +151,7 @@ Da fare in parallelo durante la settimana, non bloccante:
 1. **Analisi top-down EURUSD/XAUUSD** → segna livelli su TradingView.
 2. **Compila** [strategies/confluence_levels/levels.yaml](../strategies/confluence_levels/levels.yaml) (vedi formato in `levels.example.yaml`).
 3. `python -m strategies.confluence_levels validate-levels` → controlla che sia tutto verde.
-4. **Aggiorna FOMC dates** in [strategies/london_breakout/config.yaml](../strategies/london_breakout/config.yaml) se ci sono nuove date confermate per il mese.
+4. **Aggiorna FOMC dates** in `strategies/london_breakout/config.yaml` (non più nel repo) se ci sono nuove date confermate per il mese.
 5. Apri **due terminali MT5** (DEMO1 Ava + DEMO2 MetaQuotes), entrambi loggati e con simboli nel Market Watch.
 
 ### Lunedì 08:55 ora italiana

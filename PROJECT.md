@@ -94,8 +94,7 @@ Linguaggio principale **Python 3.11+**; TS solo se imposto da repo esterni (es. 
 | [strategies/](strategies/) | Strategie Python + **indice master** di tutte le strategie/componenti per sistema |
 | [mql5/](mql5/) | Expert Advisor MQL5 (London Breakout archiviata, futuri EA) |
 | [signal_copier/](signal_copier/) | Copia-segnali Telegram → MT5 (demo full-auto) |
-| [agents/](agents/) | Prompt subagent (quant_reviewer, stock_selector, 4 personas consensus) |
-| [skills/](skills/) | Skill `SKILL.md` per Claude Code |
+| [.claude/](.claude/) | Agenti e skill che Claude Code carica (`quant-gatekeeper`, `mql5-converter`). `agents/` e `skills/` alla radice sono ritirati dal 2026-10-13 |
 | [core/](core/) | Componenti trasversali (regime, quant_metrics, risk_gate, runner, registry) |
 | [brokers/](brokers/) · [notifiers/](notifiers/) | Astrazione broker · canali notifica (Telegram) |
 | [config/](config/) · [data/](data/) | YAML config (rischio, mercati) · dati locali e stato |

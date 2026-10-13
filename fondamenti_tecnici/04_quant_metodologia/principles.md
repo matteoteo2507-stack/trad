@@ -261,7 +261,7 @@ strumenti correlati non sono indipendenti.
 - [`06_stock_selection`](../06_stock_selection) — dove il survivorship bias morde di più (universo equity).
 - [`core/quant_metrics.py`](../../core/quant_metrics.py) — implementazione dei rimedi: DSR, PBO via CSCV, CPCV (purging+embargo), walk-forward, Monte Carlo permutation, White's Reality Check, BCa bootstrap CI sul metric osservato (`bca_bootstrap_ci`).
 - [`docs/QUANT_REVIEW_PROTOCOL.md`](../../docs/QUANT_REVIEW_PROTOCOL.md) — protocollo passo-passo che applica questa teoria.
-- [`agents/quant_reviewer.md`](../../agents/quant_reviewer.md) — la persona reviewer (rigore López de Prado / Bailey / Harvey), adversariale per default.
+- [`.claude/agents/quant-gatekeeper.md`](../../.claude/agents/quant-gatekeeper.md) — il revisore: fa rispettare il protocollo ai gate G1 e G2. Dal 2026-10-13 è l'unico: il primo (`agents/quant_reviewer.md`) è ritirato.
 - Casi reali (entrambi **NO-GO**): [`docs/reviews/london_breakout-2026-05-29.md`](../../docs/reviews/london_breakout-2026-05-29.md) e [`docs/reviews/tsmom_jpy-2026-05-29.md`](../../docs/reviews/tsmom_jpy-2026-05-29.md). Per il London Breakout il cap era proprio il **look-ahead della regime timeline** (label same-day).
 - [`DECISIONS.md`](../../DECISIONS.md) — log delle decisioni GO/NO-GO derivanti dalle review.
 

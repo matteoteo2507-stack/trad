@@ -1,7 +1,7 @@
 """Quant metrics for strategy review.
 
-Implementazioni delle metriche statistiche usate dal Quant Reviewer
-(agents/quant_reviewer.md). Riferimenti:
+Implementazioni delle metriche statistiche usate dal revisore
+(.claude/agents/quant-gatekeeper.md, docs/QUANT_REVIEW_PROTOCOL.md). Riferimenti:
 
 - Bailey D., López de Prado M. (2014) — The Deflated Sharpe Ratio. SSRN 2460551.
 - Bailey, Borwein, López de Prado, Zhu (2017) — The Probability of Backtest

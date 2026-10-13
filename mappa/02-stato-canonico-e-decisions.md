@@ -55,15 +55,18 @@ Dopo **ogni** verdetto, anche un NO-GO, nella **stessa sessione** (memoria
 `feedback_post_verdict_repo_sync`, nata dal NO-GO NXT del 17/07 che non era finito in `DECISIONS.md`):
 1. una voce nuova in cima a `DECISIONS.md`: data, decisione, razionale, link;
 2. i cinque campi del frontmatter della pre-registrazione, con `decisione` che punta a quella voce;
-3. la memoria e i documenti toccati. I documenti storici non si riscrivono: si aggiunge un
-   marcatore **"⚠️ Superato"** con il rimando alla fonte nuova.
+3. la memoria e i documenti toccati. Un documento **superato si cancella** (git conserva la storia), dopo
+   aver portato i fatti ancora validi nella nota canonica. **Resta solo ciò che serve come storico**, e allora
+   non si riscrive: si aggiunge un marcatore **"⚠️ Superato"** con il rimando alla fonte nuova (Matteo, 13/10:
+   concilia questa regola con quella dell'hub del 09/10). Un componente che ne sostituisce un altro **aggiorna
+   lo stesso file**, o ritira il vecchio nella stessa sessione: due file per lo stesso ruolo non convivono.
 
 ## Stato atteso
 
 | Cosa | Valore atteso | Come si controlla | Chi |
 |---|---|---|---|
 | Campi del frontmatter | ogni `docs/*_PREREGISTRATION.md` ha `stato`, `aggiornato`, `decisione` | lettura del frontmatter (il 02/10: tutte e 11 li hanno) | Claude |
-| Frontmatter non più vecchio delle decisioni | `aggiornato` ≥ data della voce più recente di `DECISIONS.md` che nomina la famiglia | confronto delle date (il 02/10: **trend non conforme**, vedi sotto) | Claude |
+| Frontmatter non più vecchio delle decisioni | `aggiornato` ≥ data della voce più recente di `DECISIONS.md` che nomina la famiglia | confronto delle date (il 02/10: **trend non conforme**, vedi sotto; allineato il 13/10) | Claude |
 | Nessuno stato copiato | nei documenti di stato corrente nessuna famiglia KILL, CLOSED o NO-GO descritta come attiva senza "⚠️ Superato" | healthcheck, controllo A.2 | Claude |
 | `docs/README.md` | non contiene stati né numeri | lettura della tabella delle pre-registrazioni | Claude |
 
@@ -76,20 +79,19 @@ Non dà errori: chi legge il posto vecchio riceve una risposta plausibile e sbag
 - *27/09:* FADE "ATTIVO" in `docs/README.md` dopo il KILL.
 - *02/10:* `mql5/README.md` descriveva l'EA `nxt_fade` come "WALK-FORWARD LIVE (attivo)",
   sempre dopo il KILL del 17/09. Trovato costruendo il catasto, e corretto facendo puntare ogni EA
-  alla sua pre-registrazione.
-- **Aperto, 02/10:** il frontmatter di `docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md` ha
-  `aggiornato: 2026-09-21` e dice "round trend 2 di 3". La voce di `DECISIONS.md` del **30/09** ha
-  deciso che il round 3 va a B2, e che se B2 fallisce A1 passa da LEAD a CLOSED. Lo stato `LEAD` è
-  ancora giusto, ma la nota è più vecchia della decisione: chi legge solo il frontmatter non sa che
-  il destino di A1 dipende da B2.
+  alla sua pre-registrazione. Le sezioni degli EA lo descrivevano ancora al presente: marcatori aggiunti il 13/10.
+- *02/10, riparato il 13/10:* il frontmatter di `docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md` aveva
+  `aggiornato: 2026-09-21`, mentre `DECISIONS.md` nominava la famiglia il **30/09** (round 3 a B2) e il
+  **03/10** (B2 chiusa a 0 trial, round 3 conservato alla famiglia). Lo stato `LEAD` era giusto, ma la nota
+  era più vecchia di due decisioni. È rimasta così 11 giorni, finché l'ha segnalata l'healthcheck dell'hub.
 
 **Debolezze strutturali:**
 - **Vocabolario degli stati non chiuso.** La tassonomia dei verdetti (`STRATEGY_LIFECYCLE.md` §5) è
-  GO, LEAD, NO-GO, CLOSED; nei frontmatter compaiono anche KILL, CONFERMATO, IN AVVIO e BOZZA. Non
+  GO, LEAD, NO-GO, CLOSED; nei frontmatter compaiono anche KILL e IN REVISIONE (misura del 13/10; il 02/10 anche CONFERMATO, IN AVVIO e BOZZA). Non
   c'è un elenco dei valori ammessi, quindi un filtro del cruscotto su "LEAD o GO" non vedrebbe un
   CONFERMATO.
 - **Un secondo campo `stato`** in `docs/trial_ledger.json`, per famiglia, che per i segnali mentore
-  dice `GO` mentre il frontmatter dice `CONFERMATO` (vedi [[01-ciclo-di-vita-e-gate]]).
+  diceva `GO` mentre il frontmatter diceva `CONFERMATO` (02/10; il 13/10 coincidono, `IN REVISIONE`; vedi [[01-ciclo-di-vita-e-gate]]).
 - **L'intestazione di `DECISIONS.md`** (righe 8-9) dice che il file rispecchia la memoria in
   `~/.claude/projects/.../memory/`. Dal 27/09 la memoria sta in `memoria/trad/` nel vault.
 

@@ -4,7 +4,7 @@ Usa `requests.Session` direttamente verso `api.telegram.org`. Non importa
 `python-telegram-bot` (resta in pyproject per Stage 5 quando servirà polling
 per comandi `/status` ecc.; in Stage 2 outbound è single-thread sincrono).
 
-Template messaggio definito in `skills/telegram-notifier/SKILL.md`.
+Template messaggio: `_format_signal` qui sotto, verificato da `tests/test_telegram_format.py`.
 """
 
 from __future__ import annotations

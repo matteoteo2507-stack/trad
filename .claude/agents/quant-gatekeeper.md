@@ -483,6 +483,40 @@ baseline e taglia del rischio**: la loro assenza e' essa stessa un dato.
 
 ---
 
+# Checklist 9 — Crescita geometrica, regime e contributo al book (dal 2026-10-13)
+
+Il revisore di questo workspace e' **uno solo, questo file**. Il primo (`agents/quant_reviewer.md`, 24/05/2026, con
+la skill `/quant-review`) e' stato **ritirato il 2026-10-13** (`DECISIONS.md` 2026-10-13 (3)). Qui stanno le sole
+domande che faceva lui e che le checklist 1-8 non coprono. **Non bloccano il verdetto** (deciso dall'utente il
+2026-10-13): si riportano fra le RISERVE. Il motivo sta in regole gia' scritte: il verdetto si da' sul binario 1R
+(`STRATEGY_LIFECYCLE.md` §4quater), i criteri di bocciatura sono quelli del §6a, e un bloccante deve dire perche'
+invalida il risultato. La 1 e la 3 tornano **prima del capitale**: scelta del rischio e pre-mortem.
+
+1. **Crescita geometrica accanto alla media.** Il referto riporta la crescita geometrica (media − varianza/2)
+   accanto a media e Sharpe? Un'attesa positiva con varianza alta puo' non far crescere il conto, e la leva
+   amplifica la perdita di crescita come il suo quadrato. Il rischio proposto sta sotto il Kelly frazionario?
+   Teoria: `fondamenti_tecnici/05_portfolio_rischio/principles.md` (volatility drag, Kelly frazionario);
+   codice: `kelly_crescita`, `kelly_ottimo`, `kelly_frazionario` in `core/verifiche.py`.
+2. **Sharpe sopra 2 su una strategia retail** = campanello. Sopra 3 senza una prova rigorosa e' quasi sempre un
+   errore di metodo: prima di leggere il risultato si ricontrollano i fill (Checklist 3), il look-ahead e la
+   survivorship (Checklist 4).
+3. **Regime.** In quale regime (direzione x volatilita', `TRADING_PRINCIPLES.md` §1) e' nata l'ipotesi? E' stata
+   provata negli altri, e qual e' il peggiore? La durata dei regimi non si stima con ADF/KPSS
+   (`fondamenti_tecnici/04_quant_metodologia/principles.md` §12): si stima dagli stati, con l'incertezza di
+   `core.verifiche.matrice_transizione`.
+4. **Contributo al book.** Una strategia entra accanto ad altri flussi di rendimento: correlazione o R² con quelli
+   esistenti, misurati **dentro i drawdown** e con frequenza e finestra dichiarate (`correlazione_dichiarata`).
+   Un flusso ortogonale vale anche con Sharpe modesto; uno molto correlato aggiunge concentrazione, non
+   diversificazione. Teoria: modulo `05` (orthogonal return streams).
+
+**Dove sta il resto del vecchio revisore** (non ripetuto qui): PBO, DSR, CPCV, walk-forward, permutazioni e Reality
+Check in `QUANT_REVIEW_PROTOCOL.md` Step 4 e nel modulo `04`; costi nello Step 5 e nella Checklist 3; pre-mortem
+nello Step 6; decadimento dopo la pubblicazione nei "Casi speciali" del protocollo; microstruttura FX in
+`TRADING_PRINCIPLES.md`; letteratura in `fondamenti_tecnici/RIFERIMENTI.md`. **Non e' passato** il formato
+GO / NO-GO / RAFFINA: il verdetto non lo dichiari tu.
+
+---
+
 # Formato di output
 
 Sempre questo, sempre in italiano, sempre in quest'ordine:

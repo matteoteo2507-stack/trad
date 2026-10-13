@@ -116,8 +116,8 @@ Pipeline di ricerca dell'edge che formalizza le osservazioni di mercato *prima* 
 ## Collegamenti
 
 - **Applicazione nel repo**: `../../strategies/stock_selector/` — lo Stock Selector V6.0 è **dove questi concetti si applicano** (scoring fondamentale + RRG + scenario macro). Vedi `../../strategies/stock_selector/strategy.py`, `scoring.py`, `config.yaml`.
-- **Consensus layer**: `../../agents/consensus/` — 4 personas che riesaminano un ticker pre-screenato (Damodaran valuation, Buffett quality/moat, Burry contrarian/value, Taleb tail-risk).
-- **Agente di selezione**: `../../agents/stock_selector.md`.
+- **Consensus layer** (mai costruito): 4 personas che avrebbero riesaminato un ticker pre-screenato (Damodaran valuation, Buffett quality/moat, Burry contrarian/value, Taleb tail-risk). I prompt stavano in `agents/consensus/`, ritirati il 2026-10-13 con il selettore archiviato: restano in git.
+- **Agente di selezione**: il prompt `agents/stock_selector.md` è ritirato dal 2026-10-13. La specifica sono `scoring.py` e `config.yaml`, qui sopra, e il notebook nella stessa cartella.
 - [[03_regimi_macro]] — quadranti Fed, QE/QT, indicatori macro (input alla selezione; teoria curata lì, non duplicata qui).
 - [[05_portfolio_rischio]] — sizing, portfolio heat, exit discipline a livello di portafoglio.
 - [[07_data_sources]] — endpoint e provider dati che alimentano screening e scoring.

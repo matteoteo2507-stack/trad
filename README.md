@@ -16,8 +16,7 @@ Piattaforma modulare per costruire, testare e mettere in produzione strategie di
 | `strategies/` | Strategie Python + **indice master** di tutte le strategie per sistema ([README](strategies/README.md)) |
 | `mql5/` | Expert Advisor MQL5 (London Breakout archiviata NO-GO, futuri EA) |
 | `signal_copier/` | Copia-segnali Telegram → MT5 (demo full-auto) |
-| `agents/` | Prompt di sistema per i subagent (quant_reviewer, Stock Selector, 4 personas consensus) |
-| `skills/` | Skill in formato `SKILL.md` per Claude Code / Antigravity |
+| `.claude/agents/`, `.claude/skills/` | Agenti e skill che Claude Code carica (revisore `quant-gatekeeper`, `mql5-converter`). `agents/` e `skills/` alla radice sono ritirati dal 2026-10-13 |
 | `brokers/` | Astrazione broker (yfinance read-only, MT5 legacy) |
 | `notifiers/` | Canali di notifica (Telegram outbound) |
 | `core/` | Componenti trasversali (regime, quant_metrics, risk gate, runner, registry) |
@@ -47,7 +46,7 @@ sorgente dello Stock Selector sta in
 1. Apri la cartella `C:\Users\mmbus\Obsidian\claude-brain\trad` come progetto.
 2. Leggi `PROJECT.md` e `ROADMAP.md` (5 minuti).
 3. Stage corrente da implementare → vedi sezione "Stato corrente" qui sotto.
-4. Le `skills/` sono già scritte: usale come istruzioni precompilate per Claude Code.
+4. Agenti e skill che Claude Code carica stanno in `.claude/`. Le `skills/` alla radice, scritte a maggio, sono ritirate dal 2026-10-13.
 
 ## Stato corrente
 

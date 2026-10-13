@@ -392,7 +392,7 @@ una modifica, è una **nuova specifica** e riparte dal gate [G1].
 ## 9. Collegamenti
 
 - [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md) — come si misura (il *gate*, non la *regola di stop*).
-- [`agents/quant_reviewer.md`](../agents/quant_reviewer.md) — il reviewer avversariale.
+- [`.claude/agents/quant-gatekeeper.md`](../.claude/agents/quant-gatekeeper.md) — il revisore: fa rispettare questo ciclo ai gate G1 e G2 (dal 2026-10-13 è l'unico).
 - [04_quant_metodologia](../fondamenti_tecnici/04_quant_metodologia/principles.md) — teoria dei bias, DSR/PBO, pre-mortem.
 - [DECISIONS.md](../DECISIONS.md) — il registro dei verdetti effettivi.
 - Pre-registrazioni esistenti: `TSMOM_`, `OPENING_RANGE_`, `MEANREV_`, `SEASONALITY_`, `LEVEL_RESEARCH_PREREGISTRATION.md`.

@@ -1,7 +1,7 @@
 # Blocco A1 — triage per video (fascia A: claim strutturali)
 
 Lettura integrale, un video alla volta, secondo il piano approvato il 2026-08-17
-([`_INTAKE.md`](../../_INTAKE.md)). Il digest di `rule_extract.py` è consultato **dopo** la
+([`_INTAKE.md`](../../../_INTAKE.md)). Il digest di `rule_extract.py` è consultato **dopo** la
 lettura, come rete di sicurezza. Statistiche dichiarate registrate ma **non** entrate nel prior.
 
 ---
@@ -198,7 +198,7 @@ reward medio, e da li' calcola l'**attesa annua prima di operare** — dichiaran
 eliminare la FOMO, perche' sai gia' cosa aspettarti. E aggiunge due regole che sono nostre:
 *"testa la strategia da solo prima"* e *"se il criterio non e' legato a un meccanismo logico o
 psicologico, la strategia non funzionera'"* — che e' il requisito di **razionale economico** di
-[STRATEGY_LIFECYCLE §6a.6](../../../docs/STRATEGY_LIFECYCLE.md). Da un discrezionale, e' la
+[STRATEGY_LIFECYCLE §6a.6](../../../../docs/STRATEGY_LIFECYCLE.md). Da un discrezionale, e' la
 disciplina piu' vicina alla pre-registrazione che questo canale abbia prodotto.
 
 ---
@@ -234,7 +234,7 @@ rischio**.
 
 Non e' il sizing come lo scriviamo noi (percentuale dell'equity): l'unita' e' la **perdita massima
 giornaliera**. Ed e' l'unita' giusta quando il vincolo che morde e' il **daily drawdown**, che e'
-esattamente cio' che [PROP_FIRM_CRITERIA](../../../docs/PROP_FIRM_CRITERIA.md) ha identificato come
+esattamente cio' che [PROP_FIRM_CRITERIA](../../../../docs/PROP_FIRM_CRITERIA.md) ha identificato come
 primo killer silenzioso. Noi non abbiamo nulla di equivalente: e' una formalizzazione del
 "dimensiona per convinzione" espressa nella valuta del vincolo reale. *(Nota: nella trascrizione i
 gradi A e B sono enunciati due volte in modo leggermente incoerente; sopra e' riportata la lettura
@@ -266,7 +266,7 @@ piu' l'esperienza del desk.
 
 Noi l'abbiamo **misurata**: sul banco Donchian, l'uscita in trailing su media mobile e' risultata
 **la peggiore delle quattro** su tutti e tre i lookback, e ha vinto **l'uscita a tempo**
-([reviews/trend-exit-playground-2026-08-14.md](../../../docs/reviews/trend-exit-playground-2026-08-14.md)).
+([reviews/trend-exit-playground-2026-08-14.md](../../../../docs/reviews/trend-exit-playground-2026-08-14.md)).
 
 **Non si elegge un vincitore**, si separa per dominio: lui parla di **momentum intraday su singolo
 titolo** con un trader che conosce quel playbook; noi abbiamo misurato **swing multi-asset su D1 in
@@ -324,7 +324,7 @@ playground** (il gradiente sopravvive al condizionamento di regime?).
 1. **E' ancora la famiglia trend.** Stage 2 = prezzo sopra medie crescenti = trend. La famiglia e' a
    **round 2 di 3**: un test sul filtro di stage sarebbe **l'ultimo round disponibile**.
 2. **Aggiungere un filtro e' la modifica piu' pericolosa** che conosciamo
-   ([STRATEGY_LIFECYCLE §4](../../../docs/STRATEGY_LIFECYCLE.md): *"il piu' seducente e il piu'
+   ([STRATEGY_LIFECYCLE §4](../../../../docs/STRATEGY_LIFECYCLE.md): *"il piu' seducente e il piu'
    fatale"*). La distinzione che lo rende legittimo: questo filtro e' **specificato a priori da una
    fonte esterna**, non scelto guardando quali nostri trade hanno perso. Resta legittimo **solo se
    pre-registrato prima di eseguirlo**.

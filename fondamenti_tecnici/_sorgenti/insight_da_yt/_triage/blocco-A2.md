@@ -248,7 +248,7 @@ Spiega **perche'** valute e materie prime dovrebbero tornare alla media e le azi
 
 E' un **meccanismo di retroazione economica** che limita i movimenti — cioe' un vero *perche'*, non
 solo un *cosa*, ed e' il tipo di razionale che
-[STRATEGY_LIFECYCLE §6a.6](../../../docs/STRATEGY_LIFECYCLE.md) richiede.
+[STRATEGY_LIFECYCLE §6a.6](../../../../docs/STRATEGY_LIFECYCLE.md) richiede.
 
 ⚠️ **Ma complica la sintesi del blocco A1**, e va detto invece di appiattirlo. La sintesi A1 era
 "trend sugli asset volatili/illiquidi, mean reversion su quelli tranquilli". Rajan propone un asse

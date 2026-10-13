@@ -1,6 +1,6 @@
 # Quant Review — London Breakout (GBPUSD M15) — 2026-05-29
 
-Reviewer: Quant Reviewer ([agents/quant_reviewer.md](../../agents/quant_reviewer.md)) ·
+Reviewer: Quant Reviewer (`agents/quant_reviewer.md`, ritirato il 2026-10-13) ·
 Protocollo: [docs/QUANT_REVIEW_PROTOCOL.md](../QUANT_REVIEW_PROTOCOL.md) ·
 Motore metriche: [core/quant_metrics.py](../../core/quant_metrics.py) ·
 Codice: [mql5/london_breakout.mq5](../../mql5/london_breakout.mq5)

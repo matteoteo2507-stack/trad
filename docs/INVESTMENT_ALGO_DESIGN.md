@@ -156,7 +156,7 @@ distinti che migliorano il design. Sintesi operativa.
   `core/regime.py` (Wilder/intraday) **non appartiene** a un motore mensile.
 - **[Quant] La protezione (maxDD/down-capture) è MECCANICA e affidabile; solo l'alpha è da
   provare.** Distinzione chiave: il prodotto "β<1 che taglia i drawdown" è reale già ora.
-- **[Ingegnere] Conflitto di priorità da esplicitare** ([DECISIONS.md](DECISIONS.md): custom IN
+- **[Ingegnere] Conflitto di priorità da esplicitare** ([DECISIONS.md](../DECISIONS.md): custom IN
   FONDO, OctoBot prima; investing = fase conclusiva, entrate prop oggi ~0). Questo lavoro è
   **validazione in slack-time, NON una promozione** e non deve sottrarre energia a OctoBot/
   Telegram copier. MVP riusa `core/regime.py` + `layer1_prototype.py` (~80% esiste).

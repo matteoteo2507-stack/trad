@@ -28,5 +28,5 @@ Le strategie restano **broker-agnostic**: il backtester traduce le chiamate `sho
 
 ## Output normalizzato
 
-Vedi `skills/backtest-runner/SKILL.md` per la lista delle metriche standard prodotte
-da tutti i backtester (total_return, Sharpe, max_drawdown, win_rate, profit_factor, ecc.).
+Le metriche standard prodotte da tutti i backtester (total_return, Sharpe, max_drawdown, win_rate,
+profit_factor, ecc.) sono i campi di `BacktestReport` in `base.py`.

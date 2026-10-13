@@ -1,10 +1,10 @@
 ---
 tipo: preregistrazione
 stato: LEAD
-aggiornato: 2026-09-21
-decisione: "DECISIONS 2026-09-21 (2) — A1 held-out non finanziabile"
+aggiornato: 2026-10-13
+decisione: "DECISIONS 2026-09-21 (2) — A1 held-out non finanziabile; DECISIONS 2026-10-03 — B2 chiusa a 0 trial, round 3 conservato alla famiglia"
 metrica_corrente: "gradiente rho +0,929 a durata appaiata, ma divario vs random −0,238 [−0,363; −0,098]"
-nota: "Fermo: il punto 3 (held-out) non si apre; round trend 2 di 3. Condizioni di riapertura in TREND_A1_HELDOUT_POWER §7."
+nota: "Fermo: il punto 3 (held-out) non si apre; round trend 2 di 3. Il round 3, assegnato a B2 il 30/09, resta alla famiglia dopo la chiusura di B2 a 0 trial (03/10): va a B2 oppure ad A1 punto 3 quando una delle due ha potenza. Feed G9 non acquistato. Condizioni di riapertura in TREND_A1_HELDOUT_POWER §7. Frontmatter allineato il 13/10."
 ---
 # Trend following: uscita a coda aperta × gradiente di liquidità — PRE-REGISTRAZIONE
 

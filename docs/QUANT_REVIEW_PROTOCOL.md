@@ -1,11 +1,16 @@
 # Quant Review — Protocollo operativo
 
-Procedura passo-passo che il **Quant Reviewer** ([agents/quant_reviewer.md](../agents/quant_reviewer.md))
-esegue quando viene invocato via skill [quant-review](../skills/quant-review/SKILL.md)
-su una strategia (`mql5/*.mq5` o `strategies/*/`).
+Procedura passo-passo che il revisore, l'agente
+[`quant-gatekeeper`](../.claude/agents/quant-gatekeeper.md), segue quando rivede una strategia o un test
+(`mql5/*.mq5`, `strategies/*/`, `analysis/*/`).
 
 Output finale: report in `docs/reviews/<strategia>-<YYYY-MM-DD>.md` nel formato del
-§Output di `quant_reviewer.md`.
+§"Formato di output" del gatekeeper.
+
+> Fino al 2026-10-13 questo protocollo nominava un secondo revisore, il "Quant Reviewer"
+> (`agents/quant_reviewer.md`, invocato con `/quant-review`): ritirato, il revisore è uno solo
+> ([DECISIONS.md](../DECISIONS.md), voce 2026-10-13 (3)). Dove un documento più vecchio dice "Quant Reviewer" o
+> `/quant-review`, si intende questo protocollo eseguito dal gatekeeper.
 
 ---
 
@@ -272,7 +277,8 @@ tab_prop = confronta_overlay_prop(day_trades, rules, base_pct=1.0)   # prop: 1R,
 
 ## Step 6 — Pre-mortem (10 min)
 
-Rispondi per iscritto alle 3 domande del §6 di `quant_reviewer.md`:
+Rispondi per iscritto a tre domande (il pre-mortem di
+[04_quant_metodologia](../fondamenti_tecnici/04_quant_metodologia/principles.md) §9):
 
 1. **Quale cambiamento di regime la rompe?**
    (es. "London Breakout fallisce in Sideways Quiet quando range Asia >
@@ -295,6 +301,9 @@ Rispondi per iscritto alle 3 domande del §6 di `quant_reviewer.md`:
 In caso di verdict ambiguo, **default verso NO-GO**. L'onere della prova è
 sulla strategia, non sul reviewer.
 
+Il revisore **riporta** in quale riga della tabella cade il risultato; **il verdetto lo dichiara l'utente**
+(gatekeeper, "Cosa NON fai"). Riga aggiunta il 2026-10-13, quando il revisore è diventato uno solo.
+
 ⚠️ L'ultima riga non e' un verdetto piu' severo: e' l'**assenza** di verdetto. Un
 NO-GO dichiarato su fill fantasma e' sbagliato quanto un GO — la continuazione NXT
 e' stata bocciata a **−0,44R** quando il numero onesto era **−0,118R**.
@@ -302,7 +311,7 @@ e' stata bocciata a **−0,44R** quando il numero onesto era **−0,118R**.
 ## Step 8 — Output report
 
 Salva in `docs/reviews/<strategia>-<YYYY-MM-DD>.md` con il formato del
-§Output di `quant_reviewer.md`. Link relativi a:
+§"Formato di output" del gatekeeper. Link relativi a:
 - Codice strategia.
 - Trade log usati.
 - Eventuali notebook di analisi.

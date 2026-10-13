@@ -75,9 +75,10 @@ percepito basso; Confluence: 0 trade per attrito operativo), le decisioni su qua
 promuovere/scartare devono passare da analisi quantitative, non da impressioni.
 
 **Deliverable**:
-- [agents/quant_reviewer.md](agents/quant_reviewer.md) — persona prompt con rigore accademico
-  (López de Prado, Bailey, Harvey).
-- [skills/quant-review/SKILL.md](skills/quant-review/SKILL.md) — invocazione `/quant-review`.
+- `agents/quant_reviewer.md` — persona prompt con rigore accademico
+  (López de Prado, Bailey, Harvey). ⚠️ Ritirato il 2026-10-13: il revisore è
+  [.claude/agents/quant-gatekeeper.md](.claude/agents/quant-gatekeeper.md).
+- `skills/quant-review/SKILL.md` — invocazione `/quant-review`. ⚠️ Ritirata il 2026-10-13.
 - [core/quant_metrics.py](core/quant_metrics.py) — DSR, PBO via CSCV, CPCV, walk-forward,
   Monte Carlo permutation, White's Reality Check, risk metrics oltre lo Sharpe.
 - [docs/QUANT_REVIEW_PROTOCOL.md](docs/QUANT_REVIEW_PROTOCOL.md) — protocollo operativo
@@ -203,7 +204,8 @@ divergenze chiare e spiegabili.
 voto aggregato meccanico**. La decisione finale è dell'utente.
 
 **Deliverable**:
-- `agents/consensus/{damodaran,buffett,burry,taleb}.md` (prompt già scritti in Stage 0).
+- `agents/consensus/{damodaran,buffett,burry,taleb}.md` (prompt già scritti in Stage 0). ⚠️ Ritirati il
+  2026-10-13 con il selettore archiviato: restano in git.
 - Modulo Python che orchestra la chiamata in parallelo via LangGraph.
 - Skill `skills/stock-selector-consensus/SKILL.md`.
 

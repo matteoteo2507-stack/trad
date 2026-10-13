@@ -44,7 +44,7 @@ e non sull'equity**: le firm con drawdown *equity-based* o *ibrido* prendono all
 **alza** su quel 10% flottante, e una normale ritracciata il giorno dopo **brucia il conto**.
 
 E' esattamente il **primo killer silenzioso** che avevamo identificato in
-[PROP_FIRM_CRITERIA §1](../../../docs/PROP_FIRM_CRITERIA.md) — *"daily drawdown su balance, NON su
+[PROP_FIRM_CRITERIA §1](../../../../docs/PROP_FIRM_CRITERIA.md) — *"daily drawdown su balance, NON su
 equity flottante"* — qui **confermato da un praticante con il meccanismo esplicitato**. Conferma
 indipendente di una nostra analisi, dall'unica fonte che ha davvero interesse a saperlo.
 

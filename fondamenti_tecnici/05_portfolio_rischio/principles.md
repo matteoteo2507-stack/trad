@@ -208,7 +208,7 @@ L'obiettivo non è "battere il mercato" ma **targettizzare le esposizioni ai fat
 - [[06_stock_selection]] — selezione titoli a valle della logica fattoriale.
 - [[03_regimi_macro]] — il rischio di mercato (sistematico) dipende dal regime; correlazioni e beta cambiano con il regime.
 - [[08_asset_allocation_passiva]] — applicazione al pilastro investing (hedge-leg / managed futures) con il caveat di evidenza già calibrato lì.
-- `agents/quant_reviewer.md` — l'agente quant porta volatility drag, crescita geometrica e review portfolio-level come bagaglio permanente, citando questo documento.
+- [`.claude/agents/quant-gatekeeper.md`](../../.claude/agents/quant-gatekeeper.md), Checklist 9 — le domande su volatility drag, crescita geometrica e contributo al book che il revisore fa in G2, citando questo documento (fino al 2026-10-13 stavano in `agents/quant_reviewer.md`, ritirato).
 
 ## Fonti
 

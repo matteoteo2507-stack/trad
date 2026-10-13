@@ -4,8 +4,8 @@ Questa cartella contiene gli **Expert Advisor** scritti in MQL5 nativo per girar
 terminale MetaTrader 5. Sostituiscono le strategie automatiche Python che dipendevano dalla
 libreria `MetaTrader5` + MT5 desktop sullo stesso host.
 
-**Perché MQL5 invece di Python**: vedi `C:/Users/mmbus/.claude/plans/adesso-abbiamo-le-basi-tingly-iverson.md`,
-sezione "PIVOT ARCHITETTURALE". In sintesi:
+**Perché MQL5 invece di Python**: è la decisione del pivot del 2026-05-05 ([DECISIONS.md](../DECISIONS.md), voce
+"Pivot architetturale"; architettura in [docs/ARCHITECTURE_v2.md](../docs/ARCHITECTURE_v2.md)). In sintesi:
 
 - L'EA gira sul terminale ovunque sia installato (PC, MetaQuotes VPS).
 - Su MetaQuotes VPS (~10$/mese) è **sempre online**, monitorabile dall'app mobile MT5.
@@ -29,6 +29,10 @@ mql5/
 ---
 
 ## `nxt_fade.mq5` — walk-forward live della variante fade
+
+> ⚠️ **Superato: EA spento dal 2026-09-17, famiglia FADE in stato KILL.** Stato canonico:
+> [`docs/NXT_FADE_FORWARD_PREREGISTRATION.md`](../docs/NXT_FADE_FORWARD_PREREGISTRATION.md). Il testo sotto resta come
+> storia del port e del controllo incrociato: non descrive un test in corso.
 
 > **STATUS: lead DATA-DERIVED, NON un edge dimostrato.** Questo EA raccoglie trade
 > **forward OOS su DEMO** per validare (o archiviare) il fade emerso da NXT. Regole
@@ -80,6 +84,10 @@ Solo dopo il cross-check + 1-2 settimane demo locale → `Migrate to virtual ser
 ---
 
 ## `orb_nasdaq.mq5` — walk-forward ORB v2 su NAS100
+
+> ⚠️ **Superato: forward ORB spento il 2026-08-27** ([DECISIONS.md](../DECISIONS.md), voce "ORB spento"). Stato
+> canonico: [`docs/OPENING_RANGE_PREREGISTRATION.md`](../docs/OPENING_RANGE_PREREGISTRATION.md). Il testo sotto resta
+> come storia del port: non c'è un forward in corso.
 
 > **STATUS: NO-GO sui 14.5y.** Il forward NON serve perché "speriamo funzioni": serve a
 > **risolvere la domanda aperta** — il marginale-positivo 2020-2026 è rumore o vero cambio di
@@ -161,7 +169,7 @@ Si apre il dialogo input. Imposta:
 | `InpRiskPerTradePct` | 0.01 | 1% equity rischiata per trade |
 | `InpFallbackVolume` | 0.10 | Lotti se sizing fallisce |
 | `InpTelegramBotToken` | (dal `.env`) | Stesso bot del workspace |
-| `InpTelegramChatId` | 1238922215 | Chat Matteo |
+| `InpTelegramChatId` | (dal `.env`) | Chat a cui arrivano le notifiche |
 | `InpMagicNumber` | 26050 | Identificatore ordini propri |
 
 Tab "Common": ☑️ `Allow algorithmic trading`, ☑️ `Allow live trading`. OK.
@@ -169,6 +177,10 @@ Tab "Common": ☑️ `Allow algorithmic trading`, ☑️ `Allow live trading`. O
 In alto a destra del grafico apparirà l'icona dell'EA (nelle build moderne di MT5 è un cappello di laurea; nelle vecchie un faccino sorridente): colorata se l'EA è attivo.
 
 ## Backtest in Strategy Tester
+
+> ⚠️ **Esempio storico.** `london_breakout` è NO-GO dal 2026-05-30 ([DECISIONS.md](../DECISIONS.md)): le attese qui
+> sotto (frequenza, win rate) sono quelle scritte prima della
+> [review](../docs/reviews/london_breakout-2026-05-29.md), non una misura. La procedura vale per qualunque EA.
 
 `View → Strategy Tester` (Ctrl+R):
 

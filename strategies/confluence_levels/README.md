@@ -84,7 +84,7 @@ Solo dopo si attiva la Fase B (`auto_place_pending: true`).
 
 ## Riferimenti
 
-- Skill: `skills/strategy-designer/SKILL.md` (workflow di design).
-- Skill: `skills/telegram-notifier/SKILL.md` (template messaggio).
+- Formato del messaggio: `notifiers/telegram.py` (`_format_signal`), con i test in `tests/test_telegram_format.py`.
+- Le skill `strategy-designer` e `telegram-notifier` (`skills/` alla radice) sono ritirate dal 2026-10-13.
 - Risk gate condiviso: `core/risk_gate.py`.
 - Stage 2 della roadmap: `ROADMAP.md`.

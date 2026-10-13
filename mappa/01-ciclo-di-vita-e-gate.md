@@ -97,6 +97,9 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   **rischio fisso 1R**, l'unico su cui si dà il verdetto, e gli overlay della libreria fissa di
   `core/sizing.py`. Un overlay non salva un NO-GO; in prop si legge `ev_vs_zero`, mai l'EV da solo.
   Componente 14: [[14-prop-lab-e-doppio-binario]].
+- **Quattro domande in più, non bloccanti** (gatekeeper, Checklist 9, dal 13/10): crescita geometrica e Kelly,
+  Sharpe sopra 2 come campanello, regime, contributo al book. Vengono dal primo revisore, ritirato quel giorno;
+  finiscono fra le riserve e non cambiano nessun gate.
 
 ## Come si lancia
 
@@ -124,7 +127,7 @@ con file e riga per ogni rilievo.
 |---|---|---|---|
 | Contatore coerente | nessun problema | `python -m core.trial_ledger --check` → exit 0 (il 02/10: exit 0) | Claude |
 | Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `docs/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
-| Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portano ad `agents/quant_reviewer.md`) | Claude |
+| Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
 | Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `docs/*_PREREGISTRATION.md` e le voci del ledger | Claude |
 
 ## Come si rompe
@@ -136,14 +139,15 @@ con file e riga per ogni rilievo.
   (`core/trial_ledger.py`, righe 11-14).
 - *Soglie superabili senza edge.* Il 14/08 tre soglie assolute sono passate 6 su 6 e 15 su 15;
   solo il baseline random ha mostrato che erano garantite dalla costruzione (gatekeeper, righe 100-105).
+- *Due revisori* (trovato il 02/10, riparato il 13/10). `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9
+  chiamavano revisore `agents/quant_reviewer.md`, da invocare con `skills/quant-review/`: cartelle alla radice che
+  Claude Code **non carica** (carica solo `.claude/`). Chi seguiva il protocollo alla lettera cercava uno strumento
+  che non parte. Ora quel file e la sua skill sono cancellati, i due documenti nominano il gatekeeper e le domande
+  ancora valide del vecchio revisore sono la **Checklist 9** del gatekeeper, che non blocca. Lo stesso giorno, dopo
+  aver verificato che nessuno strumento le carica e nessun codice le legge, sono state ritirate anche le altre voci
+  di `agents/` e `skills/` alla radice (`DECISIONS.md` 2026-10-13 (4)).
 
 **Guasti trovati scrivendo questa nota (02/10), non ancora riparati:**
-- **Due revisori.** `QUANT_REVIEW_PROTOCOL.md` (righe 3-8, 258, 288) e `STRATEGY_LIFECYCLE.md` §9
-  chiamano revisore `agents/quant_reviewer.md`, da invocare con `skills/quant-review/`. Le cartelle
-  `agents/` e `skills/` alla radice **non sono caricate** da Claude Code, che carica solo
-  `.claude/`. Il revisore attivo è il gatekeeper (`CLAUDE.md`, voci recenti di `DECISIONS.md`).
-  Chi segue il protocollo alla lettera cerca uno strumento che non parte, e il formato del report
-  (Step 8) è quello del revisore vecchio.
 - **Trimestre fermo.** `trimestre_corrente` è un campo scritto a mano: il 02/10 vale ancora
   `2026-Q3` e il comando segnala "soglia di allarme raggiunta" su un trimestre già chiuso. Incide
   sulla decisione D2 della pre-registrazione Gump (in quale trimestre conta).

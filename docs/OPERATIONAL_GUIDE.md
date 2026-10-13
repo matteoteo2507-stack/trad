@@ -162,7 +162,7 @@ nano .env
 Incolla:
 ```
 TELEGRAM_BOT_TOKEN=7840693535:AAHmocfjx9hb6DbGaH9pOIZFXkgwQSkwlDM
-TELEGRAM_CHAT_ID=1238922215
+TELEGRAM_CHAT_ID=<il_tuo_chat_id>
 LOG_LEVEL=INFO
 LOG_DIR=./logs
 ```
@@ -359,7 +359,7 @@ Sul terminale MT5:
 | `InpRiskPerTradePct` | 0.01 |
 | `InpFallbackVolume` | 0.10 |
 | `InpTelegramBotToken` | `7840693535:AAHmocfjx9hb6DbGaH9pOIZFXkgwQSkwlDM` |
-| `InpTelegramChatId` | `1238922215` |
+| `InpTelegramChatId` | (dal `.env`) |
 | `InpMagicNumber` | `26050` |
 | `InpStrategyName` | `london_breakout` |
 

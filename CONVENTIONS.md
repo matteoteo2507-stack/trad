@@ -50,9 +50,9 @@ documentata in `brokers/base.py`.
 
 Sottoclasse di `NotifierBase` in `notifiers/<canale>.py`. Vedi `notifiers/base.py`.
 
-### Nuova skill (per Antigravity / Claude Code)
+### Nuova skill (Claude Code)
 
-Cartella sotto `skills/<nome-skill>/` con un file `SKILL.md` che ha frontmatter standard:
+Cartella sotto `.claude/skills/<nome-skill>/` con un file `SKILL.md` che ha frontmatter standard:
 
 ```yaml
 ---
@@ -63,11 +63,15 @@ description: Descrizione di quando attivare la skill (per il dispatcher di Claud
 # Istruzioni in markdown
 ```
 
-### Nuovo subagent / persona
+### Nuovo subagent
 
-File markdown in `agents/<categoria>/<nome>.md`. Il file è il system prompt dell'agente.
+File markdown in `.claude/agents/<nome>.md`, con frontmatter (`name`, `description`; `tools` e `model`
+facoltativi): è l'unico posto da cui Claude Code carica un agente. Il corpo del file è il suo system prompt.
 Convenzione: la prima sezione descrive l'identità (chi sei), la seconda il framework di analisi
 (come pensi), la terza l'output atteso (formato risposta).
+
+> Fino al 2026-10-13 skill e prompt stavano anche in `skills/` e `agents/` alla radice, che Claude Code non
+> carica: cartelle ritirate ([DECISIONS.md](DECISIONS.md), voce 2026-10-13 (4)).
 
 ## Configurazione
 

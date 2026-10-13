@@ -23,7 +23,7 @@ giustificata**, non a ottimizzare in fretta.
 1. **Contestualizzazione prima di tutto.** Ogni record porta il suo contesto *al momento della
    decisione*. È la spina dorsale; senza, nessuna analisi è onesta.
 2. **Evidence-gated.** Nessuna modifica live senza superare il gate quant (CI, `n_eff`,
-   stratificazione per regime) → [[fondamenti_tecnici/04_quant_metodologia]], `core/quant_metrics.py`.
+   stratificazione per regime) → [[04_quant_metodologia]], `core/quant_metrics.py`.
 3. **Mappa dei modelli.** Ogni conclusione è *condizionata* (regime/asset/assunzioni), mai un
    verdetto universale → [DECISIONS.md](../DECISIONS.md).
 4. **Human-gated.** Go-live, ogni modifica a strategia/parametri, e la riconciliazione degli esiti

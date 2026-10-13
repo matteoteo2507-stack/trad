@@ -154,7 +154,8 @@ finestre temporali, ATR period, TP multiplier, NFP/FOMC blacklist, sizing, Teleg
 ### Cosa fa
 
 - `strategies/stock_selector/`: screening SP500 (V6.0, scoring fundamentale + RRG + scenario macro).
-- `agents/consensus/`: 4 personas LLM (Damodaran, Buffett, Burry, Taleb) — Stage 4, da implementare.
+- `agents/consensus/`: 4 personas LLM (Damodaran, Buffett, Burry, Taleb) — Stage 4, mai implementato. ⚠️ Prompt
+  ritirati il 2026-10-13: restano in git.
 
 ### Deployment
 

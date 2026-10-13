@@ -19,4 +19,5 @@ Tutte le implementazioni ereditano da `NotifierBase` (`base.py`). L'interfaccia 
 ## Configurazione
 
 Vedi `.env.example` per `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID`.
-Vedi anche la skill `skills/telegram-notifier/SKILL.md` per il flusso completo.
+Il formato del messaggio è in `telegram.py` (`_format_signal`). La skill `skills/telegram-notifier/`, che lo
+descriveva in prosa, è ritirata dal 2026-10-13.

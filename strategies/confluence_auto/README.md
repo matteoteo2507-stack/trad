@@ -61,7 +61,7 @@ python -m strategies.confluence_levels validate-levels
 
 I valori in [`config.yaml`](config.yaml) sono "calibrati a occhio" sui regimi
 forex/XAU tipici. **Non sono ottimizzati**. Il Quant Reviewer
-([`../../agents/quant_reviewer.md`](../../agents/quant_reviewer.md)) li tunerà
+(`agents/quant_reviewer.md`, ritirato il 2026-10-13) li tunerà
 via PBO + walk-forward quando ci saranno abbastanza dati di confronto
 manuale vs auto.
 
@@ -172,5 +172,5 @@ Così il Quant Reviewer mensile (Stage 2.7) può fare il diff con `Confluence Ma
 - Murphy J. (1999) — *Technical Analysis of the Financial Markets* (S/R clustering).
 - Sam Seiden (Online Trading Academy) — methodology base-impulse-base S/D.
 - Steidlmayer P. (1982) — *Markets and Market Logic* (Market Profile / POC).
-- Project memory: [`project_confluence_auto.md`](../../../.claude/projects/c--Users-mmbus-Desktop-lavoro-trad/memory/project_confluence_auto.md).
+- Project memory: [[project_confluence_auto]] (in `memoria/trad/`, nell'hub).
 - Roadmap context: [`ROADMAP.md`](../../ROADMAP.md) Stage 2.6 punto 4.

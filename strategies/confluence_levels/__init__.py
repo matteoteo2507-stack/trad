@@ -1,6 +1,6 @@
 """Confluence Levels Trader — strategia semiautomatica MT5/Telegram.
 
-Vedi `strategies/confluence_levels/README.md` e `skills/strategy-designer/SKILL.md`.
+Vedi `strategies/confluence_levels/README.md`.
 
 Le re-export sono pigre: importare il pacchetto non trascina dipendenze pesanti
 come MetaTrader5/requests (utile per i moduli puri come `levels_loader`).

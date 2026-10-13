@@ -66,7 +66,7 @@ WEAKENING (titoli con RS alto) hanno battuto IMPROVING/LAGGING in più coorti �
 
 1. **Regime-selection bias nella valutazione stessa** — l'intera finestra dic-2025→giu-2026 è
    un singolo regime risk-on. Concludere "il selettore non funziona" replicherebbe l'errore
-   simmetrico del "backtest solo bull market" ([agents/quant_reviewer.md §2](../../agents/quant_reviewer.md)).
+   simmetrico del "backtest solo bull market" (`agents/quant_reviewer.md` §2, ritirato il 2026-10-13).
    Un selettore difensivo va giudicato sul **downside protection in risk-off**, che qui è
    **non osservato**. → vedi [[feedback_strategy_conditional_edge]].
 
