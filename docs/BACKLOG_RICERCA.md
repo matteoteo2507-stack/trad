@@ -8,7 +8,7 @@
 > **H** (dal 2026-10-08): le strade uscite dalla ricerca sugli indicatori tecnici, classificate negli stessi bucket.
 >
 > **Vincoli di budget in vigore** — da tenere presenti in ogni decisione:
-> pre-registrazioni da fonte esterna **2 di 2-3 usate nel trimestre** · max **3 round di rifinitura**
+> pre-registrazioni da fonte esterna **2-3 per trimestre** (quante ne restano: `python -m core.trial_ledger`) · max **3 round di rifinitura**
 > per famiglia · **holdout: una apertura per famiglia**, non per variante.
 >
 > ✅ Dal 2026-09-19 questi numeri **non si copiano piu' a mano**: `python -m core.trial_ledger`
@@ -238,7 +238,21 @@ bottiglia sono **i passi 1 e 2**: famiglia e spread. Costano poco e decidono se 
 
 ---
 
-## E — DEBITO DI PROTOCOLLO — ✅ **ESTINTO il 2026-09-19** (E1-E6 tutte chiuse)
+## E — DEBITO DI PROTOCOLLO — ✅ E1-E6 **estinte il 2026-09-19**; ⚠️ **E7 aperta** (debito emerso dai test di ottobre)
+
+> **E7 — debito emerso dopo il 19/09, aperto.** Non e' copiato qui: l'elenco sta nei due referti.
+> - Candidato A, 08/10 ([referto](reviews/rsi2_indici_esito_2026-10-08.md) §8): controllo dei trade sovrapposti
+>   nell'overlay, unita' del runs test, NON DIMOSTRATO assente dalla tassonomia di LIFECYCLE §5.
+> - H1, 12/10 ([G2](reviews/ultima_mezzora_G2_2026-10-12.md) §6 e §8): nessun percorso per un'ipotesi nata dai
+>   descrittivi di un test chiuso; il §7 non dice come si contabilizza una riapertura ne' se un holdout mai aperto si
+>   eredita; nessuna regola sul forward di una famiglia CLOSED; descrittivi stampati senza incertezza e senza
+>   correzione per il numero di celle; ripetizione sui semi sul limite che non decide; `core/` e `tests/` fuori dai
+>   percorsi congelati; nessun controllo positivo sui dati reali quando l'esito possibile e' un CLOSED; bozza e
+>   passate G1 fuori da git fino all'approvazione.
+>
+> **Sono decisioni di Matteo**, non correzioni tecniche: cambiano cosa il protocollo permette. Due proposte in
+> discussione dal 12/10: (1) pre-registrare come varianti dichiarate prima le condizioni che la fonte stessa prevede;
+> (2) una sola prova di conferma su dati mai aperti per un'ipotesi nata da un descrittivo.
 
 Non sono ricerca: sono le cose che rendono la ricerca affidabile. Fino al 2026-09-19
 erano **prosa**, cioe' regole che si applicavano solo se qualcuno si ricordava di
@@ -264,7 +278,7 @@ il contatore trial non ricostruibile e **due** la provenienza dell'ipotesi non d
 | **E2** | ✅ **FATTO 2026-09-19** — dato in [`docs/trial_ledger.json`](trial_ledger.json), letto e verificato da [`core/trial_ledger.py`](../core/trial_ledger.py) (`python -m core.trial_ledger`, `--check` esce **1** se un budget e' sforato o se una voce non cita le sue fonti). 11 famiglie ricostruite dalle pre-registrazioni e da DECISIONS. La **regola di futilita' e' diventata un numero**: a 250 osservazioni servono Sharpe **1,65** con 1 trial, **3,12** con 8, **4,64** con i 384 dei livelli. ⚠️ Tre famiglie (`opening_range`, `trend_momentum`, `london_breakout`) hanno il conteggio a **`null`**: non e' ricostruibile perche' all'epoca non era scritto, e **non ci si mette un numero plausibile** | **fatto** |
 | **E3** | ✅ **FATTO 2026-09-19** — [`core/data_checks.py`](../core/data_checks.py): monotonia, duplicati, barre/anno, copertura comune + **partenze scaglionate**, **file piu' completo** (il nome cablato che ignora l'export nuovo), **% di fill non ottenibili** (aggancia E6 al codice) e **% di gap oltre lo stop**. `checklist_dati(...)` / `checklist_esecuzione(...)` ritornano un `Esito` stampabile; `python -m core.data_checks <csv>` da riga di comando. ⚙️ Gli 8 test in `core/tests/test_data_checks.py` **non testano funzioni, riproducono gli incidenti**: cumsum invertito, `XAU_spot_M5.csv` accanto a `_ext.csv`, **46,1%** di fill fantasma, **12,7%** di gap, bond dal 2016 accanto a FX dal 2012 — e uno verifica che su dati puliti **non gridi** | **fatto** |
 | **E5** | ✅ **FATTO 2026-09-17** — `core/resolve_trade.py` con le **5 convenzioni come parametri** (`fill_bar_can_resolve`, `tie`, `gap_beyond_stop`, `be_priority`, `on_timeout`) e **equivalenza dimostrata** con le 4 implementazioni storiche in `core/tests/test_resolve_trade.py`. Il test ha scoperto da solo l'asse `be_priority` (ORB valutava il BE **dopo** SL/TP). Gia' usata da `fade_obtainable.py`, `latency_gate.py`, `continuation_obtainable.py` | — |
-| **E6** | ✅ **FATTO 2026-09-19** — la regola del **fill ottenibile** ora esiste in quattro posti che la fanno rispettare: [`QUANT_REVIEW_PROTOCOL.md` **Step 3bis**](QUANT_REVIEW_PROTOCOL.md) (gate bloccante *prima* delle metriche, con le 3 domande, le 4 varianti SKIP/LIMIT/RECENTER/LIVE e i **5 campanelli**), il guardiano [`quant-gatekeeper.md` **Checklist 3.0**](../.claude/agents/quant-gatekeeper.md) (+ requisito **G1.9**, riga obbligatoria `ESECUZIONE` nell'output, e nella `description` del routing), [`STRATEGY_LIFECYCLE.md §6a.1`](STRATEGY_LIFECYCLE.md) (look-ahead **di prezzo** accanto a quello di informazione) e i red flag di [`quant_reviewer.md`](../agents/quant_reviewer.md). ⚠️ Scritto anche il lato che si dimentica: il fantasma **non ha un segno** — mancando la misura non c'e' verdetto **ne' GO ne' NO-GO** | **fatto** |
+| **E6** | ✅ **FATTO 2026-09-19** — la regola del **fill ottenibile** ora esiste in quattro posti che la fanno rispettare: [`QUANT_REVIEW_PROTOCOL.md` **Step 3bis**](QUANT_REVIEW_PROTOCOL.md) (gate bloccante *prima* delle metriche, con le 3 domande, le 4 varianti SKIP/LIMIT/RECENTER/LIVE e i **5 campanelli**), il guardiano [`quant-gatekeeper.md` **Checklist 3.0**](../.claude/agents/quant-gatekeeper.md) (+ requisito **G1.9**, riga obbligatoria `ESECUZIONE` nell'output, e nella `description` del routing), [`STRATEGY_LIFECYCLE.md §6a.1`](STRATEGY_LIFECYCLE.md) (look-ahead **di prezzo** accanto a quello di informazione) e i red flag di `quant_reviewer.md` (ritirato il 2026-10-13: la regola resta negli altri tre posti). ⚠️ Scritto anche il lato che si dimentica: il fantasma **non ha un segno** — mancando la misura non c'e' verdetto **ne' GO ne' NO-GO** | **fatto** |
 | **E4** | ✅ **CHIUSO 2026-09-19** — era scritto **in un posto solo** (guardiano, checklist 5), e una regola che si applica solo se passi di li' non e' una regola. Ora sta anche in [`STRATEGY_LIFECYCLE.md §8`](STRATEGY_LIFECYCLE.md) e in [`QUANT_REVIEW_PROTOCOL.md` Step 2](QUANT_REVIEW_PROTOCOL.md) (tabella: quali provenienze valgono come predizione indipendente), ed e' diventato un **campo verificabile**: `provenienza_ipotesi` in [`trial_ledger.json`](trial_ledger.json), controllato da `python -m core.trial_ledger`. ⚠️ Il controllo ha subito trovato **due famiglie senza provenienza dichiarata** (`meanrev_vol`, `london_breakout`): annotazione finche' restano chiuse, **bloccante** se qualcuno propone di riaprirle. Cutoff in vigore: **2026-05-31** |
 
 ---

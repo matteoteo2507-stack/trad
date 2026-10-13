@@ -295,4 +295,5 @@ commit testo, codice e contatore sono congelati: l'esito di ogni stadio sta in `
 Train eseguito **una volta** sul commit `2b66e65`, dopo l'approvazione: **CLOSED**. Il limite alto del divario dal
 casuale sta sotto la meta' dell'effetto atteso dalla fonte (§6), quindi la famiglia e' chiusa e **l'holdout sul DAX non
 e' stato aperto**. Numeri e descrittivi: [esito](reviews/esiti/ultima_mezzora_train.txt). Lettura, limiti e condizioni
-di riapertura: DECISIONS 2026-10-12 (2).
+di riapertura: DECISIONS 2026-10-12 (2). Revisione G2 del gatekeeper (12/10): **PASSA CON RISERVE**, 0 bloccanti sul
+verdetto, lettura corretta: [referto](reviews/ultima_mezzora_G2_2026-10-12.md).
