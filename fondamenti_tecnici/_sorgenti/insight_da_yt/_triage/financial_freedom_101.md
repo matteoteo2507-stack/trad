@@ -191,7 +191,7 @@ Classificazione per parole chiave dei titoli, quindi approssimata (elenco del 20
 01/10/2025). Nello stesso periodo la sua tabella riporta l'S&P 500 a +23% (2024) e +16% (2025). I titoli sono fatti
 per attirare e il contenuto può essere più prudente: per sapere quanto vale la sua lettura servono le previsioni
 datate **dentro** i video e un criterio scritto prima (per esempio la datazione ufficiale delle recessioni). È il
-metodo già previsto per le [previsioni geopolitiche](../../../../../projects/previsioni-geopolitiche.md): un registro
+metodo già previsto per le [previsioni geopolitiche](../../../../../projects/geopolitica.md): un registro
 misurato contro un riferimento.
 
 **Proposta di primo blocco (5 video, circa 57 minuti), da approvare.** Si legge un video alla volta, per intero, con

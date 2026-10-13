@@ -71,14 +71,14 @@ quelle che descrivono un **meccanismo economico**.
 | classe | cosa abbiamo testato o valutato | esito | accessibile al nostro perimetro? |
 |---|---|---|---|
 | **1 · premi** | premio azionario (PAC); copertura nei COT (03/10); carry FX (03/10); VRP (parcheggiato); oro notturno (proposto come premio, era classe 3: 03/10) | PAC operativo; COT e carry **chiusi** (potenza, premio sparito, operabilita'); VRP fuori perimetro | **poco**: i premi documentati sono gia' presi, fuori perimetro o spariti |
-| **2 · flussi forzati** | **nulla.** Unica traccia: Siento (funnel E.1), coperture dei market maker, *"il razionale piu' forte di 46 video"*, non testabile senza la catena delle opzioni | **casella vuota** (ricerca nel repo del 03/10: nessun riferimento) | **da capire**: alcuni flussi sono ancorati a orari e date che i nostri dati intraday vedono (§5) |
+| **2 · flussi forzati** | **momentum dell'ultima mezz'ora** (coperture di gamma, Baltussen et al. 2021): primo e unico test della classe, 12/10. Prima: solo la traccia di Siento (funnel E.1), non testabile senza la catena delle opzioni | **CLOSED al train** su S&P 500 e Nasdaq dal 2020 (DECISIONS 2026-10-12 (2)); le altre direzioni del §5 **mai guardate** | **da capire**: alcuni flussi sono ancorati a orari e date che i nostri dati intraday vedono (§5) |
 | **3 · comportamento** | livelli (384 trial), FADE/NXT, ORB, London breakout, TSMOM, mean reversion vol, stagionalita' TOM, griglia a numeri tondi, B1, B3, trend/playground, regola dell'1% sul VIX | **tutti chiusi**, tranne A1 (LEAD fermo per potenza) | si', ma e' la classe dove abbiamo **gia' speso quasi tutto** |
-| **4 · informazione** | **segnali del mentore XAT e di Gump**: compriamo l'informazione o l'analisi di un terzo; PEAD (D3) per i dati | XAT in revisione (storico selezionato), Gump in quarantena; PEAD bloccato dai dati (G6 a pagamento) | **solo comprandola da terzi**, e misurandola col forward |
+| **4 · informazione** | **segnali del mentore XAT e di Gump**: compriamo l'informazione o l'analisi di un terzo; PEAD (D3) per i dati | XAT in revisione (storico selezionato), Gump **CLOSED** (DECISIONS 2026-10-05); PEAD bloccato dai dati (G6 a pagamento) | **solo comprandola da terzi**, e misurandola col forward |
 | **5 · velocita'** | order flow (D1); il copier e' il caso **inverso**: siamo noi quelli lenti, e paghiamo il ritardo (gate C5) | fuori portata | no |
 
 **La lettura che conta.** Abbiamo speso quasi tutto il budget di ricerca nella classe 3, la piu' affollata e
-la piu' esposta al decadimento dopo la pubblicazione. Nella classe 1 il perimetro ci blocca. **La classe 2 non
-l'abbiamo mai guardata.** L'unico binario vivo con un passato positivo, il mentore, sta nella classe 4: non e'
+la piu' esposta al decadimento dopo la pubblicazione. Nella classe 1 il perimetro ci blocca. **Nella classe 2 abbiamo
+fatto un solo test** (12/10, chiuso); fine mese, fixing e scadenze restano da guardare. L'unico binario vivo con un passato positivo, il mentore, sta nella classe 4: non e'
 un caso, e' la classe in cui un terzo puo' avere qualcosa che noi non abbiamo.
 
 ### 4. Le domande della fase RICERCA (prima del template e della pre-registrazione)
@@ -115,7 +115,7 @@ Servono a scegliere **cosa leggere** nelle fonti del §6, non cosa testare. Ognu
   - coperture di fine giornata degli ETF a leva e dei market maker (indici, ultima mezz'ora; momentum
     intraday: Gao-Han-Li-Zhou 2018 da confermare; Baltussen et al. 2021 abstract letto l'08/10, lega il
     momentum dell'ultima mezz'ora alle coperture di gamma dei market maker di opzioni e degli ETF a leva:
-    [[10_indicatori_tecnici]] §2);
+    [[10_indicatori_tecnici]] §2). **Testato e CLOSED il 12/10** (DECISIONS 2026-10-12 (2)): non riproporre;
   - scadenze delle opzioni sugli indici.
 
   ⚠️ Tutti cadono vicino al perimetro gia' chiuso dell'intraday sugli indici (ORB, London breakout), dove i

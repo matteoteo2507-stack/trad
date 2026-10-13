@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-10-12",
+  "aggiornato": "2026-10-13",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -191,13 +191,14 @@
       "round_rifinitura": 0,
       "holdout_aperto": "2026-08-07",
       "fonte_esterna": false,
-      "verdetto": "IN REVISIONE (02/10): l'OOS del 07/08 e' misurato su un export da cui il canale cancella i perdenti; si rimisura sul forward del copier",
+      "verdetto": "IN REVISIONE (02/10): l'OOS del 07/08 e' misurato su un export da cui il canale cancella i perdenti. Il forward del copier su cui rimisurare non e' partito e non parte (13/10, test di esecuzione CLOSED a 0 trade): nessuna misura in programma",
       "fonti": [
         "docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md",
         "docs/COPIER_EXECUTION_PREREGISTRATION.md",
         "DECISIONS.md 2026-08-07",
         "DECISIONS.md 2026-09-18 (4)",
         "DECISIONS.md 2026-10-02 (notte)",
+        "DECISIONS.md 2026-10-13 (2)",
         "docs/reviews/xat_cancellazioni_2026-10-02.md"
       ],
       "note": "B7 (uscita a 1R), C3 (soglie di ritiro), C4 (sizing), C5 (gate di latenza) sono state chiuse a 0 trial: erano misure o verifiche, non ricerca di conferma (LIFECYCLE §3). La correzione del fuso e la sua doppia applicazione sono FIX, non trial.",
@@ -296,7 +297,8 @@
         "DECISIONS.md#2026-10-09",
         "DECISIONS.md#2026-10-11",
         "DECISIONS.md#2026-10-12",
-        "docs/reviews/esiti/ultima_mezzora_train.txt"
+        "docs/reviews/esiti/ultima_mezzora_train.txt",
+        "docs/reviews/ultima_mezzora_G2_2026-10-12.md"
       ],
       "note": "Pre-registrazione approvata il 12/10, train eseguito una volta lo stesso giorno: CLOSED, holdout rimasto sigillato (DECISIONS 2026-10-12 (2)). Famiglia nuova per decisione di Matteo (09/10), parente di opening_range (CLOSED): parentela dichiarata e niente holdout sui dati dell'ORB. Due stadi dello stesso trial: train SPX500+NAS100 da 06/2020, poi, solo se PASSA, holdout DAX (sigillato, scaricato l'11/10). Primaria: proporzionale con tetto contro direzione casuale a pari taglia; guardia: divario a taglia fissa positivo al 5% a una coda (strada B, eccezione dichiarata a LIFECYCLE 4quater, DECISIONS 2026-10-11). Massimo esito LEAD, gate finale forward. Terzo slot esterno del 2026-Q4.",
       "provenienza_ipotesi": "letteratura",

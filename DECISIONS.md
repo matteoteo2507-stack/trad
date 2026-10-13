@@ -7,7 +7,132 @@
 >
 > Formato: ogni voce = *data · decisione · razionale · link*. Ordine: dal più recente.
 > Questo file rispecchia nel repo le decisioni che vivono anche nella memoria di lavoro
-> (`~/.claude/projects/.../memory/`), così sono visibili sfogliando il workspace e su GitHub.
+> (`memoria/trad/`, nell'hub), così sono visibili sfogliando il workspace e su GitHub.
+
+---
+
+## 2026-10-13 (5) — Pacchetto VTOB del socio (order block su XAUUSD): **NON DIMOSTRATO**, chiuso all'intake a 0 trial
+
+**Decisione di Matteo (13/10): strada A.** Il socio ha letto la [nota di intake](docs/reviews/vtob_socio_intake_2026-10-11.md),
+concorda con i rilievi e aveva proposto lui stesso di chiudere cosi': per i suoi test non aveva le nostre
+configurazioni (controllo dei dati, baseline casuale, conteggio delle prove).
+
+**Verdetto.** Non dimostrato, **non refutato**. Il codice e' pulito (nessun look-ahead, fill ottenibili) e i suoi
+numeri si riproducono; manca una misura che separi la regola dalla salita dell'oro e dalla selezione fra almeno 46.080
+varianti, e sui suoi dati non si puo' piu' fare. Quanto vedevano i suoi campioni: MDE a un solo test 0,32 R (A), 0,55
+(B), 0,42 (C), 0,50 (D), contro medie lorde di 0,49, 0,72, 0,42 e 0,41 R, prima di contare le prove. Numeri e fonte
+nella nota (misure dell'11/10, `analysis/vtob_intake/descrittivi.py`).
+
+**Contabilita'.** 0 trial. Stessa grandezza di `livelli` (CLOSED) e `nxt` (KILL): nessuna famiglia nuova, contatore non
+toccato, nessuna pre-registrazione, nessuno slot esterno usato.
+
+**Cosa lo riapre:**
+1. un **registro forward** del socio (demo o reale) con data d'inizio e numero di trade dichiarati **prima**: 109
+   trade indipendenti per vedere l'effetto dichiarato per intero (0,465 R), 438 per la meta';
+2. oppure il test unico pre-registrato di ablazione della zona (strada B della nota, §6): una decisione esplicita su
+   STRATEGY_LIFECYCLE §7 e uno slot esterno, che nel 2026-Q4 non c'e'.
+
+Un backtest nuovo sugli stessi dati, con parametri, filtri o strumenti diversi, **non** lo riapre: sono altre prove
+della stessa ricerca.
+
+**Secondo pacchetto (datato 12/10, letto il 13/10): rientra in questa chiusura.** Uscite parziali su A e B e una
+strategia sul Nasdaq (US_M30): 535 trade che si riproducono, stesso motore pulito, stessa lettura (490 trade long per
++194,1 R, stesso errore di unita' nello spread dell'oro, "molte varianti provate" senza numero). 0 trial. Dettaglio
+nella nota, §8.
+
+**Aperti, dal socio:** campo Digits di XAUUSD sul suo terminale e data del cambio (l'errore di unita' dello spread e'
+un'inferenza dai file); swap long per notte del suo conto (nella nota c'e' una stima con un 6% annuo ipotetico); i
+risultati di B dal 2011 e di C dal 2018, che il suo pacchetto permette e il report non mostra; l'esito del suo
+controllo a ingressi casuali (`controllo.py`).
+
+---
+
+## 2026-10-13 (4) — `agents/` e `skills/` alla radice **ritirati** dopo verifica: nessuno strumento li carica, nessun codice li legge
+
+**Decisione dell'utente (13/10):** si cancellano, **a condizione di verificare prima** che non servano al workspace.
+
+**Verifica (13/10, sola lettura):**
+- **Claude Code** carica solo `.claude/agents/` (`quant-gatekeeper`, `mql5-converter`) e `.claude/skills/`;
+  `.claude/settings.json` non aggiunge altre cartelle, e nella sessione le voci alla radice non compaiono.
+- **Codice**: nessun file `.py`, `.yaml`, `.json`, `.toml`, `.mq5` o notebook li legge. Due sole menzioni, in
+  commenti (`notifiers/telegram.py`, `strategies/confluence_levels/__init__.py`).
+- **Automazioni**: nessun workflow nel repo, nessuna cartella di configurazione di altri strumenti alla radice.
+- **Contenuto**, voce per voce:
+
+| Ritirato | A cosa serviva | Perche' non serve |
+|---|---|---|
+| `skills/strategy-designer/` | disegnare una strategia e iterare sul backtest finche' "i risultati sono coerenti" | e' il ciclo che [STRATEGY_LIFECYCLE](docs/STRATEGY_LIFECYCLE.md) vieta: nessuna pre-registrazione, nessun baseline |
+| `skills/backtest-runner/` | lanciare una strategia su piu' backtester | i backtester non esistono (`backtesters/` ha solo l'interfaccia, mai importata); le regole di referto che conteneva sono nel gatekeeper (G2, Checklist 9) e nel modulo `05` |
+| `skills/stock-selector/`, `agents/stock_selector.md` | istruzioni per costruire il modulo dal notebook; copia in prosa delle regole di punteggio | il modulo esiste (`strategies/stock_selector/`), la specifica sono notebook e `scoring.py`; selettore archiviato a giugno 2026 |
+| `agents/consensus/` (4 personas) | secondo parere sulle scelte del selettore (Stage 4) | mai costruito; selettore archiviato |
+| `skills/telegram-notifier/` | configurazione del bot e formato del messaggio | il formato e' nel codice (`notifiers/telegram.py`, con i suoi test), la configurazione in `.env.example` |
+
+**Non verificabile dal repo:** se esiste ancora la routine pianificata che pubblicava lo Stock Selector sul ramo
+`claude/weekly-stock-selector` (ultimo commit 2026-05-31), e se il suo testo cita questi file.
+
+**Recupero:** `git checkout 30198f4 -- agents skills`. Da ora skill e agenti nuovi vanno solo in `.claude/`
+([CONVENTIONS](CONVENTIONS.md)).
+
+---
+
+## 2026-10-13 (3) — **Un solo revisore**: il primo e la sua skill ritirati, resta il gatekeeper; regola sui documenti superati
+
+**Decisioni dell'utente (13/10)**, dopo l'healthcheck dell'hub del 12/10:
+1. **Il revisore e' uno.** Dal 23/08 ne convivevano due: `agents/quant_reviewer.md` (voce del 24/05, con la skill
+   `skills/quant-review/`, in cartelle che Claude Code non carica) e
+   [`.claude/agents/quant-gatekeeper.md`](.claude/agents/quant-gatekeeper.md), nato come file nuovo invece che come
+   aggiornamento del primo. Il guasto era scritto dal 02/10 in [mappa 01](mappa/01-ciclo-di-vita-e-gate.md). Il primo
+   revisore e la skill sono **cancellati** (recupero: `git show 8f0ca54:agents/quant_reviewer.md`). Le sue domande
+   ancora valide sono la **Checklist 9** del gatekeeper, **non bloccante**; la sua letteratura e' in
+   [RIFERIMENTI](fondamenti_tecnici/RIFERIMENTI.md). [QUANT_REVIEW_PROTOCOL](docs/QUANT_REVIEW_PROTOCOL.md) e
+   [STRATEGY_LIFECYCLE](docs/STRATEGY_LIFECYCLE.md) §9 nominano il gatekeeper.
+2. **Un documento superato si cancella; resta, con "⚠️ Superato" e rimando, solo cio' che serve come storico.**
+   Concilia la regola dell'hub del 09/10 con quella di [mappa 02](mappa/02-stato-canonico-e-decisions.md), dove ora
+   e' scritta. Un componente che ne sostituisce un altro aggiorna lo stesso file, o ritira il vecchio nella stessa
+   sessione.
+
+**Non cambia:** nessun gate e nessuna soglia. Il formato GO / NO-GO / RAFFINA del primo revisore non e' passato: il
+verdetto lo dichiara l'utente, e lo Step 7 del protocollo ora lo dice. Le review di maggio e giugno restano nel loro
+formato.
+
+**Deciso lo stesso giorno (Matteo):** le quattro domande della Checklist 9 **non bloccano il verdetto**. La risposta
+era gia' nel repo: il verdetto si da' sul binario 1R e la taglia non crea vantaggio (LIFECYCLE §4quater; con attesa
+positiva la crescita e' positiva sotto il doppio del Kelly, modulo `05`); lo Sharpe sopra 2 e' un campanello, e un
+blocco sul numero alto fallirebbe il controllo positivo (voce 2026-10-07); del regime blocca gia' la parte misurabile
+(§6a.3, baseline appaiato per anno), il taglio dopo l'esito e' un filtro (§4bis); il contributo al book e' una regola
+di allocazione e oggi non e' misurabile, perche' non c'e' un flusso operativo. Prima del capitale tornano la 1
+(scelta del rischio; la frazione di Kelly che fa da tetto **non e' ancora fissata**) e la 3 (pre-mortem).
+Nello storico (contatore, queste voci, `docs/reviews/`) nessun verdetto e' dipeso solo da una delle quattro.
+Il resto di `agents/` e `skills/` alla radice e' stato ritirato lo stesso giorno: voce (4).
+
+---
+
+## 2026-10-13 (2) — Copier XAT: la demo su PC2 **non parte**; test di esecuzione **CLOSED** a 0 trade
+
+**Decisione dell'utente (13/10):** la demo del copier su PC2, prevista da lunedi' 05/10 (voce del 02/10), non e'
+partita e non parte: *"non ne vale la pena e il tempo"*.
+[COPIER_EXECUTION](docs/COPIER_EXECUTION_PREREGISTRATION.md) passa da `IN AVVIO` a **`CLOSED`**.
+
+**Cosa dice e cosa non dice.**
+- E' una chiusura **per costo, non un verdetto**: nel conteggio N = 60 ci sono **0 trade**, nessun esito e' stato
+  visto e nessuna soglia toccata. Non c'e' un MDE da scrivere perche' non c'e' una misura.
+- Non dice niente sul segnale di XAT ne' sull'esecuzione col gate (b), il cui E[R] resta non misurato (voce del
+  30/09, sera).
+
+**Conseguenze:**
+1. Il **forward su cui rimisurare XAT** (voce del 02/10, notte) **non esiste**. `mentor_signals` resta
+   `IN REVISIONE` **senza una misura in programma**: frontmatter di
+   [MENTOR_SIGNALS_OOS](docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md) e contatore aggiornati. Nessun numero di XAT e'
+   citabile come edge: lo storico e' selezionato dalle cancellazioni.
+2. La **variante del socio** (bracket fisso 1:1 e 1:2), da rigiocare sui segnali del forward, resta non testata:
+   0 trial.
+3. I monitor a parametri fissi del §8bis e la misura storica del gate (b) non si fanno: servivano prima del capitale.
+4. `signal_copier/` resta nel repo; `gold_5tp` resta disattivato in config.
+
+**Per riaprire** servono un host acceso 24 ore su 24 e la finestra di N = 60 segnali eseguiti, come dichiarato il
+02/10. La pre-registrazione si riusa com'e', perche' nessun dato e' stato visto.
+
+**Deciso lo stesso giorno (Matteo):** `mentor_signals` **resta `IN REVISIONE`**, senza una misura in programma.
 
 ---
 
@@ -35,29 +160,50 @@ Zero strategie, zero pre-registrazioni, 0 trial. **Nessuna modifica al PAC.** Cl
 ## 2026-10-12 (2) — H1 momentum dell'ultima mezz'ora: **CLOSED** al train, primo e unico trial; holdout sul DAX **mai aperto**
 
 **Esito** (esecuzione unica del 12/10 sul commit `2b66e65`, dopo l'approvazione;
-[esito](docs/reviews/esiti/ultima_mezzora_train.txt), fonte di tutti i numeri di questa voce). SPX500 + NAS100,
-1.537 sedute dal 01/06/2020 al 16/07/2026. Divario fra la posizione proporzionale con tetto e la stessa taglia con
-direzione casuale: **−0,51 pb a seduta [−2,01; +0,99], MDE 2,15**. L'effetto atteso dalla fonte, nelle stesse unita',
-era 4,56 pb; la soglia di CLOSED e' la meta', 2,28. Il limite alto sta sotto: **l'effetto pubblicato e la sua meta'
-sono esclusi** su questi dati (tutte le otto righe della tabella di esclusione).
+[esito](docs/reviews/esiti/ultima_mezzora_train.txt), fonte dei numeri di questa voce dove non e' indicato altro;
+G2 del gatekeeper = **PASSA CON RISERVE**, 0 bloccanti sul verdetto, lettura corretta:
+[qui](docs/reviews/ultima_mezzora_G2_2026-10-12.md)). SPX500 + NAS100, 1.537 sedute dal 01/06/2020 al 16/07/2026.
+Divario fra la posizione proporzionale con tetto e la stessa taglia con direzione casuale: **−0,51 pb a seduta
+[−2,01; +0,99], MDE 2,15**. L'effetto atteso dalla fonte, nelle stesse unita', era 4,56 pb; la soglia di CLOSED e' la
+meta', 2,28. Il limite alto sta sotto: **con l'intervallo al 95% sono esclusi, su questi dati, il divario che la
+correlazione pubblicata produrrebbe con questa posizione (formula del §6 della pre-registrazione) e la sua meta'**
+(tutte le otto righe della tabella di esclusione). Regge su 10 semi (limite alto da +0,92 a +1,03) e con blocchi da 1
+a 120 sedute (al piu' +1,46; `analysis/ultima_mezzora/verifiche_g2.py`, 12/10). Contro l'altro numero della fonte, il
+rendimento della strategia di solo segno (2,72 pb a seduta), la taglia fissa esclude l'effetto pieno; la meta' solo al
+margine (+1,28 contro 1,36).
 
 - **Nessuna condizione di PASSA e' soddisfatta**: attesa netta −0,97 pb [−2,43; +0,50], −1,71 a costi tripli; divario
   negativo su entrambi gli indici; guardia a taglia fissa −0,07 pb [−1,38; +1,28], a −0,10 errori standard (soglia
-  +1,645). La scelta fra proporzionale e solo segno non ha cambiato l'esito.
+  +1,645). Nemmeno il solo segno passa: con la formula del §6 tradotta in taglia fissa (3,69 pb, meta' 1,84: calcolo
+  della G2, non pre-registrato) anche il verdetto a taglia fissa sarebbe stato CLOSED.
 - **Controlli prima del verdetto**: numeri noti riprodotti (deviazione dell'ultima mezz'ora 26,4 e 30,7 pb, 1.538
-  sedute), 2 sedute escluse per barre mancanti, fill non ottenibili 0 per costruzione, p dagli spostamenti 0,77
-  [0,75; 0,80], limite basso stabile su 10 semi.
+  sedute), 2 sedute escluse su 1.539 per ciascun indice, fill non ottenibili 0 per costruzione, p dagli spostamenti
+  0,77 [0,75; 0,80]. Sui 10 semi il limite basso e' stabile; il limite alto, che e' quello che decide, va da +0,92 a
+  +1,03 (`verifiche_g2.py`).
 - **Ampiezza**: divario positivo in 2 anni su 7 e su 0 indici su 2.
 
 **Cosa dice e cosa non dice.**
-- Dice che **su questi CFD, dopo il campione del paper, l'effetto della grandezza pubblicata non c'e'**. Sul sintetico
-  il CLOSED scattava a torto nel 2,7% dei casi con un effetto dimezzato (pre-registrazione §9).
-- Non dice che l'effetto e' zero: un divario sotto circa 1 pb a seduta non e' escluso. Ma a quel livello sta sotto i
-  costi.
-- Non smentisce il paper sul suo campione (futures, 1974-2020). Decadimento dopo la pubblicazione, CFD al posto dei
-  futures, barre a 5 minuti: il test non distingue fra queste tre spiegazioni.
-- **Il 2022** e' l'unico anno nettamente positivo (+4,89 pb di divario). E' un descrittivo, un anno su sette, guardato
-  dopo. Un filtro di regime scelto adesso sarebbe un parametro scelto sull'esito, su una famiglia chiusa.
+- Dice che **su questi CFD, dopo il campione del paper, un effetto della grandezza pubblicata, o della sua meta', e'
+  escluso al 95%**. Sul sintetico il CLOSED scattava a torto nel 2,7% dei casi con un effetto dimezzato
+  (pre-registrazione §9).
+- Non dice che l'effetto e' zero: un divario fino a circa +1 pb a seduta non e' escluso (limite alto +0,99). Ai costi
+  usati nel test, 0,37 pb a seduta in media, **non** starebbe sotto i costi: il limite alto dell'attesa netta e'
+  +0,50 pb. Un netto positivo e' escluso solo a costi tripli: −1,71 [−3,17; −0,23] (`verifiche_g2.py`, 12/10).
+- Non smentisce il paper sul suo campione (futures, 1974-2020). Il test non distingue fra le spiegazioni: decadimento
+  dopo la pubblicazione; cambio di regime dopo il 2021 (opzioni a scadenza giornaliera, gia' scritto nella scheda H1
+  del backlog); CFD lato denaro al posto dei futures; un difetto della nostra lettura dei dati, che un solo stadio non
+  puo' escludere (pre-registrazione §8). Sull'ultimo punto la G2 ha confrontato i rendimenti con un secondo fornitore
+  sul 2025-2026 e coincidono.
+- **Il 2022** e' l'unico anno con un divario grande e positivo: +4,89 pb, cioe' +1,80 errori standard di quell'anno
+  (il 2023 e' a +0,14). E' un descrittivo guardato dopo, il migliore di sette. Sotto il nullo del test l'anno migliore
+  dei sette arriva a +4,89 pb nel 6,7% dei casi e a +1,80 errori standard nel 23,8%; fra le 12 celle di sottocampione
+  dell'esito la migliore arriva a +1,80 nel 31,1% (`analysis/ultima_mezzora/descrittivo_anno_migliore.py`, 12/10).
+  Non si distingue da cio' che il caso produce quando si guardano sette anni. Un filtro di regime scelto adesso
+  sarebbe un filtro scelto sull'esito (LIFECYCLE §3 e §4), su una famiglia chiusa.
+- **I due controlli del meccanismo** (intervalli da `verifiche_g2.py`, 12/10). L'effetto non cresce col movimento: la
+  stima va al contrario (solo segno lordo +1,02 pb nei giorni di movimento piccolo, −1,23 nei grandi; grande meno
+  piccolo −2,25 [−5,08; +0,57]). L'inversione il giorno dopo ha il segno atteso (−3,59 pb [−8,75; +1,24]). Nessuno dei
+  due si distingue da zero: il meccanismo non lascia impronte misurabili in questo campione.
 
 **Conseguenze.** Famiglia `momentum_ultima_mezzora` **CLOSED** nel contatore, 1 trial su 1, nessun round di
 rifinitura. I file europei restano in casa ma **sigillati**: usarli e' una riapertura. La sezione H del backlog non ha
@@ -69,9 +215,19 @@ l'effetto contro un controllo a direzione casuale, o dati di futures veri con un
 lo nasconde. Per la regola "stessa grandezza = stessa famiglia" non la riaprono un'altra finestra, il segnale della
 prima mezz'ora (Gao et al. 2018) o un filtro di volatilita' sugli stessi indici.
 
-**Revisione.** I controlli della G2 li ho letti io sull'esito (fill, baseline accanto al risultato, intervalli a
-blocchi, MDE, costi 3x, ampiezza). La **passata indipendente del gatekeeper non e' stata fatta**. Non cambia il
-seguito: CLOSED e NON DIMOSTRATO chiudono entrambi la famiglia e lasciano l'holdout sigillato (pre-registrazione §8).
+**Revisione G2 (12/10, chiesta da Matteo).** Passata indipendente del gatekeeper fatta dopo la prima stesura di
+questa voce: verdetto confermato, lettura corretta in sette punti. Cosa e' cambiato rispetto alla prima stesura
+(commit `8f0ca54`):
+- avevo scritto che un effetto sotto 1 pb "sta sotto i costi": **falso** sui numeri dell'esito, tolto;
+- avevo messo "barre a 5 minuti" fra le spiegazioni senza un numero: tolto; aggiunte le due scritte prima del test;
+- "nettamente positivo" per il 2022 era un'impressione: sostituito dalla misura;
+- aggiunti i due controlli del meccanismo e la tenuta del limite alto.
+
+**Debito di protocollo emerso** (uno solo l'elenco: G2 §6 e §8): niente percorso per un'ipotesi nata dai descrittivi
+di un test chiuso; il §7 non dice come si contabilizza una riapertura; i descrittivi escono senza incertezza; la
+ripetizione sui semi copre il limite che non decide; bozza e passate G1 non erano in git prima dell'approvazione.
+Tracciato nel [backlog, sezione E](docs/BACKLOG_RICERCA.md). **Nessuna modifica al protocollo e' stata fatta:**
+decide Matteo.
 
 ---
 
@@ -3202,7 +3358,7 @@ l'edge. È stato il cap della quant-review di London Breakout.
 **Razionale.** Dopo 2 settimane live (London: 2 trade; Confluence: 0 trade per attrito operativo)
 serviva un metro statistico (PBO, DSR, walk-forward, MC permutation).
 
-→ [agents/quant_reviewer.md](agents/quant_reviewer.md) · [core/quant_metrics.py](core/quant_metrics.py) ·
+→ `agents/quant_reviewer.md` (ritirato il 2026-10-13: vedi la voce 2026-10-13 (3)) · [core/quant_metrics.py](core/quant_metrics.py) ·
 [docs/QUANT_REVIEW_PROTOCOL.md](docs/QUANT_REVIEW_PROTOCOL.md)
 
 ---
@@ -3347,4 +3503,5 @@ Operativamente la mappa vive in due posti: il **registro di intake**
 ([fondamenti_tecnici/_INTAKE.md](fondamenti_tecnici/_INTAKE.md)) traccia stato e destinazione di
 ogni fonte; le **condizioni di validità** stanno accanto al concetto nel file `fondamenti_tecnici/`
 che lo ospita, con cross-link al claim opposto. Regola epistemica di base: §0 di
-[agents/quant_reviewer.md](agents/quant_reviewer.md) (il gioco, non i giocatori).
+`agents/quant_reviewer.md` (il gioco, non i giocatori; file ritirato il 2026-10-13, il principio è in
+[05_portfolio_rischio](fondamenti_tecnici/05_portfolio_rischio/principles.md)).
