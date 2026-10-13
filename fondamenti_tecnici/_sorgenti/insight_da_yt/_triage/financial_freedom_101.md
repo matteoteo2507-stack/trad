@@ -1,0 +1,217 @@
+# Financial Freedom 101 — scheda del canale e dei video letti
+
+> **Stato: quarantena.** Due video letti per intero il 2026-10-13, uno alla volta, dalle copie in `_raw/_lettura/`;
+> `rule_extract.py` passato dopo la lettura, nessun passaggio sfuggito. Canale elencato (solo titoli), nessuna
+> trascrizione scaricata in blocco. **Zero strategie, zero pre-registrazioni, 0 trial. Il PAC non cambia.**
+> Conti rifatti con [`analysis/pac_intake/verifiche_ff101.py`](../../../../analysis/pac_intake/verifiche_ff101.py)
+> (eseguito il 2026-10-13): ogni numero "nostro" di questa scheda viene da lì.
+
+## 1. Che fonte è
+
+Canale YouTube `@financial_freedom101`: 253 video, 40,8 ore (elenco del 2026-10-13). Un ingegnere dipendente
+statunitense racconta come è passato da un debito di studio a un patrimonio sopra il milione di dollari in circa
+quindici anni, e pubblica ogni una o due settimane un aggiornamento sull'economia USA.
+
+- **Di cosa vive il canale** (dichiarato nel video 1): pubblicità di YouTube e affiliazione Amazon. Nei due video letti
+  non vende corsi, segnali o prodotti. Da ricontrollare sul resto del canale.
+- **Cosa lo distingue**: mostra i propri numeri anno per anno, comprese le perdite e gli errori (la vendita del 2022,
+  l'azienda agricola in perdita, il canale a zero entrate per anni).
+- **Cosa non è**: non è una fonte di rendimenti. Il patrimonio è autodichiarato, è un caso solo, è un sopravvissuto
+  (non vediamo chi ha fatto lo stesso senza riuscirci) e copre il 2009-2025, uno dei periodi migliori della storia
+  dell'azionario USA (§4).
+
+## 2. Era già nel repo, senza nome
+
+Il blocco 4 di `_sorgenti/Appunti misti 2026-08-04.txt` ("Economic and Financial Outlook Update - August 4, 2026",
+registrato come "video divulgativo") è il video **`2YqkjSxXA7U`** di questo canale, *Economic Update 04 Aug 2026*.
+Attribuito il 13/10 per contenuto e durata:
+
+- gli appunti arrivano al minuto 15:38, il video dura 15 minuti;
+- coincidono alla lettera con il video 2: fondo d'emergenza di 6 mesi giustificato dal quarto di disoccupati oltre i
+  6 mesi, denaro che serve entro 5 anni in conti garantiti, 70-80% S&P 500 + 10-20% internazionale + 0-10% obbligazioni
+  secondo l'attesa sui tassi, metalli (oro, argento, alluminio, acciaio) che nel video 1 dichiara di possedere.
+
+**Conseguenze.**
+- L'allocazione 70-80% S&P 500, rifiutata il 04/08 e ritrovata oggi, è **una occorrenza di una fonte sola**, non due
+  conferme ([[feedback_conferme_per_fonte]]).
+- Gli altri tre blocchi di quel file (decenni persi, valutazione del rischio, MMT) sono video diversi e nessun titolo
+  del canale li richiama: restano senza autore. La frase "la fonte si auto-contraddice" scritta il 04/08 dava per
+  scontato un autore unico: corretta in `08_asset_allocation_passiva` e in `_INTAKE.md`. Il rifiuto dell'allocazione
+  regge da solo (concentrazione su un paese).
+- Il titolo del riassunto era del riassuntore, non del video: è la regola già scritta per Quant Guild (un blocco
+  orfano si cerca per contenuto su tutto il canale).
+
+## 3. Video 1 — *Living Paycheck to Paycheck to Millionaire*
+
+`9MuAacOIAv4` · 27 min · 4.369 parole · il più recente di almeno quattro versioni della stessa storia sul canale
+(#48, #103, #134 dell'elenco: non lette).
+
+**Cosa contiene.** Una tabella anno per anno, 2009-2026: rendimento dell'S&P 500, versamenti dell'anno, patrimonio,
+scelte di vita. Poi dieci lezioni.
+
+**Il percorso, in breve (tutto dichiarato dalla fonte).** Parte nel 2009 con un patrimonio negativo e tre lavori.
+Primo impiego stabile nel 2010. Estingue prima i debiti a tasso alto, poi il prestito di studio (2012). Versa nel
+piano pensionistico aziendale la quota minima che fa scattare il contributo del datore, poi la alza: 4% → 6% → 10% →
+12% → 14% → 16% in sette anni. Il datore aggiunge l'11%. Compra una casa sotto il prezzo di zona e la ristruttura da
+sé; la rivende nel 2017. Nel 2022 vende azioni per 200 mila dollari, all'inizio del ribasso, per comprarne un'altra.
+Supera il milione a giugno 2024.
+
+| # | Affermazione | Stato | Nota |
+|---|---|---|---|
+| 1.1 | Patrimonio da −45 mila (2009) a 1,29 milioni (inizio 2026) | non falsificabile | Autodichiarato. **Coerente al suo interno**: i versamenti dichiarati, investiti ai rendimenti che lui stesso elenca e tolte le due vendite, danno 834 mila contro 892 mila dichiarati fra piano aziendale, azioni e conti pensione (§4). Non è una verifica dei dati |
+| 1.2 | Rendimenti annui dell'S&P 500 elencati | verificato (ordine di grandezza) | Sui nostri dati di solo prezzo, 12 anni dal 2013: il dichiarato sta in media 1,3 punti sopra (da −0,5 a +3,1), cioè circa i dividendi. Lui stesso avverte che le fonti differiscono sui dividendi |
+| 1.3 | In vent'anni l'S&P 500 ha battuto oltre il 90% dei fondi a gestione attiva | verificabile | Vedi 2.1 |
+| 1.4 | A ogni aumento di stipendio, una parte dell'aumento va nei versamenti prima di abituarsi a spenderla | verificabile | È il meccanismo "Save More Tomorrow" (Thaler e Benartzi 2004): chi aderì passò dal 3,5% al 13,6% del reddito al quarto aumento. Evidenza causale giudicata **bassa** dal registro del Dipartimento del Lavoro USA: chi aderisce si è scelto da solo. Conflitto con il nostro piano in §6 |
+| 1.5 | Prima il contributo del datore, poi tutto il resto ("non volevo perdere il 4%") | verificabile | Vale per il sistema USA. Domanda italiana in §7 |
+| 1.6 | Vendere 200 mila di azioni a inizio 2022 per la casa è costato circa 30 mila ("non potevo aspettare") | non falsificabile | Autodichiarato. È il caso concreto dei **due secchi**: denaro con una data d'uso non sta in azioni. Lo conferma lui stesso nel video 2 (regola dei 5 anni) |
+| 1.7 | Circa metà delle attività chiude entro 5 anni: parti sapendo che fallirà e spendi poco all'inizio (forno avviato con 4 mila dollari affittando ore in forni altrui) | verificabile | La statistica non è stata controllata. La regola è la nostra "potenza prima di raccogliere" applicata a un'impresa: comprare la risposta al prezzo più basso |
+| 1.8 | "Le notizie vendono paura: guarda la Fed, non le notizie" | non falsificabile | Per il PAC non serve né l'una né l'altra: il §0 non rivede le prospettive di mercato |
+| 1.9 | "Non chiedere consigli finanziari a chi è al verde: trova chi ha fatto ciò che vuoi fare" | non falsificabile | Regola di selezione delle fonti che **seleziona sopravvissuti**: chi ha ottenuto il risultato non distingue il metodo dalla fortuna del periodo |
+| 1.10 | Impara le norme fiscali: casa venduta senza imposte, conti a esenzione futura, conto del coniuge, conversione | verificabile | Norme USA. Mappa in §7 |
+
+**Che cosa ha prodotto il risultato** (nostra lettura dei suoi numeri, §4): reddito salito di circa quattro volte in
+quindici anni, contributo del datore dell'11%, risparmio complessivo intorno a un quarto del reddito negli anni in
+cui entrambi i dati sono dichiarati (12% nel 2011, 26% nel 2016, 27% nel 2018, contributo del datore compreso), e un
+mercato che ha reso il 13,6% l'anno. La scelta dei titoli non c'entra: quasi tutto è indice.
+
+## 4. Conti rifatti (2026-10-13)
+
+**Coerenza del video 1.** Versamenti dichiarati 2010-2025: 513 mila dollari, contributo del datore compreso; il 2012
+è ambiguo nella trascrizione ed è letto come 25 mila. Vendite per le due case: 225 mila. I versamenti sono il **40%**
+del patrimonio dichiarato.
+
+**Quanto pesa il periodo.** Gli stessi versamenti e le stesse vendite, a rendimento costante:
+
+| Rendimento annuo | Investito a inizio 2026 (migliaia di dollari) |
+|---|---|
+| quello dichiarato (13,6% composto) | 834 |
+| 10% | 578 |
+| 7% | 463 |
+| 5% | 402 |
+| 0% | 288 |
+
+Con un rendimento "normale" del 7% avrebbe poco più della metà. **La storia insegna l'ordine delle operazioni e la
+costanza, non quanto ci si può aspettare.** Per le attese resta la regola del modulo 08: rendimento reale del 3-4%.
+
+**Commissioni (video 2).** I suoi numeri tornano tutti: 300 dollari al mese per 40 anni danno 1.047 mila all'8%
+reale, 787 mila con l'1% di costo (−24,8%), 597 mila con il 2% (−43,0%). L'8% reale è un'ipotesi alta e vale per i
+soli USA, ma **la quota persa dipende poco dal rendimento ipotizzato**. Lo stesso conto con i costi del nostro PAC
+(OCF 0,14% e bollo 0,20%, da [INVESTING_PILLAR_PLAN §0](../../../../docs/INVESTING_PILLAR_PLAN.md)):
+
+| Rendimento reale | OCF | bollo | OCF + bollo | per confronto: 1% |
+|---|---|---|---|---|
+| 8% | −4,0% | −5,6% | −9,3% | −24,8% |
+| 5% | −3,6% | −5,1% | −8,4% | −22,5% |
+
+Su 40 anni i nostri costi tolgono circa l'8-9% del capitale finale; più di metà è il bollo, che è una tassa.
+
+**Giorni migliori (video 2).** S&P 500, solo prezzo, 16/01/2012 → 13/08/2026 (3.781 sedute, 14,6 anni, dati
+Dukascopy). Sempre investito: ×6,02.
+
+| Giorni tolti | senza i migliori | senza i peggiori | senza entrambi | migliori entro 10 sedute da un peggiore |
+|---|---|---|---|---|
+| 10 | ×3,19 | ×11,05 | ×5,85 | 5 su 10 |
+| 20 | ×2,26 | ×16,45 | ×6,17 | 12 su 20 |
+| 60 | ×0,83 | ×53,70 | ×7,42 | 35 su 60 |
+
+I suoi numeri reggono nell'ordine di grandezza (senza i 10 migliori si perde il 56% dei guadagni, senza i 20 il 75%),
+e regge la sua premessa: i giorni migliori seguono i peggiori. Proprio per questo **la statistica non dice nulla sul
+tempismo in generale**: non si possono saltare gli uni senza saltare gli altri, e togliendoli entrambi il risultato
+non cambia. Misura un'altra cosa, che è quella che lui intende: **chi vende dopo il crollo ha già preso i giorni
+peggiori e perde i migliori**. È il costo di vendere per paura.
+
+## 5. Video 2 — *The Secret To Beating The Majority Of Investors*
+
+`HBCGczqLGNY` · 16 min · 2.976 parole.
+
+| # | Affermazione | Stato | Nota |
+|---|---|---|---|
+| 2.1 | Meno del 10% dei fondi gestiti batte l'indice in vent'anni | verificabile | SPIVA USA, fine 2025: il **79%** dei fondi attivi a grande capitalizzazione è rimasto sotto l'S&P 500 nell'anno (dato ufficiale). A 20 anni due fonti secondarie concordano sul **92-93%**. Il PDF ufficiale risponde 403: va letto con Comet. Per noi conta di più SPIVA Europa: nel 2025 il **71%** dei fondi azionari globali in euro è rimasto sotto l'S&P World; il dato a 10 anni di quella categoria non è stato trovato |
+| 2.2 | L'1% di costo toglie un quarto del capitale in 40 anni, il 2% il 43% | verificato | §4 |
+| 2.3 | Senza i 10 giorni migliori si perde oltre metà dei guadagni; senza 20 il 75%; senza 60 si è in perdita del 60% | verificato (ordine di grandezza), **argomento unilaterale** | §4. L'ultimo numero dipende dalla finestra: sui nostri dati senza 60 giorni si resta a ×0,83 |
+| 2.4 | Versamento fisso a ogni stipendio, automatico, dividendi reinvestiti | — | È il nostro §0 |
+| 2.5 | Ordine: debito a tasso alto → 1.000 dollari d'emergenza, poi 6 mesi → denaro che serve entro 5 anni in conti garantiti → il resto investito | verificabile | I 6 mesi poggiano sullo stesso dato del 04/08 (un quarto dei disoccupati oltre i 6 mesi): una fonte sola, dato USA, già segnato in `08` come da riverificare su Istat. Sui 5 anni vedi §6 |
+| 2.6 | 70-80% S&P 500, 10-20% internazionale, 0-10% obbligazioni lunghe; fuori dalle obbligazioni quando i tassi salgono | **rifiutato** (04/08) | Concentrazione su un paese per un investitore italiano. La regola sulle obbligazioni è una previsione sui tassi: stesso motivo del no al tempismo |
+| 2.7 | Limiti USA 2026: piano aziendale 24.500 dollari, conto pensione individuale 7.500 | verificato | ⚠️ La trascrizione dice "75,000": è 7.500 (errore di trascrizione; nel video 1 dice 7.000 per il 2025). Verificata anche la soglia di reddito del conto a esenzione futura per i coniugi (242-252 mila), coerente con il video 1 |
+| 2.8 | Plusvalenze oltre l'anno tassate 0-20%, zero sotto 49.450 dollari di reddito (singolo) o 98.900 (coniugi) | verificabile | Non controllato sulla fonte ufficiale |
+| 2.9 | Prelievi minimi obbligatori dai 72 anni | verificabile | Probabilmente superato (la norma del 2022 ha alzato l'età): non controllato |
+| 2.10 | Evita le quotazioni in borsa appena uscite: il primo giorno circola circa il 20% delle azioni, alla fine del vincolo di vendita (6-12 mesi) arriva il resto e il prezzo scende | verificabile | Fuori perimetro (azioni USA singole). È un'**esclusione**, cioè una scommessa attiva da misurare contro l'indice intero, come nell'idea delle esclusioni settoriali del 03/10. Catalogato, non usato |
+| 2.11 | "Buffett e Peter Lynch tengono molto S&P 500" | retorica | Lynch era un gestore attivo. Non usata |
+
+## 6. Conflitti, con la condizione (nessun arbitrato)
+
+1. **Alzare la rata a ogni aumento** (fonte) **contro "la laurea non è un trigger: si aspetta 6-12 mesi"** (nostro §0).
+   Non si escludono: la fonte parla di un aumento **a struttura di spesa ferma** (stesso lavoro, stessa vita), dove
+   l'aumento è tutto avanzo e impegnarlo subito evita che diventi spesa. Il §0 parla di un **cambio di struttura**
+   (primo stipendio e vita da solo), dove l'avanzo non è noto. Il rischio che il §0 non copre è quello che la fonte
+   nomina: nei 6-12 mesi di attesa la spesa si adatta al nuovo reddito. **Da decidere alla revisione di settembre
+   2027**, non ora.
+2. **"Azioni solo per il denaro che non serve da almeno 5 anni"** (fonte) **contro i decenni persi** (modulo 08: 13-25
+   anni a rendimento reale nullo per un versamento unico). Cinque anni sono un minimo, non una garanzia. Per noi la
+   regola resta: una data d'uso sposta quel denaro nel secchio A, qualunque sia la distanza.
+3. **Lettura dell'economia contro pilastro passivo.** La fonte pubblica aggiornamenti economici ogni una o due
+   settimane, ma nei due video letti il suo comportamento dichiarato è versare sempre, in ogni anno della tabella.
+   Stessa separazione già scritta il 04/08: la lettura macro non entra nel PAC.
+
+## 7. Leve fiscali USA e domanda italiana corrispondente
+
+Le norme USA non si trasferiscono. Si trasferisce la domanda. **Nessuna delle risposte italiane è stata verificata:**
+sono domande per una ricerca futura su fonti ufficiali (COVIP, Agenzia delle Entrate), utile dal primo contratto di
+lavoro.
+
+| Leva USA (dai due video) | Domanda per l'Italia |
+|---|---|
+| Contributo del datore al piano aziendale, solo se il lavoratore versa | Il contratto collettivo prevede un contributo del datore al fondo pensione di categoria? A quale versamento minimo del lavoratore scatta? Che cosa succede al TFR? |
+| Contributi dedotti dal reddito oggi, tassati all'uscita | Qual è oggi il limite annuo di deduzione per la previdenza complementare, e come è tassata la prestazione finale? |
+| Conto tassato oggi ed esente all'uscita | Esiste un equivalente? (Probabilmente no) |
+| Crescita non tassata dentro il conto | Come sono tassati i rendimenti annui di un fondo pensione rispetto al 26% di un ETF? Il fondo pensione paga il bollo? |
+| Conto intestato al coniuge che non lavora | I versamenti per un familiare a carico sono deducibili? |
+| Prelievo anticipato per la prima casa | Quali anticipazioni ammette un fondo pensione, dopo quanti anni e con quale tassazione? |
+| Plusvalenze a zero sotto una soglia di reddito, se tenute oltre l'anno | In Italia l'aliquota non dipende dal reddito né dalla durata. L'unica leva nota è il rinvio: un ETF ad accumulo (già scelto) |
+| Casa principale venduta senza imposta sul guadagno | Quando è tassata in Italia la plusvalenza sulla vendita di un immobile? |
+| Conti per le spese sanitarie | Fondi sanitari integrativi e welfare aziendale: che cosa è deducibile? |
+| — | Solo italiana: i piani individuali di risparmio (PIR). Obbligano a investire in Italia, quindi confliggono con la scelta All-World |
+
+## 8. Il canale: cosa c'è e cosa leggere dopo
+
+Classificazione per parole chiave dei titoli, quindi approssimata (elenco del 2026-10-13):
+
+| Tema | Video | Ore |
+|---|---|---|
+| Aggiornamenti economici (lavoro, inflazione, Fed, recessione) | ~78 | ~17,7 |
+| Storia personale, lezioni, carriera | ~42 | ~7,0 |
+| Regole di base per investire | ~36 | ~4,6 |
+| Tasse e conti agevolati USA | ~31 | ~2,4 |
+| Casa e debito | ~21 | ~1,8 |
+| Attività e secondi lavori | ~11 | ~1,8 |
+| Altro (assicurazioni, matrimonio, brevi) | ~34 | ~3,3 |
+
+**Un'osservazione dai soli titoli, non un verdetto.** 22 titoli contengono "recession", dalla metà del 2024 a oggi
+("We Are Going Into A Recession", "High probability of Recession in 2025", "We Are Entering a Recession" del
+01/10/2025). Nello stesso periodo la sua tabella riporta l'S&P 500 a +23% (2024) e +16% (2025). I titoli sono fatti
+per attirare e il contenuto può essere più prudente: per sapere quanto vale la sua lettura servono le previsioni
+datate **dentro** i video e un criterio scritto prima (per esempio la datazione ufficiale delle recessioni). È il
+metodo già previsto per le [previsioni geopolitiche](../../../../../projects/previsioni-geopolitiche.md): un registro
+misurato contro un riferimento.
+
+**Proposta di primo blocco (5 video, circa 57 minuti), da approvare.** Si legge un video alla volta, per intero, con
+un consuntivo alla fine; nessuna trascrizione in blocco prima.
+
+| # elenco | Video | Minuti | Domanda a cui risponde |
+|---|---|---|---|
+| 47 | *2026 Investment Plan* (`5hUfIbNmAXc`) | 11 | La sua lettura dell'economia cambia ciò che fa coi soldi? |
+| 214 | *How I Make Over $250K and Pay Less Than 10% in Tax* (`hkJzagub6Wg`) | 6 | Elenco completo delle leve fiscali che usa (per completare §7) |
+| 124 | *How I Would Become a Millionaire Again if I Had to Start Over with Nothing* (`iGcmG1awgrE`) | 12 | Ordine delle operazioni per chi parte da zero: il caso più vicino al nostro |
+| 4 | *Economic Update 11 Oct 2026* (`wTMy5tm7oGM`) | 22 | Quali indicatori guarda e con quale regola li legge |
+| 128 | *We Are Going Into A Recession, Predictions And What To Do Now* (`sMF2WNpxNVQ`) | 6 | Previsioni datate di due anni fa, misurabili oggi |
+
+**Regola di arresto.** Se dal blocco non esce né un metodo di lettura replicabile né previsioni datate misurabili, gli
+aggiornamenti economici restano non letti e il canale si usa solo per i temi dei §3, §5 e §7.
+
+## 9. Prompt per Comet (SPIVA, pagine bloccate)
+
+> Apri i due PDF ufficiali di S&P Dow Jones Indices: "SPIVA U.S. Scorecard Year-End 2025" e "SPIVA Europe Scorecard
+> Year-End 2025". Trascrivi alla lettera, con numero di pagina e nome della tabella: (1) nel rapporto USA, la
+> percentuale di fondi "All Large-Cap" rimasti sotto l'S&P 500 a 1, 3, 5, 10, 15 e 20 anni; (2) nel rapporto Europa,
+> la riga dei fondi "Global Equity" denominati in euro: indice di confronto e percentuale di fondi rimasti sotto a 1,
+> 3, 5 e 10 anni. Se un numero non c'è, scrivi "non presente": non stimarlo e non prenderlo da altri siti.

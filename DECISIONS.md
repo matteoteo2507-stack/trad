@@ -11,6 +11,27 @@
 
 ---
 
+## 2026-10-13 — Financial Freedom 101: fonte ricorrente del pilastro investing; due video distillati, il PAC non cambia
+
+**Richiesta di Matteo (13/10):** distillare due video sull'investimento passivo e tenere il canale fra le fonti
+ricorrenti, anche per il materiale sulle agevolazioni fiscali.
+
+**Esito.** Letti per intero, uno alla volta, col flusso gia' validato (`yt_fetch.py` → lettura → `rule_extract.py`).
+Zero strategie, zero pre-registrazioni, 0 trial. **Nessuna modifica al PAC.** Claim con stato e numeri nella
+[scheda](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md); conti rifatti in
+[`analysis/pac_intake/verifiche_ff101.py`](analysis/pac_intake/verifiche_ff101.py).
+- **Il canale era gia' una nostra fonte, senza nome**: il blocco 4 degli appunti del 04/08 e' un suo video. Le due
+  occorrenze dell'allocazione 70-80% S&P 500 contano **una**. Corretta in `08_asset_allocation_passiva` la frase
+  sull'auto-contraddizione, che dava per scontato un autore unico per quattro video diversi.
+- **Mandato** ([`_INTAKE.md`](fondamenti_tecnici/_INTAKE.md), Fonti ricorrenti): ordine delle operazioni di un caso
+  concreto, leve fiscali come domande da tradurre sull'Italia, lettura degli indicatori con previsioni da misurare.
+  **Vincoli**: i suoi rendimenti non entrano nel prior (un caso, sopravvissuto, 2009-2025); la lettura macro non
+  tocca il PAC; allocazione USA e norme fiscali USA non si importano.
+- **Aperti, decide Matteo**: il primo blocco di 5 video (scheda §8) e, alla revisione di settembre 2027, la regola
+  dell'aumento della rata a ogni scatto di reddito (scheda §6, [piano §0](docs/INVESTING_PILLAR_PLAN.md)).
+
+---
+
 ## 2026-10-12 (2) — H1 momentum dell'ultima mezz'ora: **CLOSED** al train, primo e unico trial; holdout sul DAX **mai aperto**
 
 **Esito** (esecuzione unica del 12/10 sul commit `2b66e65`, dopo l'approvazione;

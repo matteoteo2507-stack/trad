@@ -70,6 +70,12 @@ preferibilmente come **% del netto** così si auto-aggiorna. ⚠️ **La laurea 
 reddito sale ma salgono anche le spese (vita da solo). Il trigger corretto è **6-12 mesi dopo che la
 nuova struttura di spesa si è stabilizzata**, quando esistono dati veri sul surplus.
 
+**Da portare alla revisione di settembre 2027** (intake del 13/10, [scheda](../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md) §6-7):
+- alzare la rata a ogni aumento di reddito, prima che la spesa si adatti: come si concilia con l'attesa di
+  6-12 mesi dopo la laurea;
+- prima del primo contratto di lavoro: contributo del datore al fondo pensione di categoria e limite di
+  deduzione. Sono domande aperte, nessuna risposta è stata verificata.
+
 ### Cosa NON fare nei primi due anni
 
 - Non cambiare ETF, non aggiungerne un secondo.
@@ -105,6 +111,7 @@ post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide
 > esecuzione, **bollo 0,2%/anno**. Nessuno dei tre si evita cambiando broker — il bollo è una tassa,
 > non una tariffa. Dal taglio dell'OCF il **bollo è il costo annuo più grande** (OCF + bollo ≈ 0,34%/anno, spread a parte),
 > e il foglio costi del broker non lo mostra.
+> Quanto pesano OCF e bollo su 40 anni: conto nella [scheda del 13/10](../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md) §4.
 
 ---
 
