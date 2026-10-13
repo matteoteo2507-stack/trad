@@ -11,6 +11,9 @@ nota: "Matteo (09/10): sulla strategia con questo indicatore lavora il socio; no
 > smistato con le sei domande di [10_indicatori_tecnici §10](../../fondamenti_tecnici/10_indicatori_tecnici/principles.md).
 > Il codice e' stato **letto riga per riga**; nessun backtest, nessun dato, 0 trial.
 
+> **Seguito (11/10):** il socio e' tornato con regole complete e un backtest, non con operazioni registrate. La lettura
+> e' in [vtob_socio_intake_2026-10-11](vtob_socio_intake_2026-10-11.md).
+
 ## 1. Cosa fa (input → output)
 
 Tre pezzi, piu' un segnale.
