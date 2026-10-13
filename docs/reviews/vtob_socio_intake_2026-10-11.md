@@ -1,7 +1,7 @@
 ---
 tipo: analisi
-stato: "quarantena (proposta: NON DIMOSTRATO, chiuso all'intake a 0 trial; decide Matteo)"
-aggiornato: 2026-10-11
+stato: "NON DIMOSTRATO, chiuso all'intake a 0 trial (Matteo, 13/10: strada A; DECISIONS 2026-10-13 (5))"
+aggiornato: 2026-10-13
 fonte_dati: "pacchetto del socio dell'11/10/2026: testi in fondamenti_tecnici/_sorgenti/vtob_socio_2026-10-11/, barre e risultati in materiale_socio/vtob_dati_risultati_2022-07_2026-10/ (fuori da git)"
 misure: "analysis/vtob_intake/descrittivi.py, lanciato l'11/10/2026; ogni numero 'misurato' di questa nota viene da li'"
 ---
@@ -174,15 +174,19 @@ Stessa grandezza gia' vista il 09/10: ritorno su una zona da pivot nella direzio
 varianti, non e' l'evidenza esterna che §7 chiede per riaprire: e' una statistica dichiarata (§8). Nessun "chi paga".
 Le pre-registrazioni esterne del 2026-Q4 sono 3 su 2-3 (`python -m core.trial_ledger`, 11/10).
 
-## 6. Verdetto proposto: NON DIMOSTRATO, chiuso all'intake a 0 trial (decide Matteo)
+## 6. Verdetto: NON DIMOSTRATO, chiuso all'intake a 0 trial
+
+> **Deciso da Matteo il 13/10: strada A** ([DECISIONS 2026-10-13 (5)](../../DECISIONS.md)). Il socio ha letto questa
+> nota, concorda con i rilievi e aveva proposto la stessa chiusura. Sotto restano le due strade com'erano state
+> proposte l'11/10: la B e' una delle due condizioni di riapertura.
 
 **Non e' refutato.** Il codice e' pulito e i numeri sono veri come conto; quello che manca e' una misura che separi la
 regola dalla salita dell'oro e dalla selezione. Con questi dati non si puo' fare: sono stati attraversati almeno 46.080
 volte.
 
-Due strade, da scegliere:
+Le due strade proposte:
 
-- **A (consigliata): chiudere all'intake.** Si restituiscono al socio i rilievi del §7. Se vuole usare l'EA in demo,
+- **A (scelta): chiudere all'intake.** Si restituiscono al socio i rilievi del §7. Se vuole usare l'EA in demo,
   la soglia si scrive **prima**: per vedere l'effetto dichiarato per intero (0,465 R a trade) servono 109 trade
   indipendenti, circa 57 settimane al suo ritmo di 1,9 a settimana; per vederne la meta', 438. Gli "1-2 mesi in demo"
   del pacchetto sono 8-16 trade, MDE 1,21 R: non possono dire niente, ne' a favore ne' contro.
@@ -194,8 +198,8 @@ Due strade, da scegliere:
   senza deriva a favore). ⚠️ Potenza al limite: circa 85 trade attesi per A, MDE circa 0,5 R contro 0,42-0,49
   dichiarati. Da dichiarare prima cosa significherebbe un mancato rifiuto.
 
-**Cosa lo riaprirebbe dopo una chiusura**: un registro forward del socio (demo o reale) con il numero di trade
-dichiarato prima; oppure la strada B decisa da Matteo.
+**Cosa lo riapre**: un registro forward del socio (demo o reale) con data d'inizio e numero di trade dichiarati prima;
+oppure la strada B decisa da Matteo. Un backtest nuovo sugli stessi dati non lo riapre.
 
 ## 7. Cosa dire al socio
 
@@ -206,6 +210,55 @@ dichiarato prima; oppure la strada B decisa da Matteo.
 4. **Rifare la griglia non risolve**: dopo la correzione sarebbero altre 46.080 prove sugli stessi dati.
 5. Restano aperte le domande del 09/10 (§5): quante altre prove ci sono state prima della griglia.
 6. La licenza non permette l'uso commerciale (canale di segnali a pagamento, vendita dell'EA).
+
+## 8. Secondo pacchetto (datato 12/10, letto il 13/10): non cambia il verdetto
+
+Arrivato in `Da distillare/` come "VTOB A+B+C + US_M30". Testi in
+`fondamenti_tecnici/_sorgenti/vtob_socio_2026-10-12/`, barre, risultati ed EA compilato in
+`materiale_socio/vtob_dati_risultati_usm30_2000-06_2026-10/`. Misure del 13/10 con
+[`analysis/vtob_intake/secondo_pacchetto.py`](../../analysis/vtob_intake/secondo_pacchetto.py). **0 trial.**
+
+**Cosa c'e' di nuovo rispetto all'11/10**
+- A e B hanno un'uscita in piu' ("consigliate"): A chiude meta' a 1,5 R, B un terzo a 1 R e un terzo a 2 R.
+- Una quarta strategia su un altro strumento, **US_M30** (Nasdaq 100, M30, solo long), con parametri suoi: tendenza
+  da 40 barre, stop 4×, nessun pareggio, stop che segue la linea del Supertrend.
+- Un motore Python riscritto, un EA unico per le quattro strategie (sorgente e compilato) con limiti di perdita
+  giornaliera e settimanale, e 0,10 $ di slippage per lato sull'oro.
+- Barre dell'oro piu' lunghe: H1 intraday dal 13/07/2011, M30 dal 16/04/2018.
+
+**Cosa regge.** I 535 trade si riproducono identici. Il motore nuovo, letto riga per riga, non ha look-ahead e
+l'ingresso resta a mercato all'apertura successiva. Dell'EA ho letto per intero la logica dei segnali e della gestione
+(fino a riga 1008) e cercato nel resto chiamate di rete o DLL: nessuna. Che i suoi segnali coincidano col backtest
+("0 differenze") e' dichiarato dal socio, non verificato da noi.
+
+**Cosa resta com'era**
+- **Lato**: 490 trade long per +194,1 R, 45 short per +10,3 R. Nel file il Nasdaq sale da 11.774 a 30.882.
+- **Spread dell'oro**: stesso errore di unita' (130 punti fino a ottobre 2025, 13 dopo, sempre moltiplicati per 0,01).
+  Sul Nasdaq la colonna non ha salti.
+- **Selezione**: il report dice "tra molte varianti provate", senza numero. Uscite parziali, un altro strumento e
+  parametri diversi per quello strumento sono prove in piu' della stessa ricerca (STRATEGY_LIFECYCLE §3), sugli stessi
+  quattro anni.
+- **Potenza**: Sharpe per trade 0,266 (A), 0,287 (B), 0,246 (C), 0,313 (US_M30), tutti sotto la soglia di futilita'
+  gia' a 100 prove (0,298, 0,406, 0,387, 0,390). MDE a un test 0,26, 0,36, 0,42, 0,35 R contro medie di 0,35, 0,38,
+  0,40, 0,42 R.
+
+**Due cose nuove da chiedere al socio, piu' utili di un altro backtest**
+1. **I risultati prima del 2022.** Il pacchetto contiene l'oro H1 dal 2011 e M30 dal 2018, e il caricatore ha gia' le
+   correzioni per gli spread del 2012-2016 (`python/vtob/dati.py`): il motore su quegli anni e' stato lanciato, ma il
+   report mostra solo gli ultimi quattro. Dal 2011 al 2022 l'oro e' andato da 1.582 a 1.726: e' il periodo in cui la
+   salita non aiuta. Servono i numeri di B dal 2011 e di C dal 2018, **tutti**, anche se brutti. Noi non li abbiamo
+   calcolati: lanciare le sue regole li' sarebbe il test della strada B, e se lui quei dati li ha gia' usati per
+   scegliere, quel test non e' piu' pulito.
+2. **L'esito del controllo casuale.** Nel motore c'e' `python/vtob/controllo.py`: ingressi a caso con la stessa
+   uscita, lo stesso lato e lo stesso stato dei filtri. E' il confronto giusto, lo stesso della strada B, ma nel
+   pacchetto non c'e' il suo risultato.
+
+Annotato, in quarantena: `dati.py` dichiara che lo spread delle barre MT5 e' il **minimo** della candela ("verificato:
+lo spread M15 coincide al 100% col minimo delle sue 15 M1"). Se e' vero, ogni costo letto da quella colonna e'
+sottostimato; non l'abbiamo verificato.
+
+**Lettura.** Rientra nella chiusura del 13/10: un backtest nuovo sugli stessi dati, con uscite, parametri o strumenti
+diversi, non riapre (DECISIONS 2026-10-13 (5)).
 
 ## Collegamenti
 

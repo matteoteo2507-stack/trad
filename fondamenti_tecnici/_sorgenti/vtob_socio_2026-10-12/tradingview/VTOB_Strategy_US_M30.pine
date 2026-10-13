@@ -1,0 +1,160 @@
+// Basato su "Volume-Trend Order Block Engine [BigBeluga]" — CC BY-NC-SA 4.0 — © BigBeluga (logica modificata)
+// VTOB — strategia US_M30 (Nasdaq 100 / USTEC, timeframe M30)
+//
+// Regole (default degli input):
+//   Volatilità vol = SMA(high-low, 50); Supertrend custom moltiplicatore 3,5
+//   OB long = pivot low 7/3: top = min(open, close) della candela pivot, bottom = top - vol
+//   OB accettato solo se: Supertrend rialzista da >= 40 candele, OB sopra la linea Supertrend,
+//                         chiusura sopra la EMA200 dell'ultima candela D1 chiusa
+//   Segnale: ritest = crossover(low, top dell'OB attivo) a candela chiusa -> ingresso all'apertura successiva
+//   Solo long. Stop 4 x vol, target 4R, nessun pareggio, trailing sulla linea Supertrend da subito
+//   Un solo trade per OB, una sola posizione alla volta
+// Backtest Python (export MT5, lug 2022 - ott 2026, spread reale + 0,5 punti):
+//   123 trade, PF 2,30, +46,4 R, DD 4,8 R, vincenti 44,7%
+//   scelta lug22-feb25 PF 2,13 | verifica mar25-ott26 PF 2,64
+// NB: su TradingView feed, spread e orario della candela D1 sono diversi dal broker MT5 -> risultati non identici.
+
+//@version=6
+strategy('VTOB US_M30 — USTEC M30', overlay = true, max_boxes_count = 500,
+     initial_capital = 10000, default_qty_type = strategy.fixed, default_qty_value = 1, pyramiding = 0,
+     commission_type = strategy.commission.percent, commission_value = 0.0, slippage = 10,
+     process_orders_on_close = false, calc_on_every_tick = false)
+
+// ── Input ─────────────────────────────────────────────────────────────
+g1 = 'Regole US_M30'
+e_pl   = input.int(7, 'Pivot sinistra', minval = 1, group = g1)
+e_pr   = input.int(3, 'Pivot destra', minval = 1, group = g1)
+e_age  = input.int(40, 'Trend da almeno N candele', group = g1)
+e_htf  = input.timeframe('D', 'TF EMA filtro', group = g1)
+e_long = input.bool(true, 'Long', group = g1, inline = 'd')
+e_shrt = input.bool(false, 'Short', group = g1, inline = 'd')
+e_sl   = input.float(4.0, 'Stop (x volatilità)', step = 0.5, group = g1)
+e_rr   = input.float(4.0, 'Target (R)', step = 0.25, group = g1)
+e_be   = input.float(0.0, 'Pareggio a +R (0 = off)', step = 0.25, group = g1)
+e_part = input.float(0.0, 'Parziale a +R (0 = off)', step = 0.25, group = g1)
+e_ppct = input.float(50, 'Parziale %', step = 1, group = g1)
+e_trl  = input.bool(true, 'Trailing linea Supertrend (da subito se pareggio = 0)', group = g1)
+g2 = 'Dimensione posizione'
+use_risk = input.bool(true, 'Rischio % del capitale (altrimenti 1 contratto)', group = g2)
+risk_pct = input.float(1.0, 'Rischio per trade %', step = 0.25, group = g2)
+g4 = 'Generale'
+st_len = input.int(50, 'Volatilità: SMA del range', group = g4)
+st_mult = input.float(3.5, 'Supertrend multiplier', step = 0.1, group = g4)
+htf_len = input.int(200, 'EMA filtro: periodo', group = g4)
+be_off = input.float(0.1, 'Offset pareggio (R)', step = 0.05, group = g4)
+start_t = input.time(timestamp('01 Jul 2022 00:00 +0000'), 'Backtest da', group = g4)
+
+// ── Supertrend custom (identico all'originale) ────────────────────────
+src = hl2
+vol_ = ta.sma(high - low, st_len)
+ub = src + st_mult * vol_
+lb = src - st_mult * vol_
+pLB = nz(lb[1])
+pUB = nz(ub[1])
+lb := lb > pLB or close[1] < pLB ? lb : pLB
+ub := ub < pUB or close[1] > pUB ? ub : pUB
+int trend = na
+float tstop = na
+prevST = tstop[1]
+if na(vol_[1])
+    trend := 1
+else if prevST == pUB
+    trend := close > ub ? 1 : -1
+else
+    trend := close < lb ? -1 : 1
+tstop := trend == 1 ? lb : ub
+chg = trend != trend[1]
+
+// ── Order block ───────────────────────────────────────────────────────
+pl = ta.pivotlow(low, e_pl, e_pr)
+ph = ta.pivothigh(high, e_pl, e_pr)
+int age = nz(ta.barssince(chg), 100000)
+float htf_ema = request.security(syminfo.tickerid, e_htf, ta.ema(close, htf_len)[1], lookahead = barmerge.lookahead_on)
+
+var float a_top = na
+var float a_bot = na
+var int a_dir = 0
+var int a_id = 0
+var int traded_id = -1
+var box b = na
+
+overlap(float t, float bt) =>
+    not (na(a_top) or na(a_bot)) and not (bt > a_top or t < a_bot)
+
+if trend == 1 and not na(pl)
+    t = math.min(open[e_pr], close[e_pr])
+    bt = t - vol_
+    if not overlap(t, bt) and age >= e_age and bt - tstop >= 0 and not na(htf_ema) and close > htf_ema
+        a_top := t, a_bot := bt, a_dir := 1, a_id += 1
+        b := box.new(bar_index - e_pr, t, bar_index, bt, bgcolor = color.new(#00ffcc, 82), border_color = color.new(#00ffcc, 40))
+if trend == -1 and not na(ph)
+    bt = math.max(open[e_pr], close[e_pr])
+    t = bt + vol_
+    if not overlap(t, bt) and age >= e_age and tstop - t >= 0 and not na(htf_ema) and close < htf_ema
+        a_top := t, a_bot := bt, a_dir := -1, a_id += 1
+        b := box.new(bar_index - e_pr, t, bar_index, bt, bgcolor = color.new(#ff007f, 82), border_color = color.new(#ff007f, 40))
+if a_dir != 0 and ((a_dir == 1 and high < a_bot) or (a_dir == -1 and low > a_top))
+    box.set_right(b, bar_index)
+    box.set_bgcolor(b, color.new(color.gray, 85))
+    a_top := na, a_bot := na, a_dir := 0, b := na
+if not na(b)
+    box.set_right(b, bar_index)
+
+buy_sig = ta.crossover(low, a_top) and a_dir == 1 and na(pl) and not chg
+sell_sig = ta.crossunder(high, a_bot) and a_dir == -1 and na(ph) and not chg
+
+// ── Ordini e gestione ─────────────────────────────────────────────────
+var float risk_px = na
+var float cur_stop = na
+var float init_qty = na
+var bool be_done = false
+bool flat = strategy.position_size == 0
+
+if flat and time >= start_t and traded_id != a_id
+    int d = buy_sig and e_long ? 1 : sell_sig and e_shrt ? -1 : 0
+    if d != 0
+        risk_px := e_sl * vol_
+        be_done := false
+        cur_stop := na
+        traded_id := a_id
+        string id = d == 1 ? 'L' : 'S'
+        float q = use_risk ? strategy.equity * risk_pct / 100 / (risk_px * syminfo.pointvalue) : 1.0
+        strategy.entry(id, d == 1 ? strategy.long : strategy.short, qty = q)
+        if e_part > 0
+            strategy.exit('P' + id, id, qty_percent = e_ppct, loss = risk_px / syminfo.mintick, profit = e_part * risk_px / syminfo.mintick, comment_profit = 'Parziale')
+        strategy.exit('X' + id, id, loss = risk_px / syminfo.mintick, profit = e_rr * risk_px / syminfo.mintick, comment_profit = 'TP', comment_loss = 'SL')
+
+if not flat
+    int d = strategy.position_size > 0 ? 1 : -1
+    string id = d == 1 ? 'L' : 'S'
+    float ep = strategy.position_avg_price
+    if na(init_qty) or strategy.position_size[1] == 0
+        init_qty := math.abs(strategy.position_size)
+    bool part_done = math.abs(strategy.position_size) < init_qty
+    float ext = d == 1 ? high : low
+    bool upd = false
+    if e_be > 0 and not be_done and (ext - ep) * d >= e_be * risk_px
+        be_done := true
+        cur_stop := ep + d * be_off * risk_px
+        upd := true
+    if e_trl and (be_done or e_be == 0) and trend == d
+        float cand = tstop
+        if na(cur_stop) or (d == 1 and cand > cur_stop) or (d == -1 and cand < cur_stop)
+            if (d == 1 and cand > ep - risk_px) or (d == -1 and cand < ep + risk_px)
+                cur_stop := cand
+                upd := true
+    if upd
+        float tp = ep + d * e_rr * risk_px
+        strategy.exit('X' + id, id, stop = cur_stop, limit = tp, comment_profit = 'TP', comment_loss = 'Stop gestito')
+        if e_part > 0 and not part_done
+            strategy.exit('P' + id, id, qty_percent = e_ppct, stop = cur_stop, limit = ep + d * e_part * risk_px, comment_profit = 'Parziale')
+else
+    init_qty := na
+
+// ── Grafica ───────────────────────────────────────────────────────────
+plot(chg ? na : tstop, 'Trend Stop', color = trend == 1 ? #00ffcc : #ff007f, style = plot.style_linebr)
+plot(htf_ema, 'EMA filtro', color = color.new(color.orange, 30))
+plotshape(buy_sig, 'Segnale long', shape.triangleup, location.belowbar, #00ffcc, size = size.tiny)
+plotshape(sell_sig, 'Segnale short', shape.triangledown, location.abovebar, #ff007f, size = size.tiny)
+plot(not flat ? (na(cur_stop) ? strategy.position_avg_price - math.sign(strategy.position_size) * risk_px : cur_stop) : na, 'Stop', color.red, style = plot.style_linebr)
+plot(not flat ? strategy.position_avg_price + math.sign(strategy.position_size) * e_rr * risk_px : na, 'TP', color.lime, style = plot.style_linebr)

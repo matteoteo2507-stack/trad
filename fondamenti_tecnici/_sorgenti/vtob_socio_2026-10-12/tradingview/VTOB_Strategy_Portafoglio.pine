@@ -1,0 +1,358 @@
+// Basato su "Volume-Trend Order Block Engine [BigBeluga]" — CC BY-NC-SA 4.0 — © BigBeluga (logica modificata)
+// PORTAFOGLIO VTOB v2 — una strategia per grafico: scegli il preset in base al timeframe del grafico.
+// Regole identiche al motore Python del pacchetto (python/vtob) e all'EA mt5/VTOB_Portfolio_EA.mq5:
+//  - OB sui pivot nella direzione del Supertrend custom, filtri età trend / EMA del TF superiore (candela chiusa) /
+//    distanza dalla linea, un solo OB attivo, croce di retest a candela chiusa, ingresso all'open dopo;
+//  - stop = SL x volatilità della candela del segnale, target in R, pareggio deciso a candela chiusa e valido dalla
+//    candela dopo, parziali (più strategy.exit con qty_percent), stop a pareggio dopo il parziale, trailing opzionale,
+//    time stop e chiusura del venerdì sera eseguiti all'open dopo; un trade per OB.
+// Preset consigliati (fase 4 del report_costanza.md, XAUUSD, lug 2022 - ott 2026):
+//  A  M15  pivot 7/3,  EMA200 H1, trend>=20, solo long,  SL 6, TP 3R, BE 1R, 50% a 1,5R
+//  B  H1   pivot 10/3, EMA200 D1, trend>=10, long+short, SL 3, TP 4R, BE 1R, 33% a 1R + 33% a 2R, regime D1
+//  C  M30  pivot 5/2,  EMA200 H4, trend>=20, long+short, SL 8, TP 3R, BE 1R, regime D1
+//  D  M5   pivot 10/5, EMA200 H1, trend>=20, solo long,  SL 6, TP 4R, BE 1R (opzionale, dati solo da maggio 2025)
+// Preset "redditizia" (più R negli ultimi 4 anni, ma drawdown più alti; tutte solo long):
+//  M15 pivot 7/3, EMA200 H1, trend>=20, zona 1,5, distanza 0,5, SL 4, TP 5R, niente pareggio
+//  M30 pivot 3/1, EMA200 H1, trend>=10, SL 6, TP 3R, BE 1R
+//  H1  pivot 3/2, EMA200 D1, trend>=10, distanza 0,5, SL 2, TP 5R, niente pareggio
+// Preset "H1 tutte le condizioni (F2)" (report_tutte_condizioni.md), SOLO PER LA DEMO: semaforo VERDE con le soglie
+// fissate, ma NON DIMOSTRATA dalla revisione: nel 2020-2024 ha perso (PF 0,89), il guadagno viene tutto dal 2025-26.
+//  F2  H1  pivot 10/3, trend>=10, Supertrend 20/3,5, EMA100 H4, impulso >= 1 x vol, zona 1, long+short, SL 2, TP 3R,
+//      niente pareggio, trailing sulla linea del Supertrend da subito, niente ingressi se l'ATR14 D1 è sopra il suo
+//      90° percentile (250 giorni). Circa 2 trade al mese. Serve uno spread basso (stop stretto): con 1,5 $ non regge.
+//      Per vedere tutta la storia imposta "Backtest da" al 2009.
+// Preset "robusta 4 anni" (report_ultimi_4_anni.md, dati MT5 lug 2022 - ott 2026, costi del pacchetto): le varianti più
+// robuste degli ultimi 4 anni (Sharpe mensile, semestri positivi, varianti vicine buone, battono gli ingressi casuali):
+//  M15 solo long, pivot 7/3, trend>=20, Supertrend 100/3,5, EMA50 D1, zona 1, niente ingressi se l'ATR14 D1 è sotto il
+//      10° percentile, SL 8, TP 2R, BE 1R, 33% a 1R e 33% a 2R, trailing Supertrend dopo il BE (9 semestri su 9 positivi)
+//  M30 solo long, pivot 5/2, trend>=20, Supertrend 50/5, EMA50 H4, impulso 0,5, volume 1,2 x media, zona 0,5,
+//      ATR D1 >= 10° percentile, SL 3, TP 3R, 50% a 1,5R poi BE
+//  H1  long+short, pivot 10/3, trend>=10, Supertrend 50/5, EMA50 H4, impulso 1, zona 0,5, ATR D1 >= 10° percentile,
+//      SL 2, TP 3R, BE 1R, trailing Supertrend dopo il BE
+//  Scelte e misurate sugli stessi 4 anni: dal vivo aspettati meno. Il volume di TradingView è diverso da quello MT5.
+// Le regole di PORTAFOGLIO (tetto al rischio aperto tra strategie, perdite di fila, limiti giornalieri) esistono solo
+// nell'EA, perché qui ogni grafico è una strategia separata.
+// Differenze note rispetto all'EA/Python: TradingView non ha lo spread (costo = commissione per ordine + slippage);
+// nella candela che tocca sia stop che target decide il percorso intrabarra di TradingView; feed diverso dal broker.
+//@version=6
+strategy('VTOB Portafoglio v3 (A/B/C/D, robuste 4 anni, F2)', overlay = true, max_boxes_count = 500, max_bars_back = 5000,
+     initial_capital = 100000, currency = currency.USD, default_qty_type = strategy.fixed, default_qty_value = 100,
+     pyramiding = 0, commission_type = strategy.commission.cash_per_contract, commission_value = 0.1, slippage = 10,
+     process_orders_on_close = false, calc_on_every_tick = false)
+
+// ── Preset ─────────────────────────────────────────────────────────────
+preset = input.string('A — M15 (consigliata)', 'Preset', options = ['A — M15 (consigliata)', 'B — H1 (consigliata)', 'C — M30', 'D — M5 (opzionale)', 'A — M15 originale', 'B — H1 originale', 'M15 redditizia', 'M30 redditizia', 'H1 redditizia', 'M15 robusta 4 anni', 'M30 robusta 4 anni', 'H1 robusta 4 anni', 'H1 tutte le condizioni (F2)', 'Personalizzato'])
+g1 = 'Personalizzato: indicatore'
+st_len = input.int(50, 'Volatilità: SMA del range', group = g1)
+st_mult = input.float(3.5, 'Supertrend: moltiplicatore', step = 0.1, group = g1)
+in_imp = input.float(0.0, 'Impulso dopo il pivot >= X vol (0 = off)', step = 0.25, minval = 0.0, group = g1)
+in_volf = input.float(0.0, 'Volume del pivot >= X media 20 (0 = off)', step = 0.1, minval = 0.0, group = g1)
+in_pend = input.float(-1.0, 'Solo nel verso della pendenza EMA50 D1 >= (-1 = off)', step = 0.01, group = g1)
+in_vmax = input.int(100, 'Niente ingressi se ATR D1 sopra il percentile (100 = off)', minval = 1, maxval = 100, group = g1)
+in_vmin = input.int(0, 'Niente ingressi se ATR D1 sotto il percentile (0 = off)', minval = 0, maxval = 99, group = g1)
+in_pl = input.int(7, 'Pivot: candele a sinistra', minval = 1, group = g1)
+in_pr = input.int(3, 'Pivot: candele a destra', minval = 1, group = g1)
+in_age = input.int(20, 'Trend avviato da almeno N candele', minval = 0, group = g1)
+in_htf = input.timeframe('60', 'TF della EMA filtro', group = g1)
+htf_len = input.int(200, 'EMA filtro', minval = 1, group = g1)
+in_dist = input.float(0.0, 'Distanza minima dalla linea (x vol)', step = 0.25, group = g1)
+in_zona = input.float(1.0, 'Altezza OB (x vol)', step = 0.25, minval = 0.1, group = g1)
+g2 = 'Personalizzato: gestione'
+in_long = input.bool(true, 'Long', inline = 'd', group = g2)
+in_short = input.bool(false, 'Short', inline = 'd', group = g2)
+in_sl = input.float(6.0, 'Stop (x volatilità)', step = 0.5, group = g2)
+in_rr = input.float(3.0, 'Target R:R (0 = nessuno)', step = 0.25, group = g2)
+in_be = input.float(1.0, 'Pareggio a +X R (0 = off)', step = 0.25, inline = 'be', group = g2)
+in_beo = input.float(0.1, 'offset R', step = 0.05, inline = 'be', group = g2)
+in_p1r = input.float(0.0, 'Parziale 1 a R (0 = no)', step = 0.25, inline = 'p1', group = g2)
+in_p1f = input.float(0.0, '% volume', step = 1, inline = 'p1', group = g2)
+in_p2r = input.float(0.0, 'Parziale 2 a R (0 = no)', step = 0.25, inline = 'p2', group = g2)
+in_p2f = input.float(0.0, '% volume', step = 1, inline = 'p2', group = g2)
+in_pbe = input.bool(true, 'Dopo il parziale stop a pareggio', group = g2)
+in_reg = input.bool(false, 'Dimensionamento per regime D1', group = g2)
+g3 = 'Opzioni (tutti i preset)'
+tr_mode = input.string('Nessuno', 'Trailing', options = ['Nessuno', 'Linea Supertrend', 'ATR', 'Chandelier', 'Swing'], group = g3)
+tr_k = input.float(3.0, 'Trailing: K (x volatilità)', step = 0.5, group = g3)
+tr_start = input.string('Dopo BE', 'Trailing: parte', options = ['Subito', 'Dopo BE', 'Dopo parziale'], group = g3)
+time_stop = input.int(0, 'Time stop in candele (0 = off)', minval = 0, group = g3)
+exit_fri = input.bool(false, 'Chiudi il venerdì sera (dalle 21 italiane)', group = g3)
+no_h0 = input.int(0, 'Ore vietate ai segnali (ora italiana): dalle', minval = 0, maxval = 24, inline = 'no', group = g3)
+no_h1 = input.int(0, 'alle (0-0 = nessuna)', minval = 0, maxval = 24, inline = 'no', group = g3)
+reg_forte = input.float(0.0934, 'Regime: trend forte se pendenza EMA50 D1 >=', step = 0.01, group = g3)
+reg_debole = input.float(0.0274, 'Regime: trend debole se <', step = 0.01, group = g3)
+start_t = input.time(timestamp('01 Jul 2022 00:00 +0000'), 'Backtest da', group = g3)
+
+// ── Valori effettivi del preset ───────────────────────────────────────
+bool pA = preset == 'A — M15 (consigliata)'
+bool pB = preset == 'B — H1 (consigliata)'
+bool pC = preset == 'C — M30'
+bool pD = preset == 'D — M5 (opzionale)'
+bool pAo = preset == 'A — M15 originale'
+bool pBo = preset == 'B — H1 originale'
+bool pX = preset == 'Personalizzato'
+bool pR15 = preset == 'M15 redditizia'
+bool pR30 = preset == 'M30 redditizia'
+bool pR60 = preset == 'H1 redditizia'
+bool pF2 = preset == 'H1 tutte le condizioni (F2)'
+bool pQ15 = preset == 'M15 robusta 4 anni'
+bool pQ30 = preset == 'M30 robusta 4 anni'
+bool pQ60 = preset == 'H1 robusta 4 anni'
+int e_pl = pX ? in_pl : pQ15 ? 7 : pQ30 ? 5 : pQ60 ? 10 : pF2 ? 10 : pR15 ? 7 : (pR30 or pR60) ? 3 : (pA or pAo) ? 7 : (pB or pBo) ? 10 : pC ? 5 : 10
+int e_pr = pX ? in_pr : pQ30 ? 2 : (pQ15 or pQ60) ? 3 : pF2 ? 3 : pR15 ? 3 : pR30 ? 1 : pR60 ? 2 : (pA or pAo) ? 3 : (pB or pBo) ? 3 : pC ? 2 : 5
+int e_age = pX ? in_age : (pQ15 or pQ30) ? 20 : pQ60 ? 10 : pF2 ? 10 : (pR30 or pR60) ? 10 : pR15 ? 20 : (pB or pBo) ? 10 : 20
+string e_htf = pX ? in_htf : pQ15 ? 'D' : (pQ30 or pQ60) ? '240' : pF2 ? '240' : pR60 ? 'D' : (pR15 or pR30) ? '60' : (pB or pBo) ? 'D' : pC ? '240' : '60'
+int e_htf_len = pX ? htf_len : (pQ15 or pQ30 or pQ60) ? 50 : pF2 ? 100 : 200
+int e_st_len = pX ? st_len : pQ15 ? 100 : pF2 ? 20 : 50
+float e_st_mult = pX ? st_mult : (pQ30 or pQ60) ? 5.0 : 3.5
+float e_imp = pX ? in_imp : pQ30 ? 0.5 : pQ60 ? 1.0 : pF2 ? 1.0 : 0.0
+float e_volf = pX ? in_volf : pQ30 ? 1.2 : 0.0
+float e_pend = pX ? in_pend : -1.0
+int e_vmax = pX ? in_vmax : pF2 ? 90 : 100
+int e_vmin = pX ? in_vmin : (pQ15 or pQ30 or pQ60) ? 10 : 0
+float e_dist = pX ? in_dist : (pR15 or pR60) ? 0.5 : 0.0
+float e_zona = pX ? in_zona : (pQ30 or pQ60) ? 0.5 : pR15 ? 1.5 : 1.0
+bool e_long = pX ? in_long : true
+bool e_short = pX ? in_short : (pQ15 or pQ30) ? false : pQ60 ? true : pF2 ? true : (pR15 or pR30 or pR60) ? false : (pB or pBo or pC)
+float e_sl = pX ? in_sl : pQ15 ? 8.0 : pQ30 ? 3.0 : pQ60 ? 2.0 : pF2 ? 2.0 : pR15 ? 4.0 : pR30 ? 6.0 : pR60 ? 2.0 : (pB or pBo) ? 3.0 : pC ? 8.0 : 6.0
+float e_rr = pX ? in_rr : pQ15 ? 2.0 : (pQ30 or pQ60) ? 3.0 : pF2 ? 3.0 : (pR15 or pR60) ? 5.0 : pR30 ? 3.0 : (pB or pBo or pD) ? 4.0 : 3.0
+float e_be = pX ? in_be : (pR15 or pR60 or pF2 or pQ30) ? 0.0 : 1.0
+string e_tr_mode = (pF2 or pQ15 or pQ60) ? 'Linea Supertrend' : pQ30 ? 'Nessuno' : tr_mode
+string e_tr_start = pF2 ? 'Subito' : (pQ15 or pQ60) ? 'Dopo BE' : tr_start
+float e_beo = pX ? in_beo : 0.1
+float e_p1r = pX ? in_p1r : pQ15 ? 1.0 : pQ30 ? 1.5 : pA ? 1.5 : pB ? 1.0 : 0.0
+float e_p1f = pX ? in_p1f : pQ15 ? 33.33 : pQ30 ? 50.0 : pA ? 50.0 : pB ? 33.0 : 0.0
+float e_p2r = pX ? in_p2r : pQ15 ? 2.0 : pB ? 2.0 : 0.0
+float e_p2f = pX ? in_p2f : pQ15 ? 33.33 : pB ? 33.0 : 0.0
+bool e_pbe = pX ? in_pbe : (pA or pB or pQ15 or pQ30)
+bool e_reg = pX ? in_reg : (pB or pC)
+
+// ── Supertrend custom (identico all'indicatore) ───────────────────────
+src = hl2
+vol_ = ta.sma(high - low, e_st_len)
+ub = src + e_st_mult * vol_
+lb = src - e_st_mult * vol_
+pLB = nz(lb[1])
+pUB = nz(ub[1])
+lb := lb > pLB or close[1] < pLB ? lb : pLB
+ub := ub < pUB or close[1] > pUB ? ub : pUB
+int trend = na
+float tstop = na
+prevST = tstop[1]
+if na(vol_[1])
+    trend := 1
+else if prevST == pUB
+    trend := close > ub ? 1 : -1
+else
+    trend := close < lb ? -1 : 1
+tstop := trend == 1 ? lb : ub
+chg = trend != trend[1]
+
+// ── Pivot, età del trend, EMA del TF superiore (candela chiusa), regime D1 ──
+pl = ta.pivotlow(low, e_pl, e_pr)
+ph = ta.pivothigh(high, e_pl, e_pr)
+int age = nz(ta.barssince(chg), 100000)
+float htf_ema = request.security(syminfo.tickerid, e_htf, ta.ema(close, e_htf_len)[1], lookahead = barmerge.lookahead_on)
+float pend_d1 = request.security(syminfo.tickerid, 'D', (ta.ema(close, 50)[1] - ta.ema(close, 50)[21]) / (20 * ta.sma(ta.tr(true), 14)[1]), lookahead = barmerge.lookahead_on)
+// percentile dell'ATR14 D1 del giorno prima rispetto ai 250 giorni precedenti (filtro di volatilità)
+float vpct_d1 = request.security(syminfo.tickerid, 'D', ta.percentrank(ta.sma(ta.tr(true), 14), 250)[1], lookahead = barmerge.lookahead_on)
+// impulso: dopo il pivot il prezzo si è allontanato dalla zona (massimo/minimo delle candele di conferma)
+float hh_conf = ta.highest(high, e_pr)
+// volume: la candela del pivot ha almeno X volte la media delle 20 candele prima
+float vavg20 = ta.sma(volume, 20)
+bool vol_piv_ok = e_volf <= 0 or (not na(vavg20[e_pr + 1]) and volume[e_pr] >= e_volf * vavg20[e_pr + 1])
+float ll_conf = ta.lowest(low, e_pr)
+var float swing_lo = na
+var float swing_hi = na
+if not na(pl)
+    swing_lo := low[e_pr]
+if not na(ph)
+    swing_hi := high[e_pr]
+
+// ── Order block attivo (uno solo) ─────────────────────────────────────
+var float a_top = na
+var float a_bot = na
+var int a_dir = 0
+var int a_id = 0
+var box b = na
+
+overlap(float t, float bt) =>
+    na(a_top) or na(a_bot) ? false : not(bt > a_top or t < a_bot)
+
+if trend == 1 and not na(pl)
+    float t = math.min(open[e_pr], close[e_pr])
+    float bt = t - e_zona * vol_
+    if not overlap(t, bt) and age >= e_age and bt - tstop >= e_dist * vol_ and not na(htf_ema) and close > htf_ema and (e_imp <= 0 or hh_conf - t >= e_imp * vol_) and vol_piv_ok
+        a_top := t
+        a_bot := bt
+        a_dir := 1
+        a_id += 1
+        b := box.new(bar_index - e_pr, t, bar_index, bt, bgcolor = color.new(#00ffcc, 82), border_color = color.new(#00ffcc, 40))
+if trend == -1 and not na(ph)
+    float bt = math.max(open[e_pr], close[e_pr])
+    float t = bt + e_zona * vol_
+    if not overlap(t, bt) and age >= e_age and tstop - t >= e_dist * vol_ and not na(htf_ema) and close < htf_ema and (e_imp <= 0 or bt - ll_conf >= e_imp * vol_) and vol_piv_ok
+        a_top := t
+        a_bot := bt
+        a_dir := -1
+        a_id += 1
+        b := box.new(bar_index - e_pr, t, bar_index, bt, bgcolor = color.new(#ff007f, 82), border_color = color.new(#ff007f, 40))
+if a_dir != 0 and ((a_dir == 1 and high < a_bot) or (a_dir == -1 and low > a_top))
+    if not na(b)
+        box.set_right(b, bar_index)
+        box.set_bgcolor(b, color.new(color.gray, 85))
+    a_top := na
+    a_bot := na
+    a_dir := 0
+    b := na
+if not na(b)
+    box.set_right(b, bar_index)
+
+bool buy_sig = ta.crossover(low, a_top) and a_dir == 1 and na(pl) and not chg and barstate.isconfirmed
+bool sell_sig = ta.crossunder(high, a_bot) and a_dir == -1 and na(ph) and not chg and barstate.isconfirmed
+
+// ── Calendario (ora italiana) ─────────────────────────────────────────
+ora_it(int tt) =>
+    hour(tt, 'Europe/Rome')
+bool ora_ok = not (no_h1 > no_h0 and ora_it(time) >= no_h0 and ora_it(time) < no_h1)
+int t_fine_prossima = time + 2 * timeframe.in_seconds() * 1000
+bool venerdi = (dayofweek(time, 'Europe/Rome') == dayofweek.friday and ora_it(time) >= 21) or dayofweek(t_fine_prossima, 'Europe/Rome') == dayofweek.saturday or (dayofweek(t_fine_prossima, 'Europe/Rome') == dayofweek.friday and ora_it(t_fine_prossima) >= 23)
+
+// ── Stato della posizione ─────────────────────────────────────────────
+var int ob_usato = -1
+var int pos_dir = 0
+var float e_ref = na
+var float r0 = na
+var float sl_lv = na
+var float sl_init = na
+var float tp_lv = na
+var float p1_lv = na
+var float p2_lv = na
+var float bel = na
+var float peak = na
+var bool be_on = false
+var bool tr_on = false
+var bool p1_fatto = false
+var bool p2_fatto = false
+var int ent_bar = na
+var float size_prec = 0.0
+var float size_ini = 0.0
+var float preso_prec = 0.0
+var int chiusi_prec = 0
+var float d_sig = na                            // distanza dello stop calcolata sulla candela del segnale
+
+float size_now = math.abs(strategy.position_size)
+bool chiuso_ora = strategy.closedtrades > chiusi_prec
+float qta_chiusa_ora = 0.0
+if chiuso_ora
+    for k = chiusi_prec to strategy.closedtrades - 1
+        qta_chiusa_ora += math.abs(strategy.closedtrades.size(k))
+
+// 1) posizione aperta in questa candela: livelli dal prezzo d'ingresso di riferimento (open) e dalla volatilità del segnale
+if size_now > 0 and size_prec == 0
+    pos_dir := strategy.position_size > 0 ? 1 : -1
+    e_ref := open
+    r0 := d_sig
+    sl_lv := e_ref - pos_dir * r0
+    tp_lv := e_rr > 0 ? e_ref + pos_dir * e_rr * r0 : na
+    p1_lv := e_p1r > 0 and e_p1f > 0 ? e_ref + pos_dir * e_p1r * r0 : na
+    p2_lv := e_p2r > 0 and e_p2f > 0 ? e_ref + pos_dir * e_p2r * r0 : na
+    sl_init := sl_lv
+    bel := e_ref + pos_dir * e_beo * r0
+    be_on := false
+    tr_on := e_tr_start == 'Subito'
+    peak := e_ref
+    p1_fatto := false
+    p2_fatto := false
+    ent_bar := bar_index
+    size_ini := size_now + qta_chiusa_ora
+    preso_prec := 0.0
+// parziali eseguiti (lo dice la quantità rimasta)
+float preso = size_now > 0 and size_ini > 0 ? 100.0 * (1.0 - size_now / size_ini) : 0.0
+if size_now > 0 and preso > preso_prec + 0.01
+    preso_prec := preso
+    bool nuovo_p = false
+    if e_p1f > 0 and not p1_fatto and preso >= e_p1f - 0.5
+        p1_fatto := true
+        nuovo_p := true
+    if e_p2f > 0 and not p2_fatto and preso >= e_p1f + e_p2f - 0.5
+        p2_fatto := true
+        nuovo_p := true
+    if nuovo_p and e_pbe
+        sl_lv := pos_dir == 1 ? math.max(sl_lv, bel) : math.min(sl_lv, bel)
+        be_on := true
+    if nuovo_p and e_tr_start == 'Dopo parziale'
+        tr_on := true
+if size_now == 0 and chiuso_ora
+    pos_dir := 0
+
+// 2) posizione aperta: pareggio, trailing, uscite a candela chiusa, ordini d'uscita aggiornati (validi dalla candela dopo)
+if size_now > 0
+    float fav = pos_dir == 1 ? high - e_ref : e_ref - low
+    if e_be > 0 and not be_on and fav >= e_be * r0
+        sl_lv := pos_dir == 1 ? math.max(sl_lv, bel) : math.min(sl_lv, bel)
+        be_on := true
+    if e_tr_start == 'Dopo BE' and be_on
+        tr_on := true
+    peak := pos_dir == 1 ? math.max(peak, high) : math.min(peak, low)
+    if e_tr_mode != 'Nessuno' and tr_on
+        float sw = pos_dir == 1 ? swing_lo : swing_hi
+        float cand = e_tr_mode == 'ATR' ? close - pos_dir * tr_k * vol_ : e_tr_mode == 'Chandelier' ? peak - pos_dir * tr_k * vol_ : e_tr_mode == 'Swing' ? (na(sw) ? sl_lv : sw - pos_dir * tr_k * vol_) : (trend == pos_dir ? tstop : sl_lv)
+        sl_lv := pos_dir == 1 ? math.max(sl_lv, cand) : math.min(sl_lv, cand)
+    bool x_tempo = time_stop > 0 and bar_index - ent_bar >= time_stop
+    bool x_ven = exit_fri and venerdi
+    if x_tempo or x_ven
+        strategy.close_all(comment = x_tempo ? 'TEMPO' : 'VENERDI')
+    else
+        string id_in = pos_dir == 1 ? 'L' : 'S'
+        string cl = math.abs(sl_lv - sl_init) < syminfo.mintick / 2 ? 'SL' : (be_on and math.abs(sl_lv - bel) < syminfo.mintick / 2 ? 'BE' : 'TRAIL')
+        if e_p1f > 0 and not p1_fatto and not na(p1_lv)
+            strategy.exit('P1', id_in, qty_percent = e_p1f, stop = sl_lv, limit = p1_lv, comment_loss = cl, comment_profit = 'P1')
+        if e_p2f > 0 and not p2_fatto and not na(p2_lv)
+            strategy.exit('P2', id_in, qty_percent = e_p2f, stop = sl_lv, limit = p2_lv, comment_loss = cl, comment_profit = 'P2')
+        strategy.exit('X', id_in, stop = sl_lv, limit = tp_lv, comment_loss = cl, comment_profit = 'TP')
+
+// 3) nessuna posizione: segnale -> ordine a mercato per l'open della candela dopo
+bool libero = a_dir != 0 and a_id != ob_usato
+// filtri D1 (giorno prima): pendenza della EMA50 nel verso del trade e percentile della volatilità
+bool pend_l = e_pend < 0 or (not na(pend_d1) and (e_pend == 0 ? pend_d1 > 0 : pend_d1 >= e_pend))
+bool pend_s = e_pend < 0 or (not na(pend_d1) and (e_pend == 0 ? pend_d1 < 0 : -pend_d1 >= e_pend))
+bool vol_d1_ok = (e_vmax >= 100 and e_vmin <= 0) or (not na(vpct_d1) and vpct_d1 <= e_vmax and vpct_d1 >= e_vmin)
+if size_now == 0 and time >= start_t and libero and ora_ok
+    bool sl_ = buy_sig and e_long and pend_l and vol_d1_ok
+    bool ss_ = sell_sig and e_short and pend_s and vol_d1_ok
+    if sl_ or ss_
+        int d = sl_ ? 1 : -1
+        ob_usato := a_id
+        d_sig := e_sl * vol_
+        float molt = 1.0
+        if e_reg and not na(pend_d1)
+            float favd = pend_d1 * d
+            molt := favd >= reg_forte ? 1.25 : favd < reg_debole ? 0.75 : 1.0
+        string id_in = d == 1 ? 'L' : 'S'
+        float tk = syminfo.mintick
+        strategy.entry(id_in, d == 1 ? strategy.long : strategy.short, qty = math.round(100 * molt))
+        // nella candela d'ingresso: distanze dal prezzo eseguito (dalla candela dopo: livelli esatti dall'open)
+        if e_p1f > 0 and e_p1r > 0
+            strategy.exit('P1', id_in, qty_percent = e_p1f, loss = d_sig / tk, profit = e_p1r * d_sig / tk, comment_loss = 'SL', comment_profit = 'P1')
+        if e_p2f > 0 and e_p2r > 0
+            strategy.exit('P2', id_in, qty_percent = e_p2f, loss = d_sig / tk, profit = e_p2r * d_sig / tk, comment_loss = 'SL', comment_profit = 'P2')
+        strategy.exit('X', id_in, loss = d_sig / tk, profit = e_rr > 0 ? e_rr * d_sig / tk : na, comment_loss = 'SL', comment_profit = 'TP')
+
+size_prec := size_now
+chiusi_prec := strategy.closedtrades
+
+// ── Grafica e alert ───────────────────────────────────────────────────
+plot(chg ? na : tstop, 'Trend Stop', color = trend == 1 ? #00ffcc : #ff007f, style = plot.style_linebr)
+plot(htf_ema, 'EMA TF superiore', color = color.new(color.orange, 30))
+plotshape(buy_sig, 'Segnale long', shape.triangleup, location.belowbar, #00ffcc, size = size.tiny)
+plotshape(sell_sig, 'Segnale short', shape.triangledown, location.abovebar, #ff007f, size = size.tiny)
+plot(strategy.position_size != 0 ? sl_lv : na, 'Stop', color.red, style = plot.style_linebr)
+plot(strategy.position_size != 0 ? tp_lv : na, 'Target', color.lime, style = plot.style_linebr)
+plot(strategy.position_size != 0 and not p1_fatto ? p1_lv : na, 'Parziale 1', color.aqua, style = plot.style_linebr)
+plot(strategy.position_size != 0 and not p2_fatto ? p2_lv : na, 'Parziale 2', color.aqua, style = plot.style_linebr)
+plot(strategy.position_size != 0 and not be_on ? e_ref + pos_dir * e_be * r0 : na, 'Livello pareggio', color.yellow, style = plot.style_linebr)
+// alert (in una strategy si usa alert(): crea l'avviso con "Qualsiasi chiamata alert()")
+if buy_sig and e_long
+    alert(syminfo.ticker + ' ' + timeframe.period + ': retest LONG su OB (VTOB ' + preset + ')', alert.freq_once_per_bar_close)
+if sell_sig and e_short
+    alert(syminfo.ticker + ' ' + timeframe.period + ': retest SHORT su OB (VTOB ' + preset + ')', alert.freq_once_per_bar_close)

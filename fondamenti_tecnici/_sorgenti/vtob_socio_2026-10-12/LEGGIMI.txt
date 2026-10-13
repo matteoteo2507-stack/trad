@@ -1,0 +1,66 @@
+STRATEGIA VTOB A+B+C + US_M30 - BACKTEST ULTIMI 4 ANNI
+=====================================================
+
+Apri prima REPORT_BACKTEST.html (doppio clic, si apre nel browser): ci sono tutti i risultati, i grafici e le regole.
+
+IN BREVE (rischio 0,5% a trade, trade dal 12/07/2022 al 09/10/2026)
+- Rendimento +102% in 4 anni, senza interesse composto
+- Profit factor 2,02
+- 83% dei mesi positivi
+- Drawdown massimo −3,7%, mese peggiore −1,7%
+- 2,4 trade a settimana
+
+CONTENUTO
+  REPORT_BACKTEST.html     il report completo
+  backtest/
+    trade_tutti.csv        i 535 trade, uno per riga: strategia, ingresso, uscita, direzione, risultato in R e in %
+    statistiche.csv        tutte le statistiche di ogni strategia e di quelle insieme
+    mensile_pct.csv        risultato di ogni mese, in % del conto
+    grafico_*.png          i grafici del report
+  mt5/
+    VTOB_Portfolio_EA.mq5  EA per MetaTrader 5 (sorgente)
+    VTOB_Portfolio_EA.ex5  EA già compilato
+    VTOB_combo_XAUUSD.set  impostazioni per il grafico dell'oro (strategie A, B, C)
+    VTOB_combo_USTEC.set   impostazioni per il grafico del Nasdaq 100 (strategia US_M30)
+  tradingview/
+    VTOB_Strategy_Portafoglio.pine   strategie A, B, C (preset "A — M15 (consigliata)", "B — H1 (consigliata)", "C — M30")
+    VTOB_Strategy_US_M30.pine        strategia US_M30
+    VTOB_Indicator_Pro.pine          indicatore con order block, segnali e alert
+  python/                  motore di backtest e dati per rifare tutto da zero
+
+COME USARLA SU METATRADER 5
+  1. Copia VTOB_Portfolio_EA.ex5 nella cartella MQL5\Experts del terminale
+     (in MT5: File > Apri cartella dati > MQL5 > Experts).
+  2. Apri un grafico XAUUSD e uno del Nasdaq 100 (USTEC, NAS100 o US100, dipende dal broker).
+  3. Trascina l'EA su ciascun grafico. Nella scheda dei parametri di input premi "Carica" e scegli:
+     - grafico dell'oro: VTOB_combo_XAUUSD.set
+     - grafico del Nasdaq: VTOB_combo_USTEC.set
+     Il timeframe del grafico non conta: l'EA legge da solo i timeframe che servono.
+  4. Attiva il trading algoritmico (pulsante "Algo Trading" in alto).
+  Note:
+  - Metti i due grafici nello stesso MT5: i limiti di perdita valgono per le quattro strategie insieme.
+  - Rischio 0,5% a trade. Se il conto perde il 3% in un giorno o il 6% in una settimana, l'EA non apre nuovi trade
+    fino al giorno o alla settimana dopo; i trade già aperti continuano. I valori si cambiano negli input.
+  - Se lo spread supera 1 $ sull'oro o 5 punti sul Nasdaq, il segnale viene saltato.
+  - L'EA scrive anche dei file di stato nella cartella comune di MT5: non servono, si possono ignorare.
+  - Prima prova sempre nello Strategy Tester e su un conto demo.
+
+COME USARLA SU TRADINGVIEW
+  Pine Editor > incolla il file > Aggiungi al grafico. Il preset va scelto in base al grafico:
+  - A su XAUUSD M15, B su XAUUSD H1, C su XAUUSD M30;
+  - US_M30 su NAS100 M30.
+  I file Pine non sono stati testati su TradingView: se il Pine Editor segnala un errore, correggilo partendo dal messaggio.
+  Feed e spread di TradingView sono diversi da quelli del broker, quindi i numeri saranno un po' diversi.
+
+PER RIFARE IL BACKTEST (facoltativo)
+  Serve Python 3.11 o più recente. Nella cartella python:
+    pip install -r requirements.txt
+    python riproduci_backtest.py
+  Rigenera i file della cartella backtest. Deve dare gli stessi numeri: 535 trade, PF 2,02.
+
+AVVERTENZE
+  - Parametri scelti sugli stessi 4 anni del backtest: dal vivo aspettati di meno.
+  - Il 92% dei trade è long, in anni in cui oro e Nasdaq sono saliti molto: in un lungo periodo
+    di ribasso o laterale renderebbe meno.
+  - Risultati passati, nessuna garanzia, non è una consulenza finanziaria.
+  - Logica degli order block da "Volume-Trend Order Block Engine" di BigBeluga (CC BY-NC-SA 4.0): uso non commerciale.
