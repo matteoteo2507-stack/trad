@@ -75,6 +75,10 @@ nuova struttura di spesa si è stabilizzata**, quando esistono dati veri sul sur
   6-12 mesi dopo la laurea;
 - prima del primo contratto di lavoro: contributo del datore al fondo pensione di categoria e limite di
   deduzione. Sono domande aperte, nessuna risposta è stata verificata.
+- **Nel resoconto annuale della performance** (Matteo, 25/10; buco 47 di Quant Guild): la **quota di tempo in
+  contante**, cioè quanta parte dell'anno il denaro destinato al PAC è rimasto liquido nel serbatoio invece che investito.
+  Senza, il rendimento del PAC si confronta con quello di chi è sempre investito, che è un'altra cosa. Fonte:
+  l'estratto annuale del conto; i saldi restano fuori dal repo pubblico.
 
 ### Cosa NON fare nei primi due anni
 
