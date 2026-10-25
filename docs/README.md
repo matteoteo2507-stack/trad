@@ -37,6 +37,9 @@ Ipotesi, metriche e soglie fissate **prima** di guardare i dati. Nessun test è 
 
 | Documento | Cosa testa |
 |---|---|
+| [ULTIMA_MEZZORA_PREREGISTRATION.md](ULTIMA_MEZZORA_PREREGISTRATION.md) | momentum dell'ultima mezz'ora sugli indici USA (coperture di gamma, backlog H1) |
+| [MR_INDICI_RSI2_PREREGISTRATION.md](MR_INDICI_RSI2_PREREGISTRATION.md) | RSI(2) di Connors sugli indici USA contro un ingresso casuale a durata copiata (candidato A) |
+| [FOREXGUMP_LATENCY_PREREGISTRATION.md](FOREXGUMP_LATENCY_PREREGISTRATION.md) | segnali di Forex Gump GOLD VIP: il segnale copiato in ritardo vale ancora? |
 | [NXT_FADE_FORWARD_PREREGISTRATION.md](NXT_FADE_FORWARD_PREREGISTRATION.md) | forward del FADE mean-reversion (NXT A1), due stadi |
 | [COPIER_EXECUTION_PREREGISTRATION.md](COPIER_EXECUTION_PREREGISTRATION.md) | quanto dell'edge dei segnali mentore sopravvive all'esecuzione del copier |
 | [MENTOR_SIGNALS_OOS_PREREGISTRATION.md](MENTOR_SIGNALS_OOS_PREREGISTRATION.md) | segnali mentore XAUUSD fuori campione, contro lato casuale appaiato |
@@ -46,7 +49,7 @@ Ipotesi, metriche e soglie fissate **prima** di guardare i dati. Nessun test è 
 | [OPENING_RANGE_PREREGISTRATION.md](OPENING_RANGE_PREREGISTRATION.md) | opening-range breakout + retest, US100 M5 |
 | [MEANREV_PREREGISTRATION.md](MEANREV_PREREGISTRATION.md) | mean-reversion di volatilità (non su livelli) |
 | [SEASONALITY_PREREGISTRATION.md](SEASONALITY_PREREGISTRATION.md) | stagionalità turn-of-month |
-| [LEVEL_RESEARCH_PREREGISTRATION.md](LEVEL_RESEARCH_PREREGISTRATION.md) + [LEVEL_RESEARCH_PLAN.md](LEVEL_RESEARCH_PLAN.md) | livelli come zone di reazione (famiglia dei 384 trial) |
+| [LEVEL_RESEARCH_PREREGISTRATION.md](LEVEL_RESEARCH_PREREGISTRATION.md) + [LEVEL_RESEARCH_PLAN.md](LEVEL_RESEARCH_PLAN.md) | livelli come zone di reazione (famiglia `livelli`; trial nel contatore, `python -m core.trial_ledger`) |
 
 ## Pilastro investing (passivo)
 

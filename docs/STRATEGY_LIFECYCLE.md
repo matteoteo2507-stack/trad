@@ -317,6 +317,82 @@ mai le fasi successive. Due vincoli:
   random**. ⚠️ Corollario che va nella direzione opposta a quella che verrebbe da pensare: questo
   **rafforza** il valore del forward OOS, che resta l'unica validazione non contaminabile.
 
+### Ingresso dall'hub (dal 2026-10-25)
+
+> Lato ricevente del ponte con il vault `claude-brain` (lato hub: `../CLAUDE.md`, "Lavorare su `trad` dall'hub").
+> Fissato con il gatekeeper il 25/10 su richiesta di Matteo; da rivedere nel rituale
+> ([`mappa/_modifiche.md`](../mappa/_modifiche.md)). Prima prova: l'idea "insider pesati con la geopolitica",
+> [intake del 25/10](reviews/idee_matteo_hub_intake_2026-10-25.md).
+
+Un'idea che nasce nell'hub (appunti di Matteo, studio, geopolitica) arriva in [`Da distillare/`](../Da%20distillare/README.md)
+come ogni altro materiale. Diventa un'**ipotesi** di `trad` solo con questa scheda. Si legge in ordine e **ci si ferma
+al primo campo che manca**.
+
+**1. Sei campi del ponte** (la griglia del modulo 09 non li copre):
+
+| Campo | Cosa contiene | Si respinge se |
+|---|---|---|
+| **P1 · Fonte unica** | link alla nota dell'hub da cui nasce l'idea, data, chi l'ha avuta; la scheda richiama la nota, non la copia | manca il link |
+| **P2 · Provenienza** | (a) chi ha avuto l'idea; (b) chi ha scritto razionale e specifica: Matteo, Claude in una sessione sull'hub, una fonte umana datata e citata; la finestra dei dati del test rispetto al cutoff; se il tema e' "famoso e discusso" | provenienza non dichiarata (vale come il caso peggiore, [QUANT_REVIEW_PROTOCOL](QUANT_REVIEW_PROTOCOL.md), "Provenienza"); razionale scritto dall'LLM su dati anteriori al cutoff senza un forward previsto (vincolo sopra) |
+| **P3 · Controllo contro il repo** | famiglia esistente? stessa grandezza di una famiglia del contatore? riga delle "chiuse in partenza" di [BACKLOG §H](BACKLOG_RICERCA.md)? | ripropone una famiglia CLOSED senza evidenza del §7; stessa grandezza presentata come famiglia nuova (§3); cade fra le chiuse in partenza senza che sia scattata la loro condizione "si riapre se" |
+| **P4 · Dati gia' guardati** | grafici, episodi, "l'ho visto succedere" visti nell'hub; "nessuno" e' una risposta valida | il campo manca. Dati gia' visti non fanno da holdout: un'idea nata da quei dati arriva al massimo a LEAD (§5) |
+| **P5 · Misura fatta nell'hub** | solo se l'idea viene da un registro (es. le previsioni): cosa si e' misurato e su quante osservazioni, metrica e riferimento, intervallo, criterio scritto **prima** con il commit dell'hub che lo data, quante serie o categorie sono state misurate | criterio non datato prima della misura, o nessun riferimento: e' un descrittivo; statistiche di terzi al posto di una misura (vincolo sopra); per la geopolitica, misura assente |
+| **P6 · Baseline previsto** | una riga: che cosa si randomizza | manca (G1 del gatekeeper, Checklist 1) |
+
+**2. Le nove domande** del [modulo 09 §4](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md), cosi' come sono.
+Respingono: classe assente (un candidato senza classe e' un pattern: riga in `_INTAKE.md`, niente pre-registrazione);
+"chi paga" incompleto; accessibilita' fuori perimetro ("CFD retail, capitale piccolo, dati liberi", DECISIONS
+2026-10-03 (4)) o dato a pagamento senza la regola di [BACKLOG §G](BACKLOG_RICERCA.md); potenza fuori scala (si chiude
+a 0 trial, come COT e carry il 03/10); "dove muore" senza un esito numerico. Il limite all'arbitraggio non respinge:
+"nessuno l'ha visto" si annota come prior basso.
+
+**3. Caso geopolitica** (registro delle previsioni, `../projects/geopolitica.md`). P5 porta:
+- il registro **intero**, non filtrato; la data di emissione e' il commit sull'hub, e una riga modificata dopo
+  l'emissione non vale;
+- solo previsioni **risolte** con un riferimento dello stesso giorno;
+- Brier proprio, Brier del riferimento e **differenza appaiata** per domanda, con bootstrap a cluster sull'evento, piu'
+  la curva di calibrazione;
+- il criterio dichiarato prima (es. il limite alto dell'intervallo di Brier proprio − riferimento sta sotto zero); se
+  non passa, l'MDE accanto;
+- quanti temi o categorie sono stati misurati: promuoverne uno solo e' una selezione multipla;
+- domande con lo **stesso orizzonte** del test in `trad`;
+- la mappa evento → asset (settore, direzione, orizzonte) scritta **prima** di guardare un rendimento: battere un
+  mercato di previsione non vuol dire battere il mercato azionario, che puo' aver gia' prezzato;
+- la potenza del test in `trad` calcolata all'ingresso: se e' fuori scala si chiude a 0 trial anche con una fase 1
+  positiva.
+
+Un numero minimo di previsioni **non e' fissato**: senza calcolo di potenza sarebbe inventato. La forma e'
+MDE = 2,80 × sd(d) / √n_eff, dove d e' la differenza di Brier per domanda e n_eff conta come una sola le domande sullo
+stesso evento. Il calcolo e' fra gli Aperti della nota dell'hub e aspetta la scelta del riferimento.
+
+**4. Esiti e dove si registrano.** In ogni caso la voce si cancella dalla cassetta d'uscita dell'hub
+(`../laboratorio/pending.md`). Le chiusure le dichiara Matteo.
+
+| Esito | Quando | Dove |
+|---|---|---|
+| **Respinta** | un campo P manca o fa scattare il rigetto, o ci si ferma alle domande 1, 2, 6, 7 o 8 | `_INTAKE.md` ("chiuso all'intake, 0 trial", motivo, condizione di riapertura); nota in `docs/reviews/`; `DECISIONS.md` con la decisione di Matteo |
+| **Parcheggiata** | condizione nota lato `trad`: dati, perimetro, budget | `_INTAKE.md` (`parcheggiato`) + riga del BACKLOG §D o §G con "si sblocca se" |
+| **Rimandata all'hub** | cio' che manca vive nell'hub (es. la misura di fase 1) | resta nella nota dell'hub (fonte unica); in `trad` al piu' una riga di `_INTAKE.md` con il link |
+| **Accettata** | passa scheda e griglia | `_INTAKE.md` (`distillato`) + riga del BACKLOG §B; famiglia e slot li decide Matteo in `DECISIONS.md`; il contatore la registra all'approvazione della pre-registrazione |
+
+**5. Contabilita'.** Scheda, griglia e potenza sui numeri pubblicati costano **0 trial**, purche' non si guardino
+rendimenti nostri del segnale (precedente: COT, 03/10). Il trial si spende all'approvazione della pre-registrazione
+(§3). Il registro di Brier dell'hub non e' un trial di `trad`: non misura rendimenti. Un condizionamento venuto
+dall'hub sopra un segnale esistente (es. un peso geopolitico) e' un **filtro**: un trial, testato per ablazione (§4bis).
+
+**Aperti (decide Matteo):**
+1. **Quota.** Una pre-registrazione nata nell'hub consuma uno slot esterno? Alla lettera questo paragrafo parla di
+   "canali, video, materiale di terzi": un'idea di Matteo non lo e', una costruita su una fonte terza si'. Il gatekeeper
+   propone di contarle tutte (l'hub e' un funnel). Il contatore oggi non lega provenienza e quota in modo coerente:
+   `letteratura` conta per `momentum_ultima_mezzora` ma non per `tsmom` e `seasonality_tom`; `umana_esterna` non conta
+   per `mentor_signals`.
+2. **Provenienza delle idee di Matteo con razionale scritto da Claude.** La tabella del QUANT_REVIEW_PROTOCOL non
+   elenca `utente` ne' `letteratura`, che il contatore usa.
+3. **Fase 1 positiva:** solo condizione necessaria, o entra nel prior del test? (Il gatekeeper propone: solo
+   condizione necessaria.)
+4. **Esclusioni geopolitiche (fase 2):** famiglia di `trad` nel contatore, o test del pilastro investing?
+5. Le idee **rimandate all'hub** si tracciano anche in `_INTAKE.md`?
+
 ---
 
 ## 8bis. Dopo il capitale — ritiro, incubazione, riattivazione

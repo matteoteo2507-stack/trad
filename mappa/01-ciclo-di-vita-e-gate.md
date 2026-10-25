@@ -59,6 +59,15 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
    *Input*: un indicatore o uno script Pine. *Output*: tenere, cautela o scartare, con il motivo.
    *Come si rompe*: se si contano come candidati diversi due indicatori della stessa grandezza; ed è
    in quarantena, con molte fonti lette solo come sintesi del motore di ricerca.
+   **Dal 25/10, per le idee che nascono nell'hub** (`claude-brain`: appunti di Matteo, studio, geopolitica):
+   `docs/STRATEGY_LIFECYCLE.md` §8, "Ingresso dall'hub". *Cosa fa*: una scheda di sei campi (fonte unica nell'hub,
+   provenienza, controllo contro il repo, dati gia' guardati, misura fatta nell'hub, baseline previsto) da compilare
+   prima delle nove domande del modulo 09; ci si ferma al primo campo che manca. Per la geopolitica chiede la misura
+   del registro delle previsioni (Brier contro un riferimento, registro intero, criterio scritto prima). *Input*: un
+   file in `Da distillare/`. *Output*: respinta, parcheggiata, rimandata all'hub o accettata, ognuna col suo registro.
+   *Come si rompe*: se un'idea dell'hub salta la scheda, i dati che Matteo ha gia' guardato nell'hub possono finire a
+   fare da holdout; e finche' Matteo non decide la quota (Aperti del §8), un'idea dell'hub puo' aggirare il limite di
+   pre-registrazioni esterne. Il gatekeeper la controlla alla G1 (punto 10).
 2. **[G1] Pre-registrazione**, *prima* di guardare i dati: ipotesi, metriche e soglie numeriche,
    baseline random, **budget di tentativi**, divisione dei dati, costi, criteri di morte,
    condizione di fill. Se manca anche una sola voce il gatekeeper blocca (gatekeeper, righe 77-98).
@@ -116,7 +125,7 @@ con file e riga per ogni rilievo.
 
 ## Input → Output
 
-- **Input:** un'idea con razionale, i dati, il codice dello studio in `analysis/<famiglia>/`.
+- **Input:** un'idea con razionale, i dati, il codice dello studio in `analysis/<famiglia>/`. Un'idea dall'hub entra con la scheda del §8.
 - **Output:** una pre-registrazione in `docs/`, un report in `docs/reviews/`, una voce in
   `DECISIONS.md`, lo stato nel frontmatter della pre-registrazione, una riga aggiornata in
   `docs/trial_ledger.json`.
@@ -129,6 +138,7 @@ con file e riga per ogni rilievo.
 | Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `docs/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
 | Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `docs/*_PREREGISTRATION.md` e le voci del ledger | Claude |
+| Ogni ipotesi arrivata dall'hub ha la scheda d'ingresso | sì | la nota di intake in `docs/reviews/` riporta P1-P6 o il punto in cui si e' fermata (il 25/10: prima prova, insider + geopolitica, fermata a P5 e alla domanda 6) | Claude |
 
 ## Come si rompe
 

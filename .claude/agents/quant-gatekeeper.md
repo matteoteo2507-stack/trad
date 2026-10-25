@@ -96,6 +96,9 @@ Blocchi se manca **anche uno solo** di questi:
    se il livello e' gia' oltrepassato, e con quale convenzione si risolve l'uscita
    (`core/resolve_trade.py`, cinque assi). Vedi Checklist 3.0 — **senza questa il test
    non parte**, perche' e' l'unica cosa che decide se i numeri misurano la regola.
+10. **Se l'ipotesi nasce nell'hub** (`claude-brain`): la scheda d'ingresso di
+   `docs/STRATEGY_LIFECYCLE.md` §8, "Ingresso dall'hub", e' compilata, e i dati che P4
+   dichiara gia' guardati non fanno da holdout (dal 2026-10-25).
 
 ⚠️ **Controllo di calibrazione delle soglie — nasce da un errore reale.**
 Per ogni soglia pre-registrata chiedi: *questa soglia e' superabile da un

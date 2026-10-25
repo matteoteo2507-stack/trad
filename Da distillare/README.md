@@ -10,9 +10,15 @@ dominio**.
 
 ## La regola
 
-**A fine sessione la cartella è vuota**, tranne questo file. Vale per ogni sessione, di Matteo o di Claude, anche se
-il materiale l'ha portato qualcun altro. Un file che non si sa dove mettere non resta qui: si chiede a Matteo nella
-stessa sessione.
+**La cartella si tiene il più possibile vuota**, tranne questo file: serve a distillare, non a immagazzinare (Matteo,
+25/10/2026). Ogni sessione che la trova piena smista ciò che riesce, di Matteo o di Claude, anche se il materiale l'ha
+portato qualcun altro.
+
+Un lavoro di smistamento che si chiude in più sessioni (per tempo o per limite di token) **non è una violazione**. Chi
+si ferma a metà scrive dove è arrivato, come per ogni lavoro interrotto; il file resta qui finché lo smistamento non è
+finito. Un file che non si sa dove mettere non resta qui: si chiede a Matteo nella stessa sessione.
+
+*Fino al 25/10 la regola era "a fine sessione la cartella è vuota"; la regola nuova toglie la scadenza, non lo scopo.*
 
 ## Cosa non ci va
 
@@ -48,13 +54,15 @@ versionabile solo dopo lo smistamento, nella sua cartella e con le regole di que
 | Export del canale del mentore | `_export_telegram/` (nome fisso, fuori da git) | controllo di copertura con `analysis/mentor_signals/coverage.py` |
 | Dati di prezzo (barre, tick) | `analysis/trading-bot-eval/data/` (fuori da git) | controllo con `python -m core.data_checks <file>` |
 | La nostra lettura di un materiale (verdetto, tabella dei claim) | nota in [`docs/reviews/`](../docs/reviews/) | voce in [`DECISIONS.md`](../DECISIONS.md) se chiude o apre qualcosa |
+| Ipotesi che nasce nell'hub (`claude-brain`: appunti di Matteo, studio, geopolitica) | la fonte in `fondamenti_tecnici/_sorgenti/`, la nostra lettura in `docs/reviews/` | scheda d'ingresso di [`STRATEGY_LIFECYCLE.md`](../docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub"; riga in `_INTAKE.md` |
 | Materiale che non riguarda `trad` (università, altri progetti) | `inbox/` del vault `claude-brain`, fuori da questo repo | triage del vault |
 
 Se un tipo di materiale non è in tabella, si chiede a Matteo dove va e si aggiunge la riga.
 
 ## Come si rompe
 
-- **File lasciati qui per giorni**: la cartella diventa un secondo archivio e torna il problema dei file sparsi.
+- **File lasciati qui senza che nessuno li stia smistando**: la cartella diventa un secondo archivio e torna il problema
+  dei file sparsi. Un file fermo qui senza una nota che dica dove è arrivato lo smistamento è il segnale.
 - **File spostato senza registrazione**: è nel repo ma nessuna nota lo cita.
 - **Stesso export in due posti**: uno script legge la copia vecchia senza che nessuno se ne accorga.
 - **Regola di `.gitignore` rimossa**: un `git add` della cartella porterebbe dati dei soci nel repo pubblico.

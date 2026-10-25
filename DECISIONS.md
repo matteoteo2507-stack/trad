@@ -11,6 +11,49 @@
 
 ---
 
+## 2026-10-25 (2) — Ponte con l'hub, lato ricevente: **scheda d'ingresso** per le ipotesi che nascono nell'hub
+
+**Richiesta di Matteo (25/10)**, proposta del gatekeeper: un'idea dell'hub (appunti, studio, geopolitica) diventa
+un'ipotesi di `trad` solo con una scheda di sei campi (fonte unica nell'hub, provenienza, controllo contro il repo, dati
+gia' guardati, misura fatta nell'hub, baseline previsto) seguita dalle nove domande del modulo 09; ci si ferma al primo
+campo che manca. Per la geopolitica la misura e' il registro delle previsioni dell'hub: registro intero, Brier contro
+un riferimento con differenza appaiata e cluster sull'evento, criterio scritto prima. Nessun numero minimo fissato:
+aspetta il calcolo di potenza, che aspetta la scelta del riferimento (Aperti di `../projects/geopolitica.md`).
+
+- **Dove vive:** [STRATEGY_LIFECYCLE](docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub". Rimandi: gatekeeper (G1,
+  punto 10), `Da distillare/README.md`, [mappa 01](mappa/01-ciclo-di-vita-e-gate.md). Il `CLAUDE.md` dell'hub va
+  collegato dalla prossima sessione sull'hub (voce nella pending).
+- **Prima prova:** insider pesati con la geopolitica: componente geopolitica **rimandata all'hub** (nessuna misura),
+  insider **parcheggiato** (BACKLOG D9). [Intake](docs/reviews/idee_matteo_hub_intake_2026-10-25.md).
+- **0 trial.** Contatore non toccato.
+- **Da decidere (Matteo)**, elencati nel §8: se un'idea dell'hub consuma uno slot esterno; la provenienza delle idee di
+  Matteo con razionale scritto da Claude; il peso di una fase 1 positiva; se le esclusioni geopolitiche sono una
+  famiglia di `trad` o un test del pilastro investing; se le idee rimandate all'hub si tracciano in `_INTAKE.md`.
+
+---
+
+## 2026-10-25 — Idee di Matteo dall'inbox dell'hub: **smistate all'intake, 0 trial**; nessuna famiglia aperta o chiusa
+
+Prima sessione su `trad` dopo la nascita del ponte con l'hub (`../CLAUDE.md`, "Lavorare su `trad` dall'hub"). Dieci
+idee di Matteo, depositate dall'hub in `Da distillare/` con un controllo preliminare, ricontrollate voce per voce contro
+il repo: [nota di intake](docs/reviews/idee_matteo_hub_intake_2026-10-25.md); fonte in
+`fondamenti_tecnici/_sorgenti/appunti_matteo_hub_2026-10-24/`.
+
+- **Tre correzioni al controllo dell'hub.** Le chiusure delle sessioni non sono nuove: H1 e' CLOSED (2026-10-12 (2)),
+  e prima ancora London Breakout (2026-05-30) e l'oro notturno (03/10). L'insider non e' testabile con i soli Form 4:
+  servono prezzi di azioni singole senza survivorship (BACKLOG G6) e il perimetro azionario. Il quadrante di liquidita'
+  e' il framework Fed gia' distillato nei moduli 03 e 06: una occorrenza, non una conferma.
+- **Stati.** Candidato: coppie correlate (quarantena; famiglia da decidere alla G1, slot esterno non prima del 2027-Q1
+  se poggia sulla letteratura). Bloccate: order flow (D1), insider (**nuova D9**), insider con geopolitica (ponte, voce
+  2026-10-25 (2)). In attesa: news e previsioni ("world monitor", chiarimento di Matteo). Gia' risposte dalle regole esistenti:
+  strategie on/off (LIFECYCLE §4bis), indicatori EMA, SAR, TMO (stessa grandezza = stessa famiglia), quadrante.
+  Respinta nella forma attuale: la ricerca di pattern su aperture e chiusure (ricerca per elenco, modulo 09).
+  Rinviata da Matteo: il workspace "tipo Bloomberg".
+- **Contabilita'.** 0 trial, contatore non toccato, nessuna pre-registrazione, nessuno slot usato.
+- **Priorita' fra i candidati: le fissa Matteo** (decisione del 25/10 sulla divisione del lavoro).
+
+---
+
 ## 2026-10-13 (5) — Pacchetto VTOB del socio (order block su XAUUSD): **NON DIMOSTRATO**, chiuso all'intake a 0 trial
 
 **Decisione di Matteo (13/10): strada A.** Il socio ha letto la [nota di intake](docs/reviews/vtob_socio_intake_2026-10-11.md),

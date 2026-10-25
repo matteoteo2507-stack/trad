@@ -33,6 +33,7 @@ vanno registrate.
 
 Codice: `CONVENTIONS.md`. Principi di trading: `TRADING_PRINCIPLES.md`. Concetti distillati:
 `fondamenti_tecnici/` (8 moduli `0X_*/principles.md`). Intake da fonti esterne: `fondamenti_tecnici/_INTAKE.md`.
-Materiale in arrivo dall'esterno: si appoggia in `Da distillare/` e **a fine sessione la cartella è vuota**
-(resta solo il suo `README.md`, che dice dove va cosa e dove si registra).
+Materiale in arrivo dall'esterno: si appoggia in `Da distillare/`, che **si tiene il più possibile vuota**: serve a distillare,
+non a immagazzinare, e uno smistamento chiuso in più sessioni non è una violazione (Matteo, 25/10). La regola completa
+sta nel suo `README.md`, che dice anche dove va cosa e dove si registra.
 Credenziali (`.env`, `*.session`) non si leggono, non si stampano, non si spostano.

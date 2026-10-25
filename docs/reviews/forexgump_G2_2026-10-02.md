@@ -232,8 +232,8 @@ contro M1 e `check_matching` · varianti solo sul lato del mentore (`esegui_appa
 
 > ## 2026-10-02 (esito) — Gump: **NON DIMOSTRATO (MDE 0,130R)** al primo e unico trial; famiglia **CLOSED**
 >
-> Esecuzione unica del 02/10 ([referto](docs/reviews/forexgump_esito_2026-10-02.md), G2
-> [qui](docs/reviews/forexgump_G2_2026-10-02.md)). Caso 4 del §6: d = −0,007 [−0,082; +0,069], CI a cluster per
+> Esecuzione unica del 02/10 ([referto](forexgump_esito_2026-10-02.md), G2
+> [qui](forexgump_G2_2026-10-02.md)). Caso 4 del §6: d = −0,007 [−0,082; +0,069], CI a cluster per
 > giornata, n 1.774. MDE pre-registrato 0,130R su d, 0,171R su E[R]. **Non dimostrato non vuol dire refutato**:
 > il CI rende poco plausibile un d sopra ~0,07R (un divario mentore − opposto sopra ~0,14R), sotto questa
 > esecuzione.
