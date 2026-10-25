@@ -233,3 +233,6 @@ positivo direbbe che il gradiente esiste, non che lo possiamo operare.
 **ottimistico**, su futures gratuiti in una finestra lunga, dichiarando prima che un nullo vale "non dimostrato" (MDE
 accanto): costa l'ultimo round di `trend_momentum`; (b) dichiarare la famiglia chiusa per potenza sullo scenario onesto,
 che nessun dato raggiunge. In entrambi i casi **non si compra niente** per A1.
+
+✅ **Deciso il 25/10 (Matteo): strada (b).** Famiglia `trend_momentum` CLOSED per potenza, D4 compresa (DECISIONS
+2026-10-25 (5)).

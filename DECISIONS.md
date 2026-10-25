@@ -11,6 +11,35 @@
 
 ---
 
+## 2026-10-25 (5) — `trend_momentum` **CLOSED per potenza** (Matteo), D4 compresa; non refutata
+
+**Decisione di Matteo (25/10):** strada (b) della voce (4), chiudere la famiglia; e alla domanda su D4 (momentum fra
+gruppi, ultimo candidato per il round 3): chiudere anche quella.
+
+**Il verdetto, con la forza del test.**
+- Coda aperta: **refutata** il 14/08 (l'entrata e' peggio del random).
+- Gradiente di volatilita': un LEAD nato dai dati di scoperta (rho +0,857), mai confermato fuori campione. A parita' di
+  tempo in mercato la regola perdeva dal random (−0,238 [−0,363; −0,098], diagnostico del 21/09). Il test sugli
+  strumenti tenuti fuori **non e' finanziabile sullo scenario onesto con nessun dato**: fuori scala di 2,3-3,8 volte in
+  ogni finestra, e anche con infiniti anni di storia servirebbero 7,6 strumenti volatili indipendenti per braccio
+  contro i 4-6 che esistono ([referto A1](docs/TREND_A1_HELDOUT_POWER.md) §5, §8, §9).
+- **Non refutato**: il test che lo direbbe non si puo' fare a potenza utile. B2 (03/10), A1 e D4 si chiudono senza
+  aver speso il round 3.
+
+**Contabilita'.** Contatore: `trend_momentum` CLOSED, round 2 di 3, nessun trial nuovo. Le famiglie aperte nel
+contatore restano una: `mentor_signals` (IN REVISIONE).
+
+**Riapre** solo con evidenza esterna nuova (LIFECYCLE §7):
+1. un risultato pubblicato che misuri il gradiente di volatilita' del trend following **contro un ingresso casuale a
+   parita' di tempo in mercato**, su strumenti indipendenti dai nostri;
+2. un insieme di strumenti volatili e scorrelati abbastanza grande per lo scenario onesto (oggi non esiste: non e' una
+   questione di comprare dati);
+3. un forward su strumenti nuovi, che a 4,8 trade per strumento-anno richiede anni.
+Non la riaprono: un altro indicatore di tendenza (regola 2026-10-08 (3)), la scelta della crypto come braccio alto
+(referto §7), un filtro di regime scelto dopo.
+
+---
+
 ## 2026-10-25 (4) — A1, potenza per finestra: **per lo scenario ottimistico bastano i dati gratuiti; quello onesto non lo raggiunge nessun dato**, 0 trial
 
 Richiesta di Matteo prima di qualsiasi acquisto ([referto A1 §9](docs/TREND_A1_HELDOUT_POWER.md), motore

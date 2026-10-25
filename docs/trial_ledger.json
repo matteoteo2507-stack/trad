@@ -146,21 +146,23 @@
     {
       "id": "trend_momentum",
       "nome": "Trend following / playground (Donchian + gradiente di volatilita')",
-      "stato": "LEAD",
+      "stato": "CLOSED",
       "trial_cumulati": null,
       "round_rifinitura": 2,
       "round_budget": 3,
       "holdout_aperto": null,
       "fonte_esterna": true,
       "prereg_esterna_trimestre": "2026-Q3",
-      "verdetto": "coda aperta REFUTATA; gradiente di volatilita' = LEAD (rho +0,857, p=0,006, n=8)",
+      "verdetto": "CLOSED per potenza (25/10, Matteo): coda aperta REFUTATA (14/08); gradiente di volatilita' mai confermato fuori campione, test held-out non finanziabile sullo scenario onesto con nessun dato (fuori scala 2,3-3,8x, referto A1 §9). NON refutato. Round 3 non speso; B2, A1 e D4 chiuse con la famiglia",
       "fonti": [
         "docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md",
         "docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md:196 (lacuna: nessun holdout sigillato per Q2)",
         "DECISIONS.md 2026-08-14 (2)",
-        "docs/BACKLOG_RICERCA.md A1"
+        "docs/BACKLOG_RICERCA.md A1",
+        "docs/TREND_A1_HELDOUT_POWER.md §9",
+        "DECISIONS.md 2026-10-25 (5)"
       ],
-      "note": "Fonte: Pavel Kichev. Consuma la SECONDA pre-registrazione esterna del trimestre. Round 2 di 3 gia' speso: ne resta uno. NESSUN holdout sigillato per Q2 - dichiarato nella pre-registrazione stessa, non scoperto dopo. Riserva aggiunta il 2026-09-19 (E1): holding mediano 7 giorni sul reale contro 2 sul random. 2026-09-30: il round 3 e' ASSEGNATO a B2 (breakout Kichev) per decisione dell'utente (DECISIONS 2026-09-30), non ancora speso; A1 punto 3 vi rinuncia. Se B2 fallisce la famiglia chiude per budget, con A1 e D4. 2026-10-03: B2 CHIUSA a 0 trial (potenza insufficiente nell'universo della fonte, DECISIONS 2026-10-03): il round 3 NON e' speso e resta alla famiglia, disponibile per B2 o A1 punto 3 quando una delle due avra' potenza.",
+      "note": "Fonte: Pavel Kichev. Consuma la SECONDA pre-registrazione esterna del trimestre. Round 2 di 3 gia' speso: ne resta uno. NESSUN holdout sigillato per Q2 - dichiarato nella pre-registrazione stessa, non scoperto dopo. Riserva aggiunta il 2026-09-19 (E1): holding mediano 7 giorni sul reale contro 2 sul random. 2026-09-30: il round 3 e' ASSEGNATO a B2 (breakout Kichev) per decisione dell'utente (DECISIONS 2026-09-30), non ancora speso; A1 punto 3 vi rinuncia. Se B2 fallisce la famiglia chiude per budget, con A1 e D4. 2026-10-03: B2 CHIUSA a 0 trial (potenza insufficiente nell'universo della fonte, DECISIONS 2026-10-03): il round 3 NON e' speso e resta alla famiglia, disponibile per B2 o A1 punto 3 quando una delle due avra' potenza. 2026-10-25: CLOSED per potenza per decisione di Matteo (DECISIONS 2026-10-25 (5)), D4 compresa. Riapre solo con evidenza esterna nuova (LIFECYCLE §7), condizioni nella voce DECISIONS.",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-08-14",
       "nota_provenienza": "Pavel Kichev, registrato in fondamenti_tecnici/_INTAKE.md."
