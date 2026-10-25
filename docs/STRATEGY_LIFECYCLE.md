@@ -342,7 +342,7 @@ al primo campo che manca**.
 **2. Le nove domande** del [modulo 09 §4](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md), cosi' come sono.
 Respingono: classe assente (un candidato senza classe e' un pattern: riga in `_INTAKE.md`, niente pre-registrazione);
 "chi paga" incompleto; accessibilita' fuori perimetro ("CFD retail, capitale piccolo, dati liberi", DECISIONS
-2026-10-03 (4)) o dato a pagamento senza la regola di [BACKLOG §G](BACKLOG_RICERCA.md); potenza fuori scala (si chiude
+2026-10-03 (4); allargato all'azionario il 2026-10-25 (3)) o dato a pagamento senza la regola di [BACKLOG §G](BACKLOG_RICERCA.md); potenza fuori scala (si chiude
 a 0 trial, come COT e carry il 03/10); "dove muore" senza un esito numerico. Il limite all'arbitraggio non respinge:
 "nessuno l'ha visto" si annota come prior basso.
 

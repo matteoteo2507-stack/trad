@@ -11,6 +11,42 @@
 
 ---
 
+## 2026-10-25 (3) — Perimetro allargato all'**azionario, globale** (Matteo); World Monitor chiarito
+
+**Decisione di Matteo (25/10, sera):** *"se possibile con i dati ci espandiamo all'azionario in generale, non solo USA:
+serve margine e scelta nei dati per vari test, non possiamo essere limitati dai dati per fare backtest."* Il perimetro
+della voce 2026-10-03 (4) ("CFD retail, capitale piccolo, dati liberi") si allarga alle azioni, singole e indici, non
+solo USA. Vale per la domanda 6 della griglia del modulo 09 (accessibilita').
+
+**Cosa cambia subito.** Per D2, D3, D9, G6, G8 e per la riga delle azioni singole fra le "chiuse in partenza" (BACKLOG
+§H) il motivo del blocco passa da "perimetro" a "dati ed esecuzione". Nessuna famiglia si apre: ogni candidato
+azionario passa dalla griglia e dalla G1 come gli altri. Tocca anche `trend_momentum` (LEAD): il punto 3 di A1 e' fermo
+perche' mancano strumenti indipendenti ad alta volatilita', e le azioni singole sono fra quelli contati in G9 il 03/10
+(con futures, crypto e azioni il braccio alto passava da 3,4 a 7,8-10,9: basta per lo scenario ottimistico, non per
+quello onesto).
+
+**Cosa resta da decidere (Matteo):**
+1. **La regola per comprare dati** (BACKLOG §G): oggi un dato a pagamento si compra solo se sblocca un test
+   pre-registrabile con l'MDE calcolato prima. "Non essere limitati dai dati" puo' voler dire comprare un archivio
+   ampio prima di avere il test: e' un cambio di regola, e va scritto come tale. Rischio da pesare: un archivio grande
+   senza ipotesi spinge a cercare per elenco (modulo 09, "Regole operative").
+2. **Il fornitore**: copertura e costi di dati azionari senza survivorship fuori dagli USA sono **da verificare**; in
+   casa ci sono solo i prezzi USA letti il 29/09 (G6).
+3. **L'esecuzione**: su quale conto si opererebbe un'azione singola (CFD del broker attuale o altro), da verificare. Il
+   pilastro investing (PAC) resta separato.
+4. **La divergenza sullo Stock Selector**: DECISIONS 2026-06-02 dice score fondamentale *"anti-predittivo"*, la review
+   del 01/06 *"non validato"*. Va chiusa prima di ritestare la selezione titoli.
+
+**World Monitor** (voce 6 delle idee del 24/10, chiarita da Matteo): fork di `koala73/worldmonitor` fra le sue repo,
+dashboard in tempo reale di notizie e dati sul mondo. Non conserva uno storico datato (le istantanee stanno nel browser
+da quando la si apre), quindi non regge un backtest. Il suo "market radar" BUY/CASH e' tendenza e regime, senza misure
+pubblicate: quarantena. Integra Polymarket, possibile riferimento del registro delle previsioni: **rimandata all'hub**
+([intake](docs/reviews/idee_matteo_hub_intake_2026-10-25.md)).
+
+**0 trial**, contatore non toccato.
+
+---
+
 ## 2026-10-25 (2) — Ponte con l'hub, lato ricevente: **scheda d'ingresso** per le ipotesi che nascono nell'hub
 
 **Richiesta di Matteo (25/10)**, proposta del gatekeeper: un'idea dell'hub (appunti, studio, geopolitica) diventa
