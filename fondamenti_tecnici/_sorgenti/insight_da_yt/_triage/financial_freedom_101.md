@@ -1,6 +1,6 @@
 # Financial Freedom 101 — scheda del canale e dei video letti
 
-> **Stato: quarantena.** Due video letti per intero il 2026-10-13, uno alla volta, dalle copie in `_raw/_lettura/`;
+> **Stato: quarantena.** Primo blocco di 5 video letto il 2026-10-25 (§10, regola di arresto in §11). Due video letti per intero il 2026-10-13, uno alla volta, dalle copie in `_raw/_lettura/`;
 > `rule_extract.py` passato dopo la lettura, nessun passaggio sfuggito. Canale elencato (solo titoli), nessuna
 > trascrizione scaricata in blocco. **Zero strategie, zero pre-registrazioni, 0 trial. Il PAC non cambia.**
 > Conti rifatti con [`analysis/pac_intake/verifiche_ff101.py`](../../../../analysis/pac_intake/verifiche_ff101.py)
@@ -170,6 +170,9 @@ lavoro.
 | Plusvalenze a zero sotto una soglia di reddito, se tenute oltre l'anno | In Italia l'aliquota non dipende dal reddito né dalla durata. L'unica leva nota è il rinvio: un ETF ad accumulo (già scelto) |
 | Casa principale venduta senza imposta sul guadagno | Quando è tassata in Italia la plusvalenza sulla vendita di un immobile? |
 | Conti per le spese sanitarie | Fondi sanitari integrativi e welfare aziendale: che cosa è deducibile? |
+| Compravendite a breve **dentro** il conto previdenziale: nessuna imposta sui guadagni (video 5, 2023) | In Italia un fondo pensione non si usa per comprare e vendere titoli: nessun equivalente noto |
+| Perdite di anni precedenti dedotte dal reddito ordinario, 3.000 dollari l'anno (video 5) | Le minusvalenze si compensano con il reddito da lavoro o solo con plusvalenze, ed entro quanti anni? (Da verificare: risposta non controllata) |
+| Spese d'impresa dedotte (computer, telefono, arredi: video 5 e 6) | Con partita IVA, regime forfettario contro ordinario: che cosa si deduce davvero? |
 | — | Solo italiana: i piani individuali di risparmio (PIR). Obbligano a investire in Italia, quindi confliggono con la scelta All-World |
 
 ## 8. Il canale: cosa c'è e cosa leggere dopo
@@ -194,7 +197,7 @@ datate **dentro** i video e un criterio scritto prima (per esempio la datazione 
 metodo già previsto per le [previsioni geopolitiche](../../../../../projects/geopolitica.md): un registro
 misurato contro un riferimento.
 
-**Proposta di primo blocco (5 video, circa 57 minuti), da approvare.** Si legge un video alla volta, per intero, con
+**Primo blocco (5 video, circa 57 minuti): letto il 25/10/2026 (§10-11), su indicazione di Matteo.** Si legge un video alla volta, per intero, con
 un consuntivo alla fine; nessuna trascrizione in blocco prima.
 
 | # elenco | Video | Minuti | Domanda a cui risponde |
@@ -207,6 +210,106 @@ un consuntivo alla fine; nessuna trascrizione in blocco prima.
 
 **Regola di arresto.** Se dal blocco non esce né un metodo di lettura replicabile né previsioni datate misurabili, gli
 aggiornamenti economici restano non letti e il canale si usa solo per i temi dei §3, §5 e §7.
+
+## 10. Primo blocco (25/10/2026): cinque video letti per intero
+
+Trascrizioni scaricate il 25/10 una alla volta (complete: 170-193 parole al minuto contro le 130-160 del parlato
+normale), lette per intero una alla volta, poi `rule_extract.py`: nessun passaggio sfuggito. Date di pubblicazione dei
+due video con previsioni lette dai metadati (yt-dlp, 25/10). Numerazione dei video in continuita' con §3 e §5.
+
+### Video 3 — *2026 Investment Plan* (`5hUfIbNmAXc`, 05/01/2026, 11 min)
+
+**Risposta alla domanda del blocco** ("la sua lettura dell'economia cambia cio' che fa coi soldi?"): **quasi no**, lo
+dice lui: *"It doesn't really change that much year to year."* Il macro tocca solo la quota obbligazionaria (0-10%,
+vendute quando i tassi sono scesi molto) e due opzioni da circa lo 0,1% del portafoglio (put sull'S&P 500 comprate a
+volatilita' bassa, call su TLT).
+
+| # | Affermazione | Stato | Nota |
+|---|---|---|---|
+| 3.1 | **Previsioni datate (05/01/2026):** disoccupazione in salita ogni mese; la Fed abbassa i tassi per tutto il 2026; gli acquisti di titoli a breve iniziati il 12/12/2025 "non si fermano ad aprile, accelerano" | verificabile | Misura parziale in §11 |
+| 3.2 | Fine del quantitative tightening il 01/12/2025; acquisti di T-bill "per liquidita'" dal 12/12/2025 | verificabile | Coerente con quanto noto a Claude fino a meta' 2026; non controllato sulla fonte Fed |
+| 3.3 | Ogni anno in media 4-5 cali di almeno il 5% e 1-2 oltre il 10% | verificabile | Statistica storica non controllata; si puo' misurare sui nostri dati dell'S&P 500 |
+| 3.4 | Mercati rialzisti: 63 mesi e +182% in media; ribassisti: 14 mesi e −36% | statistica dichiarata | Numeri diffusi nella divulgazione, fonte non citata |
+| 3.5 | Il 10% piu' ricco fa circa meta' dei consumi; i consumi sono circa 2/3 del PIL USA | verificabile | Non controllato |
+| 3.6 | Metalli (oro, argento, rame, alluminio) tenuti, non comprati, perche' banche centrali e BRICS comprano e la Cina limita l'export d'argento dal 01/01 | opinione | In passato rialzi del 700-1.000% seguiti da cali dell'85% e del 70% (lo dice lui) |
+| 3.7 | Allocazione: 75% S&P 500, 15% internazionale, ~10% obbligazioni | **rifiutata** (04/08) | Come 2.6 |
+
+### Video 4 — *Economic Update 11 Oct 2026*, ora intitolato *Bonds Signaling Trouble Ahead For Housing* (`wTMy5tm7oGM`, 22 min)
+
+**Risposta alla domanda del blocco** ("quali indicatori guarda e con quale regola li legge"): **molti indicatori,
+nessuna regola che li traduca in azioni.** Elenca lavoro (ADP, BLS con revisioni, partecipazione, disoccupazione
+allargata calcolata da lui al 7,6% e al 10,3%, durata oltre 27 settimane, JOLTS), prezzi (PPI, CPI, PCE, totali e core),
+PIL, Fed e "dot plot", fiducia dei consumatori, ISM, rendimento del decennale, mutui e una decina di numeri sulla casa,
+petrolio e riserve strategiche. L'unico legame con il portafoglio resta il **tempismo sui tassi**: compra obbligazioni
+"quando i tassi smettono di salire", put su TLT a scadenza gennaio 2027 (strike 70), put sull'S&P 500 da ricomprare
+"ai nuovi massimi".
+
+| # | Affermazione | Stato | Nota |
+|---|---|---|---|
+| 4.1 | Fatti al 11/10/2026: Fed alzata di un quarto a settembre (3,75-4%), decennale al 5,22%, mutuo trentennale al 7,4% (6% a febbraio), disoccupazione 4,2%, CPI 3,4%, scorte strategiche di petrolio ai minimi dagli anni '80, scorte di petroliere in Hormuz | dichiarati, **non verificati** | Oltre la conoscenza di Claude: sono suoi |
+| 4.2 | **Previsioni datate (11/10/2026):** una o due strette in piu' fra 2026 e 2027; inflazione sopra il 2% almeno fino al 2028; case giu' di circa il 5% se i tassi restano cosi'; repubblicani che perdono seggi alle elezioni di meta' mandato; prezzi del cibo in salita | verificabile | Materiale per un registro (§11) |
+| 4.3 | Mutuo = titoli di Stato + 1-3 punti; +1 punto di mutuo ≈ −10% sul prezzo che una famiglia puo' pagare | verificabile | Regola pratica di accessibilita', non controllata |
+| 4.4 | Fondo d'emergenza di 6 mesi perche' il 27% dei disoccupati lo e' da oltre 27 settimane | — | Stesso argomento del 04/08 e di 2.5 |
+| 4.5 | Investe in attivita' che possono rendere 10 volte: "anche se meta' fallisce, e' 5 volte" | non falsificabile | Conto che presuppone il 10× sulle sopravvissute: e' la selezione dei vincitori in una frase |
+| 4.6 | Metalli per "un paio di centinaia di migliaia di dollari" | dichiarato | Circa il 15% del patrimonio dichiarato: molto piu' di quanto lasci intendere il video 3 |
+
+### Video 5 — *How I Make Over $250K and Pay Less Than 10% in Tax* (`hkJzagub6Wg`, 6 min, anno fiscale 2023)
+
+| # | Affermazione | Stato | Nota |
+|---|---|---|---|
+| 5.1 | Senza pianificazione 39.832 dollari d'imposta su 260 mila (15,3%), con pianificazione 14.311 (5,5%) | **verificato** (conti) | Rifatti con gli scaglioni 2023 per coniugi: tornano, salvo cifre storpiate dalla trascrizione. Il "meno del 10%" del titolo vale solo contando come reddito gli 80 mila di guadagni rimasti nel conto previdenziale |
+| 5.2 | Leve: compravendite dentro il conto previdenziale, spese d'impresa, deduzione standard dei coniugi, perdite pregresse, versamento al piano aziendale, credito per figli | — | Norme USA; domande italiane aggiunte al §7 |
+| 5.3 | 80 mila di guadagni **a breve** da vendite di azioni nel 2023 | dichiarato | Non e' l'immagine del "compra e tieni" degli altri video; dentro un conto agevolato non pesa sulle imposte |
+
+### Video 6 — *How I Would Become a Millionaire Again if I Had to Start Over* (`iGcmG1awgrE`, 12 min)
+
+**Risposta alla domanda del blocco** (l'ordine delle operazioni per chi parte da zero): competenza richiesta →
+sganciare le ore dal guadagno (pagato per risultato, sistemi, macchine) → vivere sotto il reddito → 1.000 dollari
+d'emergenza → debiti a tasso alto → investire presto, versamento automatico a ogni stipendio → conti agevolati →
+imparare le norme fiscali. Rimpianto dichiarato: una casa plurifamiliare dove abitare affittando le altre unita'.
+
+| # | Affermazione | Stato | Nota |
+|---|---|---|---|
+| 6.1 | 1 dollaro al 7% reale per 45 anni diventa 23 volte | **falsificato** (conti) | Fa **×21,0** |
+| 6.2 | 25 dollari a settimana al 10% per 40 anni fanno circa un milione | **falsificato** (conti) | Circa **0,58-0,60 milioni**; 100 $ per 31 anni (0,95-0,99 milioni) e 500 $ per 17 anni (1,05-1,11 milioni) invece tornano |
+| 6.3 | Il versamento automatico serve contro l'indecisione, non per un vantaggio di prezzo | — | E' il nostro §0 |
+| 6.4 | La grande maggioranza dei milionari USA non ha ricevuto eredita' | statistica dichiarata | Fonte non citata; e' un campione di sopravvissuti |
+| 6.5 | Norme USA: casa principale esente fino a 250/500 mila di guadagno dopo 2 anni su 5; plusvalenze a lungo termine 0-20%; crediti d'imposta del 30% su pannelli solari | verificabile | Norme che cambiano: valgono alla data del video |
+
+### Video 7 — *We Are Going Into A Recession, Predictions And What To Do Now* (`sMF2WNpxNVQ`, 29/08/2024, 6 min)
+
+| # | Affermazione | Stato | Nota |
+|---|---|---|---|
+| 7.1 | **Previsione (29/08/2024):** recessione "ora o entro fine 2024 o nel 2025, probabilmente nel 2025", con la sua definizione: due trimestri di PIL negativo | **mancata** (da verificare) | Vedi §11 |
+| 7.2 | **Previsione (29/08/2024):** primo taglio a settembre, da 5,25-5,5% a circa 5-5,25%; a dicembre 4,25-4,75% | **in parte giusta** (da verificare) | Vedi §11 |
+| 7.3 | Curva dei rendimenti invertita: 9 volte su 10 segue una recessione entro 6-12 mesi | statistica dichiarata | L'inversione del 2022-2024 di cui parla e' proprio un caso senza recessione nei 12 mesi successivi |
+| 7.4 | Recessione media dopo la guerra 10 mesi; la piu' lunga 18 (2007-2009), la piu' corta 2 (2020); picco della disoccupazione ~7-8% in media, 15% nel 2020 | verificabile | Coerente con i dati NBER e BLS noti a Claude; non controllato |
+| 7.5 | Bloccare ora i tassi dei certificati di deposito, perche' scenderanno | opinione | E' una previsione sui tassi |
+
+## 11. Previsioni misurate e regola di arresto
+
+**Misura parziale delle previsioni datate.** Fonti: i suoi video successivi e la conoscenza di Claude fino a meta' 2026,
+**da verificare** su BEA (PIL) e FRED (`FEDFUNDS`, `MORTGAGE30US`, `UNRATE`), che da questa macchina non rispondono.
+Nessun criterio era scritto prima: e' un descrittivo, non un test.
+
+| Data | Previsione | Esito noto | Lettura |
+|---|---|---|---|
+| 29/08/2024 | recessione probabilmente nel 2025, con due trimestri di PIL negativo | nel 2025 un solo trimestre negativo (il primo), poi crescita; il suo video del 11/10/2026 riporta +2,5% e +2,2% nei primi due trimestri del 2026 | **mancata** |
+| 29/08/2024 | Fed a dicembre 2024 fra 4,25% e 4,75% | 4,25-4,50% a dicembre 2024 (taglio di mezzo punto a settembre, non di un quarto) | **giusta sulla direzione e sull'intervallo di fine anno**, sbagliata sull'entita' del primo taglio |
+| 05/01/2026 | la Fed abbassa i tassi per tutto il 2026 | secondo il suo stesso video del 11/10/2026, la Fed ha **alzato** a settembre | **contraddetta dai suoi dati**, esito finale a fine 2026 |
+| 05/01/2026 | disoccupazione in salita ogni mese | il 11/10/2026 dice 4,2%, "fra il 4 e il 4,3 nell'ultimo anno" | **non confermata dai suoi dati** |
+
+**Regola di arresto (§8).** Si fermava la lettura degli aggiornamenti economici se non usciva **ne'** un metodo di lettura
+replicabile **ne'** previsioni datate misurabili.
+- Metodo di lettura replicabile: **no.** Gli indicatori non hanno una regola che li traduca in azioni, e l'unica azione
+  legata al macro (il tempismo sui tassi) e' gia' rifiutata nel pilastro (2.6).
+- Previsioni datate misurabili: **si'**, e le prime misurate danno un esito misto (§11, tabella).
+
+Quindi la regola **non** chiude il canale da sola. Esito proposto, **da decidere (Matteo):** gli aggiornamenti economici
+non si leggono come metodo (non ce n'e' uno); le sue previsioni datate (22 titoli con "recession" dal 2024, piu' gli
+aggiornamenti) sono materiale per il **registro delle previsioni dell'hub**, misurate contro un riferimento con un
+criterio scritto prima. Per il PAC **non cambia nulla**: lui stesso dichiara che il suo comportamento non cambia da un
+anno all'altro.
 
 ## 9. Prompt per Comet (SPIVA, pagine bloccate)
 

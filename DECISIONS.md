@@ -11,6 +11,20 @@
 
 ---
 
+## 2026-10-25 (9) — Financial Freedom 101, primo blocco: **nessun metodo di lettura macro, previsioni misurabili**; PAC invariato, 0 trial
+
+Cinque video letti per intero, uno alla volta ([scheda](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md)
+§10-11). La lettura dell'economia non cambia cio' che l'autore fa coi soldi (lo dice lui, 05/01/2026), salvo il tempismo
+sui tassi, gia' rifiutato nel pilastro. Due esempi di interesse composto sono sbagliati nei conti (×23 invece di ×21,0;
+"un milione" invece di circa 0,6). Le previsioni datate esistono e le prime misurate danno un esito misto: recessione
+"probabilmente nel 2025" mancata; tassi di fine 2024 nell'intervallo giusto; tagli "per tutto il 2026" contraddetti dal
+suo stesso aggiornamento di ottobre (da verificare su BEA e FRED). **La regola di arresto non chiude il canale da sola.**
+
+**Da decidere (Matteo):** portare le sue previsioni datate al registro delle previsioni dell'hub, con un criterio scritto
+prima. Per il PAC non cambia nulla.
+
+---
+
 ## 2026-10-25 (8) — Ponte con l'hub: **le sei decisioni** dopo la simulazione del percorso geopolitica → `trad`
 
 **Contesto.** Matteo dedica il tempo fuori dall'universita' alla struttura geopolitica (progetto suo, nell'hub); le
