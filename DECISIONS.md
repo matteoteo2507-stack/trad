@@ -11,6 +11,31 @@
 
 ---
 
+## 2026-10-25 (8) — Ponte con l'hub: **le sei decisioni** dopo la simulazione del percorso geopolitica → `trad`
+
+**Contesto.** Matteo dedica il tempo fuori dall'universita' alla struttura geopolitica (progetto suo, nell'hub); le
+strategie le sviluppa soprattutto il socio principale. Prima di decidere i punti aperti della scheda d'ingresso
+(voce (2)) abbiamo simulato il percorso fonte → previsione → registro → ipotesi → test → applicazione. Il collo di
+bottiglia e' il **volume di previsioni** risolte e indipendenti: la misura della fase 1 richiede centinaia di domande,
+e le domande brevi si misurano presto ma non informano le esclusioni pluriennali.
+
+**Decisioni di Matteo (25/10):**
+1. **Quota separata per l'hub: 1 pre-registrazione a trimestre**, oltre alle 2-3 da fonte esterna delle strategie.
+   Raccomandazione contraria di Claude (una quota sola, perche' il limite serve a frenare l'imbuto di tutto il
+   workspace): resta agli atti, la decisione e' di Matteo. Compensazione: i trial dell'hub restano nello stesso
+   contatore e nello stesso DSR. Codice: campo `binario: "hub"` e budget `prereg_hub_per_trimestre` in
+   `core/trial_ledger.py`, con test (`core/tests/test_trial_ledger_quote.py`).
+2. **Provenienza `utente_llm`**: indipendente solo su dati oltre il cutoff (contatore e QUANT_REVIEW_PROTOCOL).
+3. **Fase 1 positiva = condizione necessaria**, non evidenza nel giudizio del test.
+4. **Esclusioni geopolitiche**: famiglia nel contatore di `trad`, decisione sul PAC nel pilastro investing.
+5. **Idee rimandate all'hub tracciate anche in `_INTAKE.md`** (prima riga: World Monitor).
+6. **Stessa teoria = stessa famiglia** (STRATEGY_LIFECYCLE §3 e §7, gatekeeper).
+
+**Dove sta:** [STRATEGY_LIFECYCLE](docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub" (gli Aperti sono diventati
+Decisioni); gatekeeper (budget); [mappa 01](mappa/01-ciclo-di-vita-e-gate.md). 0 trial.
+
+---
+
 ## 2026-10-25 (7) — Chiusura del sospeso: Stock Selector **non validato**, tempo in contante del PAC **nel resoconto annuale**, E7 **al rituale**
 
 **Decisioni di Matteo (25/10).**

@@ -427,7 +427,12 @@ Budget in vigore (li stampa il comando, non fidarti di questa riga se diverge):
 - **max 3 round di rifinitura** per famiglia;
 - **2-3 pre-registrazioni da fonte esterna per trimestre** (2026-Q3: **2 usate** —
   `round_grid`, `trend_momentum`);
+- **1 pre-registrazione dall'hub per trimestre** (ipotesi con `binario: "hub"`, budget separato dal 2026-10-25,
+  DECISIONS 2026-10-25 (8); STRATEGY_LIFECYCLE §8): non tocca quella delle strategie, ma i trial restano nello stesso DSR;
 - **holdout: una apertura per famiglia**, non per variante;
+- **stessa teoria = stessa famiglia** (dal 2026-10-25): un'altra ipotesi tratta dalla stessa teoria (es. un altro evento
+  previsto dallo stesso modello geopolitico) e' un trial della famiglia esistente. Se la pre-registrazione dichiara una
+  famiglia nuova, chiedi da quale teoria viene → **BLOCCA** se coincide con una famiglia del contatore;
 - **stessa grandezza = stessa famiglia** (dal 2026-10-08, DECISIONS 2026-10-08 (3)): un indicatore diverso che misura la
   grandezza di una famiglia esistente (`fondamenti_tecnici/10_indicatori_tecnici/principles.md` §2) **non** apre una
   famiglia nuova e **non** riapre una CLOSED. Se una pre-registrazione dichiara una famiglia nuova, chiedi quale grandezza

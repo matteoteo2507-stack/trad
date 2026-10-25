@@ -66,8 +66,8 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
    del registro delle previsioni (Brier contro un riferimento, registro intero, criterio scritto prima). *Input*: un
    file in `Da distillare/`. *Output*: respinta, parcheggiata, rimandata all'hub o accettata, ognuna col suo registro.
    *Come si rompe*: se un'idea dell'hub salta la scheda, i dati che Matteo ha gia' guardato nell'hub possono finire a
-   fare da holdout; e finche' Matteo non decide la quota (Aperti del §8), un'idea dell'hub puo' aggirare il limite di
-   pre-registrazioni esterne. Il gatekeeper la controlla alla G1 (punto 10).
+   fare da holdout; le ipotesi dall'hub hanno un budget loro di 1 pre-registrazione a trimestre (25/10), controllato dal
+   contatore (`binario: "hub"`): se il campo manca, l'ipotesi finisce nella quota delle strategie. Il gatekeeper la controlla alla G1 (punto 10).
 2. **[G1] Pre-registrazione**, *prima* di guardare i dati: ipotesi, metriche e soglie numeriche,
    baseline random, **budget di tentativi**, divisione dei dati, costi, criteri di morte,
    condizione di fill. Se manca anche una sola voce il gatekeeper blocca (gatekeeper, righe 77-98).

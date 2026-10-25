@@ -5,6 +5,7 @@
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
     "prereg_esterne_per_trimestre_soglia_allarme": 2,
+    "prereg_hub_per_trimestre": 1,
     "holdout_aperture_per_famiglia": 1,
     "llm_knowledge_cutoff": "2026-05-31"
   },

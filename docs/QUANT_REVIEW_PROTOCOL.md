@@ -51,6 +51,7 @@ Chi ha proposto questa specifica, e su quali dati?
 | **razionale economico** che non richiede di conoscere l'esito | sì |
 | **forward oltre il cutoff** del modello | sì — l'unica non contaminabile |
 | **proposta dall'LLM** su dati **pre-cutoff** (maggio 2026) | **no**: può essere memorizzazione, va etichettata |
+| **idea di Matteo con il ragionamento scritto insieme all'LLM** (`utente_llm`, dal 2026-10-25) | **sì solo su dati oltre il cutoff**; sul passato vale come la riga sopra |
 | **non dichiarata** | da trattare come il caso peggiore |
 
 Evidenza esterna: *Profit Mirage* (arXiv 2510.07920) — spostando la finestra di test

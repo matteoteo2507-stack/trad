@@ -110,6 +110,7 @@ ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 | Cambio di **parametro** dopo aver visto l'esito | **Sì**, uno per variante |
 | Cambio di **asset o timeframe** dopo aver visto l'esito | **Sì**, uno per combinazione |
 | Passaggio a un **indicatore diverso che misura la stessa grandezza** (RSI → Stocastico, media mobile → Donchian; le grandezze in [10_indicatori_tecnici §2](../fondamenti_tecnici/10_indicatori_tecnici/principles.md)) | **Sì**, ed e' un trial **della stessa famiglia**: non ne apre una nuova (dal 2026-10-08, DECISIONS 2026-10-08 (3)). Un **meccanismo economico** diverso resta una nuova ipotesi (ultima riga della tabella), con parentela dichiarata e senza usare come holdout i dati della famiglia simile (primo caso: DECISIONS 2026-10-09) |
+| Un'ipotesi nuova tratta dalla **stessa teoria** di una famiglia esistente (es. un altro evento previsto dallo stesso modello geopolitico) | **Sì**, ed e' un trial **della stessa famiglia** (dal 2026-10-25, DECISIONS 2026-10-25 (8)): stessa teoria = stessa famiglia, come stessa grandezza = stessa famiglia. Una teoria con un **meccanismo diverso** apre una famiglia nuova |
 | Aggiunta di un **filtro** | **Sì** — ed è il più pericoloso (vedi §4) |
 | **Nuova ipotesi** con razionale economico indipendente | **Sì**, ma apre una **nuova pre-registrazione** |
 
@@ -287,7 +288,7 @@ Si riapre **solo** con **evidenza esterna nuova**:
 - un risultato pubblicato e verificabile che contraddice il nostro null.
 
 Un indicatore diverso che misura la **stessa grandezza** non e' evidenza esterna nuova: appartiene alla stessa famiglia
-(§3, dal 2026-10-08).
+(§3, dal 2026-10-08). Lo stesso vale per un'altra ipotesi tratta dalla **stessa teoria** (§3, dal 2026-10-25).
 
 Qualunque altra riapertura è il bias di conferma che si ripresenta col cappello. *Precedente
 vincolante: la ricerca livelli è CHIUSA — non riproporre "testiamo i livelli".*
@@ -380,18 +381,26 @@ rendimenti nostri del segnale (precedente: COT, 03/10). Il trial si spende all'a
 (§3). Il registro di Brier dell'hub non e' un trial di `trad`: non misura rendimenti. Un condizionamento venuto
 dall'hub sopra un segnale esistente (es. un peso geopolitico) e' un **filtro**: un trial, testato per ablazione (§4bis).
 
-**Aperti (decide Matteo):**
-1. **Quota.** Una pre-registrazione nata nell'hub consuma uno slot esterno? Alla lettera questo paragrafo parla di
-   "canali, video, materiale di terzi": un'idea di Matteo non lo e', una costruita su una fonte terza si'. Il gatekeeper
-   propone di contarle tutte (l'hub e' un funnel). Il contatore oggi non lega provenienza e quota in modo coerente:
-   `letteratura` conta per `momentum_ultima_mezzora` ma non per `tsmom` e `seasonality_tom`; `umana_esterna` non conta
-   per `mentor_signals`.
-2. **Provenienza delle idee di Matteo con razionale scritto da Claude.** La tabella del QUANT_REVIEW_PROTOCOL non
-   elenca `utente` ne' `letteratura`, che il contatore usa.
-3. **Fase 1 positiva:** solo condizione necessaria, o entra nel prior del test? (Il gatekeeper propone: solo
-   condizione necessaria.)
-4. **Esclusioni geopolitiche (fase 2):** famiglia di `trad` nel contatore, o test del pilastro investing?
-5. Le idee **rimandate all'hub** si tracciano anche in `_INTAKE.md`?
+**Decisioni di Matteo (25/10, DECISIONS 2026-10-25 (8)), prese dopo una simulazione del percorso geopolitica → `trad`:**
+1. **Quota separata.** Le ipotesi dall'hub hanno un budget loro: **1 pre-registrazione a trimestre**, che non tocca le
+   2-3 da fonte esterna delle strategie. La famiglia porta `binario: "hub"` nel contatore, e `python -m core.trial_ledger`
+   controlla le due quote separatamente. I trial di entrambi restano nello stesso contatore e nello stesso DSR: il budget
+   separato regola il ritmo, non sconta la penalita' dei tentativi.
+2. **Provenienza `utente_llm`**: un'idea di Matteo con il ragionamento scritto insieme a Claude vale come predizione
+   indipendente solo su dati oltre il cutoff; sul passato e' trattata come proposta dall'LLM (il contatore la controlla).
+3. **Fase 1 positiva = solo condizione necessaria.** Battere il riferimento apre la porta al test in `trad`, ma non entra
+   nel giudizio del test: dice che si sa prevedere, non che l'asset non abbia gia' prezzato.
+4. **Esclusioni geopolitiche (fase 2)**: famiglia nel contatore di `trad` (i trial si contano qui), decisione di cambiare
+   il PAC dentro il pilastro investing, con commit separati.
+5. **Le idee rimandate all'hub si tracciano anche in `_INTAKE.md`**, con una riga e il link: un'idea proposta piu' volte
+   non deve essere ritrovata come nuova (World Monitor, 25/10).
+6. **Stessa teoria = stessa famiglia** (§3).
+
+**Cosa la simulazione ha mostrato, per chi prepara il primo test:** l'unita' d'inferenza e' l'**evento**, non il trade
+(intervalli a cluster sull'evento, `core/random_baseline.py`, `gap_ci`); il baseline e' lo stesso asset sullo stesso
+orizzonte in date casuali; un backtest geopolitico sul passato e' un'illustrazione, non una prova; nessun capitale prima
+di una fase 1 misurata, al piu' posizioni simulate registrate in avanti. Manca ancora un calcolatore di potenza per studi
+su eventi: si scrive (0 trial) quando arriva la prima ipotesi.
 
 ---
 

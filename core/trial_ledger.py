@@ -134,11 +134,25 @@ def _contaminazione(f: dict, eti: str, cutoff: Optional[str]) -> list:
     fine = f.get("finestra_dati_fine")
     if prov is None:
         return ["%s provenienza dell'ipotesi non registrata (campo assente)" % eti]
-    if prov == "llm" and fine and fine <= cutoff:
-        return ["%s ipotesi proposta da LLM su dati che finiscono prima del cutoff %s: "
+    # `utente_llm` (dal 2026-10-25, Matteo): idea di Matteo con il ragionamento scritto insieme a Claude.
+    # Sul passato vale come proposta dall'LLM; e' indipendente solo su dati oltre il cutoff.
+    if prov in ("llm", "utente_llm") and fine and fine <= cutoff:
+        return ["%s ipotesi %s su dati che finiscono prima del cutoff %s: "
                 "non e' una predizione indipendente, serve un forward OLTRE il cutoff"
-                % (eti, cutoff)]
+                % (eti, "proposta da LLM" if prov == "llm" else "scritta con l'LLM (utente_llm)", cutoff)]
     return []
+
+
+def _usate(dati: dict, binario: str) -> list:
+    """Famiglie che hanno usato uno slot di pre-registrazione nel trimestre corrente, per binario.
+
+    Due budget separati (decisione di Matteo, 2026-10-25): `strategie` (le pre-registrazioni da fonte
+    esterna di sempre) e `hub` (ipotesi che arrivano dal vault, es. geopolitica; STRATEGY_LIFECYCLE §8).
+    Il binario si legge dal campo `binario` della famiglia; assente = `strategie`. I trial di entrambi
+    restano nello stesso contatore e nello stesso DSR: il budget separato regola il ritmo, non lo sconto."""
+    q = dati.get("trimestre_corrente")
+    return [f["id"] for f in dati["famiglie"]
+            if f.get("prereg_esterna_trimestre") == q and f.get("binario", "strategie") == binario]
 
 
 PROP_LAB_REGISTRO = os.path.join(ROOT, "prop-lab", "results", "registry.sqlite")
@@ -228,27 +242,35 @@ def verifica(dati: Optional[dict] = None, registro: Optional[dict] = None) -> li
                             "(se e' un forward pre-registrato: gate_finale = \"forward\")" % eti)
         problemi += _contaminazione(f, eti, b.get("llm_knowledge_cutoff"))
 
-    # quota di pre-registrazioni esterne del trimestre
+    # quota di pre-registrazioni del trimestre: due budget separati (strategie esterne, hub)
     q = dati.get("trimestre_corrente")
-    usate = [f["id"] for f in dati["famiglie"]
-             if f.get("prereg_esterna_trimestre") == q]
+    usate = _usate(dati, "strategie")
     if len(usate) > b["prereg_esterne_per_trimestre"]:
         problemi.append("prereg esterne %s: %d usate, budget %d - SFORATO (%s)"
                         % (q, len(usate), b["prereg_esterne_per_trimestre"],
                            ", ".join(usate)))
+    hub = _usate(dati, "hub")
+    if len(hub) > b.get("prereg_hub_per_trimestre", 1):
+        problemi.append("prereg dall'hub %s: %d usate, budget %d - SFORATO (%s)"
+                        % (q, len(hub), b.get("prereg_hub_per_trimestre", 1), ", ".join(hub)))
+    for f in dati["famiglie"]:
+        if f.get("binario", "strategie") not in ("strategie", "hub"):
+            problemi.append("%-16s binario '%s' sconosciuto (ammessi: strategie, hub)" % (f["id"], f["binario"]))
     return problemi
 
 
 def _stato_esterne(dati: dict) -> str:
     q = dati.get("trimestre_corrente")
-    usate = [f["id"] for f in dati["famiglie"]
-             if f.get("prereg_esterna_trimestre") == q]
+    usate = _usate(dati, "strategie")
+    hub = _usate(dati, "hub")
     b = dati["budget"]
     avviso = " <-- soglia di allarme raggiunta" \
         if len(usate) >= b["prereg_esterne_per_trimestre_soglia_allarme"] else ""
-    return ("pre-registrazioni esterne %s: %d di %d-%d usate (%s)%s"
+    return ("pre-registrazioni esterne %s: %d di %d-%d usate (%s)%s\n"
+            "pre-registrazioni dall'hub %s: %d di %d usate (%s)"
             % (q, len(usate), b["prereg_esterne_per_trimestre_soglia_allarme"],
-               b["prereg_esterne_per_trimestre"], ", ".join(usate) or "nessuna", avviso))
+               b["prereg_esterne_per_trimestre"], ", ".join(usate) or "nessuna", avviso,
+               q, len(hub), b.get("prereg_hub_per_trimestre", 1), ", ".join(hub) or "nessuna"))
 
 
 def tabella(dati: Optional[dict] = None) -> str:
