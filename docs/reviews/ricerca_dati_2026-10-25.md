@@ -94,3 +94,29 @@ sul piano gratuito non documentata; e' una delle fonti di `sp500-data`).
 [`Jon-Becker/prediction-market-analysis`](https://github.com/Jon-Becker/prediction-market-analysis) (fra le stelle di
 Matteo; MIT, 3.903 stelle): dichiara il piu' grande dataset pubblico di mercati Polymarket e Kalshi. Candidato, con
 World Monitor, per il "riferimento" del registro.
+
+## 8. Risultati di Comet (letti il 25/10, sera)
+
+Prompt in chat il 25/10; testi copiati alla lettera da Comet, qui solo cio' che cambia la nota.
+
+- **FirstRate.** Prezzi **non visibili** nemmeno a Comet (bundle, pacchetti giornalieri, licenza 2-4 utenti). Licenza
+  confermata alla lettera: *"Perpetual license – once downloaded, the data is yours to use forever"*; con una licenza
+  multiutente, *"internally redistributing the Data within the institution without restriction provided the Data is
+  not made available to external parties"*; i lavori derivati si possono pubblicare, i dati grezzi no. **Il prezzo va
+  chiesto per email**, specificando licenza multiutente per 4 persone.
+- **Pinnacle.** 99 $; aggiornamenti 20 $/mese (minimo 3) o 216 $/anno. La pagina d'ordine offre "No Updates Required",
+  ma nessuna frase dice che lo storico resta utilizzabile senza aggiornamenti; nessuna pagina di licenza trovata. La
+  tabella dei mercati ha **84 righe** contro i 98 dichiarati. Per A1 non serve piu' (famiglia CLOSED il 25/10).
+- **EODHD.** Piano **commerciale per uso interno: 399 $/mese o 3.990 $/anno**, 1 posto incluso, posti in piu' a prezzo
+  non pubblicato, scarico su server +200 $/mese. I delistati conservano tutto lo storico fino al delisting (prima del
+  2018 solo i prezzi EOD); nessun anno d'inizio pubblicato per LSE, XETRA, Euronext, Borsa Italiana. Il piano personale
+  Historian permette lo scarico per borsa (100 chiamate per richiesta), ma vieta la condivisione "within groups". Sul
+  dopo-disdetta: nessuna clausola esplicita.
+- **Licenze dei dati gratuiti.** JKP: dati **CC BY-NC 4.0** (codice MIT); se una societa' di trading fra soci sia uso
+  "non commerciale" il sito non lo dice: va chiesto agli autori. Open Source Asset Pricing: licenza dei dati **non
+  dichiarata** (si chiede la citazione; dati fino a dicembre 2024). `sp500-data`: licenza **non dichiarata**.
+
+**Lettura.** Per un gruppo di quattro, l'unica fonte azionaria di proprieta' e' FirstRate (USA, delistati compresi),
+a prezzo da chiedere. Fuori dagli USA con i delistati resta solo EODHD, e per un gruppo e' un abbonamento da circa
+4.000 $ l'anno: fuori scala finche' un test non lo giustifica. I fondamentali SEC (pubblici) non hanno vincoli di
+licenza; JKP, OSAP e `sp500-data` si usano per ricerca, con il dubbio sulla licenza scritto accanto.
