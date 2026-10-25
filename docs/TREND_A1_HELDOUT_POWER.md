@@ -182,3 +182,54 @@ pianificazione onesta resta fuori scala di **~3×**. Tre limiti in piu':
 
 **Decisione aperta (di Matteo):** comprare il feed vale solo se si accetta di pre-registrare A1
 punto 3 sullo scenario **ottimistico**, dichiarando prima che un nullo sarebbe "non dimostrato".
+
+---
+
+## 9. Addendum 2026-10-25 — la finestra cambia il fabbisogno, non la conclusione
+
+Richiesta di Matteo (25/10): prima di comprare Pinnacle (99 $, [ricerca dati](reviews/ricerca_dati_2026-10-25.md)),
+vedere se bastano i futures gratuiti, che finiscono il **2024-03-28** (ultima riga dei CSV, verificata il 25/10).
+Motore: [`analysis/trend/a1_potenza_finestra.py`](../analysis/trend/a1_potenza_finestra.py). **0 trial**: varianza
+dal campione di scoperta (gia' usato il 21/09), sugli strumenti nuovi solo prezzi.
+
+**Il punto di metodo.** La dispersione fra strumenti del §3 (0,417) e' quasi tutta **rumore dei pochi trade**: la
+differenza vera fra strumenti pesa lo **0,8%** della varianza per trade (0,6% a durata fissa). Con piu' anni per
+strumento il rumore scende e servono meno strumenti; con meno anni ne servono di piu'. Il modello ricostruisce la
+dispersione osservata (0,431 contro 0,417): la riga A ridà il §3 con un margine del 4% in eccesso (7,6 contro 7,3).
+
+Strumenti per braccio (α 0,05, potenza 80%), 4,8 trade per strumento-anno; disponibilita' = futures pysystemtrade
+non in-sample con storia piena nella finestra, braccio ALTA (≥ 20%), n_eff tutto insieme (somma per classe):
+
+| finestra | anni | appaiata, osservato | appaiata, **dimezzato** | fissa 20g, osservato | fissa 20g, dimezzato | ALTA disponibile |
+|---|---|---|---|---|---|---|
+| A — scoperta, o Pinnacle fino a oggi | 9,0 | 7,6 | 30,4 | 17,3 | 69,3 | §8: 7,8-10,9 con crypto e azioni |
+| B — gratis, dal 2017-12-26 | 6,3 | 10,1 | 40,5 | 23,3 | 93,3 | 6,4 (10,7); + crypto 1,4 e azioni 3,1 |
+| C — gratis, dal 2010 | 14,2 | **5,5** | 22,1 | 12,3 | 49,3 | **5,9** (9,8) |
+| D — gratis, dal 2000 | 24,2 | **4,0** | 16,1 | 8,8 | 35,0 | **4,2** (6,5) |
+| E — gratis, dal 1990 | 34,2 | **3,4** | 13,6 | 7,3 | 29,1 | **4,0** (5,5) |
+| limite, infiniti trade | — | 1,9 | **7,6** | 3,7 | 14,8 | — |
+
+**Lettura.**
+1. **Lo scenario ottimistico** (durata appaiata, effetto osservato) **e' finanziabile con i dati gratuiti**, allungando
+   la finestra all'indietro (C, D, E), senza crypto ne' azioni. **Pinnacle non serve per questo scenario.**
+2. **Lo scenario di pianificazione onesta resta fuori scala in ogni finestra**, gratuita o comprata: di 2,3-3,8 volte.
+   Anche con infiniti trade servirebbero **7,6** strumenti indipendenti ad alta volatilita' per braccio, e quelli
+   nuovi che esistono ne valgono 4-6. **Nessun acquisto di dati lo risolve**: il limite e' quanti strumenti volatili e
+   indipendenti esistono, non quanti anni di storia hanno.
+3. Il braccio BASSA nel motore conta solo le commodity (2-4 n_eff nelle finestre lunghe), ma pysystemtrade ha
+   obbligazioni di paesi mai usati (BTP, OAT, JGB, Corea, Canada), cambi emergenti e futures settoriali: il braccio
+   basso si riempie, **il collo di bottiglia resta quello alto**.
+
+**Ipotesi del conto, da leggere col risultato.** (a) Effetto e componenti di varianza misurati nel 2017-2026 valgono
+anche negli anni '90 e 2000: il trend following ha avuto decenni molto diversi, e una finestra lunga e' un'estrapolazione
+nel tempo oltre che negli strumenti. (b) Il rendimento giornaliero e' un proxy della correlazione della metrica (§4).
+(c) La soglia del 20% si misura sulla finestra del test: in finestre diverse cambiano gli strumenti nel braccio
+(20 nella B, 10 nella E).
+
+**Operabilita', invariata dal §8:** dei futures contati, sul broker attuale ci sono solo mais e grano. Un esito
+positivo direbbe che il gradiente esiste, non che lo possiamo operare.
+
+**Decisione aperta (Matteo), ora con un'alternativa gratuita:** (a) pre-registrare A1 punto 3 sullo scenario
+**ottimistico**, su futures gratuiti in una finestra lunga, dichiarando prima che un nullo vale "non dimostrato" (MDE
+accanto): costa l'ultimo round di `trend_momentum`; (b) dichiarare la famiglia chiusa per potenza sullo scenario onesto,
+che nessun dato raggiunge. In entrambi i casi **non si compra niente** per A1.

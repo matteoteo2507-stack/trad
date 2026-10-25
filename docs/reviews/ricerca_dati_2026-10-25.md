@@ -66,6 +66,8 @@ sul piano gratuito non documentata; e' una delle fonti di `sp500-data`).
   la finestra di A1 parte dal 2017-12-26, quindi avrebbe circa 6,3 anni invece di 8,8. La potenza dipende
   soprattutto dal numero di strumenti, non dagli anni: se il calcolo regge sulla finestra corta, i 99 $ non servono.
   Va rifatto (0 trial) prima di decidere.
+  ✅ **Fatto la sera stessa** ([referto A1 §9](../TREND_A1_HELDOUT_POWER.md)): con i futures gratuiti in una finestra
+  lunga lo scenario ottimistico e' finanziabile, quello onesto no con nessun dato. **Per A1 non si compra.**
 - **Azionario.** Per cominciare non serve comprare nulla: fondamentali USA point-in-time (dal 2009), Form 4 (dal
   2006), S&P 500 senza survivorship (dal 1970) e fattori globali sono gratis. Si paga solo per **small cap USA**
   (FirstRate, una tantum) o per **singoli titoli fuori dagli USA con i delistati** (trovato solo EODHD, in
@@ -73,14 +75,16 @@ sul piano gratuito non documentata; e' una delle fonti di `sp500-data`).
 
 ## 6. Da decidere (Matteo)
 
-1. **A1:** prima il calcolo di potenza sulla finestra gratuita; poi, solo se serve, Pinnacle. Resta la decisione del
+1. **A1:** ✅ calcolo fatto (referto A1 §9): Pinnacle non serve. Resta la decisione del
    03/10: pre-registrare sullo scenario ottimistico, dichiarando prima che un nullo vale "non dimostrato".
 2. **Azionario:** partire con le fonti gratuite del §2, e comprare (FirstRate o EODHD) solo quando un test
    pre-registrabile lo chiede (BACKLOG §G, regola per comprare), oppure comprare subito un archivio ampio? La seconda
    strada cambia la regola: va scritta come tale.
 3. **Licenze:** chi compra, a nome di chi, e con quale licenza per quattro persone.
-4. **Universita':** se l'ateneo di Matteo da' accesso a WRDS/CRSP, e' la fonte migliore per gli USA; ma le licenze
-   accademiche di solito escludono l'uso non accademico, quindi va letta prima.
+4. **Universita':** ✅ esclusa da Matteo (25/10): le licenze accademiche scadono, e serve un dato **di proprieta'** su
+   cui lavorare negli anni.
+5. **Chi compra dipende da chi usera' i dati** (Matteo, 25/10): le strategie le sviluppa soprattutto il socio
+   principale, quindi l'acquisto (e la licenza) si decide con lui.
 
 **Non verificato:** prezzo di FirstRate al pagamento; tenuta dello storico Pinnacle senza aggiornamenti; licenza di
 `sp500-data`; licenza dei dati Chen-Zimmermann; se un uso fra soci e' "commerciale" per la licenza CC BY-NC di JKP.

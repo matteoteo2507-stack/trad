@@ -11,6 +11,27 @@
 
 ---
 
+## 2026-10-25 (4) — A1, potenza per finestra: **per lo scenario ottimistico bastano i dati gratuiti; quello onesto non lo raggiunge nessun dato**, 0 trial
+
+Richiesta di Matteo prima di qualsiasi acquisto ([referto A1 §9](docs/TREND_A1_HELDOUT_POWER.md), motore
+`analysis/trend/a1_potenza_finestra.py`, 25/10). La dispersione fra strumenti del 21/09 e' quasi tutta rumore dei
+pochi trade (la differenza vera fra strumenti pesa lo 0,8% della varianza per trade): allungando la finestra
+all'indietro sui futures gratuiti (fermi al 2024-03-28) servono meno strumenti.
+- **Scenario ottimistico** (durata appaiata, effetto osservato): finanziabile con i futures gratuiti dal 2010, 2000 o
+  1990 (servono 5,5 / 4,0 / 3,4 strumenti per braccio, ce ne sono 5,9 / 4,2 / 4,0). **Pinnacle non serve.**
+- **Scenario onesto** (effetto dimezzato): fuori scala di 2,3-3,8 volte in ogni finestra; anche con infiniti trade
+  servirebbero 7,6 strumenti volatili indipendenti per braccio. **Nessun acquisto lo risolve.**
+- Ipotesi forte: l'effetto del 2017-2026 vale anche nei decenni precedenti. Operabilita' invariata (sul broker solo mais e grano).
+
+**Decisione aperta (Matteo):** pre-registrare A1 punto 3 sullo scenario ottimistico con dati gratuiti (ultimo round di
+`trend_momentum`, nullo = "non dimostrato") oppure chiudere la famiglia per potenza. Contatore non toccato.
+
+**Anche, dalla stessa conversazione (Matteo, 25/10):** le licenze accademiche (WRDS/CRSP) sono escluse perche' scadono:
+serve un dato di proprieta'. Gli acquisti di dati si decidono con chi li usera' (le strategie le sviluppa soprattutto
+il socio principale).
+
+---
+
 ## 2026-10-25 (3) — Perimetro allargato all'**azionario, globale** (Matteo); World Monitor chiarito
 
 **Decisione di Matteo (25/10, sera):** *"se possibile con i dati ci espandiamo all'azionario in generale, non solo USA:
