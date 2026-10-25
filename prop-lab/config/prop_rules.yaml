@@ -1,5 +1,9 @@
-# Regole prop PARAMETRICHE (modelli generici, NON il regolamento ufficiale di una firm).
-# ⚠️ Prima di usare un risultato, aggiorna questi valori col regolamento attuale della tua prop.
+# Regole prop, in DUE sezioni (intestazione corretta il 25/10/2026):
+#   1. qui sotto, modelli PARAMETRICI generici (two_step_classic, two_step_tight, one_step_trailing):
+#      NON sono il regolamento di una firm;
+#   2. piu' in basso, "REGOLAMENTI VERI DELLE FIRM" (ftmo_*, fundednext_*, the5ers_*), dal 07/10, con
+#      stato `citato_senza_url`: frasi citate senza URL, buone per orientarsi, non per decidere con soldi.
+# ⚠️ Prima di usare un risultato, verifica i valori sul regolamento attuale della firm.
 #
 # daily_basis:     day_start = limite calcolato dal saldo di inizio giornata
 #                  initial   = limite fisso rispetto al saldo iniziale

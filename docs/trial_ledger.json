@@ -188,12 +188,12 @@
     {
       "id": "mentor_signals",
       "nome": "Segnali mentore XAUUSD (copier)",
-      "stato": "IN REVISIONE",
+      "stato": "CLOSED",
       "trial_cumulati": 1,
       "round_rifinitura": 0,
       "holdout_aperto": "2026-08-07",
       "fonte_esterna": false,
-      "verdetto": "IN REVISIONE (02/10): l'OOS del 07/08 e' misurato su un export da cui il canale cancella i perdenti. Il forward del copier su cui rimisurare non e' partito e non parte (13/10, test di esecuzione CLOSED a 0 trade): nessuna misura in programma",
+      "verdetto": "NON DIMOSTRATO, CLOSED (25/10, Matteo): l'OOS positivo del 07/08 e' misurato su un export da cui il canale cancella i perdenti (storico selezionato, segno non determinato); il forward non e' mai partito (copier CLOSED a 0 trade, 13/10). Riapre solo con un registro forward dei segnali, inizio e numero dichiarati prima",
       "fonti": [
         "docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md",
         "docs/COPIER_EXECUTION_PREREGISTRATION.md",
@@ -201,9 +201,10 @@
         "DECISIONS.md 2026-09-18 (4)",
         "DECISIONS.md 2026-10-02 (notte)",
         "DECISIONS.md 2026-10-13 (2)",
-        "docs/reviews/xat_cancellazioni_2026-10-02.md"
+        "docs/reviews/xat_cancellazioni_2026-10-02.md",
+        "DECISIONS.md 2026-10-25 (6)"
       ],
-      "note": "B7 (uscita a 1R), C3 (soglie di ritiro), C4 (sizing), C5 (gate di latenza) sono state chiuse a 0 trial: erano misure o verifiche, non ricerca di conferma (LIFECYCLE §3). La correzione del fuso e la sua doppia applicazione sono FIX, non trial.",
+      "note": "B7 (uscita a 1R), C3 (soglie di ritiro), C4 (sizing), C5 (gate di latenza) sono state chiuse a 0 trial: erano misure o verifiche, non ricerca di conferma (LIFECYCLE §3). La correzione del fuso e la sua doppia applicazione sono FIX, non trial. 2026-10-25: CLOSED, non dimostrato, per decisione di Matteo (DECISIONS 2026-10-25 (6)).",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-09-18",
       "nota_provenienza": "Track record live di un mentore terzo, misurato sui suoi segnali datati. Il forward e' OLTRE il cutoff: non contaminabile."

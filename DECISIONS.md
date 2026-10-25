@@ -11,6 +11,42 @@
 
 ---
 
+## 2026-10-25 (7) — Chiusura del sospeso: Stock Selector **non validato**, tempo in contante del PAC **nel resoconto annuale**, E7 **al rituale**
+
+**Decisioni di Matteo (25/10).**
+- **Score fondamentale dello Stock Selector: NON VALIDATO.** Risolve la divergenza fra la voce 2026-06-02 (*"anti-predittivo"*)
+  e la [review del 01/06](docs/reviews/stock_selector-2026-06-01.md) (*"non validato, serve PIT DB"*): il segno negativo
+  veniva da 4 date su un campione senza fondamentali point-in-time, quindi resta una stima puntuale, non una
+  falsificazione. Il selettore cross-sezionale sull'S&P 500 resta archiviato per il momentum (IC nullo a 12 anni); lo
+  score fondamentale si puo' testare onestamente con i bilanci SEC gratuiti dal 2009
+  ([ricerca dati](docs/reviews/ricerca_dati_2026-10-25.md)), se e quando lo vuole chi lavora sulle strategie.
+- **Tempo in contante del PAC (buco 47 di Quant Guild): nel resoconto annuale della performance**, non
+  nell'healthcheck settimanale. I saldi non entrano nel repo pubblico. Punto aggiunto alla revisione annuale di
+  `docs/INVESTING_PILLAR_PLAN.md`.
+- **Debito di protocollo E7 e le due proposte del 12/10: si decidono al rituale di domenica** (BACKLOG §E). Oggi
+  nessuna famiglia aperta ne ha bisogno.
+- **VPS Hetzner: chiusa** (Matteo). Il costo e' azzerato.
+
+**Correzione minore:** l'intestazione di `prop-lab/config/prop_rules.yaml` diceva "solo modelli parametrici" e ora
+dichiara le due sezioni (CHANGELOG di `prop-lab` per il socio).
+
+---
+
+## 2026-10-25 (6) — `mentor_signals` **CLOSED, NON DIMOSTRATO** (Matteo)
+
+**Decisione di Matteo (25/10).** La famiglia era IN REVISIONE dal 02/10 senza una misura in programma.
+- **Cosa sappiamo:** l'OOS del 07/08 (+0,274 [+0,209; +0,333] sulla finestra estesa, 18/09) e' misurato su un export
+  da cui il canale cancella i segnali andati male: 6 su 31 registrati dal vivo, 5 dei quali stop pieni
+  ([referto](docs/reviews/xat_cancellazioni_2026-10-02.md)). Su sopravvissuti il segno non e' determinato.
+- **Cosa non sappiamo:** se il mentore ha un vantaggio. Il forward che doveva dirlo non e' mai partito (test di
+  esecuzione del copier CLOSED a 0 trade, 13/10). **Non dimostrato, non refutato.**
+- **Contabilita':** 1 trial, contatore CLOSED. **Nel contatore non resta nessuna famiglia aperta.**
+- **Riapre** solo con un registro forward dei segnali del canale (id e ora dei messaggi salvati al momento, come fa il
+  copier), con data d'inizio e numero di segnali dichiarati prima. Non la riaprono un export nuovo o una rimisura dello
+  storico.
+
+---
+
 ## 2026-10-25 (5) — `trend_momentum` **CLOSED per potenza** (Matteo), D4 compresa; non refutata
 
 **Decisione di Matteo (25/10):** strada (b) della voce (4), chiudere la famiglia; e alla domanda su D4 (momentum fra

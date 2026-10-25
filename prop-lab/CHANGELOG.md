@@ -4,6 +4,12 @@
 allineati come se fossero uno solo, ma separati per protezione dagli errori (decisione di Matteo, 06/10/2026).
 Ogni modifica fatta da una parte si scrive qui, cosi' l'altra parte la riporta.
 
+## 2026-10-25 — fatte in trad (da riportare nel repo del socio)
+
+**Intestazione di `config/prop_rules.yaml`**: diceva che il file contiene solo modelli parametrici, ma dal 07/10
+contiene anche i regolamenti veri (FTMO, FundedNext, The5ers, stato `citato_senza_url`). Ora dichiara le due sezioni.
+Solo commenti: nessun valore cambiato.
+
 ## 2026-10-08 — fatte in trad (da riportare nel repo del socio)
 
 **Cancello verso il contatore di trad** (`lab/gate.py`, `config/gate.yaml`). Su dati reali una famiglia gira solo se

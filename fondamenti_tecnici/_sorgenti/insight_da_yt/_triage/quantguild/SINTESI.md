@@ -307,7 +307,7 @@ restano **una** affermazione non verificata.
 | 38 | **ripetizione su più semi** in verifica (il seme resta dichiarato e fisso nella pre-registrazione) | pre-registrazione + verifica |
 | 40 | criterio di **scelta** "positivo ovunque" invece di "ottimo da qualche parte" (G2) | STRATEGY_LIFECYCLE, pre-registrazione |
 | 43 | **problema dell'ipotesi congiunta**: un alpha a un fattore è indistinguibile da un'esposizione non modellata | `04`, `05`, docstring di `benchmark_metrics` |
-| 47 | **quota di tempo in contante / accessibilità del capitale** (H3; il PAC è a serbatoio) | `analysis/ops/weekly_healthcheck.py` |
+| 47 | **quota di tempo in contante / accessibilità del capitale** (H3; il PAC è a serbatoio) | ~~`analysis/ops/weekly_healthcheck.py`~~ → **resoconto annuale della performance** del PAC (Matteo, 25/10: i saldi non entrano nel repo pubblico; `docs/INVESTING_PILLAR_PLAN.md`) |
 | 48 | **ortogonalità misurata dentro le finestre di drawdown**, non su tutto il campione | core, `05` |
 | 44 | **elenco dei riferimenti fondativi** (Bachelier, Sharpe, Black-Scholes, Dupire, Carr-Madan) | `_INTAKE.md` o `RIFERIMENTI.md` |
 

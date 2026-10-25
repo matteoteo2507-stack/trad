@@ -1,10 +1,10 @@
 ---
 tipo: preregistrazione
-stato: IN REVISIONE
-aggiornato: 2026-10-13
-decisione: "DECISIONS 2026-10-02 (notte) — in revisione: il canale cancella i perdenti; DECISIONS 2026-10-13 (2) — il forward su cui rimisurare non parte"
+stato: CLOSED
+aggiornato: 2026-10-25
+decisione: "DECISIONS 2026-10-25 (6) — CLOSED, non dimostrato (Matteo); prima: 2026-10-02 (notte), 2026-10-13 (2)"
 metrica_corrente: "differenza appaiata +0,274 [+0,209; +0,333]; E[R] +0,173 [+0,083; +0,244] su 218 segnali"
-nota: "IN REVISIONE dal 02/10: il canale cancella i segnali andati male (6 su 31 registrati dal vivo, 5 stop pieni), quindi i numeri qui sono misurati su sopravvissuti e il segno non e' determinato (reviews/xat_cancellazioni_2026-10-02.md). La rimisura prevista sul forward del copier non c'e': la demo su PC2 non e' partita e il test di esecuzione e' CLOSED (DECISIONS 2026-10-13 (2)). Nessuna misura in programma. Il verdetto del 07/08 vale solo come storia."
+nota: "CLOSED, NON DIMOSTRATO (25/10): i numeri qui sono misurati su un export da cui il canale cancella i segnali andati male (6 su 31 registrati dal vivo, reviews/xat_cancellazioni_2026-10-02.md), quindi il segno non e' determinato; il forward non e' mai partito. Riapre solo con un registro forward dei segnali con inizio e numero dichiarati prima."
 ---
 # Pre-registrazione — Validazione OOS dei segnali mentore (XAUUSD)
 

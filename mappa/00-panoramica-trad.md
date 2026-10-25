@@ -48,9 +48,9 @@ flowchart LR
 ```
 
 **2. La catena che tocca soldi: i segnali del mentore.** Era l'unico edge `CONFERMATO`; dal 02/10 è
-`IN REVISIONE` perché il canale cancella i segnali perdenti e lo storico è selezionato (frontmatter di
-`docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md`). Si rimisura sul forward del copier: il **journal** è
-l'unico registro non selezionato, l'export Telegram no.
+stato in revisione perché il canale cancella i segnali perdenti, e dal **25/10 è `CLOSED`, non dimostrato**
+(frontmatter di `docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md`, DECISIONS 2026-10-25 (6)). La catena qui sotto resta
+come descrizione di com'era costruita: il **journal** è l'unico registro non selezionato, l'export Telegram no.
 
 ```mermaid
 flowchart LR

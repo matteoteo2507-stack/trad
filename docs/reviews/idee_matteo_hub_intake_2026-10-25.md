@@ -72,4 +72,4 @@ misure: "nessuna: ogni voce e' confrontata con DECISIONS.md, _INTAKE.md, BACKLOG
   fondamentale dello Stock Selector e' *"anti-predittivo"*; la review su cui poggia
   ([stock_selector-2026-06-01](stock_selector-2026-06-01.md), "Implicazioni riviste per il codice", punto 3) dice che *"resta non validato
   (serve PIT DB per testarlo onestamente)"*. Per la regola del repo vale la voce piu' recente, cioe' DECISIONS; ma la
-  differenza tocca ogni idea su azioni singole (voci 2b, 7a, 8, 10), quindi la segnalo a Matteo invece di sceglierne una.
+  differenza tocca ogni idea su azioni singole (voci 2b, 7a, 8, 10), quindi la segnalo a Matteo invece di sceglierne una. ✅ **Decisa la sera stessa: NON VALIDATO** (Matteo, DECISIONS 2026-10-25 (7)).

@@ -104,7 +104,7 @@ Esempio completo su dati veri: `analysis/opening_range/doppio_binario.py`.
 | Vantaggio zero, barriere ±10%, niente timeout | pass ≈ 0,5 | `test_vantaggio_zero_due_barriere_come_la_rovina_del_giocatore` | Claude |
 | Libreria degli overlay | identica alla dichiarazione del §4quater | `test_libreria_dichiarata_non_cambia_di_nascosto` | Claude |
 | Repo del socio allineato | ogni voce di `prop-lab/CHANGELOG.md` riportata anche lì | chiedere al socio | Matteo |
-| Regole prop | modelli parametrici finche' il §3 di PROP_FIRM_CRITERIA non e' compilato | leggere l'intestazione di `prop_rules.yaml` | Matteo |
+| Regole prop | due sezioni dichiarate nell'intestazione: modelli parametrici + regolamenti veri `citato_senza_url` (25/10); nessuna decisione con soldi finche' gli URL non sono verificati e il §3 di PROP_FIRM_CRITERIA non e' compilato | leggere l'intestazione di `prop_rules.yaml` (corretta il 25/10) | Matteo |
 
 ## Come si rompe
 
