@@ -9,8 +9,9 @@ Sorgenti dati e cache locale.
 | `yfinance` | Equities (SP500), ETF, indici | Gratis (rate limited) |
 | `ccxt` | Crypto OHLCV via exchange | Gratis |
 | `MT5 export` | Forex/CFD | Gratis (richiede terminale MT5) |
-| `worldmonitor` (Stage 5) | News + 7-signal radar + macro | Locale |
+| `worldmonitor` (Stage 5) | News + 7-signal radar + macro. **Mai costruito** (25/10): non ha uno storico datato, quindi non regge un backtest; vedi `docs/reviews/idee_matteo_hub_intake_2026-10-25.md`, voce 6 | Locale |
 | `financialdatasets.ai` | Fondamentali equities (alternativa a yfinance) | A pagamento |
+| SEC Financial Statement Data Sets e Insider Transactions Data Sets | fondamentali USA point-in-time dal 2009, Form 3/4/5 dal 2006 (25/10: trovati, non ancora scaricati) | Gratis — `docs/reviews/ricerca_dati_2026-10-25.md` |
 | CBOE `VIX_History.csv` | VIX giornaliero dal 1990 (backlog G4) | Gratis — `python data/scarica_serie_libere.py` |
 | CFTC Commitments of Traders | posizionamento settimanale sui futures: Legacy dal 1986, Disaggregated dal 2006 (backlog G5) | Gratis — stesso script, output in `data/cache/free/` |
 
