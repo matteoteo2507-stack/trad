@@ -89,6 +89,15 @@ verificato). `yt_fetch.py` è quindi lento (90 s fra richieste), con backoff e s
 interrompibile e ripartibile. Lo **scaricamento** può essere in blocco senza rischi — copiare testo
 non seleziona e non interpreta; il rischio di qualità sta tutto nella **lettura**.
 
+**Controllo di completezza (dal 2026-10-25).** Una trascrizione può arrivare tronca senza errore: il
+09/10 i sottotitoli manuali di un video avevano 138 parole su 11 minuti, e YouTube dà per prima la
+traccia manuale. `yt_fetch.py` (e `yt_fetch_list.py`, che usa le sue funzioni) misura le parole al
+minuto contro la durata: sotto **90** (soglia e motivo in `SOGLIA_PAROLE_MIN`) scarica anche l'altra
+traccia e tiene la più lunga; se resta sotto, scrive il file con `completezza: SOTTO SOGLIA` in
+intestazione, in `_state.json` e a schermo. **Prima di leggere una trascrizione, guarda la riga
+`completezza`**: sotto soglia va confrontata col video, non letta come intera. L'intestazione dice
+anche la traccia (`manuale | generata`). Test: `tests/test_yt_fetch_completezza.py`.
+
 ### Piano di lettura del canale Chart Fanatics — **ESEGUITO E CHIUSO il 2026-08-22**
 
 > **Esito.** Tutti i **45** video letti per intero, uno alla volta. Consuntivo in

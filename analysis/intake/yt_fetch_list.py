@@ -29,7 +29,6 @@ import random
 import sys
 import textwrap
 import time
-from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -100,15 +99,15 @@ def main():
     while i < len(todo):
         v = todo[i]
         try:
-            txt = yf.fetch_transcript(v["id"])
-            _, name = yf.write_raw(v, a.canale, txt)
-            seen[v["id"]] = {"title": v["title"], "file": name, "words": len(txt.split()),
-                             "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+            # La durata viene dalla lista (minuti): il controllo di completezza vale anche qui.
+            tr = yf.fetch_transcript(v["id"], v["duration"])
+            _, name = yf.write_raw(v, a.canale, tr)
+            seen[v["id"]] = yf.state_entry(v, name, tr)
             yf.save_state(st)
             copia_lettura(name)
             strikes = 0
-            print(f"[{i + 1}/{len(todo)}] OK  #{v['num']:>3} {len(txt.split()):6} parole  "
-                  f"{v['title'][:60]}", flush=True)
+            print(f"[{i + 1}/{len(todo)}] #{v['num']:>3} {tr.parole:6} parole  "
+                  f"{yf.outcome_label(tr)}  {v['title'][:60]}", flush=True)
             i += 1
         except KeyboardInterrupt:
             print("\ninterrotto: stato salvato, rilancia per riprendere.")
