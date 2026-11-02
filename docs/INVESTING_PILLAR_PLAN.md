@@ -108,7 +108,7 @@ post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide
 - [ ] Verificare come viene applicata l'**imposta di bollo 0,2%/anno** sul dossier e che compaia nella certificazione fiscale.
 - [x] **Costo dell'ordine manuale**: €1 (confermato sull'ordine di ottobre, 2026-10-09).
 - [x] **Foglio costi ex-ante** dell'ordine di ottobre (2026-10-09): acquisto €1, vendita €1, prodotto €0,21/anno su €150 (= OCF 0,14%), incentivi da terzi €0. Non mostra **bollo** né **spread**: tassa e costo implicito restano fuori dal foglio. Il "2,03% in 5 anni" che riporta vale per un ordine manuale isolato da €150 (€1 in entrata + €1 in uscita), non per le rate del piano.
-- [ ] **Prima rata automatica** (2 novembre): il foglio costi deve mostrare **commissione €0**. È la verifica sul campo del "PAC senza commissioni".
+- [x] **Prima rata automatica** (2 novembre): eseguita senza commissioni (confermato dall'utente, 2026-11-02). "PAC senza commissioni" verificato sul campo.
 - [ ] **Nome esatto della sede di esecuzione**: l'app dice "borsa europea"; il nome si legge sulla conferma d'ordine. Non bloccante.
 
 > ⚠️ **Commissione zero ≠ costo zero.** I costi reali del piano sono: **OCF 0,14%**, **spread** in
