@@ -12,7 +12,7 @@ BUDGET = {"round_rifinitura_per_famiglia": 3, "prereg_esterne_per_trimestre": 3,
 
 
 def _fam(fid, binario=None, q="2026-Q4"):
-    f = {"id": fid, "stato": "CLOSED", "round_rifinitura": 0, "fonti": ["x"],
+    f = {"id": fid, "stato": "CLOSED", "motivo_chiusura": "potenza", "round_rifinitura": 0, "fonti": ["x"],
          "prereg_esterna_trimestre": q, "provenienza_ipotesi": "umana_esterna",
          "finestra_dati_fine": "2026-10-01"}
     if binario:
@@ -51,3 +51,13 @@ def test_utente_llm_prima_del_cutoff_non_e_indipendente():
 def test_utente_llm_in_avanti_e_valida():
     f = {"id": "u", "provenienza_ipotesi": "utente_llm", "finestra_dati_fine": "2026-12-01"}
     assert _contaminazione(f, "u", "2026-05-31") == []
+
+
+def test_closed_senza_motivo_e_un_problema():
+    """Debito E7 (04/11): CLOSED per potenza e CLOSED refutata non si distinguono piu' dal testo libero."""
+    f = _fam("s1"); del f["motivo_chiusura"]
+    assert any("senza motivo_chiusura" in p for p in verifica(_dati([f]), registro={}))
+    f["motivo_chiusura"] = None                     # le fonti non lo dicono: ammesso, non inventato
+    assert verifica(_dati([f]), registro={}) == []
+    f["motivo_chiusura"] = "sfortuna"
+    assert any("sconosciuto" in p for p in verifica(_dati([f]), registro={}))

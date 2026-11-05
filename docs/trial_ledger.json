@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-10-13",
+  "aggiornato": "2026-11-04",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -29,7 +29,9 @@
       "note": "96 OHLC + 48 volume + 240 HTF. Riconfermata dall'audit A5 (2026-09-18) e piu' solida del dichiarato. Riapertura solo con evidenza esterna nuova (LIFECYCLE §7).",
       "provenienza_ipotesi": "utente",
       "finestra_dati_fine": "2026-07-06",
-      "nota_provenienza": "Ipotesi dell'utente dalla propria formazione tecnica; il motore e' nostro."
+      "nota_provenienza": "Ipotesi dell'utente dalla propria formazione tecnica; il motore e' nostro.",
+      "motivo_chiusura": "refutata",
+      "fonte_motivo": "audit A5 (DECISIONS 2026-09-18 (5)): CI larghi meno di 1 punto"
     },
     {
       "id": "nxt",
@@ -49,7 +51,9 @@
       "note": "Trial #1 = continuazione (NO-GO 2026-07-17), #2 = fade. Il terzo NON e' stato speso. Rinominare la famiglia non azzera il contatore. Il KILL e' per difetto metodologico (fill fantasma, §6a.1), non per budget.",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-09-17",
-      "nota_provenienza": "Spec degli ex-soci (Fibonacci/Elliott), documentata in fondamenti_tecnici/strategie_candidate/."
+      "nota_provenienza": "Spec degli ex-soci (Fibonacci/Elliott), documentata in fondamenti_tecnici/strategie_candidate/.",
+      "motivo_chiusura": "metodo",
+      "fonte_motivo": "KILL per fill fantasma, LIFECYCLE §6a.1 (DECISIONS 2026-09-17)"
     },
     {
       "id": "opening_range",
@@ -69,7 +73,9 @@
       "note": "NUMERO NON RICOSTRUIBILE: v1 + v2 (filtro news, ADX) sono documentati come round, ma il conteggio per-variante non e' mai stato scritto. Il minimo documentato e' 2. E' esattamente il buco che questo registro esiste per non ripetere.",
       "provenienza_ipotesi": "utente",
       "finestra_dati_fine": "2026-07-16",
-      "nota_provenienza": "Idea utente + socio (DECISIONS 2026-07-16)."
+      "nota_provenienza": "Idea utente + socio (DECISIONS 2026-07-16).",
+      "motivo_chiusura": "refutata",
+      "fonte_motivo": "solo SPX500; NAS100 mai misurato, MDE 0,135R (audit A5, DECISIONS 2026-09-18 (5))"
     },
     {
       "id": "tsmom",
@@ -88,7 +94,9 @@
       "note": "MDE Sharpe 0,59 contro un atteso a priori di 0,3-0,5: servivano ~53 anni. Il test non poteva vincere. Resta chiuso ma NON vale come prova.",
       "provenienza_ipotesi": "letteratura",
       "finestra_dati_fine": "2026-07-08",
-      "nota_provenienza": "Filone accademico (time-series momentum). NON e' dichiarato CHI abbia proposto la specifica testata."
+      "nota_provenienza": "Filone accademico (time-series momentum). NON e' dichiarato CHI abbia proposto la specifica testata.",
+      "motivo_chiusura": "potenza",
+      "fonte_motivo": "audit A5: MDE Sharpe 0,59 contro atteso 0,3-0,5 (DECISIONS 2026-09-18 (5))"
     },
     {
       "id": "meanrev_vol",
@@ -105,7 +113,9 @@
       ],
       "provenienza_ipotesi": "non_dichiarata",
       "finestra_dati_fine": "2026-07-08",
-      "nota_provenienza": "La pre-registrazione non dichiara la provenienza dell'ipotesi. E' il buco che questo campo esiste per rendere visibile."
+      "nota_provenienza": "La pre-registrazione non dichiara la provenienza dell'ipotesi. E' il buco che questo campo esiste per rendere visibile.",
+      "motivo_chiusura": null,
+      "fonte_motivo": "le fonti non scrivono la potenza del test: motivo non ricostruibile"
     },
     {
       "id": "seasonality_tom",
@@ -122,7 +132,9 @@
       ],
       "provenienza_ipotesi": "letteratura",
       "finestra_dati_fine": "2026-07-08",
-      "nota_provenienza": "Ogden 1990; Etula-Rinne-Suominen-Vuolteenaho 2020 'Dash for Cash', citati nella pre-registrazione."
+      "nota_provenienza": "Ogden 1990; Etula-Rinne-Suominen-Vuolteenaho 2020 'Dash for Cash', citati nella pre-registrazione.",
+      "motivo_chiusura": null,
+      "fonte_motivo": "le fonti non scrivono la potenza del test: motivo non ricostruibile"
     },
     {
       "id": "round_grid",
@@ -142,7 +154,9 @@
       "note": "Fonte: Okala / Chart Fanatics. Consuma UNA delle pre-registrazioni esterne del trimestre.",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-08-09",
-      "nota_provenienza": "Okala / Chart Fanatics, fonte datata e citabile."
+      "nota_provenienza": "Okala / Chart Fanatics, fonte datata e citabile.",
+      "motivo_chiusura": "refutata",
+      "fonte_motivo": "CI del pool +-0,65 punti (DECISIONS 2026-08-09)"
     },
     {
       "id": "trend_momentum",
@@ -166,7 +180,9 @@
       "note": "Fonte: Pavel Kichev. Consuma la SECONDA pre-registrazione esterna del trimestre. Round 2 di 3 gia' speso: ne resta uno. NESSUN holdout sigillato per Q2 - dichiarato nella pre-registrazione stessa, non scoperto dopo. Riserva aggiunta il 2026-09-19 (E1): holding mediano 7 giorni sul reale contro 2 sul random. 2026-09-30: il round 3 e' ASSEGNATO a B2 (breakout Kichev) per decisione dell'utente (DECISIONS 2026-09-30), non ancora speso; A1 punto 3 vi rinuncia. Se B2 fallisce la famiglia chiude per budget, con A1 e D4. 2026-10-03: B2 CHIUSA a 0 trial (potenza insufficiente nell'universo della fonte, DECISIONS 2026-10-03): il round 3 NON e' speso e resta alla famiglia, disponibile per B2 o A1 punto 3 quando una delle due avra' potenza. 2026-10-25: CLOSED per potenza per decisione di Matteo (DECISIONS 2026-10-25 (5)), D4 compresa. Riapre solo con evidenza esterna nuova (LIFECYCLE §7), condizioni nella voce DECISIONS.",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-08-14",
-      "nota_provenienza": "Pavel Kichev, registrato in fondamenti_tecnici/_INTAKE.md."
+      "nota_provenienza": "Pavel Kichev, registrato in fondamenti_tecnici/_INTAKE.md.",
+      "motivo_chiusura": "potenza",
+      "fonte_motivo": "DECISIONS 2026-10-25 (5)"
     },
     {
       "id": "meanrev_kichev",
@@ -184,7 +200,9 @@
       "note": "Chiusa a costo zero: il criterio era scritto prima e non e' stato raggiunto. Non consuma pre-registrazione esterna perche' non e' stata aperta (DECISIONS 2026-09-17: budget esterne resta 2 di 2-3).",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-09-17",
-      "nota_provenienza": "Pavel Kichev. La fonte dice meno di quanto le attribuivamo: SMA5 e soglia erano NOSTRE."
+      "nota_provenienza": "Pavel Kichev. La fonte dice meno di quanto le attribuivamo: SMA5 e soglia erano NOSTRE.",
+      "motivo_chiusura": "criterio",
+      "fonte_motivo": "criterio dichiarato prima (DECISIONS 2026-09-17)"
     },
     {
       "id": "mentor_signals",
@@ -208,7 +226,9 @@
       "note": "B7 (uscita a 1R), C3 (soglie di ritiro), C4 (sizing), C5 (gate di latenza) sono state chiuse a 0 trial: erano misure o verifiche, non ricerca di conferma (LIFECYCLE §3). La correzione del fuso e la sua doppia applicazione sono FIX, non trial. 2026-10-25: CLOSED, non dimostrato, per decisione di Matteo (DECISIONS 2026-10-25 (6)).",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-09-18",
-      "nota_provenienza": "Track record live di un mentore terzo, misurato sui suoi segnali datati. Il forward e' OLTRE il cutoff: non contaminabile."
+      "nota_provenienza": "Track record live di un mentore terzo, misurato sui suoi segnali datati. Il forward e' OLTRE il cutoff: non contaminabile.",
+      "motivo_chiusura": "metodo",
+      "fonte_motivo": "storico selezionato dalle cancellazioni (DECISIONS 2026-10-25 (6))"
     },
     {
       "id": "london_breakout",
@@ -227,7 +247,9 @@
       "note": "Kill duro §6a.1: i numeri sono nulli, non 'da correggere'. Conteggio trial mai scritto - precede il ciclo di vita formalizzato (2026-08-04).",
       "provenienza_ipotesi": "non_dichiarata",
       "finestra_dati_fine": "2026-05-30",
-      "nota_provenienza": "Precede il ciclo di vita formalizzato. Provenienza mai registrata."
+      "nota_provenienza": "Precede il ciclo di vita formalizzato. Provenienza mai registrata.",
+      "motivo_chiusura": "metodo",
+      "fonte_motivo": "look-ahead del regime gating, LIFECYCLE §6a.1"
     },
     {
       "id": "forexgump_signals",
@@ -253,7 +275,9 @@
       "note": "trial_budget 1 sui dati storici: le varianti sono pre-registrazioni nuove sul forward. Esito max LEAD, GO solo dal forward (gate_finale). DSR n_trial = 1; futilita' ~0,039 di Sharpe per trade. Riapertura (LIFECYCLE §7, fonte nuova), solo con una nuova pre-registrazione: (1) il mentore cambia formato o tempistica dei segnali (pubblica prima di entrare, ordine limite raggiungibile, feed all'istante d'ingresso): si misura sui segnali successivi al cambio; (2) il journal del socio in configurazione 'come postato' arriva a >= 780 trade eseguiti e il limite inferiore del CI 95% a cluster per giornata del suo E[R] supera -0,156R (la simulazione e' smentita). 780 = potenza 80% per 0,156R con sd efficace 1,556 (appendice del referto, 05/10): ~2,6 anni a ~296 segnali/anno. Le configurazioni 8-8 e 10-7 sono geometrie non testate: ipotesi nuove, non riaperture.",
       "provenienza_ipotesi": "umana_esterna",
       "nota_provenienza": "socio, 28/09/2026: canale Forex Gump + backtest della webapp; ipotesi non proposta da LLM",
-      "finestra_dati_fine": "2026-09-28"
+      "finestra_dati_fine": "2026-09-28",
+      "motivo_chiusura": "potenza",
+      "fonte_motivo": "NON DIMOSTRATO, MDE 0,130R (DECISIONS 2026-10-02)"
     },
     {
       "id": "mr_indici_rsi2",
@@ -279,7 +303,9 @@
       "note": "Test unico sulla storia 2012-2026, gia' vista da meanrev_vol (08/07) e B1 (17/09): massimo LEAD. Baseline a durata copiata. CLOSED = escluso un eccesso sul caso >= 0,50% (opzione c, 08/10, su delega di Matteo) + tabella di esclusione delle fonti; LEAD contro la distorsione del nullo B_NULL; MDE: pre-registrazione §6. Riapre solo con evidenza esterna nuova (LIFECYCLE §7): un eccesso pubblicato contro un ingresso casuale a durata copiata su dati indipendenti; il forward su questi indici non e' praticabile (~18 anni per un MDE di 0,39%, referto §7).",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-08-13",
-      "nota_provenienza": "Video 2 della sessione col socio VELTRIX (04-05/10) e Connors-Alvarez 2008 (di seconda mano)."
+      "nota_provenienza": "Video 2 della sessione col socio VELTRIX (04-05/10) e Connors-Alvarez 2008 (di seconda mano).",
+      "motivo_chiusura": "potenza",
+      "fonte_motivo": "NON DIMOSTRATO, MDE 0,446% (DECISIONS 2026-10-08)"
     },
     {
       "id": "momentum_ultima_mezzora",
@@ -307,8 +333,11 @@
       "note": "Pre-registrazione approvata il 12/10, train eseguito una volta lo stesso giorno: CLOSED, holdout rimasto sigillato (DECISIONS 2026-10-12 (2)). Famiglia nuova per decisione di Matteo (09/10), parente di opening_range (CLOSED): parentela dichiarata e niente holdout sui dati dell'ORB. Due stadi dello stesso trial: train SPX500+NAS100 da 06/2020, poi, solo se PASSA, holdout DAX (sigillato, scaricato l'11/10). Primaria: proporzionale con tetto contro direzione casuale a pari taglia; guardia: divario a taglia fissa positivo al 5% a una coda (strada B, eccezione dichiarata a LIFECYCLE 4quater, DECISIONS 2026-10-11). Massimo esito LEAD, gate finale forward. Terzo slot esterno del 2026-Q4.",
       "provenienza_ipotesi": "letteratura",
       "finestra_dati_fine": "2026-10-09",
-      "nota_provenienza": "Baltussen, Da, Lammers, Martens, Journal of Financial Economics 142 (2021) 377-403, letto sul testo il 09/10; Gao, Han, Li, Zhou 2018 di seconda mano. Campione della fonte fino a 05/2020: il test e' tutto fuori campione rispetto al paper, ma in gran parte prima del cutoff del modello."
+      "nota_provenienza": "Baltussen, Da, Lammers, Martens, Journal of Financial Economics 142 (2021) 377-403, letto sul testo il 09/10; Gao, Han, Li, Zhou 2018 di seconda mano. Campione della fonte fino a 05/2020: il test e' tutto fuori campione rispetto al paper, ma in gran parte prima del cutoff del modello.",
+      "motivo_chiusura": "refutata",
+      "fonte_motivo": "limite alto sotto la meta' dell'effetto atteso dalla fonte (DECISIONS 2026-10-12 (2))"
     }
   ],
-  "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920."
+  "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920.",
+  "_nota_motivo": "motivo_chiusura (DECISIONS 2026-11-04, LIFECYCLE §5): refutata = il test aveva la forza per vedere l'effetto atteso e lo ha escluso; potenza = NON DIMOSTRATO, l'MDE supera l'effetto plausibile; criterio = chiusa su un criterio dichiarato prima, senza test; metodo = difetto di metodo o di dati, i numeri non valgono. null = le fonti non permettono di dirlo: non si inventa."
 }

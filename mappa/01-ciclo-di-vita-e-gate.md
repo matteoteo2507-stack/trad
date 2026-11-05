@@ -102,6 +102,14 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   qualunque cosa si faccia).
 - **Una famiglia chiusa non si riapre** con un ritocco o "più dati": solo con evidenza esterna
   nuova (§7).
+  Dal 04/11 (DECISIONS 2026-11-04) il §7 dice anche **come**: una riapertura somma i trial a quelli vecchi
+  e consuma una quota (§7a); una famiglia chiusa si può **registrare in avanti** a 0 trial, con la stessa
+  regola e la soglia dichiarata prima (§7b); un'ipotesi nata dai descrittivi di un test ha una sola
+  conferma, solo su dati nati dopo (§7c), e intanto sta parcheggiata nel backlog con una scadenza.
+- **Perché una famiglia è chiusa** (§5, dal 04/11): il contatore lo scrive nel campo `motivo_chiusura`.
+  `refutata` vuol dire che il test poteva vedere l'effetto e lo ha escluso; `potenza` che non poteva
+  vederlo (NON DIMOSTRATO, con l'MDE); `criterio` e `metodo` che il test non è una prova. Se le fonti
+  non lo dicono il campo resta vuoto, e la tabella mostra `?`.
 - **Due binari per la gestione del rischio** (§4quater, dal 06/10): ogni test riporta il binario a
   **rischio fisso 1R**, l'unico su cui si dà il verdetto, e gli overlay della libreria fissa di
   `core/sizing.py`. Un overlay non salva un NO-GO; in prop si legge `ev_vs_zero`, mai l'EV da solo.
@@ -135,6 +143,7 @@ con file e riga per ogni rilievo.
 | Cosa | Valore atteso | Come si controlla | Chi |
 |---|---|---|---|
 | Contatore coerente | nessun problema | `python -m core.trial_ledger --check` → exit 0 (il 02/10: exit 0) | Claude |
+| Ogni famiglia CLOSED ha il motivo di chiusura | sì, o `null` dichiarato | `--check` lo controlla; il 04/11: 12 su 14 assegnati, 2 non ricostruibili (meanrev_vol, seasonality_tom) | Claude |
 | Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `docs/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
 | Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `docs/*_PREREGISTRATION.md` e le voci del ledger | Claude |

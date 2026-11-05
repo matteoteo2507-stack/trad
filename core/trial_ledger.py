@@ -36,13 +36,15 @@ import os
 from math import sqrt
 from typing import Optional
 
-__all__ = ["load", "famiglia", "futility_sharpe", "verifica", "tabella"]
+__all__ = ["load", "famiglia", "futility_sharpe", "verifica", "tabella", "MOTIVI_CHIUSURA"]
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 LEDGER = os.path.join(ROOT, "docs", "trial_ledger.json")
 
 Z95 = 1.6448536269514722          # Phi^-1(0.95)
 GAMMA = 0.5772156649              # Eulero-Mascheroni
+# Perche' una famiglia e' chiusa (LIFECYCLE §5, DECISIONS 2026-11-04). None = le fonti non lo dicono.
+MOTIVI_CHIUSURA = ("refutata", "potenza", "criterio", "metodo")
 
 
 def load(path: str = LEDGER) -> dict:
@@ -240,6 +242,14 @@ def verifica(dati: Optional[dict] = None, registro: Optional[dict] = None) -> li
         if f.get("stato") == "LEAD" and f.get("holdout_aperto") and gf != "forward":
             problemi.append("%s e' LEAD con holdout gia' aperto: il gate finale non c'e' piu' "
                             "(se e' un forward pre-registrato: gate_finale = \"forward\")" % eti)
+        if f.get("stato") == "CLOSED":
+            if "motivo_chiusura" not in f:
+                problemi.append("%s CLOSED senza motivo_chiusura (ammessi: %s, o null se le fonti non "
+                                "lo dicono)" % (eti, ", ".join(MOTIVI_CHIUSURA)))
+            elif f["motivo_chiusura"] not in MOTIVI_CHIUSURA + (None,):
+                problemi.append("%s motivo_chiusura '%s' sconosciuto" % (eti, f["motivo_chiusura"]))
+        elif f.get("motivo_chiusura") is not None:
+            problemi.append("%s ha un motivo_chiusura ma non e' CLOSED" % eti)
         problemi += _contaminazione(f, eti, b.get("llm_knowledge_cutoff"))
 
     # quota di pre-registrazioni del trimestre: due budget separati (strategie esterne, hub)
@@ -277,8 +287,8 @@ def tabella(dati: Optional[dict] = None) -> str:
     dati = dati or load()
     righe = ["CONTATORE TRIAL PERSISTENTE - aggiornato %s   (STRATEGY_LIFECYCLE sez.3)"
              % dati["aggiornato"], "=" * 96,
-             "%-16s %-8s %7s %7s %-12s %-6s %s"
-             % ("famiglia", "stato", "trial", "round", "holdout", "est.", "verdetto")]
+             "%-16s %-8s %-8s %7s %7s %-12s %-6s %s"
+             % ("famiglia", "stato", "motivo", "trial", "round", "holdout", "est.", "verdetto")]
     for f in sorted(dati["famiglie"], key=lambda x: (x["stato"] != "GO", x["stato"] != "LEAD", x["id"])):
         tc = f.get("trial_cumulati")
         tb = f.get("trial_budget")
@@ -287,8 +297,9 @@ def tabella(dati: Optional[dict] = None) -> str:
         rd = f.get("round_rifinitura")
         rnd = "-" if rd is None else (str(rd) if rb is None else "%d/%d" % (rd, rb))
         ho = f.get("holdout_aperto") or "sigillato"
-        righe.append("%-16s %-8s %7s %7s %-12s %-6s %s"
-                     % (f["id"][:16], f["stato"], trial, rnd, ho[:12],
+        mot = (f.get("motivo_chiusura") or "?") if f["stato"] == "CLOSED" else "-"
+        righe.append("%-16s %-8s %-8s %7s %7s %-12s %-6s %s"
+                     % (f["id"][:16], f["stato"], mot, trial, rnd, ho[:12],
                         "si" if f.get("fonte_esterna") else "no",
                         (f.get("verdetto") or "")[:38]))
     righe.append("")
@@ -300,6 +311,10 @@ def tabella(dati: Optional[dict] = None) -> str:
         righe.append("  -> non si puo' escludere la contaminazione da knowledge cutoff "
                      "(%s). Per una famiglia CHIUSA e' un'annotazione; per una da "
                      "riaprire e' un bloccante." % dati["budget"].get("llm_knowledge_cutoff"))
+    senza = [f["id"] for f in dati["famiglie"] if f["stato"] == "CLOSED" and f.get("motivo_chiusura") is None]
+    if senza:
+        righe.append("motivo di chiusura NON RICOSTRUIBILE dalle fonti: %s" % ", ".join(senza))
+        righe.append("  -> refutata o per potenza non si puo' dire: non vale come prova in nessuno dei due sensi.")
     non_ric = [f["id"] for f in dati["famiglie"] if f.get("trial_cumulati") is None]
     if non_ric:
         righe.append("trial NON RICOSTRUIBILI (mai scritti all'epoca): %s" % ", ".join(non_ric))

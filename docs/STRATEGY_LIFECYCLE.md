@@ -159,6 +159,12 @@ appaiata fra le due versioni sugli stessi segnali (precedente: B7, uscita a 1R c
 -0,0001). E' anche la risposta operativa a *"l'analisi tecnica non si puo' smentire"*: si smentisce una
 componente alla volta.
 
+**Le condizioni che la fonte stessa prevede** (dal 2026-11-04, DECISIONS 2026-11-04, proposta 1 del 12/10): se la
+fonte dice in anticipo che la regola vale *solo* in certe condizioni (un regime, una sessione, una classe di
+strumenti), quelle condizioni si pre-registrano **come varianti dichiarate prima**, accanto alla regola nuda. Ogni
+variante **conta come un trial** della famiglia ed entra nel DSR con tutte le altre. Una condizione che la fonte non
+nomina resta un filtro (§3, §4): non diventa una variante perche' "ci stava".
+
 ### 4ter. Si sceglie il parametro POSITIVO OVUNQUE, non quello ottimo da qualche parte (buco 40)
 
 Quando una regola ha un parametro, il criterio di scelta dichiarato nella pre-registrazione e' **"positivo in
@@ -229,8 +235,22 @@ misurano separatamente:
 | **GO** | Edge sopravvive a train + walk-forward + holdout + costi | Promozione a capitale, con pre-mortem ([04 §9](../fondamenti_tecnici/04_quant_metodologia/principles.md)) |
 | **LEAD** | Risultato positivo ma **data-derived** o senza OOS indipendente | **Non promuovibile.** Richiede **nuova** pre-registrazione + **forward OOS**. Stato attuale del *fade* NXT. Se l'holdout e' gia' aperto per costruzione (campione intero come holdout, es. Gump D1), il ledger lo ammette solo con `gate_finale: "forward"` dichiarato **prima** dell'esito (DECISIONS 2026-10-02) |
 | **NO-GO** | Questa specifica non regge | La *specifica* muore. La *famiglia* sopravvive solo se ha budget residuo |
+| **NON DIMOSTRATO** | Il test non rifiuta il nullo **e** non aveva la forza per vedere l'effetto plausibile (MDE sopra l'effetto atteso) | Si scrive **sempre con l'MDE** accanto. Non e' "refutato": la casella resta vuota, non chiusa. Puo' chiudere una famiglia, con motivo `potenza` (dal 2026-11-04) |
 | **CLOSED** | L'intera direzione di ricerca è morta | Vedi §7 — non si riapre con un ritocco |
 | **INSUFFICIENT DATA** | `n_trades < 50` | **Non è un verdetto.** Si continua a raccogliere **solo se la soglia era pre-dichiarata** |
+
+**Verdetto di un test e stato di una famiglia sono due cose** (dal 2026-11-04, debito E7). NO-GO, NON DIMOSTRATO e
+NULL sono l'esito di un test; CLOSED e' lo stato della famiglia. Quando una famiglia chiude, il contatore registra
+**perche'** nel campo `motivo_chiusura` di [`trial_ledger.json`](trial_ledger.json), controllato da
+`core/trial_ledger.py`:
+
+| motivo | significato | vale come prova che l'effetto non c'e'? |
+|---|---|---|
+| `refutata` | il test aveva la forza per vedere l'effetto atteso e lo ha escluso | **si'** |
+| `potenza` | NON DIMOSTRATO: l'MDE supera l'effetto plausibile | **no** |
+| `criterio` | chiusa su un criterio dichiarato prima, senza test | no |
+| `metodo` | difetto di metodo o di dati: i numeri non valgono | no |
+| `null` | le fonti non permettono di dirlo | no: non si inventa |
 
 ---
 
@@ -292,6 +312,35 @@ Un indicatore diverso che misura la **stessa grandezza** non e' evidenza esterna
 
 Qualunque altra riapertura è il bias di conferma che si ripresenta col cappello. *Precedente
 vincolante: la ricerca livelli è CHIUSA — non riproporre "testiamo i livelli".*
+
+### 7a. Come si contabilizza una riapertura (dal 2026-11-04, debito E7)
+
+Quando il §7 e' soddisfatto, la riapertura:
+- e' una **pre-registrazione nuova nella stessa famiglia**, non una famiglia nuova;
+- **somma** i suoi trial a quelli gia' spesi: il contatore non riparte da zero, e il DSR usa il cumulato;
+- **consuma una quota** del trimestre, quella del suo binario (strategie o hub);
+- **non puo' validarsi sui dati che hanno generato l'idea**: i dati gia' guardati restano dati di scoperta.
+
+### 7b. Forward di una famiglia CLOSED (dal 2026-11-04)
+
+Registrare in avanti una famiglia chiusa **e' ammesso senza il §7**, a quattro condizioni: la regola e' **identica**
+a quella testata, la soglia di verdetto, l'inizio e il numero di osservazioni sono **dichiarati prima**, non c'e'
+capitale, e il registro e' salvato in git man mano. Costa **0 trial**: non si cerca niente, si misura la stessa cosa
+su dati nuovi. Era gia' la condizione di riapertura scritta caso per caso per il mentore (DECISIONS 2026-10-25 (6))
+e per il VTOB (2026-10-13 (5)): da qui vale per tutte.
+
+### 7c. Un'ipotesi nata da un descrittivo (dal 2026-11-04, proposta 2 del 12/10)
+
+Un'ipotesi suggerita dai descrittivi di un test (l'"annata buona", un terzile, una sessione) ha **una sola** prova di
+conferma, e **solo su dati forward**, cioe' nati dopo la data della sua pre-registrazione. Un holdout "mai aperto"
+non basta: che nessuno l'abbia letto non si puo' verificare (referto H1, 12/10, §7). La prova si fa come un forward
+del §7b, ma la regola **non** e' quella gia' testata: e' un trial della stessa famiglia e segue la contabilita' del
+§7a (trial sommati, quota del binario). Fallita la conferma, l'ipotesi si cancella.
+
+Finche' i dati forward non bastano, l'ipotesi sta **parcheggiata** in
+[`BACKLOG_RICERCA.md`](BACKLOG_RICERCA.md), sezione "Ipotesi nate da un descrittivo", con famiglia, stato
+`quarantena` e data `scade` (la sezione nasce con la prima voce). Senza parcheggio tornerebbe fra qualche mese come
+idea nuova.
 
 ---
 

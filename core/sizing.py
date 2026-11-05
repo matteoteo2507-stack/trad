@@ -32,6 +32,7 @@ ex ante, possono avere covarianza con l'esito, quindi cambiano il segnale: sono 
 from __future__ import annotations
 
 import math
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -136,9 +137,30 @@ def _rimescola(r, blocco, rng):
     return np.concatenate([pezzi[i] for i in rng.permutation(nb)])
 
 
+def _controlla_sovrapposizione(r, ingressi, uscite):
+    """Gli overlay si leggono solo su sequenze senza sovrapposizioni (debito E7, DECISIONS 2026-11-04)."""
+    if ingressi is None and uscite is None:
+        warnings.warn("confronta_overlay: sovrapposizione dei trade NON controllata (passa ingressi e uscite)",
+                      UserWarning, stacklevel=3)
+        return
+    if ingressi is None or uscite is None:
+        raise ValueError("servono sia gli ingressi sia le uscite")
+    a, b = pd.to_datetime(pd.Series(ingressi)), pd.to_datetime(pd.Series(uscite))
+    if not (len(a) == len(b) == len(r)):
+        raise ValueError("ingressi, uscite ed esiti hanno lunghezze diverse: %d, %d, %d" % (len(a), len(b), len(r)))
+    if (b < a).any():
+        raise ValueError("un trade esce prima di entrare")
+    if not a.is_monotonic_increasing:
+        raise ValueError("i trade non sono in ordine di ingresso")
+    sovr = np.flatnonzero(a.to_numpy()[1:] < b.to_numpy()[:-1])
+    if sovr.size:
+        raise ValueError("%d trade entrano prima che il precedente sia uscito (primo: indice %d). Gli overlay "
+                         "si leggono solo su sequenze senza sovrapposizioni" % (sovr.size, sovr[0] + 1))
+
+
 def confronta_overlay(r, overlay=("O1_cuscinetto", "O3_serie_perdite"), limite_r: float = 10.0,
                       trailing: bool = True, n_perm: int = 300, blocco: int = 1, seed: int = 42,
-                      conf: float = 0.95):
+                      conf: float = 0.95, ingressi=None, uscite=None):
     """Binario 1R contro gli overlay, sulla sequenza reale e su `n_perm` rimescolamenti della stessa.
 
     `valore_dipendenza` = attesa per unita' di rischio sulla sequenza reale meno la media sui rimescolati.
@@ -149,9 +171,14 @@ def confronta_overlay(r, overlay=("O1_cuscinetto", "O3_serie_perdite"), limite_r
     lettura AGGIUNGE/TOGLIE e' un'ipotesi da confermare in forward, mai un verdetto.
     `percentile_reale` usa il rango medio (i pareggi contano a meta'). `blocco` > 1 rimescola a blocchi
     contigui (conserva la dipendenza corta, misura solo quella lunga).
+    `ingressi`, `uscite` (dal 04/11/2026, debito E7): istanti di ingresso e uscita di ogni trade, nello
+    stesso ordine di `r`. Se ci sono, un trade che entra prima che il precedente sia uscito blocca la
+    funzione: con trade sovrapposti la sequenza non e' una successione di esiti, e rimescolarla produce
+    falsi segnali "coerenti" (candidato A, 08/10). Se mancano, avviso: la sovrapposizione non e' controllata.
     Restituisce (tabella, runs_test sugli esiti).
     """
     r = np.asarray(r, dtype=float)
+    _controlla_sovrapposizione(r, ingressi, uscite)
     r = r[np.isfinite(r)]
     _controlla(overlay, "proprio")
     rng = np.random.default_rng(seed)

@@ -232,6 +232,8 @@ Con le primitive di [`core/verifiche.py`](../core/verifiche.py):
   Senza, "non dimostrato" diventa "refutato" nel passaggio a DECISIONS (audit A5).
 - **Indipendenza degli esiti** (buco 29): `runs_test` sulla sequenza vinto/perso prima di qualunque CI
   i.i.d. o Monte Carlo che rimescola i trade.
+  **Sull'unita' dell'intervallo** (dal 2026-11-04, debito E7): il runs test gira sulla stessa unita' indipendente
+  su cui si calcola l'intervallo (l'episodio, il giorno, il blocco), non sui trade se i trade si sovrappongono.
 - **Due alternative si confrontano anche sulla coda** (buco 45, priorita' 2): `confronto_decile_peggiore`
   riporta media **e** media del 10% peggiore dei percorsi, e segnala se il segno del confronto cambia
   (Quant Guild, G6). Per un capitale che non puo' ricominciare, la coda decide quanto la media.
@@ -241,10 +243,29 @@ Con le primitive di [`core/verifiche.py`](../core/verifiche.py):
   ottimisti). Modello gia' in uso: sezioni 7-8 della pre-registrazione Gump.
 - **Il seme si dichiara prima, la robustezza si misura dopo** (buco 38): accanto al risultato del seme
   dichiarato (42) si riporta `ripeti_su_semi` su almeno 10 semi per ogni baseline casuale.
+  Si ripete **la grandezza che decide ciascun verdetto possibile** (dal 2026-11-04): se un PASSA dipende dal limite
+  basso e un CLOSED dal limite alto, si ripetono tutti e due. Ripetere solo quello che non decide non prova niente
+  (H1, 12/10).
+- **I descrittivi escono con la loro incertezza** (dal 2026-11-04, debito E7): anni, terzili, sessioni si riportano
+  con l'errore standard e con il numero di celle guardate, e il confronto fra celle tiene conto di quante sono. Una
+  stima puntuale per cella e' il modo in cui nasce "l'annata buona". Un'ipotesi che ne nasce segue LIFECYCLE §7c.
 - **Perturbazione degli input** (buco 33): `test_perturbazione` con frazione e soglia dichiarate.
 - **Nessuna correlazione senza frequenza e finestra** (buco 46): `correlazione_dichiarata(x, y,
   frequenza, finestra)` riporta intero campione **e** minimo/mediana/massimo della mobile. Due attivi
   "scorrelati" su base annuale possono stare a 0,73 su 60 giorni, proprio nella finestra del drawdown.
+
+### Prima di approvare la pre-registrazione: cosa si congela e cosa si salva (debito E7, dal 2026-11-04)
+
+- **La storia va in git prima dell'approvazione**: bozza, ogni passata G1 e ogni correzione in commit separati, non
+  tutte nel commit di approvazione (per H1 erano entrate in uno solo, 12/10).
+- **Le guardie congelano tutto quello che il test usa**: oltre allo script del test, anche `core/` e `tests/`; l'esito
+  riporta le versioni delle librerie (es. il calendario di borsa viene da un pacchetto esterno).
+- **Controllo positivo sui dati reali quando l'esito possibile e' un CLOSED**: la G1 chiede come si sa che la
+  pipeline, sui dati veri, vedrebbe l'effetto se ci fosse (iniezione di un effetto noto, o confronto con un secondo
+  fornitore su tutto il periodo). Un CLOSED da una pipeline cieca non vale come prova (cfr. memoria "un gate si valida
+  con controllo negativo e positivo").
+- **Overlay solo su sequenze senza sovrapposizioni**: `confronta_overlay` riceve ingressi e uscite dei trade e si
+  ferma se due trade si sovrappongono; senza, avvisa.
 
 ## Step 5 — Costi reali (10 min)
 

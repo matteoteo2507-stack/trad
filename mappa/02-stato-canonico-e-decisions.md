@@ -87,7 +87,7 @@ Non dà errori: chi legge il posto vecchio riceve una risposta plausibile e sbag
 
 **Debolezze strutturali:**
 - **Vocabolario degli stati non chiuso.** La tassonomia dei verdetti (`STRATEGY_LIFECYCLE.md` §5) è
-  GO, LEAD, NO-GO, CLOSED; nei frontmatter compaiono anche KILL e IN REVISIONE (misura del 13/10; il 02/10 anche CONFERMATO, IN AVVIO e BOZZA). Non
+  GO, LEAD, NO-GO, NON DIMOSTRATO (dal 04/11), CLOSED; nei frontmatter compaiono anche KILL e IN REVISIONE (misura del 13/10; il 02/10 anche CONFERMATO, IN AVVIO e BOZZA). Non
   c'è un elenco dei valori ammessi, quindi un filtro del cruscotto su "LEAD o GO" non vedrebbe un
   CONFERMATO.
 - **Un secondo campo `stato`** in `docs/trial_ledger.json`, per famiglia, che per i segnali mentore

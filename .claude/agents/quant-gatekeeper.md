@@ -99,6 +99,12 @@ Blocchi se manca **anche uno solo** di questi:
 10. **Se l'ipotesi nasce nell'hub** (`claude-brain`): la scheda d'ingresso di
    `docs/STRATEGY_LIFECYCLE.md` §8, "Ingresso dall'hub", e' compilata, e i dati che P4
    dichiara gia' guardati non fanno da holdout (dal 2026-10-25).
+11. **Congelamento e storia** (dal 2026-11-04, debito E7): bozza e passate G1 gia' in git; guardie che
+   coprono anche `core/` e `tests/`; versioni delle librerie riportate nell'esito; se l'esito possibile e'
+   un CLOSED, un controllo positivo sui dati reali. Regola in `docs/QUANT_REVIEW_PROTOCOL.md`, "Prima di
+   approvare la pre-registrazione".
+12. **Varianti previste dalla fonte**: le condizioni che la fonte stessa dichiara sono varianti
+   pre-registrate, una per trial (`STRATEGY_LIFECYCLE.md` §4bis, dal 2026-11-04).
 
 ⚠️ **Controllo di calibrazione delle soglie — nasce da un errore reale.**
 Per ogni soglia pre-registrata chiedi: *questa soglia e' superabile da un
@@ -136,7 +142,13 @@ commento in cima al file.
   - ogni p-value Monte Carlo riportato **con** `p_low`/`p_high`; se la soglia sta dentro
     l'intervallo il verdetto non si legge dal decimale (1.000 repliche: 0,048 e 0,062 sono uguali);
   - ogni verdetto negativo con **`mde(sd, n)`** su n **indipendenti** accanto;
-  - `runs_test` sulla sequenza vinto/perso prima di un CI i.i.d. o di un MC che rimescola i trade;
+  - `runs_test` sulla sequenza vinto/perso prima di un CI i.i.d. o di un MC che rimescola i trade, **sulla
+    stessa unita' indipendente dell'intervallo** (dal 2026-11-04);
+  - `ripeti_su_semi` sulla grandezza che decide **ciascun** verdetto possibile, non solo su una;
+  - descrittivi (anni, terzili, celle) con errore standard e numero di celle guardate;
+  - overlay solo con ingressi e uscite passati a `confronta_overlay` (si ferma sulle sovrapposizioni);
+  - verdetto negativo: il **motivo di chiusura** (`refutata` / `potenza` / `criterio` / `metodo`) proposto
+    per il contatore, `STRATEGY_LIFECYCLE.md` §5;
   - ogni correlazione con **frequenza e finestra** (`correlazione_dichiarata`);
   - per un forward o un conto live: **finestra di misura dichiarata prima**, e monitor
     (`SPRTBernoulli`, `CUSUMInferiore`) con parametri **fissi** del backtest, mai mobili.

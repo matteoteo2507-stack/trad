@@ -239,22 +239,13 @@ bottiglia sono **i passi 1 e 2**: famiglia e spread. Costano poco e decidono se 
 
 ---
 
-## E — DEBITO DI PROTOCOLLO — ✅ E1-E6 **estinte il 2026-09-19**; ⚠️ **E7 aperta** (debito emerso dai test di ottobre)
+## E — DEBITO DI PROTOCOLLO — ✅ E1-E6 **estinte il 2026-09-19**; ✅ **E7 decisa e chiusa il 2026-11-04**
 
-> **E7 — debito emerso dopo il 19/09, aperto.** Non e' copiato qui: l'elenco sta nei due referti.
-> - Candidato A, 08/10 ([referto](reviews/rsi2_indici_esito_2026-10-08.md) §8): controllo dei trade sovrapposti
->   nell'overlay, unita' del runs test, NON DIMOSTRATO assente dalla tassonomia di LIFECYCLE §5.
-> - H1, 12/10 ([G2](reviews/ultima_mezzora_G2_2026-10-12.md) §6 e §8): nessun percorso per un'ipotesi nata dai
->   descrittivi di un test chiuso; il §7 non dice come si contabilizza una riapertura ne' se un holdout mai aperto si
->   eredita; nessuna regola sul forward di una famiglia CLOSED; descrittivi stampati senza incertezza e senza
->   correzione per il numero di celle; ripetizione sui semi sul limite che non decide; `core/` e `tests/` fuori dai
->   percorsi congelati; nessun controllo positivo sui dati reali quando l'esito possibile e' un CLOSED; bozza e
->   passate G1 fuori da git fino all'approvazione.
->
-> **Si decidono al rituale di domenica 01/11** (Matteo, 25/10; DECISIONS 2026-10-25 (7)).
-> **Sono decisioni di Matteo**, non correzioni tecniche: cambiano cosa il protocollo permette. Due proposte in
-> discussione dal 12/10: (1) pre-registrare come varianti dichiarate prima le condizioni che la fonte stessa prevede;
-> (2) una sola prova di conferma su dati mai aperti per un'ipotesi nata da un descrittivo.
+> **E7** (debito emerso dai test di ottobre: [referto RSI(2)](reviews/rsi2_indici_esito_2026-10-08.md) §8,
+> [G2 di H1](reviews/ultima_mezzora_G2_2026-10-12.md) §6 e §8) e le due proposte del 12/10: **decise da Matteo al
+> rituale** (DECISIONS 2026-11-04). Le regole stanno in `STRATEGY_LIFECYCLE.md` §4bis, §5, §7a-7c e in
+> `QUANT_REVIEW_PROTOCOL.md`; in codice il `motivo_chiusura` del contatore e il controllo delle sovrapposizioni in
+> `core/sizing.confronta_overlay`. Non adottata: il valore delle previsioni del meccanismo scritte prima ma senza soglia.
 
 Non sono ricerca: sono le cose che rendono la ricerca affidabile. Fino al 2026-09-19
 erano **prosa**, cioe' regole che si applicavano solo se qualcuno si ricordava di

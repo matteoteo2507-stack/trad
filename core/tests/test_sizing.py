@@ -107,3 +107,19 @@ def test_psr_formula_bailey_lopez_de_prado():
     sr, n, skew, k_ex = 0.30, 100, -0.5, 1.2
     atteso = norm.cdf(sr * sqrt(n - 1) / sqrt(1 - skew * sr + (k_ex + 3 - 1) / 4 * sr ** 2))
     assert abs(probabilistic_sharpe_ratio(sr, 0.0, n, skew, k_ex) - atteso) < 1e-12
+
+
+def test_overlay_rifiuta_trade_sovrapposti():
+    """Debito E7 (04/11): con ingressi e uscite, un trade che entra prima che il precedente esca blocca."""
+    r = np.array([1.0, -1.0, 1.0])
+    ing = ["2026-01-01", "2026-01-03", "2026-01-04"]
+    with pytest.raises(ValueError, match="sovrapposizioni"):
+        sizing.confronta_overlay(r, n_perm=20, ingressi=ing, uscite=["2026-01-02", "2026-01-05", "2026-01-06"])
+    tab, _ = sizing.confronta_overlay(r, n_perm=20, ingressi=ing,
+                                      uscite=["2026-01-02", "2026-01-03", "2026-01-06"])
+    assert len(tab) == 3
+
+
+def test_overlay_senza_istanti_avvisa():
+    with pytest.warns(UserWarning, match="NON controllata"):
+        sizing.confronta_overlay(np.array([1.0, -1.0, 1.0, 1.0]), n_perm=20)
