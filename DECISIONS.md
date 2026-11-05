@@ -11,6 +11,66 @@
 
 ---
 
+## 2026-11-05 — Idee del 04/11: **Polymarket non tradabile dall'Italia**, score fondamentale **famiglia da testare**, strato dati azionario **da costruire**; 0 trial
+
+Decisioni di Matteo sulla [nota del 05/11](docs/reviews/azionario_insider_polymarket_2026-11-05.md):
+- **Polymarket: non tradabile dall'Italia, nemmeno con una VPN; si usa solo come fonte di dati.** Bloccato dall'ADM
+  (seconda volta il 10/07/2026, oscurato dal 27/07); la partecipazione a scommesse di operatori senza concessione e'
+  sanzionata anche per il giocatore (L. 401/1989, art. 4, secondo l'ADM); le condizioni di Polymarket vietano di
+  aggirare il blocco e i conti sospetti vengono sospesi. Riapre solo con una concessione ADM o una sentenza che lo
+  distingua dalle scommesse. Uso ammesso: prezzi come riferimento del registro delle previsioni dell'hub e come
+  probabilita' di eventi datate. "Grok Bot": statistiche di terzi contestate, quarantena (Matteo lo sapeva gia').
+- **Score fondamentale dello Stock Selector: diventa una famiglia da testare.** Con i bilanci SEC point-in-time; le
+  soglie sono del 2025, quindi lo storico non puo' confermarlo da solo (vedi la nota, §1). Pre-registrazione da scrivere.
+- **Strato dati azionario point-in-time: da costruire** (infrastruttura, 0 trial). Domanda di Matteo piu' larga:
+  **trading su singole azioni, non solo acquista e tieni, e non solo USA** (nota, §4).
+- **Licenze dei dati: piano personale per i dati che usa solo Matteo** (Matteo, 05/11: il lavoro coi soci e' separato,
+  quindi non serve un piano di gruppo). Due condizioni, dai termini di Quiver letti da Comet il 05/11 (*"personal,
+  non-commercial use only"*; il trading personale non e' uso commerciale; vietata la ridistribuzione *"to any third
+  party"*): i dati grezzi **non entrano in git** (il repo e' pubblico) e **non passano ai soci**; nel repo vanno solo
+  codice e risultati aggregati. Vale anche per EODHD, che col piano personale diventa una strada per le azioni non USA
+  con i delistati.
+- **Insider e politici: per i test non si esclude niente in partenza** (Matteo); i limiti dei dati SEC li mostreranno i
+  conteggi. Si parte dalla potenza.
+
+---
+
+## 2026-11-04 — Debito di protocollo E7 e le due proposte del 12/10: **decisi da Matteo**; 0 trial
+
+Rituale di domenica 01/11, tenuto il 04/11 in una sessione su `trad`. Elenco del debito: [referto RSI(2)](docs/reviews/rsi2_indici_esito_2026-10-08.md)
+§8 e [G2 di H1](docs/reviews/ultima_mezzora_G2_2026-10-12.md) §6 e §8. Nessuna famiglia aperta, nessun verdetto cambia.
+
+**Correzioni tecniche, approvate in blocco** (scritte in `docs/QUANT_REVIEW_PROTOCOL.md` e nella checklist del gatekeeper):
+overlay solo su sequenze senza sovrapposizioni (`core/sizing.confronta_overlay` riceve ingressi e uscite e si ferma, senza
+avvisa); runs test sulla stessa unita' dell'intervallo; ripetizione sui semi della grandezza che decide ciascun verdetto;
+descrittivi con errore standard e numero di celle; guardie che congelano anche `core/` e `tests/`, con le versioni delle
+librerie; controllo positivo sui dati reali quando l'esito possibile e' un CLOSED; bozza e passate G1 in git prima
+dell'approvazione.
+
+**Regole decise** (in `docs/STRATEGY_LIFECYCLE.md`):
+1. **Tassonomia** (§5): NON DIMOSTRATO entra fra i verdetti, sempre con l'MDE; verdetto di un test e stato di una
+   famiglia separati; nel contatore il campo **`motivo_chiusura`** (`refutata`, `potenza`, `criterio`, `metodo`, o
+   `null` se le fonti non lo dicono), controllato da `core/trial_ledger.py`. Assegnato alle 14 famiglie chiuse dalle
+   loro fonti, citate nel campo `fonte_motivo`: refutata 4 (livelli, opening_range solo SPX500, round_grid,
+   momentum_ultima_mezzora), potenza 4 (tsmom, trend_momentum, forexgump_signals, mr_indici_rsi2), metodo 3 (nxt,
+   mentor_signals, london_breakout), criterio 1 (meanrev_kichev), **non ricostruibile 2** (meanrev_vol,
+   seasonality_tom).
+2. **Forward di una famiglia CLOSED** (§7b): ammesso senza §7, con regola identica, soglia, inizio e numero dichiarati
+   prima, senza capitale; **0 trial**.
+3. **Contabilita' di una riapertura** (§7a): pre-registrazione nuova nella stessa famiglia, trial sommati, quota del
+   binario, i dati di scoperta non validano.
+4. **Proposta 2 del 12/10, in forma ristretta** (§7c): un'ipotesi nata da un descrittivo ha una sola conferma, **solo su
+   dati forward**; un holdout "mai aperto" non basta perche' non e' verificabile. E' un trial della stessa famiglia.
+5. **Proposta 1 del 12/10** (§4bis): le condizioni che la fonte stessa prevede si pre-registrano come varianti, una per
+   trial, tutte nel DSR.
+6. **Non adottata** (Matteo): una regola sul valore delle previsioni del meccanismo scritte prima ma senza soglia.
+7. **Parcheggio** (§7c): le ipotesi nate da un descrittivo stanno in `BACKLOG_RICERCA.md`, sezione "Ipotesi nate da un
+   descrittivo" (nasce con la prima voce), con famiglia, `quarantena` e `scade`.
+
+Backlog §E: E7 chiusa. Test: `python -m pytest core/tests` 68 passati (04/11).
+
+---
+
 ## 2026-10-25 (9) — Financial Freedom 101, primo blocco: **nessun metodo di lettura macro, previsioni misurabili**; PAC invariato, 0 trial
 
 Cinque video letti per intero, uno alla volta ([scheda](fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md)
