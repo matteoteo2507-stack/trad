@@ -147,6 +147,8 @@ dubbi nell'elenco completo.
   presi perché usa la stessa chiave. Poi `--solo-lettura` con `quantguild_canale.txt`.
 - ⚠️ **Non lanciare `yt_fetch.py` su un singolo URL video**: salva lo stato sotto il nome dell'uploader
   ("Roman Paolucci") e il giro sul canale riscaricherebbe tutto.
+  Se succede (04/11, video I1): in `analysis/intake/_state.json` si sposta la voce dalla chiave "Roman Paolucci"
+  a "Roman Paolucci - Videos" e si toglie la chiave vuota. La chiave sola "Chart Fanatics" e' lo stesso errore, piu' vecchio.
 
 ---
 
@@ -168,4 +170,5 @@ scaricato, il gruppo 3 escluso.
 | G | 6/6 | **6** | [`blocco-G.md`](blocco-G.md) OK lettura completa; buchi 40-45; 3 conflitti in mappa (analisi tecnica non confutabile; alpha "non serve significativo"; gamba di copertura, seconda occorrenza) |
 | H | 3/3 (+2 di controllo) | **5** | [`blocco-H.md`](blocco-H.md) OK **attribuzione RISOLTA: e' #29 `LX4Ugaxx9n0`**, non uno dei tre candidati. Buchi 46-48 |
 | altri video del canale | 3 scaricati fuori dal gruppo 1 | — | — |
+| I (dopo la chiusura) | 1 | **1** | [`blocco-I.md`](blocco-I.md): video singoli segnalati da Matteo dall'hub, senza riaprire il canale. I1 `pNwcgLbfz-A` letto il 04/11, 0 trial |
 | SINTESI | — | — | [`SINTESI.md`](SINTESI.md) **CHIUSA**: catalogo per 9 domini, 48 buchi in 4 fasce di priorita', 14 conflitti |
