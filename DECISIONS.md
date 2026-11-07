@@ -11,6 +11,24 @@
 
 ---
 
+## 2026-11-07 — Analisi sull'azionario **in pausa** finche' non si comprano i dati; i dati si pagano coi **payout della prop**
+
+Decisione di Matteo, dopo la potenza degli insider del 05/11 ([nota](docs/reviews/azionario_insider_polymarket_2026-11-05.md)
+§6): con i dati gratuiti le analisi sono limitanti e poco utili (sull'S&P 500 le varianti mirate hanno MDE fra 0,56% e
+1,01% a 21 giorni; il 96% degli acquisti degli insider e' fuori dall'indice). Quando i payout della prop sbloccano
+capitale, **i dati sono fra i primi acquisti**, per tutte e quattro le categorie da valutare:
+1. piccole e medie societa' USA con i delistati (FirstRate, una tantum) — insider;
+2. operazioni dei politici (Quiver Hobbyist, o estrazione nostra dai depositi della Camera) — politici;
+3. azioni non USA con i delistati (EODHD, piano personale) — mercati esteri;
+4. bilanci point-in-time (SEC, gratis) — score fondamentale: si scarica quando si riprende il filone.
+
+Fino ad allora: nessuna pre-registrazione azionaria; gli script restano pronti (`data/scarica_sp500_data.py`,
+`data/scarica_sec_form345.py`, `analysis/insider/potenza.py`). L'ordine degli acquisti si decide con i dati che
+riaprirebbero i verdetti (idea del 04/11, pending dell'hub). Prossima sessione: **riformulazione del workspace per il
+nuovo obiettivo** (Matteo).
+
+---
+
 ## 2026-11-05 — Idee del 04/11: **Polymarket non tradabile dall'Italia**, score fondamentale **famiglia da testare**, strato dati azionario **da costruire**; 0 trial
 
 Decisioni di Matteo sulla [nota del 05/11](docs/reviews/azionario_insider_polymarket_2026-11-05.md):

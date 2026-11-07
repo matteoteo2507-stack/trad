@@ -303,6 +303,8 @@ selettiva.
 Decise (DECISIONS 2026-11-05): Polymarket solo fonte di dati; score fondamentale famiglia da testare; strato dati da
 costruire; per insider e politici nessuna esclusione a priori.
 
+**07/11: in pausa** (DECISIONS 2026-11-07): i passi sotto riprendono quando i payout della prop pagano i dati.
+
 Passi, in ordine:
 1. **Strato dati USA point-in-time** (0 trial): prezzi e appartenenza S&P 500, bilanci SEC, Form 345, dati di Quiver
    sui politici (licenza e costo da leggere).
