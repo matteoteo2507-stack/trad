@@ -87,4 +87,4 @@ Solo dopo si attiva la Fase B (`auto_place_pending: true`).
 - Formato del messaggio: `notifiers/telegram.py` (`_format_signal`), con i test in `tests/test_telegram_format.py`.
 - Le skill `strategy-designer` e `telegram-notifier` (`skills/` alla radice) sono ritirate dal 2026-10-13.
 - Risk gate condiviso: `core/risk_gate.py`.
-- Stage 2 della roadmap: `ROADMAP.md`.
+- Stage 2 della vecchia roadmap, cancellata il 2026-11-09 (resta in git).

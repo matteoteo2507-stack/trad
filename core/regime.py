@@ -217,7 +217,7 @@ def diagnose_regime(
 
 # Mappa regime → stato di attivazione per ciascuna strategia.
 # "active" = opera a size pieno, "half" = size dimezzata, "disabled" = stay out.
-# Coerente con TRADING_PRINCIPLES.md §1 e con la tabella in ROADMAP Stage 2.6.5.
+# Coerente con TRADING_PRINCIPLES.md §1 (gating per regime: idea mai costruita, DECISIONS 2026-11-09).
 STRATEGY_REGIME_ACTIVATION: dict[str, dict[str, str]] = {
     "london_breakout": {
         "Bull Quiet": "half",      "Bull Volatile": "active",

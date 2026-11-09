@@ -11,7 +11,8 @@ metodo: spiegazione
 # Mappa di trad — panoramica e percorso
 
 `trad` è il progetto di ricerca quant: un **metodo** per decidere se un'idea di trading merita
-capitale, gli **strumenti** che lo rendono misurabile, e i pochi **sistemi** che girano davvero.
+capitale, gli **strumenti** che lo rendono misurabile, e i pochi **sistemi** che girano davvero. Dal 09/11 il suo ruolo fra i soci e' fornire la teoria e gli strumenti di lettura del prezzo su cui
+poggia la ricerca di edge, consegnati come pacchetti ([PROJECT](../PROJECT.md), DECISIONS 2026-11-09).
 Questa nota è la porta d'ingresso. Ogni componente ha la sua nota, scritta leggendo il codice
 vero. La mappa dell'hub (Sync, backup, filtri) è a parte: [[mappa/00-panoramica|panoramica dell'hub]].
 
@@ -90,9 +91,10 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 | `Da distillare/` (cartella di arrivo, il più possibile vuota), `fondamenti_tecnici/`, `analysis/intake/`, `materiale_socio/`, `TRADING_PRINCIPLES.md` | conoscenza distillata e porta del materiale nuovo | 9 · conoscenza e intake | vivo |
 | `CLAUDE.md`, `.claude/`, `memoria/trad/` (nell'hub) | come lavora Claude su trad | 10 · Claude in trad | vivo (`agents/` e `skills/` alla radice ritirati il 13/10: nessuno strumento li caricava, nessun codice li leggeva) |
 | `pyproject.toml`, `conftest.py`, `tests/`, `config/markets.yaml`, `config/README.md`, `.env.example`, `.gitignore`, `data/`, `CONVENTIONS.md` | ambiente, test, configurazione | 11 · ambiente e test | vivo |
-| `core/{runner,registry}.py`, `strategies/{_base,_template,confluence_levels,confluence_auto}/`, `notifiers/`, `brokers/` (tranne mt5), `backtesters/`, `level_analyzer/`, `journals/`, `docs/{ARCHITECTURE_v2,STAGE2_TESTING_PLAN,OPERATIONAL_GUIDE,TRADING_WORKFLOW_DESIGN,PYTHON_FILES_MAP}.md`, `PROJECT.md`, `ROADMAP.md`, `README.md` | l'architettura di maggio–giugno (pre e post pivot) | 12 · sistemi dormienti | dormiente |
+| `core/{runner,registry}.py`, `strategies/{_base,_template,confluence_levels,confluence_auto}/`, `notifiers/`, `brokers/` (tranne mt5), `backtesters/`, `level_analyzer/`, `journals/`, `docs/{ARCHITECTURE_v2,STAGE2_TESTING_PLAN,OPERATIONAL_GUIDE,TRADING_WORKFLOW_DESIGN,PYTHON_FILES_MAP}.md` | l'architettura di maggio–giugno (pre e post pivot) | 12 · sistemi dormienti | dormiente |
 | `strategies/stock_selector/`, `core/regime.py`, `docs/INVESTING_PILLAR_PLAN.md`, `docs/INVESTMENT_ALGO_DESIGN.md`, `stoxs picks/` | investimento passivo e il vecchio selettore di azioni | 13 · investing | archivio (selettore), vivo (PAC) |
 | `prop-lab/` (repo condiviso col socio VELTRIX, allineato con `prop-lab/CHANGELOG.md`), `core/prop_sim.py`, `core/sizing.py` | simulatore di challenge prop, pipeline di famiglia del socio, doppio binario della gestione del rischio | 14 · prop-lab e doppio binario | vivo (dal 06/10) |
+| `README.md`, `PROJECT.md` | i file d'ingresso: obiettivo comune ai soci, ruoli, dove stanno le cose (riscritti il 09/11, DECISIONS 2026-11-09) | — | vivo |
 | `mappa/` | questa mappa, il cruscotto e il registro modifiche di trad | — | vivo |
 | `backtest_results/`, `logs/`, `output/`, `socio-trading-bot/` | risultati e materiale locale, quasi tutto fuori da git | — | dati |
 

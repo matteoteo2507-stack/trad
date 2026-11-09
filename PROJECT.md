@@ -1,135 +1,81 @@
-# PROJECT.md — Specifica funzionale
+# PROJECT — obiettivo, ruoli, struttura
 
-> **Aggiornato 2026-05-31.** Sostituisce il vecchio framing "7-stage / 5.000€ / Stage 0".
-> Le decisioni operative già prese sono in [DECISIONS.md](DECISIONS.md) — consultalo prima di
-> riproporre cose. La storia degli stage di build resta in [ROADMAP.md](ROADMAP.md).
+> **Aggiornato 2026-11-09** (reframing, [DECISIONS 2026-11-09](DECISIONS.md)). Le decisioni prese stanno in
+> [DECISIONS.md](DECISIONS.md): la voce piu' recente vince su tutto, anche su questo file.
 
-## Mission
+## Obiettivo (comune ai soci)
 
-Portare alla **profittabilità** un piccolo portafoglio di sistemi di trading e investing che
-operano **senza supervisione costante**, partendo da capitale ~0 e usando le **prop firm** come
-leva di accesso al capitale. Il sistema fa scouting al posto dell'utente (niente tempo a grafico).
+Portare alla **profittabilita'** sistemi di trading che operano **senza supervisione costante**, partendo da capitale
+~0 e usando le **prop firm** come accesso al capitale; i guadagni vanno a un portafoglio di lungo periodo.
 
----
+Il percorso, nell'ordine:
 
-## Milestone di profittabilità (il path)
+1. **Un sistema in profitto per almeno un mese su demo.**
+2. **Prop firm**: superare una challenge low-cost col sistema validato
+   ([criteri nostri](docs/PROP_FIRM_CRITERIA.md)).
+3. **Scalare con le prop**: reinvestire i guadagni in challenge nuove, su conti multipli e piu' grandi, fino a un conto
+   da 100k.
+4. **Allocare le entrate delle prop**:
+   - **(a) portafoglio semi-passivo.** Il concetto resta, lo strumento e' da definire. Lo Stock Selector non e'
+     applicabile (archiviato; lo score fondamentale e' una famiglia da testare, DECISIONS 2026-11-05);
+   - **(b) PAC**: operativo dal 09/10/2026 ([piano](docs/INVESTING_PILLAR_PLAN.md) §0);
+   - **(c) dati**: fra i primi acquisti coi payout (DECISIONS 2026-11-07).
 
-L'ordine degli step **non cambia**; cambiano gli strumenti con cui li raggiungiamo.
+A che punto siamo: nessun sistema e' oggi candidato alla prop. Le 14 famiglie testate sono chiuse
+(`python -m core.trial_ledger`); il PAC e' l'unica parte operativa.
 
-1. **Profittabilità ≥ 1 mese su demo** — un sistema dimostra mese positivo su conto demo.
-2. **Prop firm** — superare una challenge low-cost (es. da 1k$) col sistema validato.
-3. **Scalare con le prop** — reinvestire i guadagni in **nuove challenge** per account
-   **multipli** e **più grandi**, fino a gestire un **account prop da 100k**.
-4. **Allocazione delle entrate prop** → due destinazioni:
-   - **(a) Stock Selector** (capitale per l'investing azionario).
-   - **(b) PAC** — piano di accumulo capitale (lungo termine).
+## Ruoli
 
----
-
-## I sistemi da portare a profittabilità
-
-Le modalità **semiautomatico → automatico** sono uno **spettro di maturità esecutiva**, non
-etichette fisse: un sistema nasce semiauto (l'utente piazza) e **gradua** ad auto (eseguito dal
-bot) man mano che parsing, risk gate e affidabilità lo permettono.
-
-### 1. Semiautomatico — *l'analisi arriva, tu piazzi l'ordine*
-- **Confluence Levels** (Python, VPS): notifica setup via Telegram, l'utente piazza a mano.
-- **Analisi canali Telegram mentori**: oggi l'utente riceve l'analisi e piazza. **In test
-  semiauto → target: piena automazione** (vedi sotto).
-
-### 2. Automatico — *segnali eseguiti direttamente*
-- **Telegram Signal Copier**: segnali dei 2 canali mentori → MT5, **demo full-auto**
-  (è il percorso di automazione dei segnali semiauto). Prop rimandata; caveat compliance.
-- **Strategie quant / EA MQL5**: London Breakout (archiviata NO-GO), TSMOM (NO-GO), Confluence
-  Auto (shadow), future EA. Regole codificate, niente LLM nel loop esecutivo.
-- **OctoBot**: layer esecutivo crypto — **DORMIENTE dal 2026-06-14** (traccia crypto in stand-by, rispolverabile; era priorità #1 pre-pivot) ([DECISIONS.md](DECISIONS.md)).
-
-### 3. Manuale / Investing (lungo termine, alimentato dalle entrate prop)
-Traccia di **accumulo e crescita capitale**, parallela al trading e **parte conclusiva** del progetto.
-**Riformulata 2026-06-02** (vedi [DECISIONS.md](DECISIONS.md) e [docs/INVESTING_PILLAR_PLAN.md](docs/INVESTING_PILLAR_PLAN.md)):
-- **Pilastro investing = due secchi passivi**, non un algoritmo:
-  - **Secchio A — buffer di sicurezza** (cash/bond brevi, riempito prima dallo stipendio).
-  - **Secchio B — PAC**: DCA su ETF azionario **globale All-World** + glide-path per età.
-- **Stock Selector** — **ARCHIVIATO come edge-seeker**: dati live + backtest 12y + MVP TAA hanno
-  mostrato nessun edge di selezione/timing che batta l'indice. I materiali tecnici (regime, Fed,
-  archetipi) restano utili alla traccia trading, non al PAC. Vedi [reviews](docs/reviews/).
-- **worldmonitor** — dashboard macro/geopolitica ([worldmonitor.app](https://worldmonitor.app)):
-  sensore macro, eventuale supporto al contesto, **non** un selettore di titoli.
-
-PAC passivo ∥ buffer ∥ worldmonitor compongono il pilastro investing di lungo periodo.
-
----
-
-## Vincoli operativi
-
-- **Tempo**: nessuna possibilità di stare a grafico — il sistema fa scouting al posto dell'utente.
-- **Capitale di partenza**: ~0 €. Path-to-prop come strategia di accesso al capitale.
-- **Trading meccanico**: entrata/gestione/uscita per **regole codificate**, non per analisi LLM
-  nel loop. Gli agent intervengono in selezione/design/review, non nell'esecuzione latency-critical.
-- **Sicurezza**: mai live senza risk gate; `paper_mode` default; drawdown cap in `config/risk.yaml`
-  (vedi [CONVENTIONS.md](CONVENTIONS.md)).
-
----
-
-## Architettura
-
-Post-pivot **2026-05-05**: 3 componenti indipendenti, 3 habitat, **zero bridge** — dettaglio in
-[docs/ARCHITECTURE_v2.md](docs/ARCHITECTURE_v2.md), runbook in [docs/OPERATIONAL_GUIDE.md](docs/OPERATIONAL_GUIDE.md).
-
-| Componente | Tipo | Habitat |
-|---|---|---|
-| Confluence Levels (Python) | solo notifica | VPS Linux Hetzner |
-| Expert Advisor MQL5 | esecuzione automatica | MetaQuotes VPS |
-| Stock Selector (Python) | tool offline | PC di casa |
-
-Linguaggio principale **Python 3.11+**; TS solo se imposto da repo esterni (es. `worldmonitor`).
-
----
-
-## Mappa del workspace
-
-| Cartella / file | Cosa contiene |
+| Chi | Cosa fa |
 |---|---|
-| [fondamenti_tecnici/](fondamenti_tecnici/) | **Knowledge base**: teoria/concetti (price action, liquidità, regimi/macro, quant, portfolio, stock selection, data sources), `blueprints/` (idee non committate), `strategie_candidate/`, `_sorgenti/` (PDF/txt originali) |
-| [strategies/](strategies/) | Strategie Python + **indice master** di tutte le strategie/componenti per sistema |
-| [mql5/](mql5/) | Expert Advisor MQL5 (London Breakout archiviata, futuri EA) |
-| [signal_copier/](signal_copier/) | Copia-segnali Telegram → MT5 (demo full-auto) |
-| [.claude/](.claude/) | Agenti e skill che Claude Code carica (`quant-gatekeeper`, `mql5-converter`). `agents/` e `skills/` alla radice sono ritirati dal 2026-10-13 |
-| [core/](core/) | Componenti trasversali (regime, quant_metrics, risk_gate, runner, registry) |
-| [brokers/](brokers/) · [notifiers/](notifiers/) | Astrazione broker · canali notifica (Telegram) |
-| [config/](config/) · [data/](data/) | YAML config (rischio, mercati) · dati locali e stato |
-| [journals/](journals/) | Schema journaling (markdown weekend + Notion) |
-| [docs/](docs/) | Architettura, guida operativa, protocollo quant, [reviews/](docs/reviews/) |
-| [DECISIONS.md](DECISIONS.md) | **Decisioni già prese** (consultare prima di proporre) |
-| [TRADING_PRINCIPLES.md](TRADING_PRINCIPLES.md) | Costituzione operativa (regimi, S/R, S/D, Fib, entry) |
-| [ROADMAP.md](ROADMAP.md) · [CONVENTIONS.md](CONVENTIONS.md) | Storia stage di build · convenzioni codice |
+| **I soci**, nei loro workspace (derivati in parte da questa infrastruttura) | test, backtest, walk-forward, riformulazione e test continui di strategie; parte della ricerca di strategie nuove |
+| **`trad`** (Matteo) | i **fondamenti tecnici** su cui poggia la ricerca di edge, e la direzione della ricerca: strumenti di lettura del prezzo coerenti col mercato reale; l'analisi da quant di modelli trovati in fonti scelte (limiti, applicazioni, uso da solo o combinato); i **pacchetti** per i soci (report `.md` + file `.py`). Tiene il **metodo** (gatekeeper, contatore unico dei trial, `DECISIONS.md`) e il PAC |
 
----
+**Strategia e strumento** sono definiti in [04_quant_metodologia §0](fondamenti_tecnici/04_quant_metodologia/principles.md).
+In breve: uno strumento e' una lettura del prezzo con una proprieta' misurabile, senza regole di trade; una strategia
+aggiunge ingresso, uscita e gestione del rischio, e produce trade.
 
-## Asset esterni (repo GitHub `matteoteo2507-stack`, audit 2026-05-31)
+**Il ciclo di uscita.** Uno strumento ha al massimo 5 versioni. Ognuna dichiara se e' una correzione (gratis) o una
+modifica dopo i test dei soci (conta come trial). Nessun dato grezzo esce verso i soci.
 
-29 repo sul profilo. Ruolo assegnato a quelli rilevanti per il progetto:
+## Vincoli
+
+- **Tempo**: niente ore a grafico; il sistema fa lo scouting.
+- **Capitale di partenza** ~0 €: la prop e' la via d'accesso.
+- **Trading per regole codificate**: niente LLM nel ciclo di esecuzione. Gli agenti lavorano su ricerca, design e
+  revisione.
+- **Sicurezza**: mai live senza risk gate; `paper_mode` di default; tetti di drawdown in `config/risk.yaml`
+  ([CONVENTIONS.md](CONVENTIONS.md)).
+- **Metodo**: ogni test passa dal [ciclo di vita](docs/STRATEGY_LIFECYCLE.md) e dal gatekeeper; nessun numero senza
+  nota sorgente e data.
+- **Repo pubblico**: niente nomi, chat, orari o numeri di conto; i dati con licenza personale non entrano in git.
+
+## Struttura
+
+La macrostruttura segue l'ordine del processo: entra, si smista, si studia, si decide, si registra, esce o gira.
+
+| Macro | Ruolo |
+|---|---|
+| `decisioni/` | centro decisionale: cosa e' stato deciso, cosa e' aperto, dove va cio' che entra |
+| `motore/` | cio' che serve per lavorare: codice, test, dati, metodo |
+| `magazzino/` | teoria, fonti grezze immutabili, registro degli studi (una cartella per famiglia) |
+| `esercizio/` | cio' che gira con soldi veri o in demo |
+| `uscita/` | pacchetti per i soci |
+
+**La migrazione e' in corso**, una macro alla volta (DECISIONS 2026-11-09). Dove sta ogni cosa *oggi* lo dice il
+[README](README.md); il catasto completo e' nella [mappa](mappa/00-panoramica-trad.md).
+
+## Repo esterni di riferimento (audit del 2026-05-31)
+
+La maggior parte sono fork di studio, non codice da integrare; l'integrazione segue le priorita' in `DECISIONS.md`.
 
 | Repo | Ruolo |
 |---|---|
-| `OctoBot` | Layer esecutivo crypto — **DORMIENTE** (stand-by dal 2026-06-14, rispolverabile) |
-| `worldmonitor` | Fonte sensoriale macro/geopolitica (pilastro investing conclusivo) |
-| `claude-trading-skills` | Catalogo 40+ skill trading — fonte di `blueprints/claude_skills_catalog.md` + `claude_code_for_trading.md` |
-| `ai-hedge-fund` | Substrato multi-agent (LangGraph) + personas per il Consensus |
-| `dexter` | Pattern Skill + SOUL.md (identità agent) / deep financial research |
-| `TradingAgents` | Riferimento alternativo pattern multi-agent (consultivo) |
-| `paperclip-zero-human-trading-firm` | Blueprint funzionale (riferimento concettuale) |
-| `AI_Stock_Trading` | Design pattern AI trading bot (didattico) |
-| `pybroker` | Algo trading Python + ML — candidato backtester pluralistico |
-| `Q-Fin` | Libreria utility (option pricing, stochastics) |
-| `Kronos` | Foundation model OHLCV (post-MVP, richiede GPU) |
-| `QuantDinger` / `FinceptTerminal` / `Vibe-Trading` | Piattaforme/agent trading di riferimento (studio) |
-| `tradingview-mcp` | MCP TradingView — **valutato e rimandato** (legge solo Pine, non drawings) |
-| `second-brain` / `claudian` | Knowledge base Obsidian + Claude (collegabile al vault) |
-| `deep-research` / `GenericAgent` / `ml-intern` / `skills` / `andrej-karpathy-skills` / `context-mode` / `GitNexus` | Tooling AI/agent generico (riferimento) |
-| `data-science-ipython-notebooks` (donnemartin) | Notebook didattici pandas/numpy/scikit-learn — base per analisi dati / backtest / stock scanner. **Non clonata** (107 MB, ri-clonabile al bisogno). Aggiunta 2026-06-22. |
-
-Repo non pertinenti al trading: `uBlock`, `awesome`, `actual-backend-app`, `app1`, `Fix-Your-Errors`.
-
-> Nota: la maggior parte dei repo trading sono **fork/riferimenti** di studio, non scaffold da
-> integrare ora. L'integrazione effettiva resta condizionata alle priorità in [DECISIONS.md](DECISIONS.md).
+| `OctoBot` | esecuzione crypto, **dormiente** dal 2026-06-14 |
+| `worldmonitor` | dashboard macro e geopolitica; senza storico datato, non regge un backtest (DECISIONS 2026-10-25 (3)) |
+| `claude-trading-skills` | catalogo di skill di trading, fonte di `fondamenti_tecnici/blueprints/` |
+| `ai-hedge-fund`, `TradingAgents`, `dexter`, `paperclip-zero-human-trading-firm`, `AI_Stock_Trading` | pattern multi-agente e design di bot (studio) |
+| `pybroker`, `Q-Fin`, `Kronos` | backtester, utility quantitative, modello di base su OHLCV (riferimento) |
+| `QuantDinger`, `FinceptTerminal`, `Vibe-Trading` | piattaforme di riferimento (studio) |
+| `tradingview-mcp` | valutato e rimandato: legge solo oggetti Pine |
+| `second-brain`, `claudian` e tooling AI generico | riferimento |

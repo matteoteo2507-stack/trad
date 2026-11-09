@@ -173,4 +173,4 @@ Così il Quant Reviewer mensile (Stage 2.7) può fare il diff con `Confluence Ma
 - Sam Seiden (Online Trading Academy) — methodology base-impulse-base S/D.
 - Steidlmayer P. (1982) — *Markets and Market Logic* (Market Profile / POC).
 - Project memory: [[project_confluence_auto]] (in `memoria/trad/`, nell'hub).
-- Roadmap context: [`ROADMAP.md`](../../ROADMAP.md) Stage 2.6 punto 4.
+- Contesto: Stage 2.6 della vecchia roadmap, cancellata il 2026-11-09 (resta in git).

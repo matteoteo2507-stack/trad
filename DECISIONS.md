@@ -11,6 +11,75 @@
 
 ---
 
+## 2026-11-09 — Reframing di `trad`: **teoria e strumenti** per i soci, macrostruttura in **cinque parti**, definizione di strategia; 0 trial
+
+Decisioni di Matteo (sessione del 07-09/11, dopo la scansione globale del repo). Nessuna famiglia aperta o chiusa,
+contatore non toccato.
+
+**Obiettivo: invariato e comune ai soci** ([PROJECT.md](PROJECT.md)): profittabilita' via prop, poi i payout verso il
+portafoglio. Cambia solo la destinazione 4a: lo Stock Selector non e' applicabile (archiviato; lo score fondamentale e'
+una famiglia da testare, voce 2026-11-05), ma il concetto resta: **portafoglio semi-passivo**.
+
+**Ruoli fra i soci.** I workspace dei soci, derivati in parte da questa infrastruttura, fanno test, backtest,
+walk-forward, riformulazione e parte della ricerca di strategie. `trad` fornisce i **fondamenti tecnici** su cui poggia la
+ricerca di edge e la indirizza: strumenti di lettura del prezzo coerenti col mercato reale, e l'analisi da quant di
+modelli trovati in fonti scelte (esempio: il GARCH, con limiti, applicazioni, uso da solo o con altri strumenti). Cio' che
+e' applicabile coi nostri mezzi esce come **pacchetto** (report `.md` e file `.py`) per i soci. Restano in `trad` il metodo
+(gatekeeper, contatore unico, `DECISIONS.md`) e il PAC.
+
+**Uscita: ciclo di ritorno con al massimo 5 versioni per strumento.** Ogni versione dichiara se e' una **correzione**
+(bug, applicazione sbagliata: gratis) o una **modifica dopo l'esito** dei test dei soci (conta come trial, e i dati dei
+soci non sono piu' indipendenti per giudicare lo strumento). Alla quinta, lo strumento si chiude o si riformula da capo.
+Il pacchetto dichiara su quali dati lo strumento e' stato provato; nessun dato grezzo ai soci (licenze personali, voce
+2026-11-05).
+
+**Dati** (valutazione in sessione, nessuna misura nuova): per gli strumenti, la cui unita' e' il giorno o la barra, i
+dati in casa bastano in gran parte; per gli edge di strategia comprare non sempre risolve (A1, voce 2026-10-25 (4)). La
+regola d'acquisto del [backlog §G](docs/BACKLOG_RICERCA.md) resta.
+
+**Definizione di strategia e di strumento**: [04_quant_metodologia §0](fondamenti_tecnici/04_quant_metodologia/principles.md).
+
+**Macrostruttura, in ordine di processo** (entra, si smista, si studia, si decide, si registra, esce o gira):
+
+| Macro | Cosa contiene |
+|---|---|
+| `decisioni/` | centro decisionale: `DECISIONS.md`, contatore, backlog, `mappa/`, ingresso (`Da distillare/`, `_INTAKE.md`) |
+| `motore/` | pacchetti Python (`core`, `brokers`, `notifiers`...), test, configurazione, script dei dati, il metodo (LIFECYCLE, protocollo) |
+| `magazzino/` | teoria (i moduli); fonti grezze, immutabili; registro degli studi, **una cartella per famiglia** |
+| `esercizio/` | cio' che gira con soldi veri o in demo: EA, copier, sorveglianza, PAC |
+| `uscita/` | pacchetti per i soci; nasce col primo pacchetto |
+
+Alla radice restano solo i file che gli strumenti cercano li' (`CLAUDE.md`, `.claude/`, `pyproject.toml`, `conftest.py`,
+`.gitignore`) e i due file d'ingresso, README e PROJECT. `prop-lab/` resta intero, specchio del repo del socio: la sua
+posizione si decide al passo dell'uscita.
+
+**Regola del registro: un file si colloca per tipo, non per stato.** Lo stato vive nel frontmatter e nel contatore;
+nessun verdetto e nessuna riapertura spostano file. Una riapertura e' una pre-registrazione nuova nella stessa cartella,
+e la vecchia resta, marcata "superata da". Al contatore si aggiunge il campo **`riapre_con`**: i dati o la condizione che
+riaprirebbero la famiglia, come la condizione nota della `pending` dell'hub. Manca un **indice** unico per contenuto:
+si genera, non si scrive a mano. Fonti della regola: le Architecture Decision Records (Cognitect, GDS), la `pending`
+dell'hub, la "LLM wiki" di Karpathy (gist del 04/04/2026).
+
+**Migrazione.** Una macro alla volta, ciascuna in un commit, in quest'ordine: uscita, esercizio, decisioni, magazzino,
+motore. Per ogni macro, nell'ordine:
+1. controllo delle guardie che congelano il codice degli studi chiusi;
+2. script che riscrive i link, prima a secco;
+3. `git mv`;
+4. test;
+5. controllo dei link morti;
+6. voce in `mappa/_modifiche.md`;
+7. README aggiornato.
+
+I pacchetti Python si spostano in `motore/` con gli import riscritti (Matteo, 09/11). Si chiude con un healthcheck
+generale.
+
+**Fatto in questa voce:** definizione nel modulo 04; README e PROJECT riscritti; **`ROADMAP.md` cancellata**. Era la
+storia degli stage di maggio. I fatti ancora validi stanno gia' qui: OctoBot dormiente (2026-06-14), London Breakout e
+TSMOM NO-GO. Il gating automatico per regime (Stage 2.6.5) non e' mai stato costruito: una componente aggiunta si
+testa per ablazione (LIFECYCLE §4bis). La storia resta in git.
+
+---
+
 ## 2026-11-07 — Analisi sull'azionario **in pausa** finche' non si comprano i dati; i dati si pagano coi **payout della prop**
 
 Decisione di Matteo, dopo la potenza degli insider del 05/11 ([nota](docs/reviews/azionario_insider_polymarket_2026-11-05.md)

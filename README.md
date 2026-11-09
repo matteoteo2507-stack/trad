@@ -1,78 +1,50 @@
-# Trading System — Workspace
+# trad
 
-Piattaforma modulare per costruire, testare e mettere in produzione strategie di trading
-**automatiche** ed **semiautomatiche**, con scouting senza supervisione umana costante.
+Laboratorio di ricerca quant. Fornisce ai soci i **fondamenti tecnici** su cui poggia la ricerca di edge:
+strumenti di lettura del prezzo, analizzati da quant (limiti, applicazioni, uso combinato) e consegnati come pacchetti.
+Tiene il **metodo** con cui un'idea diventa una decisione, e il PAC. Obiettivo e ruoli: [PROJECT.md](PROJECT.md).
 
-> **Framing corrente** → [PROJECT.md](PROJECT.md) (milestone di profittabilità + 3 sistemi + traccia investing).
-> Decisioni già prese → [DECISIONS.md](DECISIONS.md). Storia degli stage di build → [ROADMAP.md](ROADMAP.md).
+## Da leggere per primi
 
----
+1. [PROJECT.md](PROJECT.md): obiettivo comune ai soci, ruoli, vincoli, macrostruttura.
+2. [DECISIONS.md](DECISIONS.md): il registro delle decisioni. **La voce piu' recente vince**; controllalo prima di
+   proporre qualcosa.
+3. [docs/STRATEGY_LIFECYCLE.md](docs/STRATEGY_LIFECYCLE.md): come un'idea arriva a un verdetto, e quando muore.
+4. [mappa/00-panoramica-trad.md](mappa/00-panoramica-trad.md): cosa fa ogni parte, come si usa, come si rompe.
 
-## Indice del workspace
+## Dove stanno le cose oggi
 
-| Cartella | Cosa contiene |
-|---|---|
-| `fondamenti_tecnici/` | **Knowledge base**: teoria/concetti, `blueprints/`, `strategie_candidate/`, `_sorgenti/` (PDF/txt originali). Vedi il suo [README](fondamenti_tecnici/README.md) |
-| `strategies/` | Strategie Python + **indice master** di tutte le strategie per sistema ([README](strategies/README.md)) |
-| `mql5/` | Expert Advisor MQL5 (London Breakout archiviata NO-GO, futuri EA) |
-| `signal_copier/` | Copia-segnali Telegram → MT5 (demo full-auto) |
-| `.claude/agents/`, `.claude/skills/` | Agenti e skill che Claude Code carica (revisore `quant-gatekeeper`, `mql5-converter`). `agents/` e `skills/` alla radice sono ritirati dal 2026-10-13 |
-| `brokers/` | Astrazione broker (yfinance read-only, MT5 legacy) |
-| `notifiers/` | Canali di notifica (Telegram outbound) |
-| `core/` | Componenti trasversali (regime, quant_metrics, risk gate, runner, registry) |
-| `data/` | Sorgenti dati locali, news calendar stub, stato persistente |
-| `config/` | File YAML di configurazione (rischio, mercati) |
-| `journals/` | Schema journaling (markdown weekend + Notion) |
-| `tests/` | Test automatici (offline) |
-| `docs/` | Documentazione tecnica + [reviews/](docs/reviews/) |
+La migrazione verso le cinque macro e' in corso, una macro alla volta (DECISIONS 2026-11-09): questa tabella si
+aggiorna a ogni passo.
 
-I documenti sorgente densi (PDF, `.txt`, immagini) sono stati **spostati** in
-[`fondamenti_tecnici/_sorgenti/`](fondamenti_tecnici/_sorgenti/) e distillati in `principles.md`
-strutturati (vedi [fondamenti_tecnici/README.md](fondamenti_tecnici/README.md)). Il notebook
-sorgente dello Stock Selector sta in
-[`strategies/stock_selector/algoritmo selezione azioni.ipynb`](strategies/stock_selector/algoritmo%20selezione%20azioni.ipynb).
+| Oggi | Cosa contiene | Va in |
+|---|---|---|
+| `DECISIONS.md`, `docs/trial_ledger.json`, `docs/BACKLOG_RICERCA.md`, `mappa/` | decisioni, contatore dei trial, backlog, mappa | `decisioni/` |
+| `Da distillare/`, `fondamenti_tecnici/_INTAKE.md` | ingresso del materiale nuovo e suo smistamento | `decisioni/` |
+| `core/`, `brokers/`, `notifiers/`, `tests/`, `config/`, `data/` | codice, test, configurazione, script dei dati | `motore/` |
+| `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `CONVENTIONS.md` | il metodo e le convenzioni | `motore/` |
+| `fondamenti_tecnici/` (moduli `0X_*`), `TRADING_PRINCIPLES.md` | teoria | `magazzino/` |
+| `fondamenti_tecnici/_sorgenti/`, `materiale_socio/` | fonti grezze, immutabili | `magazzino/` |
+| `docs/*_PREREGISTRATION.md`, `docs/reviews/`, `analysis/<famiglia>/`, `strategies/{tsmom,meanrev,seasonality}/` | registro degli studi | `magazzino/` |
+| `mql5/`, `signal_copier/`, `analysis/ops/`, `docs/health/`, `docs/INVESTING_PILLAR_PLAN.md`, `docs/PROP_FIRM_CRITERIA.md` | cio' che gira con soldi veri o in demo, e la sua sorveglianza | `esercizio/` |
+| (nasce col primo pacchetto) | pacchetti per i soci | `uscita/` |
+| `prop-lab/` | simulatore prop condiviso con un socio, tenuto allineato al suo repo | da decidere al passo dell'uscita |
+| `strategies/{confluence_*,stock_selector,_base,_template}/`, `level_analyzer/`, `backtesters/`, `journals/`, `core/{runner,registry}.py`, documenti di architettura di maggio in `docs/` | sistemi dormienti | da decidere caso per caso |
 
-## Documenti chiave
+Restano alla radice: `CLAUDE.md` e `.claude/` (istruzioni e agenti di Claude Code), `pyproject.toml`, `conftest.py`,
+`.gitignore`, questo README e PROJECT.
 
-- `PROJECT.md` — Mission, milestone di profittabilità, 3 sistemi, traccia investing, asset esterni.
-- `DECISIONS.md` — **Decisioni già prese** (pivot, NO-GO, priorità). Leggi prima di proporre.
-- `TRADING_PRINCIPLES.md` — Costituzione operativa (regimi, S/R, S/D, Fib, entry, journaling).
-- `fondamenti_tecnici/` — Knowledge base teorica (concetti, blueprint, candidate).
-- `ROADMAP.md` — Storia degli stage di build (con riconciliazione 2026-05-31 in testa).
-- `CONVENTIONS.md` — Convenzioni di codice, naming, lingua commenti, pattern di estensione.
+## Comandi
 
-## Quick start (quando passi su Antigravity / Claude Code)
+```bash
+python -m core.trial_ledger          # stato delle famiglie, trial e budget: l'unica fonte di questi numeri
+python -m pytest core/tests          # test delle primitive di misura
+```
 
-1. Apri la cartella `C:\Users\mmbus\Obsidian\claude-brain\trad` come progetto.
-2. Leggi `PROJECT.md` e `ROADMAP.md` (5 minuti).
-3. Stage corrente da implementare → vedi sezione "Stato corrente" qui sotto.
-4. Agenti e skill che Claude Code carica stanno in `.claude/`. Le `skills/` alla radice, scritte a maggio, sono ritirate dal 2026-10-13.
+## Regole che valgono ovunque
 
-## Stato corrente
-
-> **Quando torni dopo qualche giorno, apri questi due:**
-> 1. [docs/ARCHITECTURE_v2.md](docs/ARCHITECTURE_v2.md) — architettura post-pivot (3 componenti
->    ibridi cloud-native), workflow settimanale, deployment, costi.
-> 2. [docs/OPERATIONAL_GUIDE.md](docs/OPERATIONAL_GUIDE.md) — **step-by-step** per deploy
->    VPS, EA MQL5, MetaQuotes VPS, e workflow weekend (Stock Selector + levels.yaml).
->
-> Documento storico: [docs/STAGE2_TESTING_PLAN.md](docs/STAGE2_TESTING_PLAN.md) (pre-pivot).
-
-- [x] Stage 0 — Workspace setup
-- [x] Stage 1 — Stock Selector headless (Python weekend tool)
-- [x] Stage 2 — Confluence Levels Python + Telegram bridge (solo notifica, 81/81 test verdi). Cloud-ready via yfinance, niente più MT5 desktop richiesto.
-- [x] Stage 2.5 — London Open Breakout migrato a **Expert Advisor MQL5** (`mql5/london_breakout.mq5`). Gira sul terminale MT5 / MetaQuotes VPS. Backtest in Strategy Tester.
-- [ ] **Pivot architetturale 2026-05-05**: vedi `docs/ARCHITECTURE_v2.md`. Componenti ibridi su 3 habitat indipendenti.
-- [ ] Stage 3 — Backtester pluralistico (per equity/crypto Python; per forex il Strategy Tester MT5 è sufficiente)
-- [ ] Stage 4 — Stock Selector Consensus (4 personas opzionali)
-- [ ] Stage 5 — Worldmonitor bridge
-- [ ] Stage 6 — OctoBot integration crypto live
-- [ ] Stage 7 — Prop firm challenge
-
-## Asset esterni di riferimento
-
-- Repo di studio in `C:\Users\mmbus\OneDrive\Desktop\` o online: `paperclip-zero-human-trading-firm`,
-  `ai-hedge-fund`, `TradingAgents`, `OctoBot`, `dexter`, `Kronos`, `Q-Fin`, `worldmonitor`,
-  `AI_Stock_Trading`. Vedi `PROJECT.md` per il ruolo assegnato a ciascuno.
-- Vault Obsidian: `C:\Users\mmbus\Obsidian\` — knowledge base evolutiva (test, decisioni, storico dati).
-- Sito proprio di market intelligence: [worldmonitor.app](https://worldmonitor.app).
+- **Nessun numero senza nota sorgente e data della misura.** Il contatore e `DECISIONS.md` puntano alle note.
+- **Ogni test passa dal gatekeeper** (`.claude/agents/quant-gatekeeper.md`): prima di lanciarlo e prima del verdetto.
+- **Ogni modifica di architettura** aggiorna la mappa e `mappa/_modifiche.md` nella stessa sessione.
+- **Repo pubblico**: niente nomi, chat, orari, numeri di conto; credenziali (`.env`, `*.session`) mai lette o
+  spostate.

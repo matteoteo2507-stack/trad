@@ -73,7 +73,7 @@ Cartella [`../analysis/trading-bot-eval/`](../analysis/trading-bot-eval/). **Non
 - [`../DECISIONS.md`](../DECISIONS.md) — ORB "idea utente+socio" = NO-GO; il bot del socio è **discrezionale, fuori dal workflow quant**.
 - [`../docs/TRADING_WORKFLOW_DESIGN.md`](../docs/TRADING_WORKFLOW_DESIGN.md) — "discrezione del socio scambiata per edge del sistema"; bot del socio fuori dal workflow.
 - [`../docs/LEVEL_RESEARCH_PLAN.md`](../docs/LEVEL_RESEARCH_PLAN.md) — motore livelli basato su `analysis/veltrix/validate_levels.py`.
-- [`../ROADMAP.md`](../ROADMAP.md) — OctoBot superato da Confluence Auto + VELTRIX.
+- [`../DECISIONS.md`](../DECISIONS.md) 2026-06-14 — OctoBot dormiente.
 - [`../signal_copier/README.md`](../signal_copier/README.md) — precedente da non ripetere: chiave Bybit nella git history di VELTRIX. ⚠️ **NB**: il signal_copier riguarda i **mentori**, non il socio — non confondere.
 
 ## 🧠 Memoria persistente *(fuori dal repo: `claude-brain/memoria/trad/`)*

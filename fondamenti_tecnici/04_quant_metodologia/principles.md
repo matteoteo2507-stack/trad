@@ -12,6 +12,35 @@ tipo: concetti
 
 ## Concetti
 
+### 0. Strategia e strumento: le definizioni (Matteo, 2026-11-09)
+
+**Strategia**: una lettura del prezzo con criteri di **ingresso**, di **uscita** e di **gestione del rischio**
+(definizione di Matteo). Perche' sia testabile, deve dichiarare anche:
+
+1. **Perimetro**: strumenti, timeframe e orari in cui si applica. Senza perimetro non si sa su quali dati testarla.
+2. **Quando e' accesa.** Le condizioni di regime, se ci sono, fanno parte della strategia e si dichiarano prima. Un
+   filtro aggiunto dopo aver visto l'esito e' una componente nuova, e si testa per ablazione
+   ([STRATEGY_LIFECYCLE §4bis](../../docs/STRATEGY_LIFECYCLE.md)).
+3. **Regole deterministiche, fissate prima dei dati**: con gli stessi dati, due persone o un codice producono gli
+   stessi trade. Se serve un giudizio umano e' un metodo **discrezionale**, che si misura col track record prospettico
+   e non col backtest.
+4. **Esecuzione e costi**: il fill dev'essere ottenibile con l'informazione di quel momento, con spread, commissioni,
+   slippage e swap.
+5. **Il vantaggio dichiarato**: la classe e chi paga ([09_fonti_di_vantaggio §4](../09_fonti_di_vantaggio/principles.md)).
+   Senza, e' un pattern, non un'ipotesi.
+
+Una strategia produce **trade**, e si misura in R contro un baseline casuale con lo stesso rischio
+([QUANT_REVIEW_PROTOCOL](../../docs/QUANT_REVIEW_PROTOCOL.md)).
+
+**Strumento** (di lettura del prezzo): un metodo che trasforma i dati in una lettura (un livello, una previsione di
+volatilita', un regime) con una **proprieta' misurabile**, e **senza regole di trade**. Esempi: il GARCH prevede la
+volatilita' meglio di una previsione semplice? Il prezzo reagisce su un livello piu' che in un punto a caso? Si valida
+sulla sua proprieta', con l'unita' del giorno o della barra: non produce trade e non ha un'attesa in R.
+
+**La relazione.** Una strategia usa uno o piu' strumenti. Uno strumento validato **non** e' una strategia validata: la
+proprieta' puo' essere vera e la strategia non battere i costi. Lo stesso confine divide il lavoro: gli strumenti si
+studiano in `trad`, le strategie le testano i soci ([DECISIONS 2026-11-09](../../DECISIONS.md)).
+
 ### 1. Look-ahead bias
 
 **Definizione**: incorporare nella decisione di trading informazione che **non era disponibile** al momento in cui il trade è stato aperto.
