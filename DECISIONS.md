@@ -3570,7 +3570,7 @@ adatti del nostro `signal_copier`.
 **Condizione per riaprire.** Quando (a) si decide consapevolmente di aprire un fronte crypto-automation
 **E** (b) c'è slack-time dopo milestone-1 forex. Allora OctoBot torna candidato come executor crypto.
 
-→ Review: `github_repo_reviews/OctoBot.md` (memoria di lavoro) · Stage storico: [ROADMAP.md Stage 6](ROADMAP.md)
+→ Review: `github_repo_reviews/OctoBot.md` (memoria di lavoro) · Stage storico: Stage 6 della vecchia ROADMAP (cancellata il 2026-11-09, resta in git)
 
 ---
 
