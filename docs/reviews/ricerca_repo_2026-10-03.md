@@ -8,7 +8,7 @@ esito: "nessun candidato testabile a potenza utile; due voci chiuse all'intake (
 # Ricerca nel repo dopo la chiusura di oro notturno e COT (03/10)
 
 > Richiesta di Matteo (03/10): *"fai una ricerca approfondita nel repo se trovi qualcos'altro"*.
-> Lette per intero o per le parti di stato: [BACKLOG_RICERCA](../BACKLOG_RICERCA.md), le sintesi dei
+> Lette per intero o per le parti di stato: [BACKLOG_RICERCA](../../decisioni/BACKLOG_RICERCA.md), le sintesi dei
 > due funnel (Chart Fanatics e Quant Guild) e i blocchi A1, A2, B1, la pipeline di strategie del
 > 02/05 (memoria), i blueprint, le strategie candidate, l'intake, l'audit A5. **0 trial**: nessun
 > esito di strategia e' stato calcolato; l'unico calcolo e' un **conteggio di eventi** (§1).
@@ -83,7 +83,7 @@ non uno solo.
 
 ## 4. Una voce del backlog superata da una decisione piu' recente (segnalata, non corretta)
 
-Il [backlog](../BACKLOG_RICERCA.md) §G dice: *"Il piu' conveniente adesso: G1 (b)"*, cioe' stringere con i dati M1
+Il [backlog](../../decisioni/BACKLOG_RICERCA.md) §G dice: *"Il piu' conveniente adesso: G1 (b)"*, cioe' stringere con i dati M1
 la forbice di 0,82R fra le convenzioni del baseline del mentore XAT. Ma **DECISIONS 2026-10-02 (notte)** ha messo
 XAT **in revisione**: lo storico e' selezionato (il canale cancella i perdenti), e la misura e' il **forward**. Un
 replay piu' preciso di uno storico selezionato non misura piu' l'edge. Per la regola di `CLAUDE.md` vale la voce

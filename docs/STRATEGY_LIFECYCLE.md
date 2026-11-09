@@ -89,7 +89,7 @@ Il **Deflated Sharpe Ratio** penalizza il numero di tentativi ([`deflated_sharpe
 Perché funzioni, il contatore deve **persistere attraverso le iterazioni del loop**, non azzerarsi a
 ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 
-> ✅ **Dal 2026-09-19 il contatore esiste davvero**: dato in [`docs/trial_ledger.json`](trial_ledger.json),
+> ✅ **Dal 2026-09-19 il contatore esiste davvero**: dato in [`decisioni/trial_ledger.json`](../decisioni/trial_ledger.json),
 > letto e verificato da [`core/trial_ledger.py`](../core/trial_ledger.py).
 > `python -m core.trial_ledger` stampa lo stato di ogni famiglia (trial cumulati, round
 > spesi, holdout, quota di pre-registrazioni esterne del trimestre) e `--check` esce con
@@ -241,7 +241,7 @@ misurano separatamente:
 
 **Verdetto di un test e stato di una famiglia sono due cose** (dal 2026-11-04, debito E7). NO-GO, NON DIMOSTRATO e
 NULL sono l'esito di un test; CLOSED e' lo stato della famiglia. Quando una famiglia chiude, il contatore registra
-**perche'** nel campo `motivo_chiusura` di [`trial_ledger.json`](trial_ledger.json), controllato da
+**perche'** nel campo `motivo_chiusura` di [`trial_ledger.json`](../decisioni/trial_ledger.json), controllato da
 `core/trial_ledger.py`:
 
 | motivo | significato | vale come prova che l'effetto non c'e'? |
@@ -338,7 +338,7 @@ del §7b, ma la regola **non** e' quella gia' testata: e' un trial della stessa 
 §7a (trial sommati, quota del binario). Fallita la conferma, l'ipotesi si cancella.
 
 Finche' i dati forward non bastano, l'ipotesi sta **parcheggiata** in
-[`BACKLOG_RICERCA.md`](BACKLOG_RICERCA.md), sezione "Ipotesi nate da un descrittivo", con famiglia, stato
+[`BACKLOG_RICERCA.md`](../decisioni/BACKLOG_RICERCA.md), sezione "Ipotesi nate da un descrittivo", con famiglia, stato
 `quarantena` e data `scade` (la sezione nasce con la prima voce). Senza parcheggio tornerebbe fra qualche mese come
 idea nuova.
 
@@ -347,7 +347,7 @@ idea nuova.
 ## 8. Cosa entra nel loop dall'esterno
 
 Le fonti esterne (canali, video, materiale di terzi) entrano da
-[`fondamenti_tecnici/_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md) e alimentano la fase **RICERCA**,
+[`decisioni/_INTAKE.md`](../decisioni/_INTAKE.md) e alimentano la fase **RICERCA**,
 mai le fasi successive. Due vincoli:
 
 - **Si raccolgono le regole, si scartano le statistiche dichiarate.** Un "90% win rate" non deve
@@ -361,7 +361,7 @@ mai le fasi successive. Due vincoli:
   indipendente**, può essere memorizzazione. Vale solo se arriva da (a) una **fonte esterna umana**
   datata e citabile, (b) un **razionale economico** che non richiede di conoscere l'esito, o (c) un
   **forward oltre il cutoff**. Si registra nel campo `provenienza_ipotesi` di
-  [`docs/trial_ledger.json`](trial_ledger.json), e `python -m core.trial_ledger` segnala chi non
+  [`decisioni/trial_ledger.json`](../decisioni/trial_ledger.json), e `python -m core.trial_ledger` segnala chi non
   l'ha dichiarata. Evidenza esterna: *Profit Mirage* (arXiv 2510.07920) — spostando la finestra di
   test oltre il cutoff, **quasi tutti** gli agenti LLM pubblicati **non battono un baseline
   random**. ⚠️ Corollario che va nella direzione opposta a quella che verrebbe da pensare: questo
@@ -371,10 +371,10 @@ mai le fasi successive. Due vincoli:
 
 > Lato ricevente del ponte con il vault `claude-brain` (lato hub: `../CLAUDE.md`, "Lavorare su `trad` dall'hub").
 > Fissato con il gatekeeper il 25/10 su richiesta di Matteo; da rivedere nel rituale
-> ([`mappa/_modifiche.md`](../mappa/_modifiche.md)). Prima prova: l'idea "insider pesati con la geopolitica",
+> ([`decisioni/mappa/_modifiche.md`](../decisioni/mappa/_modifiche.md)). Prima prova: l'idea "insider pesati con la geopolitica",
 > [intake del 25/10](reviews/idee_matteo_hub_intake_2026-10-25.md).
 
-Un'idea che nasce nell'hub (appunti di Matteo, studio, geopolitica) arriva in [`Da distillare/`](../Da%20distillare/README.md)
+Un'idea che nasce nell'hub (appunti di Matteo, studio, geopolitica) arriva in [`decisioni/Da distillare/`](../decisioni/Da%20distillare/README.md)
 come ogni altro materiale. Diventa un'**ipotesi** di `trad` solo con questa scheda. Si legge in ordine e **ci si ferma
 al primo campo che manca**.
 
@@ -384,7 +384,7 @@ al primo campo che manca**.
 |---|---|---|
 | **P1 · Fonte unica** | link alla nota dell'hub da cui nasce l'idea, data, chi l'ha avuta; la scheda richiama la nota, non la copia | manca il link |
 | **P2 · Provenienza** | (a) chi ha avuto l'idea; (b) chi ha scritto razionale e specifica: Matteo, Claude in una sessione sull'hub, una fonte umana datata e citata; la finestra dei dati del test rispetto al cutoff; se il tema e' "famoso e discusso" | provenienza non dichiarata (vale come il caso peggiore, [QUANT_REVIEW_PROTOCOL](QUANT_REVIEW_PROTOCOL.md), "Provenienza"); razionale scritto dall'LLM su dati anteriori al cutoff senza un forward previsto (vincolo sopra) |
-| **P3 · Controllo contro il repo** | famiglia esistente? stessa grandezza di una famiglia del contatore? riga delle "chiuse in partenza" di [BACKLOG §H](BACKLOG_RICERCA.md)? | ripropone una famiglia CLOSED senza evidenza del §7; stessa grandezza presentata come famiglia nuova (§3); cade fra le chiuse in partenza senza che sia scattata la loro condizione "si riapre se" |
+| **P3 · Controllo contro il repo** | famiglia esistente? stessa grandezza di una famiglia del contatore? riga delle "chiuse in partenza" di [BACKLOG §H](../decisioni/BACKLOG_RICERCA.md)? | ripropone una famiglia CLOSED senza evidenza del §7; stessa grandezza presentata come famiglia nuova (§3); cade fra le chiuse in partenza senza che sia scattata la loro condizione "si riapre se" |
 | **P4 · Dati gia' guardati** | grafici, episodi, "l'ho visto succedere" visti nell'hub; "nessuno" e' una risposta valida | il campo manca. Dati gia' visti non fanno da holdout: un'idea nata da quei dati arriva al massimo a LEAD (§5) |
 | **P5 · Misura fatta nell'hub** | solo se l'idea viene da un registro (es. le previsioni): cosa si e' misurato e su quante osservazioni, metrica e riferimento, intervallo, criterio scritto **prima** con il commit dell'hub che lo data, quante serie o categorie sono state misurate | criterio non datato prima della misura, o nessun riferimento: e' un descrittivo; statistiche di terzi al posto di una misura (vincolo sopra); per la geopolitica, misura assente |
 | **P6 · Baseline previsto** | una riga: che cosa si randomizza | manca (G1 del gatekeeper, Checklist 1) |
@@ -392,7 +392,7 @@ al primo campo che manca**.
 **2. Le nove domande** del [modulo 09 §4](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md), cosi' come sono.
 Respingono: classe assente (un candidato senza classe e' un pattern: riga in `_INTAKE.md`, niente pre-registrazione);
 "chi paga" incompleto; accessibilita' fuori perimetro ("CFD retail, capitale piccolo, dati liberi", DECISIONS
-2026-10-03 (4); allargato all'azionario il 2026-10-25 (3)) o dato a pagamento senza la regola di [BACKLOG §G](BACKLOG_RICERCA.md); potenza fuori scala (si chiude
+2026-10-03 (4); allargato all'azionario il 2026-10-25 (3)) o dato a pagamento senza la regola di [BACKLOG §G](../decisioni/BACKLOG_RICERCA.md); potenza fuori scala (si chiude
 a 0 trial, come COT e carry il 03/10); "dove muore" senza un esito numerico. Il limite all'arbitraggio non respinge:
 "nessuno l'ha visto" si annota come prior basso.
 
@@ -458,7 +458,7 @@ su eventi: si scrive (0 trial) quando arriva la prima ipotesi.
 > **Buco colmato il 2026-08-17.** Fino a qui il documento copre **nascita e morte prima del
 > capitale**: il loop finisce al verdetto. Non diceva nulla su *cosa succede a una strategia già
 > operativa che peggiora*. Serve adesso, non domani: il fade è in forward e il copier mentore va in
-> live. Innesco esterno: fonte *Noel T.* ([`_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md)), che
+> live. Innesco esterno: fonte *Noel T.* ([`_INTAKE.md`](../decisioni/_INTAKE.md)), che
 > gestisce un parco di algoritmi con rotazione e incubazione.
 
 **Il problema.** Spegnere una strategia perché "ultimamente perde" è **optional stopping applicato
@@ -528,5 +528,5 @@ una modifica, è una **nuova specifica** e riparte dal gate [G1].
 - [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md) — come si misura (il *gate*, non la *regola di stop*).
 - [`.claude/agents/quant-gatekeeper.md`](../.claude/agents/quant-gatekeeper.md) — il revisore: fa rispettare questo ciclo ai gate G1 e G2 (dal 2026-10-13 è l'unico).
 - [04_quant_metodologia](../fondamenti_tecnici/04_quant_metodologia/principles.md) — teoria dei bias, DSR/PBO, pre-mortem.
-- [DECISIONS.md](../DECISIONS.md) — il registro dei verdetti effettivi.
+- [DECISIONS.md](../decisioni/DECISIONS.md) — il registro dei verdetti effettivi.
 - Pre-registrazioni esistenti: `TSMOM_`, `OPENING_RANGE_`, `MEANREV_`, `SEASONALITY_`, `LEVEL_RESEARCH_PREREGISTRATION.md`.

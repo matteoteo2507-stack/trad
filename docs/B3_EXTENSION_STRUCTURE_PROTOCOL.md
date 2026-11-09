@@ -234,7 +234,7 @@ statistica: normalizzata sulla volatilità, la distinzione fra le forme **svanis
 ### 8.7 Cosa servirebbe per riaprire la casella
 
 - un universo dove **volatilità e dimensione della candela si separano davvero** — cioè azionario
-  con normalizzazione su market cap, come fanno le fonti (è il [bucket D2](BACKLOG_RICERCA.md),
+  con normalizzazione su market cap, come fanno le fonti (è il [bucket D2](../decisioni/BACKLOG_RICERCA.md),
   bloccato per dati);
 - **volume vero** (azioni o controvalore), non tick volume di CFD: il gate del §8.1 esclude oggi
   proprio i gruppi ad alta volatilità;

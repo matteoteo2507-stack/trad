@@ -230,7 +230,7 @@ praticabile cosi' com'e': si riporta e si ferma).
 | `provenienza_ipotesi` | `umana_esterna` — socio, 28/09/2026 (canale Forex Gump + backtest della webapp) |
 | Pre-registrazione esterna | conta nel trimestre della **data di approvazione** (D2) |
 | DSR | n_trial = 1. Futilita' per trade: ~1,645/√(n−1) ≈ **0,039R** di Sharpe per trade su 1.792 (il `--futilita` del ledger annualizza a 252 anche sui trade: debito dichiarato) |
-| Ledger | voce in `docs/trial_ledger.json` con le fonti **prima** dell'esecuzione; `holdout_aperto` alla data dell'esecuzione |
+| Ledger | voce in `decisioni/trial_ledger.json` con le fonti **prima** dell'esecuzione; `holdout_aperto` alla data dell'esecuzione |
 
 ## 8. Bias noti, dichiarati prima
 

@@ -10,7 +10,7 @@ nota: "CLOSED per potenza, non refutata: lo scenario onesto del test held-out no
 
 > **Committata PRIMA di guardare qualunque risultato.** 2026-08-14. Fonte esterna:
 > *Pavel Kichev* (gestore algoritmico istituzionale), registrata in
-> [`fondamenti_tecnici/_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md). Spec, universo, finestre,
+> [`decisioni/_INTAKE.md`](../decisioni/_INTAKE.md). Spec, universo, finestre,
 > varianti, metriche e criteri di kill sono fissati qui **a priori**. Dopo i numeri non si cambiano;
 > un bug si documenta come *fix*; ogni variante extra è un trial in più nel DSR.
 > Motori: [`analysis/trend/export_d1.py`](../analysis/trend/export_d1.py) (dati),
@@ -23,7 +23,7 @@ nota: "CLOSED per potenza, non refutata: lo scenario onesto del test held-out no
 **Q1 — l'uscita a coda aperta.** *Tenendo fissa l'entrata*, un'uscita che lascia correre (trailing
 su media mobile, nessun target) batte le uscite che troncano (R fisso, uscita a tempo)?
 È la domanda dell'utente, parcheggiata il 2026-08-14 dopo il KILL dell'accoppiamento con l'entrata
-NXT ([DECISIONS.md](../DECISIONS.md)). Qui trova finalmente un veicolo dove l'uscita aperta è la
+NXT ([DECISIONS.md](../decisioni/DECISIONS.md)). Qui trova finalmente un veicolo dove l'uscita aperta è la
 **regola nativa**, non un innesto su un'entrata già morta.
 
 **Q2 — il "playground".** L'espettanza della *stessa* regola di trend è **ordinata secondo la
@@ -157,7 +157,7 @@ rilevato"*, **mai** come "il claim è falso".
 Il confronto fra uscite e il segno di E[R] sono riportati **separatamente pre-2020 e post-2020**.
 Regola di lettura fissata ora: **se il risultato esiste solo post-2020, non è un edge** — è
 regime-dipendenza, e vale il precedente ORB v2, dove esattamente questo pattern ha prodotto il NO-GO
-([DECISIONS.md](../DECISIONS.md) 2026-07-16) e ha aperto il forward tuttora in corso. È il terzo
+([DECISIONS.md](../decisioni/DECISIONS.md) 2026-07-16) e ha aperto il forward tuttora in corso. È il terzo
 incontro con lo stesso fenomeno (ORB, TSMOM per-asset, ora questo): l'obiettivo dichiarato è
 **capirlo**, non aggirarlo.
 

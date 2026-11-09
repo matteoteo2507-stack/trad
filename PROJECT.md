@@ -1,7 +1,7 @@
 # PROJECT — obiettivo, ruoli, struttura
 
-> **Aggiornato 2026-11-09** (reframing, [DECISIONS 2026-11-09](DECISIONS.md)). Le decisioni prese stanno in
-> [DECISIONS.md](DECISIONS.md): la voce piu' recente vince su tutto, anche su questo file.
+> **Aggiornato 2026-11-09** (reframing, [DECISIONS 2026-11-09](decisioni/DECISIONS.md)). Le decisioni prese stanno in
+> [DECISIONS.md](decisioni/DECISIONS.md): la voce piu' recente vince su tutto, anche su questo file.
 
 ## Obiettivo (comune ai soci)
 
@@ -63,7 +63,7 @@ La macrostruttura segue l'ordine del processo: entra, si smista, si studia, si d
 | `uscita/` | pacchetti per i soci |
 
 **La migrazione e' in corso**, una macro alla volta (DECISIONS 2026-11-09). Dove sta ogni cosa *oggi* lo dice il
-[README](README.md); il catasto completo e' nella [mappa](mappa/00-panoramica-trad.md).
+[README](README.md); il catasto completo e' nella [mappa](decisioni/mappa/00-panoramica-trad.md).
 
 ## Repo esterni di riferimento (audit del 2026-05-31)
 

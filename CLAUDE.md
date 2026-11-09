@@ -7,7 +7,7 @@ Progetto di ricerca quant di Matteo. Repo git autonomo, annidato nel vault `clau
 
 1. **Stato canonico** di una famiglia/strategia: frontmatter `stato` della sua pre-registrazione in
    `docs/*_PREREGISTRATION.md` (in migrazione — finché manca, vale il punto 2).
-2. **`DECISIONS.md`**: registro cronologico. **La voce più recente vince** su tutto ciò che la precede,
+2. **`decisioni/DECISIONS.md`**: registro cronologico. **La voce più recente vince** su tutto ciò che la precede,
    in qualunque file. Se un altro documento contraddice una voce più recente, è quel documento a
    essere vecchio: segnalalo, non mediare.
 3. **Metodo**: `docs/STRATEGY_LIFECYCLE.md` (il loop e i criteri di bocciatura) e
@@ -19,12 +19,12 @@ Non citare mai un risultato (R, win rate, N, p) senza la nota sorgente e la data
 
 ## Mappa e protocollo modifiche
 
-`mappa/` è la mappa funzionale del sistema, scritta per Matteo (che deve capire tutto il sistema
+`decisioni/mappa/` è la mappa funzionale del sistema, scritta per Matteo (che deve capire tutto il sistema
 anche a costo di rallentare). Ogni modifica di architettura — nuovo componente o modulo, regola o
 gate, cambio di input/output, file spostato o rimosso, nuovo agente o skill — va, **nella stessa
 sessione**:
-- riflessa nelle note di `mappa/` coinvolte;
-- registrata in `mappa/_modifiche.md` (data, cosa, perché, note toccate, impatto) con stato `da_rivedere`.
+- riflessa nelle note di `decisioni/mappa/` coinvolte;
+- registrata in `decisioni/mappa/_modifiche.md` (data, cosa, perché, note toccate, impatto) con stato `da_rivedere`.
 
 Correzioni che non cambiano cosa fa un componente (typo, refactor interno a parità di I/O) non
 vanno registrate.
@@ -32,8 +32,8 @@ vanno registrate.
 ## Convenzioni
 
 Codice: `CONVENTIONS.md`. Principi di trading: `TRADING_PRINCIPLES.md`. Concetti distillati:
-`fondamenti_tecnici/` (8 moduli `0X_*/principles.md`). Intake da fonti esterne: `fondamenti_tecnici/_INTAKE.md`.
-Materiale in arrivo dall'esterno: si appoggia in `Da distillare/`, che **si tiene il più possibile vuota**: serve a distillare,
+`fondamenti_tecnici/` (8 moduli `0X_*/principles.md`). Intake da fonti esterne: `decisioni/_INTAKE.md`.
+Materiale in arrivo dall'esterno: si appoggia in `decisioni/Da distillare/`, che **si tiene il più possibile vuota**: serve a distillare,
 non a immagazzinare, e uno smistamento chiuso in più sessioni non è una violazione (Matteo, 25/10). La regola completa
 sta nel suo `README.md`, che dice anche dove va cosa e dove si registra.
 Credenziali (`.env`, `*.session`) non si leggono, non si stampano, non si spostano.

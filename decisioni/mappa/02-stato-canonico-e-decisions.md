@@ -23,7 +23,7 @@ Risponde a due domande, ognuna con **una sola fonte**:
 
 Tutto il resto **punta** a queste due fonti e non le ripete:
 - `docs/README.md` elenca le pre-registrazioni con "cosa testa", senza stati né numeri;
-- `mappa/_cruscotto.base` mostra i frontmatter in una tabella di Obsidian, ed è una vista, non una copia;
+- `decisioni/mappa/_cruscotto.base` mostra i frontmatter in una tabella di Obsidian, ed è una vista, non una copia;
 - la memoria di Claude (`memoria/trad/MEMORY.md`) rimanda al frontmatter per stati e numeri;
 - i report in `docs/reviews/` sono fotografie datate: valgono per quel giorno, e se una voce
   successiva di `DECISIONS.md` li supera, è la voce a vincere.
@@ -32,7 +32,7 @@ Tutto il resto **punta** a queste due fonti e non le ripete:
 
 Il **27/09/2026** Claude "mescolava le versioni": rispondeva con il numero o lo stato sbagliato,
 perché la stessa informazione stava in molti posti che invecchiavano a velocità diverse. Esempi
-misurati quel giorno (`mappa/_modifiche.md`, voci del 27/09):
+misurati quel giorno (`decisioni/mappa/_modifiche.md`, voci del 27/09):
 - `docs/README.md` diceva **FADE ATTIVO** dieci giorni dopo il KILL del 17/09;
 - il copier era citato a **+0,194** in alcuni file e a **+0,127** in `DECISIONS.md` dopo la
   correzione del 18/09;
@@ -90,7 +90,7 @@ Non dà errori: chi legge il posto vecchio riceve una risposta plausibile e sbag
   GO, LEAD, NO-GO, NON DIMOSTRATO (dal 04/11), CLOSED; nei frontmatter compaiono anche KILL e IN REVISIONE (misura del 13/10; il 02/10 anche CONFERMATO, IN AVVIO e BOZZA). Non
   c'è un elenco dei valori ammessi, quindi un filtro del cruscotto su "LEAD o GO" non vedrebbe un
   CONFERMATO.
-- **Un secondo campo `stato`** in `docs/trial_ledger.json`, per famiglia, che per i segnali mentore
+- **Un secondo campo `stato`** in `decisioni/trial_ledger.json`, per famiglia, che per i segnali mentore
   diceva `GO` mentre il frontmatter diceva `CONFERMATO` (02/10; il 13/10 coincidono, `IN REVISIONE`; vedi [[01-ciclo-di-vita-e-gate]]).
 - **L'intestazione di `DECISIONS.md`** (righe 8-9) dice che il file rispecchia la memoria in
   `~/.claude/projects/.../memory/`. Dal 27/09 la memoria sta in `memoria/trad/` nel vault.

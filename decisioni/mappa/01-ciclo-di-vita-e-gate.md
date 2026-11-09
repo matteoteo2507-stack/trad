@@ -26,7 +26,7 @@ macchina di rifiuto attorno al modello"* (`.claude/agents/quant-gatekeeper.md`, 
 | **La legge** | `docs/STRATEGY_LIFECYCLE.md` | il loop, cosa conta come tentativo, i verdetti possibili, quando si uccide |
 | **La procedura di misura** | `docs/QUANT_REVIEW_PROTOCOL.md` | gli step di una review: gradi di libertà, fill ottenibili, metriche, costi, pre-mortem, verdetto |
 | **Il guardiano** | `.claude/agents/quant-gatekeeper.md` | l'agente che controlla G1 e G2 e **blocca**; non decide il verdetto, che dichiara Matteo |
-| **Il contatore** | `core/trial_ledger.py` + `docs/trial_ledger.json` | quanti tentativi ha speso ogni famiglia, e quale Sharpe servirebbe ancora. *Cos'è una famiglia*: un'ipotesi con il suo razionale; dal 08/10 due indicatori che misurano la **stessa grandezza** sono la stessa famiglia (`STRATEGY_LIFECYCLE.md` §3), così cambiare indicatore non ricarica il budget |
+| **Il contatore** | `core/trial_ledger.py` + `decisioni/trial_ledger.json` | quanti tentativi ha speso ogni famiglia, e quale Sharpe servirebbe ancora. *Cos'è una famiglia*: un'ipotesi con il suo razionale; dal 08/10 due indicatori che misurano la **stessa grandezza** sono la stessa famiglia (`STRATEGY_LIFECYCLE.md` §3), così cambiare indicatore non ricarica il budget |
 
 ## Perché esiste
 
@@ -44,7 +44,7 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
 
 1. **Ricerca e formulazione.** Un razionale economico (chi sta dall'altra parte, e perché continua
    a perdere) e un'ipotesi falsificabile. Le fonti esterne entrano solo da qui, passando da
-   `fondamenti_tecnici/_INTAKE.md` (§8). **Dal 03/10 questo passo ha un metodo**:
+   `decisioni/_INTAKE.md` (§8). **Dal 03/10 questo passo ha un metodo**:
    `fondamenti_tecnici/09_fonti_di_vantaggio/principles.md`. *Cosa fa*: prima di cercare candidati
    si sceglie la classe di vantaggio (premio, flusso forzato, errore comportamentale, informazione,
    velocità) e si risponde a nove domande in ordine (§4). *Input*: un'idea o una fonte. *Output*:
@@ -64,7 +64,7 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
    provenienza, controllo contro il repo, dati gia' guardati, misura fatta nell'hub, baseline previsto) da compilare
    prima delle nove domande del modulo 09; ci si ferma al primo campo che manca. Per la geopolitica chiede la misura
    del registro delle previsioni (Brier contro un riferimento, registro intero, criterio scritto prima). *Input*: un
-   file in `Da distillare/`. *Output*: respinta, parcheggiata, rimandata all'hub o accettata, ognuna col suo registro.
+   file in `decisioni/Da distillare/`. *Output*: respinta, parcheggiata, rimandata all'hub o accettata, ognuna col suo registro.
    *Come si rompe*: se un'idea dell'hub salta la scheda, i dati che Matteo ha gia' guardato nell'hub possono finire a
    fare da holdout; le ipotesi dall'hub hanno un budget loro di 1 pre-registrazione a trimestre (25/10), controllato dal
    contatore (`binario: "hub"`): se il campo manca, l'ipotesi finisce nella quota delle strategie. Il gatekeeper la controlla alla G1 (punto 10).
@@ -136,7 +136,7 @@ con file e riga per ogni rilievo.
 - **Input:** un'idea con razionale, i dati, il codice dello studio in `analysis/<famiglia>/`. Un'idea dall'hub entra con la scheda del §8.
 - **Output:** una pre-registrazione in `docs/`, un report in `docs/reviews/`, una voce in
   `DECISIONS.md`, lo stato nel frontmatter della pre-registrazione, una riga aggiornata in
-  `docs/trial_ledger.json`.
+  `decisioni/trial_ledger.json`.
 
 ## Stato atteso
 
@@ -144,7 +144,7 @@ con file e riga per ogni rilievo.
 |---|---|---|---|
 | Contatore coerente | nessun problema | `python -m core.trial_ledger --check` → exit 0 (il 02/10: exit 0) | Claude |
 | Ogni famiglia CLOSED ha il motivo di chiusura | sì, o `null` dichiarato | `--check` lo controlla; il 04/11: 12 su 14 assegnati, 2 non ricostruibili (meanrev_vol, seasonality_tom) | Claude |
-| Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `docs/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
+| Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `decisioni/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
 | Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `docs/*_PREREGISTRATION.md` e le voci del ledger | Claude |
 | Ogni ipotesi arrivata dall'hub ha la scheda d'ingresso | sì | la nota di intake in `docs/reviews/` riporta P1-P6 o il punto in cui si e' fermata (il 25/10: prima prova, insider + geopolitica, fermata a P5 e alla domanda 6) | Claude |

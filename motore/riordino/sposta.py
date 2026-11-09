@@ -38,7 +38,10 @@ INTOCCABILI = ("fondamenti_tecnici/_sorgenti/", "materiale_socio/", "Da distilla
                "prop-lab/results/", "signal_copier/samples/", "esercizio/signal_copier/samples/")
 # Registri storici: si aggiornano i link, non il testo.
 STORICI = ("DECISIONS.md", "mappa/_modifiche.md", "docs/reviews/", "docs/health/", "fondamenti_tecnici/_INTAKE.md",
-           "esercizio/sorveglianza/report/")
+           "esercizio/sorveglianza/report/", "decisioni/DECISIONS.md", "decisioni/mappa/_modifiche.md",
+           "decisioni/_INTAKE.md")
+# Codice congelato di uno studio chiuso: si sposta ma non si riscrive (si riproduce dal commit del verdetto).
+CONGELATI = ("analysis/ultima_mezzora/", "motore/riordino/")  # anche questo strumento: le sue costanti sono percorsi
 # File dell'hub che citano trad (solo documenti vivi; i registri dell'hub restano come sono).
 HUB_VIVI = ("CLAUDE.md", "README.md", "MEMORY.md", "mappa", "projects", "laboratorio", "global", "memoria/trad",
             ".claude")
@@ -122,10 +125,16 @@ def riscrivi_link(testo: str, src_vecchio: str, src_nuovo: str, base: str, spost
 def riscrivi_menzioni(testo: str, spost, prefisso: str = "") -> str:
     """Solo menzioni che sono chiaramente percorsi: un file con estensione, o una cartella seguita da '/'.
     La parola nuda (es. il nome del componente `signal_copier`, o "mql5" in una frase) non si tocca."""
+    # I wikilink si risolvono per nome in Obsidian: non si toccano (e possono puntare all'hub, non a trad).
+    pezzi = re.split(r"(\[\[[^\]]*\]\])", testo)
+    if len(pezzi) > 1:
+        return "".join(x if x.startswith("[[") else riscrivi_menzioni(x, spost, prefisso) for x in pezzi)
     for vecchio, nuovo in spost:
         v = re.escape(prefisso + vecchio)
         e_file = bool(PurePosixPath(vecchio).suffix)
-        dopo = r"(?=[\s`'\")\],;:|#]|$)" if e_file else r"(?=/)"
+        if e_file and "/" not in vecchio and not prefisso:
+            continue  # file della radice citato per nome (es. "DECISIONS.md"): e' un nome, non un percorso
+        dopo = r"(?=[\s`'\")\],;:|#]|\.(?!\w)|$)" if e_file else r"(?=/)"
         testo = re.sub(rf"(?<![\w/.\-]){v}{dopo}", lambda m: prefisso + nuovo, testo, flags=re.M)
     return testo
 
@@ -169,7 +178,9 @@ def main() -> int:
     scritture: dict[Path, str] = {}
     riepilogo: list[str] = []
     for f in tracciati:
-        if Path(f).suffix.lower() not in TESTO or e_storico(f, INTOCCABILI):
+        if Path(f).suffix.lower() not in TESTO or e_storico(f, CONGELATI):
+            continue
+        if e_storico(f, INTOCCABILI) and Path(f).name != "README.md":
             continue
         p = TRAD / f
         try:

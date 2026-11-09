@@ -10,7 +10,7 @@ trial: 0
 
 > **Revisione d'intake, non un test.** Costo: **0 trial**. Nessun dato nostro e' stato
 > aperto per rispondere a questa domanda. Lo stato canonico della fonte e' la riga in
-> [`_INTAKE.md`](../../fondamenti_tecnici/_INTAKE.md); qui stanno il ragionamento e il verdetto.
+> [`_INTAKE.md`](../../decisioni/_INTAKE.md); qui stanno il ragionamento e il verdetto.
 
 ## 1. Da dove nasce
 
@@ -76,7 +76,7 @@ verdetto ambiguo, default a NO-GO"*). Il motivo va scritto: **non verificabile**
 ## 5. Cosa resta in ogni caso (0 trial, non e' una strategia)
 
 **Il rendimento per ora del giorno sull'oro spot** (bid/ask M1 Dukascopy, gia' in casa: riga G1 del
-[backlog](../BACKLOG_RICERCA.md)) come **misura descrittiva**. Serve da baseline "noioso" per i
+[backlog](../../decisioni/BACKLOG_RICERCA.md)) come **misura descrittiva**. Serve da baseline "noioso" per i
 segnali sull'oro. Il random di [`oos_validation.py:151`](../../analysis/mentor_signals/oos_validation.py#L151)
 sceglie il lato 50/50: se il mentore compra piu' di quanto vende in un oro al rialzo, una parte del
 vantaggio e' deriva, e quel baseline non la toglie. ⚠️ E' una misura, non una regola: non si

@@ -144,4 +144,4 @@ Il dry-run su esempi offline scrive su `*_journal_dryrun.jsonl` (dati di test, s
 Questo dataset basta per **ottimizzare il risk management** e alimentare `/quant-review`
 (con ≥ 30-50 segnali). **Manca solo il PnL realizzato per gamba** (prezzi di fill): è una
 riconciliazione opzionale dallo storico MT5 per `ticket`, da aggiungere se/quando servirà
-la misura esatta in valuta. Vedi [DECISIONS.md](../../DECISIONS.md) e [PROJECT.md](../../PROJECT.md).
+la misura esatta in valuta. Vedi [DECISIONS.md](../../decisioni/DECISIONS.md) e [PROJECT.md](../../PROJECT.md).

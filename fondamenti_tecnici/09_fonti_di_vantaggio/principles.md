@@ -107,7 +107,7 @@ Solo dopo: [template di strategia](../../strategies/_template/README.md) e pre-r
 ### 5. Dove la griglia suggerisce di guardare — direzioni di lettura, non ipotesi
 
 Servono a scegliere **cosa leggere** nelle fonti del §6, non cosa testare. Ognuna deve entrare da
-[`_INTAKE.md`](../_INTAKE.md) con una fonte umana prima di diventare un'ipotesi.
+[`_INTAKE.md`](../../decisioni/_INTAKE.md) con una fonte umana prima di diventare un'ipotesi.
 
 - **Classe 2 nel nostro perimetro.** Flussi ancorati a un orario o a una data che i nostri dati vedono:
   - ribilanciamenti di fine mese o di fine trimestre dei fondi bilanciati (indici, obbligazionario);
@@ -152,7 +152,7 @@ campione.
 - [STRATEGY_LIFECYCLE §1](../../docs/STRATEGY_LIFECYCLE.md): questo modulo e' la fase RICERCA del loop; §8 per la provenienza.
 - [[04_quant_metodologia]] (verifica), [[05_portfolio_rischio]] (premi, VRP, asimmetria), [[03_regimi_macro]] (canali macro).
 - [[10_indicatori_tecnici]]: questa griglia applicata agli indicatori (quale grandezza misurano, chi paga). Le sue Fonti danno il livello di verifica di McLean-Pontiff 2016 e Baltussen et al. 2021 (abstract letto) e di Gao-Han-Li-Zhou 2018 (ancora solo sintesi del motore di ricerca).
-- [Mappa del ciclo di vita](../../mappa/01-ciclo-di-vita-e-gate.md), passo 1.
+- [Mappa del ciclo di vita](../../decisioni/mappa/01-ciclo-di-vita-e-gate.md), passo 1.
 - [Ricerca nel repo del 03/10](../../docs/reviews/ricerca_repo_2026-10-03.md): l'inventario che ha mostrato il buco.
 - Kichev ([insight_da_yt](../_sorgenti/insight_da_yt/kichev_first_principles_+_yush_orderflow_2026-08-14.md) §3-4): concorrenza e decadimento, la fonte umana gia' in casa piu' vicina a questa griglia.
 

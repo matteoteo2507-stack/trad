@@ -48,13 +48,13 @@ versionabile solo dopo lo smistamento, nella sua cartella e con le regole di que
 
 | Che cos'è | Dove va | Dove si registra |
 |---|---|---|
-| Fonte da cui imparare: PDF, trascrizione di un video, appunti, report di ricerca, codice di un indicatore o di un EA di terzi | [`fondamenti_tecnici/_sorgenti/`](../fondamenti_tecnici/_sorgenti/) | riga in [`_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md), stato `grezzo` |
-| Strategia da valutare | la fonte in `_sorgenti/`, la scheda in [`fondamenti_tecnici/strategie_candidate/`](../fondamenti_tecnici/strategie_candidate/) | riga in `_INTAKE.md` |
-| Materiale portato dai soci: export Telegram, export di conti, schermate | [`materiale_socio/`](../materiale_socio/)`<fonte>_<tipo>_<periodo>/` (fuori da git) | tabella di [`materiale_socio/README.md`](../materiale_socio/README.md); anche `_INTAKE.md` se è una fonte di segnali |
+| Fonte da cui imparare: PDF, trascrizione di un video, appunti, report di ricerca, codice di un indicatore o di un EA di terzi | [`fondamenti_tecnici/_sorgenti/`](../../fondamenti_tecnici/_sorgenti/) | riga in [`_INTAKE.md`](../_INTAKE.md), stato `grezzo` |
+| Strategia da valutare | la fonte in `_sorgenti/`, la scheda in [`fondamenti_tecnici/strategie_candidate/`](../../fondamenti_tecnici/strategie_candidate/) | riga in `_INTAKE.md` |
+| Materiale portato dai soci: export Telegram, export di conti, schermate | [`materiale_socio/`](../../materiale_socio/)`<fonte>_<tipo>_<periodo>/` (fuori da git) | tabella di [`materiale_socio/README.md`](../../materiale_socio/README.md); anche `_INTAKE.md` se è una fonte di segnali |
 | Export del canale del mentore | `_export_telegram/` (nome fisso, fuori da git) | controllo di copertura con `analysis/mentor_signals/coverage.py` |
 | Dati di prezzo (barre, tick) | `analysis/trading-bot-eval/data/` (fuori da git) | controllo con `python -m core.data_checks <file>` |
-| La nostra lettura di un materiale (verdetto, tabella dei claim) | nota in [`docs/reviews/`](../docs/reviews/) | voce in [`DECISIONS.md`](../DECISIONS.md) se chiude o apre qualcosa |
-| Ipotesi che nasce nell'hub (`claude-brain`: appunti di Matteo, studio, geopolitica) | la fonte in `fondamenti_tecnici/_sorgenti/`, la nostra lettura in `docs/reviews/` | scheda d'ingresso di [`STRATEGY_LIFECYCLE.md`](../docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub"; riga in `_INTAKE.md` |
+| La nostra lettura di un materiale (verdetto, tabella dei claim) | nota in [`docs/reviews/`](../../docs/reviews/) | voce in [`DECISIONS.md`](../DECISIONS.md) se chiude o apre qualcosa |
+| Ipotesi che nasce nell'hub (`claude-brain`: appunti di Matteo, studio, geopolitica) | la fonte in `fondamenti_tecnici/_sorgenti/`, la nostra lettura in `docs/reviews/` | scheda d'ingresso di [`STRATEGY_LIFECYCLE.md`](../../docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub"; riga in `_INTAKE.md` |
 | Materiale che non riguarda `trad` (università, altri progetti) | `inbox/` del vault `claude-brain`, fuori da questo repo | triage del vault |
 
 Se un tipo di materiale non è in tabella, si chiede a Matteo dove va e si aggiunge la riga.

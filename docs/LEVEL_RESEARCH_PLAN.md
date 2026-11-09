@@ -1,7 +1,7 @@
 # Ricerca livelli — Piano strategico operativo
 
 > **Stato:** piano attivo · 2026-07-05 · scope = **solo trading, qualità dei livelli**.
-> Nasce dalla chiusura del conf=2 fade ([DECISIONS.md 2026-07-05](../DECISIONS.md)): rifondare
+> Nasce dalla chiusura del conf=2 fade ([DECISIONS.md 2026-07-05](../decisioni/DECISIONS.md)): rifondare
 > **quali criteri trovano livelli dove il mercato reagisce davvero**, con rigore, prima di
 > ricostruire qualsiasi strategia.
 

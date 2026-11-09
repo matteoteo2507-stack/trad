@@ -2,7 +2,7 @@
 
 > **Sistema:** semiautomatico · **Stato:** active (Fase A) · **Habitat:** VPS Hetzner
 > **Quant review:** — · **Fondamenti:** [price action](../../fondamenti_tecnici/01_price_action/), [liquidità/order flow](../../fondamenti_tecnici/02_liquidita_orderflow/)
-> Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../DECISIONS.md)
+> Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../decisioni/DECISIONS.md)
 
 Strategia **semiautomatica** che monitora la prossimità del prezzo a livelli operativi
 identificati a mano dall'utente nel weekend (S/R + S/D + Fibonacci in confluenza).

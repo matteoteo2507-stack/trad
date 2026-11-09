@@ -7,7 +7,7 @@ nota: "Descrittivo, n = 22 segnali. Non e' un verdetto. Il setup non e' quello c
 ---
 # Mentore XAU in live sul PC del socio: la prima settimana con gli esiti
 
-> Il 28/09 il log del copier del socio non conteneva chiusure ([DECISIONS 2026-09-28](../../DECISIONS.md)).
+> Il 28/09 il log del copier del socio non conteneva chiusure ([DECISIONS 2026-09-28](../../decisioni/DECISIONS.md)).
 > Il 29/09 il socio ha esportato tutto lo storico del conto demo con uno script di sola lettura
 > ([export.py](../../materiale_socio/xat_conto_demo_socio_2026-09/export.py)). Questa nota dice cosa contiene, cosa
 > se ne puo' dire con 22 segnali e cosa manca per dirne di piu'.
@@ -71,7 +71,7 @@ gamba e' rimasta sul provvisorio.
 
 ## 4. Il gate anti-ritardo C5 non e' attivo su questo canale
 
-La C5 del 18/09 ([DECISIONS 2026-09-18 (4)](../../DECISIONS.md)) ha reso il gate da 20 pip
+La C5 del 18/09 ([DECISIONS 2026-09-18 (4)](../../decisioni/DECISIONS.md)) ha reso il gate da 20 pip
 **asimmetrico** perche', sul replay storico, entrare a mercato senza gate rendeva **−0,184** e col gate
 sul solo lato sfavorevole **+0,159** (293 segnali su 696). Il gate vive in `build_plan`. Il canale del
 mentore pero' passa da `build_market_plan`, che lo **spegne per costruzione**
@@ -132,7 +132,7 @@ lo stesso meccanismo di Gump, con lo stop che cade nel rumore. Senza i messaggi 
 
 ## 7. Cosa decide Matteo
 
-> **Deciso il 30/09 sera** ([DECISIONS](../../DECISIONS.md)): gate **(b)**, implementato; la raccolta
+> **Deciso il 30/09 sera** ([DECISIONS](../../decisioni/DECISIONS.md)): gate **(b)**, implementato; la raccolta
 > live su XAT passa al nostro copier. Resta aperto il punto 1 (da quando contare N = 60).
 
 1. **Questi dati contano per N = 60?** Il setup congelato (§2 della pre-registrazione: conto 5054470558,

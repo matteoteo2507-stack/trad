@@ -2,7 +2,7 @@
 
 > **Sistema:** automatico · **Stato:** **NO-GO / stub** · **Habitat:** (Python)
 > **Quant review:** [tsmom_jpy-2026-05-29](../../docs/reviews/tsmom_jpy-2026-05-29.md) → **NO-GO** (DSR≈0, dati insufficienti single-asset) · **Fondamenti:** [quant](../../fondamenti_tecnici/04_quant_metodologia/), [regimi/macro](../../fondamenti_tecnici/03_regimi_macro/)
-> Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../DECISIONS.md). Rivalutabile solo multi-asset.
+> Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../decisioni/DECISIONS.md). Rivalutabile solo multi-asset.
 
 Strategia automatica D1 su USDJPY (e altri major). Replica della logica di
 Moskowitz, Ooi, Pedersen (2012) "Time Series Momentum" *Journal of Financial

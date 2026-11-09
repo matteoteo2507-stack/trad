@@ -8,7 +8,7 @@ nota: "0 trial. Nessun rendimento calcolato sui nostri prezzi, nessun segnale CO
 ---
 # COT: il premio di copertura e' testabile a potenza utile? (passo 0, 0 trial)
 
-> Nato dal brainstorming del 03/10 ([DECISIONS 2026-10-03 (2)](../DECISIONS.md)): *"premi per il rischio
+> Nato dal brainstorming del 03/10 ([DECISIONS 2026-10-03 (2)](../decisioni/DECISIONS.md)): *"premi per il rischio
 > invece di tempismo"*. Tutte le regole di tempismo del repo sono cadute; l'unico vantaggio rimasto in A1
 > era il tempo in mercato. Il premio di copertura e' il candidato della letteratura che risponde a
 > quella domanda: chi si copre (produttori, consumatori) paga un premio a chi si prende il rischio.

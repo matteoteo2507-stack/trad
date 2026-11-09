@@ -47,7 +47,7 @@ from core.resolve_trade import OTTIMISTA, PESSIMISTA  # noqa: E402
 from core.verifiche import fattore_potenza  # noqa: E402
 
 PREREG = os.path.join(ROOT, "docs", "FOREXGUMP_LATENCY_PREREGISTRATION.md")
-LEDGER = os.path.join(ROOT, "docs", "trial_ledger.json")
+LEDGER = os.path.join(ROOT, "decisioni", "trial_ledger.json")
 TICK_DIR = os.path.join(DATA, "_duka_xau_tick_ore")
 FAMIGLIA = "forexgump_signals"
 SEED = 42
@@ -65,7 +65,7 @@ def guardia_ripresa(referto: str, data_voce: str) -> None:
     fam = {f["id"]: f for f in json.load(open(LEDGER, encoding="utf-8"))["famiglie"]}
     if FAMIGLIA not in fam or not fam[FAMIGLIA].get("holdout_aperto"):
         sys.exit("GUARDIA RIPRESA: l'holdout non risulta aperto: non c'e' nulla da riprendere, usa l'esecuzione normale.")
-    dec = open(os.path.join(ROOT, "DECISIONS.md"), encoding="utf-8").read().split("\n")
+    dec = open(os.path.join(ROOT, "decisioni", "DECISIONS.md"), encoding="utf-8").read().split("\n")
     voci = [r for r in dec if r.startswith(f"## {data_voce}") and "ripresa" in r.lower() and "gump" in r.lower()]
     if not voci:
         sys.exit(f"GUARDIA RIPRESA: nessuna voce '## {data_voce} ...' con 'ripresa' e 'Gump' in DECISIONS.md. Scrivila prima.")

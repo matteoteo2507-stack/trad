@@ -9,7 +9,7 @@
 > strategia. Il perche' e' il contenuto di questo documento.
 >
 > Riferimenti: [`NXT_FADE_FORWARD_PREREGISTRATION.md`](NXT_FADE_FORWARD_PREREGISTRATION.md) §11
-> (test azzerato) · [`STRATEGY_LIFECYCLE.md`](STRATEGY_LIFECYCLE.md) §3, §4 · [`DECISIONS.md`](../DECISIONS.md)
+> (test azzerato) · [`STRATEGY_LIFECYCLE.md`](STRATEGY_LIFECYCLE.md) §3, §4 · [`DECISIONS.md`](../decisioni/DECISIONS.md)
 > voci 2026-08-27 (2) e 2026-09-15.
 
 ---

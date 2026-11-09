@@ -7,7 +7,7 @@
 
 I **sistemi** (semiautomatico → automatico) sono uno **spettro di maturità esecutiva**, non
 etichette fisse: un sistema nasce semiauto (l'utente piazza) e gradua ad auto. Vedi
-[PROJECT.md](../PROJECT.md). Prima di promuovere/scartare qualcosa, leggi [DECISIONS.md](../DECISIONS.md).
+[PROJECT.md](../PROJECT.md). Prima di promuovere/scartare qualcosa, leggi [DECISIONS.md](../decisioni/DECISIONS.md).
 
 ---
 
@@ -71,7 +71,7 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 | Backlog automatiche | [ARCHITECTURE_v2 §backlog](../docs/ARCHITECTURE_v2.md) | TSMOM multiasset, Donchian, DXY z-score, mean-reversion, KAMA+ATR |
 
 > Le candidate e i [blueprints](../fondamenti_tecnici/blueprints/) restano in fondo alle priorità
-> finché la raccolta dati non è completa ([DECISIONS.md](../DECISIONS.md)). NB: OctoBot **dormiente**
+> finché la raccolta dati non è completa ([DECISIONS.md](../decisioni/DECISIONS.md)). NB: OctoBot **dormiente**
 > dal 2026-06-14, non più gating per le custom.
 
 ---

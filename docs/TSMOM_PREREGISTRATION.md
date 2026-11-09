@@ -9,7 +9,7 @@ nota: "Audit A5: NON MISURATO (potenza insufficiente). Resta chiuso ma non vale 
 # TSMOM multi-asset — PRE-REGISTRAZIONE (anti-p-hacking)
 
 > **Committata PRIMA di guardare i risultati.** 2026-07-08. Primo edge del pivot post-livelli
-> (384 trial null, [DECISIONS.md](../DECISIONS.md)). Contratto: spec, universo, varianti, metrica,
+> (384 trial null, [DECISIONS.md](../decisioni/DECISIONS.md)). Contratto: spec, universo, varianti, metrica,
 > **criteri di successo e kill-switch** sono fissati qui *a priori*. Dopo i numeri non si cambiano;
 > un bug si documenta come *fix*, non come nuova definizione; ogni variante extra = nuovo trial nel DSR.
 > Attua il piano `~/.claude/plans/…`. Riusa `core/quant_metrics.py`.

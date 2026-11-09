@@ -25,7 +25,7 @@ giustificata**, non a ottimizzare in fretta.
 2. **Evidence-gated.** Nessuna modifica live senza superare il gate quant (CI, `n_eff`,
    stratificazione per regime) → [[04_quant_metodologia]], `core/quant_metrics.py`.
 3. **Mappa dei modelli.** Ogni conclusione è *condizionata* (regime/asset/assunzioni), mai un
-   verdetto universale → [DECISIONS.md](../DECISIONS.md).
+   verdetto universale → [DECISIONS.md](../decisioni/DECISIONS.md).
 4. **Human-gated.** Go-live, ogni modifica a strategia/parametri, e la riconciliazione degli esiti
    passano da te. Gli agenti propongono e preparano; **tu approvi**.
 5. **Backtest = falsificazione, non scoperta.** Il forward reale guida; il backtest scarta.
@@ -112,8 +112,8 @@ fallimento opposto alla cattiva contestualizzazione). Ogni candidato entra da `_
 guadagna il posto passando dal gate, e va a competere con il baseline — non si adotta perché "nuovo".
 
 ## Collegamenti
-- [`fondamenti_tecnici/_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md) — porta del materiale (scouting).
-- [DECISIONS.md](../DECISIONS.md) — dottrina "mappa dei modelli" (conflitti).
+- [`decisioni/_INTAKE.md`](../decisioni/_INTAKE.md) — porta del materiale (scouting).
+- [DECISIONS.md](../decisioni/DECISIONS.md) — dottrina "mappa dei modelli" (conflitti).
 - [`analysis/trading-bot-eval/SIZING_SPEC.md`](../analysis/trading-bot-eval/SIZING_SPEC.md) — il sizing layer (stadio Sizing).
 - [`analysis/trading-bot-eval/LEVEL_ANALYZER_SPEC.md`](../analysis/trading-bot-eval/LEVEL_ANALYZER_SPEC.md) — il sistema pilota.
 - `core/quant_metrics.py` — il gate (DSR/PBO/Wilson/bootstrap/`n_eff`).

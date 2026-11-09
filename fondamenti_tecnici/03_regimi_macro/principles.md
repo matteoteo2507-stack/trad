@@ -38,7 +38,7 @@ tipo: concetti
 
 - **Walk-forward senza look-ahead**: a ogni giorno `t` la matrice viene ri-stimata SOLO sui dati esistenti prima di `t`, si deriva il segnale dallo stato corrente, si tiene la posizione un giorno e si misura il rendimento del giorno dopo. Si riportano Sharpe annualizzato e max drawdown. Questo è il dettaglio che separa un edge reale da un backtest gonfiato (la fonte lo chiama "YouTube backtest scam"). Nessun tuning.
 
-> **Caveat look-ahead (cross-repo).** Lo stesso errore che il walk-forward evita qui è già documentato per la regime timeline del repo: `../../data/regime_timeline_gbpusd.csv` ha la label calcolata sul *close del giorno stesso* → usarla SOLO con lag di 1 giorno per strategie intraday, altrimenti si gonfia l'edge. Vedi [`../../DECISIONS.md`](../../DECISIONS.md).
+> **Caveat look-ahead (cross-repo).** Lo stesso errore che il walk-forward evita qui è già documentato per la regime timeline del repo: `../../data/regime_timeline_gbpusd.csv` ha la label calcolata sul *close del giorno stesso* → usarla SOLO con lag di 1 giorno per strategie intraday, altrimenti si gonfia l'edge. Vedi [`../../DECISIONS.md`](../../decisioni/DECISIONS.md).
 
 ### 2. Framework Fed (defiantmentor)
 
@@ -129,11 +129,11 @@ shock attingendo alle riserve non è illimitata.
 - [[markov_regime_skill]] — blueprint implementativo della skill Markov (modulo `regime.py`, HMM, PineScript). STATO: idea non committata.
 - [[06_stock_selection]] — dettaglio archetipi azienda A/B/C/D per quadrante Fed (curato da altro agente).
 - Classificatore deterministico in repo: [`../../core/regime.py`](../../core/regime.py), documentato in [`../../TRADING_PRINCIPLES.md`](../../TRADING_PRINCIPLES.md) §1.
-- Caveat look-ahead della regime timeline: [`../../data/regime_timeline_gbpusd.csv`](../../data/regime_timeline_gbpusd.csv) e [`../../DECISIONS.md`](../../DECISIONS.md).
-- Priorità di workspace (agenti/strategie custom in fondo): [`../../DECISIONS.md`](../../DECISIONS.md).
+- Caveat look-ahead della regime timeline: [`../../data/regime_timeline_gbpusd.csv`](../../data/regime_timeline_gbpusd.csv) e [`../../DECISIONS.md`](../../decisioni/DECISIONS.md).
+- Priorità di workspace (agenti/strategie custom in fondo): [`../../DECISIONS.md`](../../decisioni/DECISIONS.md).
 
 ## Fonti
 
 - **"Markov regime skill for claude.txt"** — framework di Roan (@RohOnChain), installato come skill Claude Code da Lewis Jackson. Parte teorica: catena di Markov osservabile a 3 stati, matrice di transizione MLE, distribuzione stazionaria, Chapman-Kolmogorov, walk-forward senza look-ahead.
 - **"Stock conceps from defiantmentor.txt"** — solo la parte macro: framework Fed (2 leve, 4 quadranti), 5-metric market timing (empirico, era post-2008 QE), lettura degli indicatori macro leading (jobless claims, PPI, PMI). La parte di stock-selection è curata da un altro agente.
-- `_sorgenti/Appunti misti 2026-08-04.txt` — blocco 4 (outlook macro 4-ago-2026). Il grosso è uno **snapshot tattico datato** → **parcheggiato**, non distillato (obsoleto in settimane, e non deve contaminare il pilastro passivo). Estratti qui solo i **meccanismi durevoli** di §6: yen carry trade e chokepoint energetici come canali di trasmissione. Tracciato in [`_INTAKE.md`](../_INTAKE.md).
+- `_sorgenti/Appunti misti 2026-08-04.txt` — blocco 4 (outlook macro 4-ago-2026). Il grosso è uno **snapshot tattico datato** → **parcheggiato**, non distillato (obsoleto in settimane, e non deve contaminare il pilastro passivo). Estratti qui solo i **meccanismi durevoli** di §6: yen carry trade e chokepoint energetici come canali di trasmissione. Tracciato in [`_INTAKE.md`](../../decisioni/_INTAKE.md).

@@ -4,6 +4,13 @@
 allineati come se fossero uno solo, ma separati per protezione dagli errori (decisione di Matteo, 06/10/2026).
 Ogni modifica fatta da una parte si scrive qui, cosi' l'altra parte la riporta.
 
+## 2026-11-09 — fatte in trad (solo lato trad)
+
+**Percorso del contatore:** in trad il contatore e' passato da `docs/trial_ledger.json` a `decisioni/trial_ledger.json`
+(riordino di trad in cinque macro). Cambiati `config/gate.yaml` (`ledger: ../decisioni/trial_ledger.json`) e un
+commento di `lab/gate.py`. **Nel repo del socio non serve niente**: li' il cancello e' `attivo: false`. La radice di
+trad si ricava come prima (cartella sopra quella del contatore), quindi le pre-registrazioni si trovano ancora.
+
 ## 2026-10-25 — fatte in trad (da riportare nel repo del socio)
 
 **Intestazione di `config/prop_rules.yaml`**: diceva che il file contiene solo modelli parametrici, ma dal 07/10

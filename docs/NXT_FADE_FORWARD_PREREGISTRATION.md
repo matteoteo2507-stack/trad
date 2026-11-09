@@ -296,7 +296,7 @@ Indipendentemente dall'esecuzione, l'audit [`analysis/nxt/entry_fill_audit.py`](
 ha mostrato che il **+0,31R non è mai stato misurato**: `closure.py` concedeva il fill al prezzo
 `entry` anche sul **46,1%** dei setup in cui il mercato lo aveva già oltrepassato — un prezzo non
 ottenibile. Con qualunque esecuzione realmente ottenibile l'E[R] sta fra **−0,32 e −0,03**, mai
-vicino a +0,31. Vedi [`DECISIONS.md`](../DECISIONS.md), voce **2026-08-27 (2)**.
+vicino a +0,31. Vedi [`DECISIONS.md`](../decisioni/DECISIONS.md), voce **2026-08-27 (2)**.
 
 Un forward serve a validare fuori campione un numero misurato dentro campione. **Qui il numero
 dentro campione non esisteva**, quindi non c'era nulla da validare.

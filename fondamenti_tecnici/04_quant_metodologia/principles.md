@@ -39,7 +39,7 @@ sulla sua proprieta', con l'unita' del giorno o della barra: non produce trade e
 
 **La relazione.** Una strategia usa uno o piu' strumenti. Uno strumento validato **non** e' una strategia validata: la
 proprieta' puo' essere vera e la strategia non battere i costi. Lo stesso confine divide il lavoro: gli strumenti si
-studiano in `trad`, le strategie le testano i soci ([DECISIONS 2026-11-09](../../DECISIONS.md)).
+studiano in `trad`, le strategie le testano i soci ([DECISIONS 2026-11-09](../../decisioni/DECISIONS.md)).
 
 ### 1. Look-ahead bias
 
@@ -196,7 +196,7 @@ enumerano le cause plausibili, ordinandole per (probabilità × danno). Serve a 
 che il backtest non può nemmeno interrogare.
 
 **Esempio svolto — segnali mentore XAUUSD** (l'unico edge positivo misurato, vedi
-[`DECISIONS.md`](../../DECISIONS.md)). L'edge statistico è robusto (direzione ~2/3, stabile 6 mesi,
+[`DECISIONS.md`](../../decisioni/DECISIONS.md)). L'edge statistico è robusto (direzione ~2/3, stabile 6 mesi,
 tollerante al ritardo fino a 60'), ma le direzioni principali di rischio sono **quasi tutte
 non-statistiche**:
 
@@ -216,7 +216,7 @@ più forte — *"i modelli quantitativi e i dati storici non misurano il rischio
 profondità qualitativa/esperienza"*. Presa alla lettera è una **licenza a scavalcare un NO-GO
 pre-registrato con l'intuito**, cioè esattamente il fallimento contro cui è costruito questo repo
 (NXT, ricerca livelli, ORB). Il conflitto si risolve per **domini**, non eleggendo un vincitore
-(dettaglio in [`DECISIONS.md`](../../DECISIONS.md) §Mappa dei modelli):
+(dettaglio in [`DECISIONS.md`](../../decisioni/DECISIONS.md) §Mappa dei modelli):
 
 - Dominio della fonte: **scommessa discrezionale concentrata** su una singola entità analizzabile
   fondamentalmente. $n=1$, non esiste campione da backtestare, e l'edge **è** la profondità informativa.
@@ -292,10 +292,10 @@ strumenti correlati non sono indipendenti.
 - [`docs/QUANT_REVIEW_PROTOCOL.md`](../../docs/QUANT_REVIEW_PROTOCOL.md) — protocollo passo-passo che applica questa teoria.
 - [`.claude/agents/quant-gatekeeper.md`](../../.claude/agents/quant-gatekeeper.md) — il revisore: fa rispettare il protocollo ai gate G1 e G2. Dal 2026-10-13 è l'unico: il primo (`agents/quant_reviewer.md`) è ritirato.
 - Casi reali (entrambi **NO-GO**): [`docs/reviews/london_breakout-2026-05-29.md`](../../docs/reviews/london_breakout-2026-05-29.md) e [`docs/reviews/tsmom_jpy-2026-05-29.md`](../../docs/reviews/tsmom_jpy-2026-05-29.md). Per il London Breakout il cap era proprio il **look-ahead della regime timeline** (label same-day).
-- [`DECISIONS.md`](../../DECISIONS.md) — log delle decisioni GO/NO-GO derivanti dalle review.
+- [`DECISIONS.md`](../../decisioni/DECISIONS.md) — log delle decisioni GO/NO-GO derivanti dalle review.
 
 ## Fonti
 
 - `_sorgenti/Quant backtest notes.txt` (~95 righe) — distillato fedele: i 3 bias cardinali, esempi (Sharpe ~3→crollo per look-ahead; MA (7,12) IS positivo / OOS ~ -1.8; aerei WWII per survivorship), walk-forward, costi secondari, metafora "scena del crimine".
-- `_sorgenti/Nuove nozioni teoriche 2026-07-16.txt` (Quant Guild) — tasselli distillati qui: **CAGR come BS-test + Rule of 72** (§8) e il **caveat sul dominio del walk-forward** (valida persistenza edge, non predice tail; §4). Il grosso del file (portfolio/rischio/tail) è distillato in [[05_portfolio_rischio]]. Tracciato in [`_INTAKE.md`](../_INTAKE.md).
-- `_sorgenti/Appunti misti 2026-08-04.txt` — blocco 2 ("Understanding and Evaluating Risk in Financial Markets"). Distillato in §9: **direzioni principali di rischio / pre-mortem**, con esempio svolto sui segnali mentore. La tesi forte della fonte ("i modelli quantitativi non misurano il rischio forward") è **mappata come conflitto per domìni**, non assorbita: vedi [`DECISIONS.md`](../../DECISIONS.md) §Mappa dei modelli. Blocchi 1/3/4 dello stesso file: vedi [[08_asset_allocation_passiva]], [[03_regimi_macro]] e [`_INTAKE.md`](../_INTAKE.md).
+- `_sorgenti/Nuove nozioni teoriche 2026-07-16.txt` (Quant Guild) — tasselli distillati qui: **CAGR come BS-test + Rule of 72** (§8) e il **caveat sul dominio del walk-forward** (valida persistenza edge, non predice tail; §4). Il grosso del file (portfolio/rischio/tail) è distillato in [[05_portfolio_rischio]]. Tracciato in [`_INTAKE.md`](../../decisioni/_INTAKE.md).
+- `_sorgenti/Appunti misti 2026-08-04.txt` — blocco 2 ("Understanding and Evaluating Risk in Financial Markets"). Distillato in §9: **direzioni principali di rischio / pre-mortem**, con esempio svolto sui segnali mentore. La tesi forte della fonte ("i modelli quantitativi non misurano il rischio forward") è **mappata come conflitto per domìni**, non assorbita: vedi [`DECISIONS.md`](../../decisioni/DECISIONS.md) §Mappa dei modelli. Blocchi 1/3/4 dello stesso file: vedi [[08_asset_allocation_passiva]], [[03_regimi_macro]] e [`_INTAKE.md`](../../decisioni/_INTAKE.md).

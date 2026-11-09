@@ -2,7 +2,7 @@
 
 > **Sistema:** automatico · **Stato:** shadow run · **Habitat:** VPS Hetzner
 > **Quant review:** — (tuning futuro) · **Fondamenti:** [liquidità/order flow (POC, S/D)](../../fondamenti_tecnici/02_liquidita_orderflow/)
-> Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../DECISIONS.md)
+> Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../decisioni/DECISIONS.md)
 
 Versione **algoritmica** della strategia Confluence Levels. Gira **in parallelo**
 a quella manuale (vedi [`../confluence_levels/`](../confluence_levels/)): non

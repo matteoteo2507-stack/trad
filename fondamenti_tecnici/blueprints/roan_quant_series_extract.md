@@ -9,10 +9,10 @@ tipo: blueprint
 # Estratto — Roan (@RohOnChain) Quant Series + ecosistema
 
 > **STATO: reference/catalogo — NON un mandato a costruire** (regola anti-allucinazione, vedi
-> [README](../README.md) e [DECISIONS.md](../../DECISIONS.md): custom in fondo). Cattura **lossless**
+> [README](../README.md) e [DECISIONS.md](../../decisioni/DECISIONS.md): custom in fondo). Cattura **lossless**
 > di materiale utile, distillato **on-demand**. I 3 repo taggati ⭐WORKFLOW sono **INPUT del piano
 > di architettura del workflow** (il piano successivo), non roba da installare ora.
-> Tracciato in [`_INTAKE.md`](../_INTAKE.md).
+> Tracciato in [`_INTAKE.md`](../../decisioni/_INTAKE.md).
 
 > ⚠️ **Framing onesto.** I titoli "…To Win Every Single Trade" sono **marketing**; le tecniche
 > sotto sono **standard accademici reali** (Grinold-Kahn, ADF, IC/IR, PPO). Tutto va comunque
@@ -74,7 +74,7 @@ safety-check, VPS 24/7, `trades.csv` tax-ready, MACD da candele grezze) · `clau
 
 ## Conflitti annotati (mappa dei modelli)
 - "Backtest inutile/overfitting" (taglio di Roan/Quant Guild) **vs** la nostra disciplina
-  DSR/PBO/walk-forward: risolto in [DECISIONS.md → Mappa dei modelli](../../DECISIONS.md) (falsificare
+  DSR/PBO/walk-forward: risolto in [DECISIONS.md → Mappa dei modelli](../../decisioni/DECISIONS.md) (falsificare
   ≠ scoprire una regola curve-fit). Le sue tecniche (IC, ADF, Fundamental Law) **presuppongono** la
   misurazione → la sua "critica al backtest" è retorica, la prassi è quantitativa.
 
@@ -82,7 +82,7 @@ safety-check, VPS 24/7, `trades.csv` tax-ready, MACD da candele grezze) · `clau
 - [[markov_regime_skill]] — video 1 della serie, già nel workspace (con i 3 fix della 2.0).
 - [[04_quant_metodologia]] §7 — disjoint/stride sampling (assorbito da qui).
 - [[05_portfolio_rischio]] — ortogonalità / Fundamental Law / vol-targeting.
-- [`_INTAKE.md`](../_INTAKE.md) — stato di questa fonte (`parcheggiato/reference`).
+- [`_INTAKE.md`](../../decisioni/_INTAKE.md) — stato di questa fonte (`parcheggiato/reference`).
 
 ## Fonti
 - X/@RohOnChain — "Quant Series" (articoli long-form **gated**: titoli, metriche e substance presi

@@ -6,7 +6,7 @@
 > [ciclo di vita](STRATEGY_LIFECYCLE.md) — un difetto conclamato non si corregge, si rifa' da zero.
 >
 > Copre le voci **C3** (soglie di ritiro, §8bis) e **C5** (gate anti-ritardo) del
-> [backlog](BACKLOG_RICERCA.md). Motori:
+> [backlog](../decisioni/BACKLOG_RICERCA.md). Motori:
 > [`withdrawal_thresholds.py`](../analysis/mentor_signals/withdrawal_thresholds.py) ·
 > [`latency_gate.py`](../analysis/mentor_signals/latency_gate.py).
 

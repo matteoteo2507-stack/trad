@@ -176,7 +176,7 @@ Le pre-registrazioni esterne del 2026-Q4 sono 3 su 2-3 (`python -m core.trial_le
 
 ## 6. Verdetto: NON DIMOSTRATO, chiuso all'intake a 0 trial
 
-> **Deciso da Matteo il 13/10: strada A** ([DECISIONS 2026-10-13 (5)](../../DECISIONS.md)). Il socio ha letto questa
+> **Deciso da Matteo il 13/10: strada A** ([DECISIONS 2026-10-13 (5)](../../decisioni/DECISIONS.md)). Il socio ha letto questa
 > nota, concorda con i rilievi e aveva proposto la stessa chiusura. Sotto restano le due strade com'erano state
 > proposte l'11/10: la B e' una delle due condizioni di riapertura.
 
@@ -264,4 +264,4 @@ diversi, non riapre (DECISIONS 2026-10-13 (5)).
 
 - [indicatore_ob_bigbeluga_intake_2026-10-09](indicatore_ob_bigbeluga_intake_2026-10-09.md): l'indicatore di partenza.
 - [STRATEGY_LIFECYCLE](../STRATEGY_LIFECYCLE.md) §2, §3, §4bis, §7, §8; [QUANT_REVIEW_PROTOCOL](../QUANT_REVIEW_PROTOCOL.md) Step 3bis.
-- [_INTAKE](../../fondamenti_tecnici/_INTAKE.md), [materiale_socio](../../materiale_socio/README.md).
+- [_INTAKE](../../decisioni/_INTAKE.md), [materiale_socio](../../materiale_socio/README.md).

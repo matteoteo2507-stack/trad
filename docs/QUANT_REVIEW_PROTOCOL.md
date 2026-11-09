@@ -9,7 +9,7 @@ Output finale: report in `docs/reviews/<strategia>-<YYYY-MM-DD>.md` nel formato 
 
 > Fino al 2026-10-13 questo protocollo nominava un secondo revisore, il "Quant Reviewer"
 > (`agents/quant_reviewer.md`, invocato con `/quant-review`): ritirato, il revisore è uno solo
-> ([DECISIONS.md](../DECISIONS.md), voce 2026-10-13 (3)). Dove un documento più vecchio dice "Quant Reviewer" o
+> ([DECISIONS.md](../decisioni/DECISIONS.md), voce 2026-10-13 (3)). Dove un documento più vecchio dice "Quant Reviewer" o
 > `/quant-review`, si intende questo protocollo eseguito dal gatekeeper.
 
 ---
@@ -62,7 +62,7 @@ anche perturbando gli input, cioè **recita**, non analizza.
 ⚠️ Segnala esplicitamente se il test "conferma" qualcosa di **famoso e molto
 discusso** (crolli noti, regimi noti, titoli noti): è esattamente lo scenario in cui la
 memorizzazione somiglia a competenza. Il campo si registra in
-[`docs/trial_ledger.json`](trial_ledger.json) (`provenienza_ipotesi`).
+[`decisioni/trial_ledger.json`](../decisioni/trial_ledger.json) (`provenienza_ipotesi`).
 
 ## Step 3 — Raccogli i dati (15 min)
 

@@ -357,7 +357,7 @@ numeri vecchi non si citano piu'.
 ✅ **Dal 2026-09-19 non vive piu' solo qui** (era il debito E4: una regola scritta in
 un posto solo e' una regola che si applica solo se passi di li'). Ora sta anche in
 `STRATEGY_LIFECYCLE.md` §8, in `QUANT_REVIEW_PROTOCOL.md` Step 2, ed e' un **campo
-verificabile**: `provenienza_ipotesi` in `docs/trial_ledger.json`, controllato da
+verificabile**: `provenienza_ipotesi` in `decisioni/trial_ledger.json`, controllato da
 `python -m core.trial_ledger`. Stato attuale: **due famiglie senza provenienza
 dichiarata** (`meanrev_vol`, `london_breakout`) — annotazione finche' restano chiuse,
 **bloccante** se qualcuno propone di riaprirle.
@@ -421,7 +421,7 @@ python -m core.trial_ledger --futilita 250   # soglia di futilita' a n osservazi
 python -m core.trial_ledger --check          # exit 1 se budget/holdout/fonti non tornano
 ```
 
-Dato: [`docs/trial_ledger.json`](../../docs/trial_ledger.json) — ogni voce cita le
+Dato: [`decisioni/trial_ledger.json`](../../decisioni/trial_ledger.json) — ogni voce cita le
 **fonti nel repo** da cui il numero e' stato ricostruito. Se aggiungi o aggiorni una
 voce senza fonte, `--check` fallisce, ed e' voluto.
 

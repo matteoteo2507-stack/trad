@@ -16,7 +16,7 @@ views:
     name: "Comprensione"
     filters:
       and:
-        - file.inFolder("trad/mappa")
+        - file.inFolder("trad/decisioni/mappa")
         - note.tipo == "mappa"
     order:
       - file.name

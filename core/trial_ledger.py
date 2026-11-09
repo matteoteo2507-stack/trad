@@ -15,7 +15,7 @@ posto dove lo stato reale di un binario fosse registrato e verificabile.
 
 Cosa c'e' dentro
 ----------------
-`docs/trial_ledger.json` e' il dato; questo modulo lo legge, lo **verifica** e calcola la
+`decisioni/trial_ledger.json` e' il dato; questo modulo lo legge, lo **verifica** e calcola la
 soglia di futilita'. Ogni voce cita le **fonti nel repo** da cui il numero e' stato
 ricostruito: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante.
 
@@ -39,7 +39,7 @@ from typing import Optional
 __all__ = ["load", "famiglia", "futility_sharpe", "verifica", "tabella", "MOTIVI_CHIUSURA"]
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-LEDGER = os.path.join(ROOT, "docs", "trial_ledger.json")
+LEDGER = os.path.join(ROOT, "decisioni", "trial_ledger.json")
 
 Z95 = 1.6448536269514722          # Phi^-1(0.95)
 GAMMA = 0.5772156649              # Eulero-Mascheroni

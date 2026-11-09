@@ -9,6 +9,6 @@
 # Nel repo del socio, dove trad non c'e', si mette `attivo: false`: la pipeline gira come prima, ma niente
 # di quello che produce su dati reali conta come test per trad.
 attivo: true
-ledger: ../docs/trial_ledger.json     # relativo alla cartella prop-lab
+ledger: ../decisioni/trial_ledger.json     # relativo alla cartella prop-lab
 stati_chiusi: [CLOSED, KILL, NO-GO, NULL]
 stato_preregistrazione_richiesto: APPROVATA

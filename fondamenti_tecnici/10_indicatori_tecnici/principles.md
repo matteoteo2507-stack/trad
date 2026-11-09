@@ -31,7 +31,7 @@ creato: 2026-10-08
 - **Quarantena.** Nato da una ricerca web dell'08/10/2026 (richiesta di Matteo, in attesa dei dettagli
   dell'idea del socio su TradingView), integrata lo stesso giorno con la ricerca parallela via Comet. I due
   report grezzi sono in `_sorgenti/` ([paper e GitHub](../_sorgenti/comet_indicatori_paper_github_2026-10-08.md),
-  [X](../_sorgenti/comet_indicatori_X_2026-10-08.md)) e registrati in [`_INTAKE.md`](../_INTAKE.md).
+  [X](../_sorgenti/comet_indicatori_X_2026-10-08.md)) e registrati in [`_INTAKE.md`](../../decisioni/_INTAKE.md).
 - **Livelli di verifica** (colonna della sezione Fonti):
   - **T** testo letto da Claude;
   - **A** abstract letto da Claude sulla pagina dell'editore o di IDEAS;
@@ -44,8 +44,8 @@ creato: 2026-10-08
   ipotesi da testare**: classifica strumenti. Una regola dedotta da qui passa comunque da `_INTAKE.md` con
   una fonte umana datata.
 - **Regola approvata da Matteo l'08/10:** due indicatori della stessa grandezza sono una famiglia nel
-  contatore ([DECISIONS 2026-10-08 (3)](../../DECISIONS.md), [STRATEGY_LIFECYCLE](../../docs/STRATEGY_LIFECYCLE.md) §3 e §7).
-- **Le strade testabili** uscite da questa ricerca sono nel [backlog, sezione H](../../docs/BACKLOG_RICERCA.md): li'
+  contatore ([DECISIONS 2026-10-08 (3)](../../decisioni/DECISIONS.md), [STRATEGY_LIFECYCLE](../../docs/STRATEGY_LIFECYCLE.md) §3 e §7).
+- **Le strade testabili** uscite da questa ricerca sono nel [backlog, sezione H](../../decisioni/BACKLOG_RICERCA.md): li'
   vive il lavoro da fare, qui la conoscenza.
 
 ## Concetti
@@ -89,7 +89,7 @@ di questa ricerca con un "chi paga" esplicito e misurato su molti mercati**:
   azionari la strategia di solo segno rende +6,86% annuo con Sharpe 1,73 (Tab. 6), simile nei due
   sottocampioni (Tab. 5), **senza costi**. Il meccanismo: chi e' **corto di gamma** (market maker di
   opzioni, ETF a leva) deve coprirsi **nella direzione del movimento**. Chi paga: chi e' obbligato a
-  coprirsi. Perche' accetta: e' un vincolo, non un errore. Scheda completa: [backlog H1](../../docs/BACKLOG_RICERCA.md).
+  coprirsi. Perche' accetta: e' un vincolo, non un errore. Scheda completa: [backlog H1](../../decisioni/BACKLOG_RICERCA.md).
 - Gao, Han, Li, Zhou (2018, **S**): la prima mezz'ora predice l'ultima sull'ETF S&P 500, 1993-2013.
 - **E' una direzione di lettura, non un'ipotesi** ([[09_fonti_di_vantaggio]] §5): cade vicino al perimetro
   gia' chiuso dell'intraday sugli indici (ORB, London breakout), dove i costi hanno ucciso tutto, quindi la
@@ -264,7 +264,7 @@ Un indicatore non dimostrato non e' refutato ([[feedback_verdetto_con_la_forza_d
 | **Medie mobili, breakout di canale, momentum di serie storica** | 1 | **tenere, uno solo**: sono la stessa cosa | evidenza piu' lunga (1880-oggi) ma su panieri ampi a orizzonte di mesi; asset per asset debole (Huang 2020) |
 | **Oscillatore corto (RSI 2-3, z-score) come fornitura di liquidita'** | 2 | **tenere come ipotesi sulle azioni singole** (fuori perimetro) | Nagel 2012 sulle azioni; sugli indici il candidato A e' **CLOSED per potenza** (DECISIONS 2026-10-08 (4)) |
 | **Numeri tondi** | 5 | **tenere come meccanismo**, non come regola | Osler 2003 sul forex; nostro primo test sul Nasdaq NULL |
-| **Momentum dell'ultima mezz'ora** | tempo | **tenere come direzione di lettura** (classe 2) | Baltussen 2021: 60+ futures, chi paga = chi copre la gamma; accessibilita' da verificare per prima → [backlog H1](../../docs/BACKLOG_RICERCA.md). **Nostro test sugli indici USA dal 2020: CLOSED il 12/10** (DECISIONS 2026-10-12 (2)): l'effetto pubblicato non si ritrova sui CFD dopo il campione del paper |
+| **Momentum dell'ultima mezz'ora** | tempo | **tenere come direzione di lettura** (classe 2) | Baltussen 2021: 60+ futures, chi paga = chi copre la gamma; accessibilita' da verificare per prima → [backlog H1](../../decisioni/BACKLOG_RICERCA.md). **Nostro test sugli indici USA dal 2020: CLOSED il 12/10** (DECISIONS 2026-10-12 (2)): l'effetto pubblicato non si ritrova sui CFD dopo il campione del paper |
 | MACD, RSI 14 a 30/70, Stocastico, Williams %R, CCI | 2 (MACD: 1) | **cautela** (RD) | varianti delle grandezze 1-2; poche prove positive, senza correzione per i tentativi multipli |
 | Bollinger come segnale di ingresso | 2 | **cautela** | non battono il buy-and-hold dopo i costi (Lento 2007) |
 | Ichimoku | 1 | **cautela** | coi parametri standard funzionava nel primo sottoperiodo e non nel secondo; sul forex nessuna regola profittevole nemmeno variando i parametri (Deng et al. 2021) |
@@ -332,7 +332,7 @@ nel passato, filtro sul volume probabilmente vero per costruzione, stessa grande
 ## Collegamenti
 
 - [[09_fonti_di_vantaggio]] — la griglia "chi paga" che questo modulo applica agli strumenti.
-- [BACKLOG_RICERCA §H](../../docs/BACKLOG_RICERCA.md) — le strade testabili uscite da qui, con il primo passo di ciascuna.
+- [BACKLOG_RICERCA §H](../../decisioni/BACKLOG_RICERCA.md) — le strade testabili uscite da qui, con il primo passo di ciascuna.
 - [[04_quant_metodologia]] — filtraggio contro lisciamento (§1), overfitting e data snooping (§2).
 - [01_price_action](../01_price_action/principles.md) e [TRADING_PRINCIPLES](../../TRADING_PRINCIPLES.md) §4 — Fibonacci e livelli armonici.
 - [LEVEL_RESEARCH_PREREGISTRATION](../../docs/LEVEL_RESEARCH_PREREGISTRATION.md) — il confronto con livelli casuali.

@@ -3,7 +3,7 @@
 Documentazione tecnica che vive col codice. Aggiornato **2026-09-19**.
 
 > Per le **decisioni già prese** (GO/NO-GO, priorità, cose da non riproporre) il posto è
-> [`../DECISIONS.md`](../DECISIONS.md), non qui. Per i **concetti** distillati:
+> [`../DECISIONS.md`](../decisioni/DECISIONS.md), non qui. Per i **concetti** distillati:
 > [`../fondamenti_tecnici/`](../fondamenti_tecnici/).
 
 ## Metodo — come si fa ricerca qui
@@ -12,9 +12,9 @@ Documentazione tecnica che vive col codice. Aggiornato **2026-09-19**.
 |---|---|
 | [STRATEGY_LIFECYCLE.md](STRATEGY_LIFECYCLE.md) | **Il loop di ricerca**: gate, disciplina dei dati (train / holdout sigillato / forward), contabilità dei trial, rifinitura legittima vs p-hacking, **criteri di bocciatura**, riapertura di una famiglia CLOSED |
 | [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md) | Come si **misura** una strategia: dati richiesti, **Step 3bis = gate bloccante sull'ottenibilità dei fill**, DSR/PBO/walk-forward, tabella dei verdetti. È il *gate*, non la regola di stop |
-| [trial_ledger.json](trial_ledger.json) | **Contatore trial persistente** (LIFECYCLE §3): trial cumulati, round spesi, holdout, quota di pre-registrazioni esterne, **provenienza dell'ipotesi**. Si legge con `python -m core.trial_ledger`; `--check` esce **1** se un budget è sforato o se una voce non cita le sue fonti |
+| [trial_ledger.json](../decisioni/trial_ledger.json) | **Contatore trial persistente** (LIFECYCLE §3): trial cumulati, round spesi, holdout, quota di pre-registrazioni esterne, **provenienza dell'ipotesi**. Si legge con `python -m core.trial_ledger`; `--check` esce **1** se un budget è sforato o se una voce non cita le sue fonti |
 
-**Le regole di metodo sono anche codice** (debito E1-E6 estinto il 2026-09-19 — [DECISIONS 19/09](../DECISIONS.md)):
+**Le regole di metodo sono anche codice** (debito E1-E6 estinto il 2026-09-19 — [DECISIONS 19/09](../decisioni/DECISIONS.md)):
 
 | Modulo | Cosa fa rispettare |
 |---|---|
@@ -33,7 +33,7 @@ Ipotesi, metriche e soglie fissate **prima** di guardare i dati. Nessun test è 
 > **Lo stato di ogni pre-registrazione vive in un solo posto: il frontmatter del documento**
 > (`stato`, `aggiornato`, `decisione`, `metrica_corrente`). Questa tabella **non ripete** stati né
 > numeri — è il motivo per cui il 27/09 diceva ancora "FADE ATTIVO" dieci giorni dopo il KILL.
-> Vista d'insieme: [`../mappa/_cruscotto.base`](../mappa/_cruscotto.base) (Obsidian).
+> Vista d'insieme: [`../mappa/_cruscotto.base`](../decisioni/mappa/_cruscotto.base) (Obsidian).
 
 | Documento | Cosa testa |
 |---|---|
@@ -71,6 +71,6 @@ Ipotesi, metriche e soglie fissate **prima** di guardare i dati. Nessun test è 
 
 - `PROP_FIRM_CRITERIA.md` — matrice dei criteri pesati + shortlist verificata sui **rulebook
   primari**. **Rimandato**: la scelta della prop è a valle di un GO, e oggi non abbiamo nulla di
-  finanziabile ([DECISIONS.md](../DECISIONS.md), 2026-08-04).
+  finanziabile ([DECISIONS.md](../decisioni/DECISIONS.md), 2026-08-04).
 - `FISCAL_SUPERVISOR_SPEC.md` — subagent di allerta fiscale (checklist datata, non consulenza).
   **Da costruire per ultimo**, quando entrambi i pilastri hanno numeri veri.

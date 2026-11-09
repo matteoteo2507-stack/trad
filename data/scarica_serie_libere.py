@@ -2,7 +2,7 @@
 
 Perche' esiste
 --------------
-Righe G4 e G5 di [`docs/BACKLOG_RICERCA.md`](../docs/BACKLOG_RICERCA.md): due dati gratis,
+Righe G4 e G5 di [`decisioni/BACKLOG_RICERCA.md`](../docs/BACKLOG_RICERCA.md): due dati gratis,
 mai scaricati. Sbloccano D5 (regime da VIX) e D7 (affollamento / posizionamento) **come
 dati**, non come ipotesi: nessuna delle due ha ancora una pre-registrazione, e scaricarle
 non consuma trial.

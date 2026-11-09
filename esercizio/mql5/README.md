@@ -4,7 +4,7 @@ Questa cartella contiene gli **Expert Advisor** scritti in MQL5 nativo per girar
 terminale MetaTrader 5. Sostituiscono le strategie automatiche Python che dipendevano dalla
 libreria `MetaTrader5` + MT5 desktop sullo stesso host.
 
-**Perché MQL5 invece di Python**: è la decisione del pivot del 2026-05-05 ([DECISIONS.md](../../DECISIONS.md), voce
+**Perché MQL5 invece di Python**: è la decisione del pivot del 2026-05-05 ([DECISIONS.md](../../decisioni/DECISIONS.md), voce
 "Pivot architetturale"; architettura in [docs/ARCHITECTURE_v2.md](../../docs/ARCHITECTURE_v2.md)). In sintesi:
 
 - L'EA gira sul terminale ovunque sia installato (PC, MetaQuotes VPS).
@@ -85,7 +85,7 @@ Solo dopo il cross-check + 1-2 settimane demo locale → `Migrate to virtual ser
 
 ## `orb_nasdaq.mq5` — walk-forward ORB v2 su NAS100
 
-> ⚠️ **Superato: forward ORB spento il 2026-08-27** ([DECISIONS.md](../../DECISIONS.md), voce "ORB spento"). Stato
+> ⚠️ **Superato: forward ORB spento il 2026-08-27** ([DECISIONS.md](../../decisioni/DECISIONS.md), voce "ORB spento"). Stato
 > canonico: [`docs/OPENING_RANGE_PREREGISTRATION.md`](../../docs/OPENING_RANGE_PREREGISTRATION.md). Il testo sotto resta
 > come storia del port: non c'è un forward in corso.
 
@@ -178,7 +178,7 @@ In alto a destra del grafico apparirà l'icona dell'EA (nelle build moderne di M
 
 ## Backtest in Strategy Tester
 
-> ⚠️ **Esempio storico.** `london_breakout` è NO-GO dal 2026-05-30 ([DECISIONS.md](../../DECISIONS.md)): le attese qui
+> ⚠️ **Esempio storico.** `london_breakout` è NO-GO dal 2026-05-30 ([DECISIONS.md](../../decisioni/DECISIONS.md)): le attese qui
 > sotto (frequenza, win rate) sono quelle scritte prima della
 > [review](../../docs/reviews/london_breakout-2026-05-29.md), non una misura. La procedura vale per qualunque EA.
 

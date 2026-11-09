@@ -2,7 +2,7 @@
 
 > **Scritto e committato PRIMA di eseguire la misura.** 2026-08-14. Addendum a
 > [`fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md`](../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md)
-> e al NO-GO del 2026-07-17 ([DECISIONS.md](../DECISIONS.md)). Non è una nuova strategia:
+> e al NO-GO del 2026-07-17 ([DECISIONS.md](../decisioni/DECISIONS.md)). Non è una nuova strategia:
 > è una **rianalisi dei setup già eseguiti** che misura una quantità che il backtest originale
 > non registrava. Motore: [`analysis/nxt/excursion.py`](../analysis/nxt/excursion.py).
 

@@ -107,7 +107,7 @@ Diagnosi del §3: lo stop a 0.786 vive dentro il rumore del ritracciamento. Due 
 - [[04_quant_metodologia]] — bias, BS-test, gate; [[05_portfolio_rischio]] — momentum come edge ancorato.
 - [[project_level_research_v1_null_2026_07_06]] — precedente NULL sul meccanismo level-reaction.
 - [[project_veltrix_bot_eval_2026_06_12]] — nello stesso giro, claim gonfiati (53% vs 80-90%): "gli ex-soci lo usano" ≠ evidenza di profitto.
-- [`../_INTAKE.md`](../_INTAKE.md) — registro intake.
+- [`../_INTAKE.md`](../../decisioni/_INTAKE.md) — registro intake.
 
 ---
 

@@ -119,7 +119,7 @@ regime/timing**:
   aritmetico.
 
 Non è una contraddizione: è la stessa cosa vista in regimi diversi → caso scuola della dottrina
-[Mappa dei modelli](../../DECISIONS.md). Per noi: **reference, non operativo**. Fonte in
+[Mappa dei modelli](../../decisioni/DECISIONS.md). Per noi: **reference, non operativo**. Fonte in
 `_sorgenti/NOZIONI AGGIUNTIVE.txt`.
 
 ### Tail risk: regime-condizionale, non-predicibile → posizionamento per la sopravvivenza
@@ -214,5 +214,5 @@ L'obiettivo non è "battere il mercato" ma **targettizzare le esposizioni ai fat
 ## Fonti
 
 - `_sorgenti/quantportfolio managernotes.txt` (~righe 1-152) — note da video "Quant Portfolio Manager" (materiali Quant Guild / quantguild.com). La parte successiva del file (gamma exposure / Argo) non è inclusa in questo documento.
-- `_sorgenti/NOZIONI AGGIUNTIVE.txt` — trascrizioni Roman Paolucci / Quant Guild su **volatility drag** (derivazione $R_G \approx \bar R - \sigma^2/2$), **orthogonal return streams** (game-vs-players, SPY+DBMF, convexity sleeve) e **volatility risk premium** (IV vs RV, smile, vendi-vs-compra assicurazione). Stessa scuola del file sopra. Tracciato in [`_INTAKE.md`](../_INTAKE.md).
-- `_sorgenti/Nuove nozioni teoriche 2026-07-16.txt` — stessa scuola (Quant Guild). **Nuovi tasselli distillati qui**: decomposizione algebrica della varianza a 2 asset ($\mathrm{Var}(R_P)=W^2\sigma_A^2+Q^2\sigma_B^2+2WQ\rho\sigma_A\sigma_B$, sub-additività per $\rho<1$) e **tail risk regime-condizionale + survival-over-prediction** (fat tails, normale sottostima ~7.000×, GARCH(1,1)→coda ~1/12gg in alta-vol, hedge/optionality). Blocchi CAGR/EMH/CAPM del file = **rinforzo** di materiale già presente (non ri-distillato). Blocco 1 (market update semiconduttori) = **parcheggiato** (tattico). Tracciato in [`_INTAKE.md`](../_INTAKE.md).
+- `_sorgenti/NOZIONI AGGIUNTIVE.txt` — trascrizioni Roman Paolucci / Quant Guild su **volatility drag** (derivazione $R_G \approx \bar R - \sigma^2/2$), **orthogonal return streams** (game-vs-players, SPY+DBMF, convexity sleeve) e **volatility risk premium** (IV vs RV, smile, vendi-vs-compra assicurazione). Stessa scuola del file sopra. Tracciato in [`_INTAKE.md`](../../decisioni/_INTAKE.md).
+- `_sorgenti/Nuove nozioni teoriche 2026-07-16.txt` — stessa scuola (Quant Guild). **Nuovi tasselli distillati qui**: decomposizione algebrica della varianza a 2 asset ($\mathrm{Var}(R_P)=W^2\sigma_A^2+Q^2\sigma_B^2+2WQ\rho\sigma_A\sigma_B$, sub-additività per $\rho<1$) e **tail risk regime-condizionale + survival-over-prediction** (fat tails, normale sottostima ~7.000×, GARCH(1,1)→coda ~1/12gg in alta-vol, hedge/optionality). Blocchi CAGR/EMH/CAPM del file = **rinforzo** di materiale già presente (non ri-distillato). Blocco 1 (market update semiconduttori) = **parcheggiato** (tattico). Tracciato in [`_INTAKE.md`](../../decisioni/_INTAKE.md).

@@ -30,7 +30,7 @@ sfasata**.
 **H0**: la fase della griglia è irrilevante — .80/.20 reagisce come qualunque altra coppia di livelli
 con la stessa spaziatura.
 
-**Perché non è una riapertura della famiglia CLOSED.** La [ricerca livelli](../DECISIONS.md) (384
+**Perché non è una riapertura della famiglia CLOSED.** La [ricerca livelli](../decisioni/DECISIONS.md) (384
 trial, NULL) testava livelli **derivati dalla struttura** (OHLC, volume/POC, HTF, order block): "il
 mercato ricorda questo prezzo". Qui il meccanismo proposto è **diverso**: una griglia aritmetica fissa
 che non deriva da nulla, con razionale di **clustering degli ordini sui numeri tondi** — fenomeno

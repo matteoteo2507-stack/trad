@@ -12,7 +12,7 @@ metodo: spiegazione
 
 `trad` è il progetto di ricerca quant: un **metodo** per decidere se un'idea di trading merita
 capitale, gli **strumenti** che lo rendono misurabile, e i pochi **sistemi** che girano davvero. Dal 09/11 il suo ruolo fra i soci e' fornire la teoria e gli strumenti di lettura del prezzo su cui
-poggia la ricerca di edge, consegnati come pacchetti ([PROJECT](../PROJECT.md), DECISIONS 2026-11-09).
+poggia la ricerca di edge, consegnati come pacchetti ([PROJECT](../../PROJECT.md), DECISIONS 2026-11-09).
 Questa nota è la porta d'ingresso. Ogni componente ha la sua nota, scritta leggendo il codice
 vero. La mappa dell'hub (Sync, backup, filtri) è a parte: [[mappa/00-panoramica|panoramica dell'hub]].
 
@@ -70,7 +70,7 @@ postare l'entrata: il copier entra a mercato con un bracket provvisorio e, al me
 **riconcilia**. Il gate (20 pip, solo lato sfavorevole: `planner.late_gate`) agisce quindi in due
 punti: nel **planner** per i canali che postano tutto in un messaggio, e nell'**executor alla
 riconciliazione** per il mentore, dove se scatta **chiude le gambe a mercato**. Prima del 30/09 sul
-mentore non agiva mai ([review del 30/09](../docs/reviews/analysis_team_live_2026-09-30.md) §4).
+mentore non agiva mai ([review del 30/09](../../docs/reviews/analysis_team_live_2026-09-30.md) §4).
 
 ## Catasto: dove sta ogni cosa
 
@@ -80,24 +80,24 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 
 | Cartella / file | Cosa contiene | Componente | Stato |
 |---|---|---|---|
-| `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `docs/EARLY_STAGE_AUDIT_*`, `docs/BACKLOG_RICERCA.md`, `docs/trial_ledger.json` | il metodo | 1 · ciclo di vita e gate | vivo |
-| `docs/*_PREREGISTRATION.md`, `DECISIONS.md`, `docs/reviews/`, `docs/README.md`, `mappa/_cruscotto.base` | stato e storia delle decisioni | 2 · stato canonico | vivo |
+| `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `docs/EARLY_STAGE_AUDIT_*`, `decisioni/BACKLOG_RICERCA.md`, `decisioni/trial_ledger.json` | il metodo | 1 · ciclo di vita e gate | vivo |
+| `docs/*_PREREGISTRATION.md`, `decisioni/DECISIONS.md`, `docs/reviews/`, `docs/README.md`, `decisioni/mappa/_cruscotto.base` | stato e storia delle decisioni | 2 · stato canonico | vivo |
 | `esercizio/signal_copier/` (configurazione propria in `esercizio/signal_copier/config.yaml`), `docs/COPIER_EXECUTION_PREREGISTRATION.md` | copia dei segnali Telegram → MT5 | 3 · signal copier | vivo (demo dal 21/09) |
 | `esercizio/mql5/`, `esercizio/sorveglianza/` (script e `report/`), `docs/FADE_LIVE_AUDIT_PROTOCOL.md`; in `docs/health/` e `analysis/ops/` restano solo output e script degli audit di famiglia (vanno nel registro) | Expert Advisor e loro sorveglianza | 4 · EA e VPS | sorveglianza |
 | `analysis/mentor_signals/`, `analysis/{mentor_entries,mentor_momentum,export_dataset,probe_mt5}.py`, `docs/MENTOR_*`, `esercizio/prop/PROP_FIRM_CRITERIA.md`, `_export_telegram/` (dati, fuori da git) | misura del track record del mentore | 5 · segnali mentore | vivo |
 | `core/` (tranne runner, registry, regime, prop_sim, sizing), `core/tests/`, `config/risk.yaml` (letto da `core/risk_gate.py`) | primitive di misura e gate di rischio delle strategie meccaniche | 6 · primitive | vivo |
 | `analysis/trend/`, `docs/TREND_*`, `docs/B2_KICHEV_POTENZA.md` | uno studio completo, usato come esempio | 7 · anatomia di uno studio | vivo |
 | `analysis/{level_research,nxt,opening_range,meanrev,meanrev_indici,round_grid,extension,trading-bot-eval,veltrix,forexgump,ultima_mezzora,vtob_intake,pac_intake}/`, `strategies/{tsmom,meanrev,seasonality}/`, i restanti `docs/*` di famiglia (`LEVEL_RESEARCH_PLAN`, `NXT_EXIT_CEILING_ADDENDUM`, `B3_*`, `ULTIMA_MEZZORA_FATTIBILITA`) | tutte le famiglie studiate | 8 · catalogo delle famiglie | archivio: nessuna famiglia viva (stato di ciascuna: `python -m core.trial_ledger`); `vtob_intake` e' un intake in attesa della decisione di Matteo |
-| `Da distillare/` (cartella di arrivo, il più possibile vuota), `fondamenti_tecnici/`, `analysis/intake/`, `materiale_socio/`, `TRADING_PRINCIPLES.md` | conoscenza distillata e porta del materiale nuovo | 9 · conoscenza e intake | vivo |
+| `decisioni/Da distillare/` (cartella di arrivo, il più possibile vuota), `decisioni/_INTAKE.md`, `fondamenti_tecnici/`, `analysis/intake/`, `materiale_socio/`, `TRADING_PRINCIPLES.md` | conoscenza distillata e porta del materiale nuovo | 9 · conoscenza e intake | vivo |
 | `CLAUDE.md`, `.claude/`, `memoria/trad/` (nell'hub) | come lavora Claude su trad | 10 · Claude in trad | vivo (`agents/` e `skills/` alla radice ritirati il 13/10: nessuno strumento li caricava, nessun codice li leggeva) |
 | `pyproject.toml`, `conftest.py`, `tests/`, `config/markets.yaml`, `config/README.md`, `.env.example`, `.gitignore`, `data/`, `CONVENTIONS.md` | ambiente, test, configurazione | 11 · ambiente e test | vivo |
 | `core/{runner,registry}.py`, `strategies/{_base,_template,confluence_levels,confluence_auto}/`, `notifiers/`, `brokers/` (tranne mt5), `backtesters/`, `level_analyzer/`, `journals/`, `docs/{ARCHITECTURE_v2,STAGE2_TESTING_PLAN,OPERATIONAL_GUIDE,TRADING_WORKFLOW_DESIGN,PYTHON_FILES_MAP}.md` | l'architettura di maggio–giugno (pre e post pivot) | 12 · sistemi dormienti | dormiente |
 | `strategies/stock_selector/`, `core/regime.py`, `esercizio/pac/INVESTING_PILLAR_PLAN.md`, `docs/INVESTMENT_ALGO_DESIGN.md`, `stoxs picks/` | investimento passivo e il vecchio selettore di azioni | 13 · investing | archivio (selettore), vivo (PAC) |
 | `prop-lab/` (repo condiviso col socio VELTRIX, allineato con `prop-lab/CHANGELOG.md`), `core/prop_sim.py`, `core/sizing.py` | simulatore di challenge prop, pipeline di famiglia del socio, doppio binario della gestione del rischio | 14 · prop-lab e doppio binario | vivo (dal 06/10) |
-| `esercizio/README.md`, `uscita/README.md` | le prime due macro del riordino (09/11): cosa contengono e le loro regole; `uscita/` resta vuota fino al primo pacchetto | — | vivo |
+| `decisioni/README.md`, `esercizio/README.md`, `uscita/README.md` | le macro gia' migrate (09/11): `decisioni/` raccoglie in ordine di processo ingresso, smistamento, backlog, registro, contatore e mappa; ogni README dice cosa contiene la macro e le sue regole; `uscita/` resta vuota fino al primo pacchetto | — | vivo |
 | `motore/riordino/sposta.py` | lo strumento della migrazione: sposta file e cartelle e riscrive link, menzioni e import | — | vivo fino alla fine del riordino |
 | `README.md`, `PROJECT.md` | i file d'ingresso: obiettivo comune ai soci, ruoli, dove stanno le cose (riscritti il 09/11, DECISIONS 2026-11-09) | — | vivo |
-| `mappa/` | questa mappa, il cruscotto e il registro modifiche di trad | — | vivo |
+| `decisioni/mappa/` | questa mappa, il cruscotto e il registro modifiche di trad | — | vivo |
 | `backtest_results/`, `logs/`, `output/`, `socio-trading-bot/` | risultati e materiale locale, quasi tutto fuori da git | — | dati |
 
 **Moduli condivisi tra componenti:** `brokers/mt5.py` (3 e 4), `notifiers/_pip_table.py` (3 e 5),
@@ -133,7 +133,7 @@ un branch e tu lo trovi).
 | 14 | prop-lab e doppio binario | il simulatore prop e la regola dei due binari, arrivati il 06/10: [[14-prop-lab-e-doppio-binario]] | spiegazione |
 
 **A che punto sei** non si scrive qui: sta nel campo `compreso` del frontmatter di ogni nota, e il
-cruscotto (`mappa/_cruscotto.base`, vista *Comprensione*) lo raccoglie da solo.
+cruscotto (`decisioni/mappa/_cruscotto.base`, vista *Comprensione*) lo raccoglie da solo.
 
 ## Con parole mie
 

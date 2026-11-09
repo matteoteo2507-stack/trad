@@ -8,7 +8,7 @@ nota: "Passi a 0 trial prima della G1. Fatti il 09/10: famiglia (1, nuova), cost
 # H1, momentum dell'ultima mezz'ora: fattibilita' prima della pre-registrazione
 
 > I passi che si fanno **senza guardare nessun rendimento**, per sapere se H1 merita una pre-registrazione.
-> La scheda della strada (fonte, meccanismo, domande aperte) e' nel [backlog, sezione H](BACKLOG_RICERCA.md); qui
+> La scheda della strada (fonte, meccanismo, domande aperte) e' nel [backlog, sezione H](../decisioni/BACKLOG_RICERCA.md); qui
 > stanno i numeri misurati. Script: [`analysis/ultima_mezzora/spread_mt5.py`](../analysis/ultima_mezzora/spread_mt5.py).
 
 ## Passo 2 — Costi (accessibilita'): SOTTO la soglia

@@ -3,7 +3,7 @@
 > **Stato: ESECUTIVO.** La categoria A (input personali) è stata chiusa il 2026-08-04/07 e il piano
 > operativo è in **§0**. Il resto del documento resta come traccia del percorso: architettura (§1),
 > glide-path (§2), guardrail del quant (§3), ricerca esecutiva (§5b). Origine: pivot dello Stock
-> Selector ([DECISIONS.md 2026-06-02](../../DECISIONS.md),
+> Selector ([DECISIONS.md 2026-06-02](../../decisioni/DECISIONS.md),
 > [INVESTMENT_ALGO_DESIGN.md](../../docs/INVESTMENT_ALGO_DESIGN.md)) — niente algoritmo custom, niente
 > selezione titoli, niente market timing.
 
@@ -40,7 +40,7 @@ prescindere da come va, e non dipende più dalla disciplina mese per mese.
 | **Strumento** | **VWCE** — Vanguard FTSE All-World UCITS ETF (USD) **Accumulating**, `IE00BK5BQT80`, **OCF 0,14%** (factsheet Vanguard, dati al 31/08/2026; il piano del 07/08 riportava 0,22%, già superato), domicilio Irlanda. **Verificato presente nel PAC dell'app** |
 | **Rata** | **100 €/mese**, il **2 del mese**, mai spostata |
 | **Esecuzione** | Sede: "borsa europea" nell'app (2026-10-09); il piano assumeva XETRA (09:00-17:30), non confermato. Frazionario → i €100 entrano interi ogni mese (verificato sull'ordine di ottobre: €150 → 0,869061 quote) |
-| **Partenza** | **Avviato il 2026-10-09**: ottobre con un ordine manuale, piano automatico dal **2 novembre 2026**. Prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../../DECISIONS.md)) |
+| **Partenza** | **Avviato il 2026-10-09**: ottobre con un ordine manuale, piano automatico dal **2 novembre 2026**. Prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../../decisioni/DECISIONS.md)) |
 | **Ribilancio** | **Nessuno.** Un solo strumento, 100% azionario, fase 1: non c'è niente da ribilanciare |
 
 ### Regola dei top-up
@@ -170,7 +170,7 @@ Numeri e strumenti esatti = da definire DOPO lo studio (§4).
 
 ## 3b. Terzo secchio (sleeve trend/managed-futures) — DECISIONE: rimandato a fase 2-3
 
-> Chiusura 2026-06-14 ([DECISIONS.md](../../DECISIONS.md)). Idea emersa dal materiale
+> Chiusura 2026-06-14 ([DECISIONS.md](../../decisioni/DECISIONS.md)). Idea emersa dal materiale
 > volatility-drag / orthogonal-streams ([05_portfolio_rischio](../../fondamenti_tecnici/05_portfolio_rischio/principles.md)):
 > aggiungere uno *sleeve* trend-following / managed-futures (tipo DBMF/KMLM) come terzo secchio,
 > orthogonale all'equity, per **ridurre il drawdown** → meno volatility drag → meglio il geometrico.

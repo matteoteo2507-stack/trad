@@ -8,18 +8,18 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 
 1. **Concetti / reference** (`01_…` → `09_…`) — teoria e fondamenti **stabili**, riferimento.
 2. **[blueprints/](blueprints/)** — sistemi *buildabili* (agenti/skill/infra). Sono **idee NON
-   committate**: materiale di riferimento, **non** un mandato a costruire. Vedi [DECISIONS.md](../DECISIONS.md).
+   committate**: materiale di riferimento, **non** un mandato a costruire. Vedi [DECISIONS.md](../decisioni/DECISIONS.md).
 3. **[strategie_candidate/](strategie_candidate/)** — spec di strategie tradabili pronte a essere
    promosse a `strategies/` o `esercizio/mql5/` **se** prioritizzate.
 
 > **Regola anti-allucinazione.** Questa cartella raccoglie *materiale*, non *decisioni*. Prima di
-> proporre "costruiamo X" da un blueprint o una candidata, controlla [DECISIONS.md](../DECISIONS.md):
+> proporre "costruiamo X" da un blueprint o una candidata, controlla [DECISIONS.md](../decisioni/DECISIONS.md):
 > la priorità 2026-05-30 mette le strategie/agenti custom **per ultime**. (OctoBot, un tempo #1, è
 > **dormiente** dal 2026-06-14 — traccia crypto in stand-by.)
 
 > **Porta d'ingresso del materiale nuovo.** Ogni fonte grezza in entrata passa dal registro
-> [`_INTAKE.md`](_INTAKE.md) (cattura lossless → triage → distilla/parcheggia). I conflitti tra
-> teorie si gestiscono con la **mappa dei modelli** ([DECISIONS.md](../DECISIONS.md)): condizioni di
+> [`_INTAKE.md`](../decisioni/_INTAKE.md) (cattura lossless → triage → distilla/parcheggia). I conflitti tra
+> teorie si gestiscono con la **mappa dei modelli** ([DECISIONS.md](../decisioni/DECISIONS.md)): condizioni di
 > validità esplicite, nessun "X batte Y".
 
 ## Indice
@@ -62,7 +62,7 @@ Ogni file ha frontmatter (`titolo`, `fonti`, `tipo`) e sezioni: blockquote di si
 ## Collegamenti chiave nel repo
 
 - Costituzione operativa: [TRADING_PRINCIPLES.md](../TRADING_PRINCIPLES.md) (regole già attive su regimi, S/R, S/D, Fib, POC)
-- Decisioni già prese: [DECISIONS.md](../DECISIONS.md)
+- Decisioni già prese: [DECISIONS.md](../decisioni/DECISIONS.md)
 - Strategie (indice): [strategies/README.md](../strategies/README.md)
 - Quant: [core/quant_metrics.py](../core/quant_metrics.py), [docs/QUANT_REVIEW_PROTOCOL.md](../docs/QUANT_REVIEW_PROTOCOL.md)
 - Regime engine: [core/regime.py](../core/regime.py)

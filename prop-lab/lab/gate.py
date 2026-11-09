@@ -1,7 +1,7 @@
 """Cancello verso il contatore dei tentativi di trad (aggiunta trad, 08/10/2026).
 
 Perche' esiste: prima di questo modulo `prop-lab` registrava i suoi tentativi solo in `results/registry.sqlite`, che
-il contatore ufficiale di trad (`docs/trial_ledger.json`, letto da `core/trial_ledger.py`) non vedeva. Un giro su
+il contatore ufficiale di trad (`decisioni/trial_ledger.json`, letto da `core/trial_ledger.py`) non vedeva. Un giro su
 dati reali spendeva 204 tentativi e apriva il fuori campione senza che nessun controllo se ne accorgesse, e niente
 impediva di riaprirlo. Qui:
 
