@@ -647,6 +647,6 @@ Ordine di lettura suggerito:
 1. [docs/ARCHITECTURE_v2.md](ARCHITECTURE_v2.md) — visione d'insieme.
 2. Questo file (`OPERATIONAL_GUIDE.md`) — step concreti.
 3. [strategies/confluence_levels/README.md](../strategies/confluence_levels/README.md) — dettagli Confluence.
-4. [mql5/README.md](../mql5/README.md) — dettagli EA.
+4. [esercizio/mql5/README.md](../esercizio/mql5/README.md) — dettagli EA.
 
 Se ci sono dubbi o problemi specifici (errori del runner, EA che non parte, sync fallito), apri Claude Code e chiedi diretto. Tutto il contesto è nei plan file e nella memoria persistente.

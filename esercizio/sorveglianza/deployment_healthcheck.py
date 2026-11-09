@@ -10,7 +10,7 @@ Questo script risponde a quattro domande in dieci secondi:
   3. Ci sono strumenti FUORI universo che stanno operando?
   4. Il rischio effettivo per trade e' quello atteso?
 
-Uso: python analysis/ops/deployment_healthcheck.py [giorni]   (default 30)
+Uso: python esercizio/sorveglianza/deployment_healthcheck.py [giorni]   (default 30)
 """
 from __future__ import annotations
 

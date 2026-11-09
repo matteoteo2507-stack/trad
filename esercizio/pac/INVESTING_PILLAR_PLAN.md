@@ -3,8 +3,8 @@
 > **Stato: ESECUTIVO.** La categoria A (input personali) è stata chiusa il 2026-08-04/07 e il piano
 > operativo è in **§0**. Il resto del documento resta come traccia del percorso: architettura (§1),
 > glide-path (§2), guardrail del quant (§3), ricerca esecutiva (§5b). Origine: pivot dello Stock
-> Selector ([DECISIONS.md 2026-06-02](../DECISIONS.md),
-> [INVESTMENT_ALGO_DESIGN.md](INVESTMENT_ALGO_DESIGN.md)) — niente algoritmo custom, niente
+> Selector ([DECISIONS.md 2026-06-02](../../DECISIONS.md),
+> [INVESTMENT_ALGO_DESIGN.md](../../docs/INVESTMENT_ALGO_DESIGN.md)) — niente algoritmo custom, niente
 > selezione titoli, niente market timing.
 
 ---
@@ -40,7 +40,7 @@ prescindere da come va, e non dipende più dalla disciplina mese per mese.
 | **Strumento** | **VWCE** — Vanguard FTSE All-World UCITS ETF (USD) **Accumulating**, `IE00BK5BQT80`, **OCF 0,14%** (factsheet Vanguard, dati al 31/08/2026; il piano del 07/08 riportava 0,22%, già superato), domicilio Irlanda. **Verificato presente nel PAC dell'app** |
 | **Rata** | **100 €/mese**, il **2 del mese**, mai spostata |
 | **Esecuzione** | Sede: "borsa europea" nell'app (2026-10-09); il piano assumeva XETRA (09:00-17:30), non confermato. Frazionario → i €100 entrano interi ogni mese (verificato sull'ordine di ottobre: €150 → 0,869061 quote) |
-| **Partenza** | **Avviato il 2026-10-09**: ottobre con un ordine manuale, piano automatico dal **2 novembre 2026**. Prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../DECISIONS.md)) |
+| **Partenza** | **Avviato il 2026-10-09**: ottobre con un ordine manuale, piano automatico dal **2 novembre 2026**. Prevista a fine settembre, slittata per fissare il budget dopo l'ultima rata dello stipendio. Ciclo ott 2026 – set 2027 = 12 rate = €1.200; la revisione resta a settembre ([DECISIONS 2026-10-09](../../DECISIONS.md)) |
 | **Ribilancio** | **Nessuno.** Un solo strumento, 100% azionario, fase 1: non c'è niente da ribilanciare |
 
 ### Regola dei top-up
@@ -70,7 +70,7 @@ preferibilmente come **% del netto** così si auto-aggiorna. ⚠️ **La laurea 
 reddito sale ma salgono anche le spese (vita da solo). Il trigger corretto è **6-12 mesi dopo che la
 nuova struttura di spesa si è stabilizzata**, quando esistono dati veri sul surplus.
 
-**Da portare alla revisione di settembre 2027** (intake del 13/10, [scheda](../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md) §6-7):
+**Da portare alla revisione di settembre 2027** (intake del 13/10, [scheda](../../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md) §6-7):
 - alzare la rata a ogni aumento di reddito, prima che la spesa si adatti: come si concilia con l'attesa di
   6-12 mesi dopo la laurea;
 - prima del primo contratto di lavoro: contributo del datore al fondo pensione di categoria e limite di
@@ -83,7 +83,7 @@ nuova struttura di spesa si è stabilizzata**, quando esistono dati veri sul sur
 ### Cosa NON fare nei primi due anni
 
 - Non cambiare ETF, non aggiungerne un secondo.
-- Non fermare i versamenti in un ribasso — è esattamente quando il DCA sta lavorando ([08 §Decenni persi](../fondamenti_tecnici/08_asset_allocation_passiva/principles.md): in accumulo il drawdown è un alleato).
+- Non fermare i versamenti in un ribasso — è esattamente quando il DCA sta lavorando ([08 §Decenni persi](../../fondamenti_tecnici/08_asset_allocation_passiva/principles.md): in accumulo il drawdown è un alleato).
 - Non guardare il saldo più della revisione annuale.
 - Non spostare i soldi su "opportunità migliori".
 - Non alzare la rata alla laurea (vedi sopra).
@@ -115,7 +115,7 @@ post-laurea arriverà prima. **Fino ad allora: fase 1, nessun bond, nessun glide
 > esecuzione, **bollo 0,2%/anno**. Nessuno dei tre si evita cambiando broker — il bollo è una tassa,
 > non una tariffa. Dal taglio dell'OCF il **bollo è il costo annuo più grande** (OCF + bollo ≈ 0,34%/anno, spread a parte),
 > e il foglio costi del broker non lo mostra.
-> Quanto pesano OCF e bollo su 40 anni: conto nella [scheda del 13/10](../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md) §4.
+> Quanto pesano OCF e bollo su 40 anni: conto nella [scheda del 13/10](../../fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/financial_freedom_101.md) §4.
 
 ---
 
@@ -154,7 +154,7 @@ Numeri e strumenti esatti = da definire DOPO lo studio (§4).
 ## 3. Cosa propone il QUANT (guardrail)
 
 - **Default = DCA puro su indice ampio.** È il benchmark che battere è dimostrato difficile
-  (vedi [INVESTMENT_ALGO_DESIGN.md](INVESTMENT_ALGO_DESIGN.md)). Non reintrodurre
+  (vedi [INVESTMENT_ALGO_DESIGN.md](../../docs/INVESTMENT_ALGO_DESIGN.md)). Non reintrodurre
   selezione/timing nel Secchio B senza un edge **provato** — non c'è.
 - **Glide path per regole, non reattivo.** Decidi le soglie a priori; non "sento che il mercato…".
 - **Costi e fiscalità sono l'unico vero edge controllabile.** TER basso + pochi ribilanci battono
@@ -170,8 +170,8 @@ Numeri e strumenti esatti = da definire DOPO lo studio (§4).
 
 ## 3b. Terzo secchio (sleeve trend/managed-futures) — DECISIONE: rimandato a fase 2-3
 
-> Chiusura 2026-06-14 ([DECISIONS.md](../DECISIONS.md)). Idea emersa dal materiale
-> volatility-drag / orthogonal-streams ([05_portfolio_rischio](../fondamenti_tecnici/05_portfolio_rischio/principles.md)):
+> Chiusura 2026-06-14 ([DECISIONS.md](../../DECISIONS.md)). Idea emersa dal materiale
+> volatility-drag / orthogonal-streams ([05_portfolio_rischio](../../fondamenti_tecnici/05_portfolio_rischio/principles.md)):
 > aggiungere uno *sleeve* trend-following / managed-futures (tipo DBMF/KMLM) come terzo secchio,
 > orthogonale all'equity, per **ridurre il drawdown** → meno volatility drag → meglio il geometrico.
 
@@ -186,7 +186,7 @@ accumulo. Perché:
    scrivi "bond/cash", il drag-insight **raffina** la scelta: una parte di quella quota difensiva
    può essere uno sleeve **trend/managed-futures** invece dei (o accanto ai) bond — perché i **bond
    lunghi hanno fallito la diversificazione nel 2022** (correlazione salita coi tassi, §3 e
-   [08](../fondamenti_tecnici/08_asset_allocation_passiva/principles.md)), mentre il trend-following
+   [08](../../fondamenti_tecnici/08_asset_allocation_passiva/principles.md)), mentre il trend-following
    fu orthogonale/positivo. **Questo è l'unico contributo operativo utile dell'idea.**
 3. **Principio valido, ricetta no.** Lo stream orthogonale (R²≈0 → meno DD → meno drag) è fondato;
    la versione commerciale "leva + hedge-leg che batte SPY" è un singolo backtest in-sample non
@@ -270,7 +270,7 @@ controllo e TER leggermente più alto. **Da decidere.**
 - [ ] Regola di revisione glide-path (per età annuale? per evento di vita?).
 
 ## 5. Prossimi step (quando l'utente torna)
-- [x] Modulo KB creato: [08_asset_allocation_passiva](../fondamenti_tecnici/08_asset_allocation_passiva/principles.md)
+- [x] Modulo KB creato: [08_asset_allocation_passiva](../../fondamenti_tecnici/08_asset_allocation_passiva/principles.md)
       (distillato da "Petrodollar ed ETF.txt": tipi ETF, UCITS vs US, fiscalità IT, bond, globale/US/EM, debunk petrodollaro).
       Restano da approfondire: soglie numeriche del glide-path, scelta ETF/broker specifici, sizing sui propri numeri.
 - [ ] Fissare: target buffer (€), ETF All-World specifico, importo DCA, soglie glide path.

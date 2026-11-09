@@ -44,7 +44,7 @@ def _confluence_factory() -> type:
     return ConfluenceLevelsStrategy
 
 
-# London Breakout è stata migrata a Expert Advisor MQL5 (vedi `mql5/london_breakout.mq5`)
+# London Breakout è stata migrata a Expert Advisor MQL5 (vedi `esercizio/mql5/london_breakout.mq5`)
 # nel pivot 2026-05-05. Niente più factory Python per quella strategia.
 
 register("confluence_levels", _confluence_factory)

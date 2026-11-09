@@ -5,15 +5,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from signal_copier.executor import Executor
-from signal_copier.journal import TradeJournal
-from signal_copier.models import EntryTrigger, ParsedSignal, SignalUpdate
-from signal_copier.parsers import get_parser
-from signal_copier.parsers.xau_analysis_lab import XauAnalysisLabParser
-from signal_copier.planner import build_plan
-from signal_copier.reader import iter_offline_messages
+from esercizio.signal_copier.executor import Executor
+from esercizio.signal_copier.journal import TradeJournal
+from esercizio.signal_copier.models import EntryTrigger, ParsedSignal, SignalUpdate
+from esercizio.signal_copier.parsers import get_parser
+from esercizio.signal_copier.parsers.xau_analysis_lab import XauAnalysisLabParser
+from esercizio.signal_copier.planner import build_plan
+from esercizio.signal_copier.reader import iter_offline_messages
 
-SAMPLES = Path(__file__).parent.parent / "signal_copier" / "samples" / "xau_analysis_lab.txt"
+SAMPLES = Path(__file__).parent.parent / "esercizio" / "signal_copier" / "samples" / "xau_analysis_lab.txt"
 
 COPIER_CFG = {
     "symbols_whitelist": ["XAUUSD"],
@@ -100,7 +100,7 @@ def test_parse_now_trigger():
 
 # ---- Canale GOLD 5 TP (entry_mode=signal, tutto-in-uno) --------------------
 
-from signal_copier.parsers.gold_5tp import Gold5TpParser
+from esercizio.signal_copier.parsers.gold_5tp import Gold5TpParser
 
 GOLD5_SIGNAL = (
     "GOLD BUY 4470//4466\n\n"
@@ -124,7 +124,7 @@ def test_gold5tp_headsup_ignorato():
 
 def test_dispatch_signal_mode_apre_5_gambe(tmp_path):
     """Canale signal-mode: il messaggio completo apre 5 gambe a mercato (no trigger)."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4470.0)
     ex = Executor(mode="live", broker=broker, config={"manage": {"move_sl_to_be_on_tp": 1}},
@@ -141,7 +141,7 @@ def test_gold5tp_parse_tp_hit():
 
 def test_executor_libera_canale_quando_flat(tmp_path):
     """Canale senza 'close': quando il broker non ha più gambe aperte, il canale si libera."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4470.0)
     ex = Executor(mode="live", broker=broker, config={"manage": {"move_sl_to_be_on_tp": 1}})
@@ -160,7 +160,7 @@ TRAIL_CFG = {"manage": {"move_sl_to_be_on_tp": 1,
 
 def _gold5_live(tmp_path):
     """Apre le 5 gambe del canale gold_5tp con trailing attivo. Ritorna (broker, ex)."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4470.0)
     ex = Executor(mode="live", broker=broker, config=TRAIL_CFG)
@@ -199,7 +199,7 @@ def test_trailing_scatta_anche_se_tp3_perso(tmp_path):
 
 def test_trailing_disattivo_resta_be(tmp_path):
     # Senza config trail (comportamento storico): a TP3 lo SL resta a break-even.
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4470.0)
     ex = Executor(mode="live", broker=broker, config={"manage": {"move_sl_to_be_on_tp": 1}})
@@ -234,7 +234,7 @@ def test_poll_non_riapplica_be_se_gia_armato():
 
 def test_poll_trailing_quando_3_gambe_chiuse():
     """Canale gold_5tp: con 3 gambe chiuse il poll porta lo SL a TP1 (trailing)."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4470.0)
     ex = Executor(mode="live", broker=broker, config=TRAIL_CFG)
@@ -476,7 +476,7 @@ def test_be_rifiutato_per_altro_motivo_non_arma_e_riprova():
 
 
 def test_be_rifiutato_sempre_allarme_dopo_il_tetto():
-    from signal_copier.executor import MAX_TENTATIVI_SL
+    from esercizio.signal_copier.executor import MAX_TENTATIVI_SL
 
     sig, plan, broker, ex, note = _piano_con_tp1_chiuso(price=4530.0)
     broker.rifiuta_sl = "altro"
@@ -529,7 +529,7 @@ def test_journal_logs_rejection(tmp_path):
 
 def test_dispatch_trigger_apre_a_mercato(tmp_path):
     """Il trigger 'NOW' apre a mercato col prezzo del broker (SL fisso, TP provvisori)."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4530.0)
     jpath = tmp_path / "j.jsonl"
@@ -544,7 +544,7 @@ def test_dispatch_trigger_apre_a_mercato(tmp_path):
 
 def test_dispatch_riconcilia_livelli_dopo_trigger(tmp_path):
     """Dopo il trigger, il messaggio coi livelli sovrascrive SL/TP esatti sulle gambe."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4530.0)
     ex = Executor(mode="live", broker=broker, config={"manage": {"move_sl_to_be_on_tp": 1}})
@@ -558,7 +558,7 @@ def test_dispatch_riconcilia_livelli_dopo_trigger(tmp_path):
 
 def _trigger_poi_livelli(tmp_path, prezzo_ai_livelli):
     """SELL NOW a 4530, poi livelli (entry 4536, TP1 4531) con il prezzo dato."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4530.0)
     jpath = tmp_path / "j.jsonl"
@@ -591,7 +591,7 @@ def test_gate_alla_riconciliazione_tiene_lo_scarto_favorevole(tmp_path):
 
 def test_dispatch_reentry_stesso_bias_ignorato(tmp_path):
     """Re-entry con STESSO bias mentre un trade è aperto → ignorato (uno per simbolo)."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4530.0)
     ex = Executor(mode="live", broker=broker, config={"manage": {"move_sl_to_be_on_tp": 1}})
@@ -604,7 +604,7 @@ def test_dispatch_reentry_stesso_bias_ignorato(tmp_path):
 
 def test_dispatch_flip_su_bias_opposto(tmp_path):
     """Nuovo segnale con bias OPPOSTO → chiude il vecchio trade e apre il nuovo."""
-    from signal_copier.__main__ import _dispatch
+    from esercizio.signal_copier.__main__ import _dispatch
 
     broker = _FakeBroker(price=4530.0)
     ex = Executor(mode="live", broker=broker, config={"manage": {"move_sl_to_be_on_tp": 1}})

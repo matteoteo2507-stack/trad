@@ -4,8 +4,8 @@ Questa cartella contiene gli **Expert Advisor** scritti in MQL5 nativo per girar
 terminale MetaTrader 5. Sostituiscono le strategie automatiche Python che dipendevano dalla
 libreria `MetaTrader5` + MT5 desktop sullo stesso host.
 
-**Perché MQL5 invece di Python**: è la decisione del pivot del 2026-05-05 ([DECISIONS.md](../DECISIONS.md), voce
-"Pivot architetturale"; architettura in [docs/ARCHITECTURE_v2.md](../docs/ARCHITECTURE_v2.md)). In sintesi:
+**Perché MQL5 invece di Python**: è la decisione del pivot del 2026-05-05 ([DECISIONS.md](../../DECISIONS.md), voce
+"Pivot architetturale"; architettura in [docs/ARCHITECTURE_v2.md](../../docs/ARCHITECTURE_v2.md)). In sintesi:
 
 - L'EA gira sul terminale ovunque sia installato (PC, MetaQuotes VPS).
 - Su MetaQuotes VPS (~10$/mese) è **sempre online**, monitorabile dall'app mobile MT5.
@@ -15,7 +15,7 @@ libreria `MetaTrader5` + MT5 desktop sullo stesso host.
 ## Struttura
 
 ```
-mql5/
+esercizio/mql5/
 ├── london_breakout.mq5         # EA London Breakout (Stage 2.5) — NO-GO, storico
 ├── tsmom_jpy.mq5               # EA TSMOM JPY — stato: docs/TSMOM_PREREGISTRATION.md
 ├── nxt_fade.mq5                # EA fade mean-reversion — stato: docs/NXT_FADE_FORWARD_PREREGISTRATION.md
@@ -31,15 +31,15 @@ mql5/
 ## `nxt_fade.mq5` — walk-forward live della variante fade
 
 > ⚠️ **Superato: EA spento dal 2026-09-17, famiglia FADE in stato KILL.** Stato canonico:
-> [`docs/NXT_FADE_FORWARD_PREREGISTRATION.md`](../docs/NXT_FADE_FORWARD_PREREGISTRATION.md). Il testo sotto resta come
+> [`docs/NXT_FADE_FORWARD_PREREGISTRATION.md`](../../docs/NXT_FADE_FORWARD_PREREGISTRATION.md). Il testo sotto resta come
 > storia del port e del controllo incrociato: non descrive un test in corso.
 
 > **STATUS: lead DATA-DERIVED, NON un edge dimostrato.** Questo EA raccoglie trade
 > **forward OOS su DEMO** per validare (o archiviare) il fade emerso da NXT. Regole
 > **congelate**: non toccare i parametri strategia durante il test. Derivazione e verdetto
-> interni: [`../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md`](../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md) §4;
-> spec eseguibile: [`../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md`](../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md).
-> Motore Python di riferimento: [`../analysis/nxt/closure.py`](../analysis/nxt/closure.py) (config A1).
+> interni: [`../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md`](../../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md) §4;
+> spec eseguibile: [`../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md`](../../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md).
+> Motore Python di riferimento: [`../analysis/nxt/closure.py`](../../analysis/nxt/closure.py) (config A1).
 
 **Cosa fa.** Su H1, rileva l'ultima gamba impulsiva (swing ZigZag fractale k=5, filtro trend
 HH&HL/LH&LL, ampiezza ≥ 1×ATR) e apre una posizione **contro il trend** (fade) al 50% di
@@ -85,14 +85,14 @@ Solo dopo il cross-check + 1-2 settimane demo locale → `Migrate to virtual ser
 
 ## `orb_nasdaq.mq5` — walk-forward ORB v2 su NAS100
 
-> ⚠️ **Superato: forward ORB spento il 2026-08-27** ([DECISIONS.md](../DECISIONS.md), voce "ORB spento"). Stato
-> canonico: [`docs/OPENING_RANGE_PREREGISTRATION.md`](../docs/OPENING_RANGE_PREREGISTRATION.md). Il testo sotto resta
+> ⚠️ **Superato: forward ORB spento il 2026-08-27** ([DECISIONS.md](../../DECISIONS.md), voce "ORB spento"). Stato
+> canonico: [`docs/OPENING_RANGE_PREREGISTRATION.md`](../../docs/OPENING_RANGE_PREREGISTRATION.md). Il testo sotto resta
 > come storia del port: non c'è un forward in corso.
 
 > **STATUS: NO-GO sui 14.5y.** Il forward NON serve perché "speriamo funzioni": serve a
 > **risolvere la domanda aperta** — il marginale-positivo 2020-2026 è rumore o vero cambio di
 > microstruttura post-COVID? Aspettativa pre-registrata **~0/negativa**. Regole congelate.
-> Port di [`../analysis/opening_range/backtest_v2.py`](../analysis/opening_range/backtest_v2.py).
+> Port di [`../analysis/opening_range/backtest_v2.py`](../../analysis/opening_range/backtest_v2.py).
 
 **Cosa fa.** Opening range 09:30-10:00 **ET**; nella finestra 10:00-12:00 ET il primo bar M5 che
 CHIUDE oltre l'OR decide il lato, poi trail del level fino a una chiusura oltre → conferma. Filtro
@@ -178,9 +178,9 @@ In alto a destra del grafico apparirà l'icona dell'EA (nelle build moderne di M
 
 ## Backtest in Strategy Tester
 
-> ⚠️ **Esempio storico.** `london_breakout` è NO-GO dal 2026-05-30 ([DECISIONS.md](../DECISIONS.md)): le attese qui
+> ⚠️ **Esempio storico.** `london_breakout` è NO-GO dal 2026-05-30 ([DECISIONS.md](../../DECISIONS.md)): le attese qui
 > sotto (frequenza, win rate) sono quelle scritte prima della
-> [review](../docs/reviews/london_breakout-2026-05-29.md), non una misura. La procedura vale per qualunque EA.
+> [review](../../docs/reviews/london_breakout-2026-05-29.md), non una misura. La procedura vale per qualunque EA.
 
 `View → Strategy Tester` (Ctrl+R):
 

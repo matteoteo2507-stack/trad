@@ -77,7 +77,7 @@ Non dà errori: chi legge il posto vecchio riceve una risposta plausibile e sbag
 
 **Casi reali:**
 - *27/09:* FADE "ATTIVO" in `docs/README.md` dopo il KILL.
-- *02/10:* `mql5/README.md` descriveva l'EA `nxt_fade` come "WALK-FORWARD LIVE (attivo)",
+- *02/10:* `esercizio/mql5/README.md` descriveva l'EA `nxt_fade` come "WALK-FORWARD LIVE (attivo)",
   sempre dopo il KILL del 17/09. Trovato costruendo il catasto, e corretto facendo puntare ogni EA
   alla sua pre-registrazione. Le sezioni degli EA lo descrivevano ancora al presente: marcatori aggiunti il 13/10.
 - *02/10, riparato il 13/10:* il frontmatter di `docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md` aveva

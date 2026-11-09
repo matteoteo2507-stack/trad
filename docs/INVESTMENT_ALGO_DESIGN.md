@@ -4,7 +4,7 @@
 >
 > Nasce come evoluzione dello **Stock Selector**, che e' stato poi **ARCHIVIATO** (nessun edge
 > dimostrato: dati, backtest e MVP, 2026-06). Il pilastro investing e' oggi un **PAC passivo** su
-> ETF All-World: vedi [`INVESTING_PILLAR_PLAN.md`](INVESTING_PILLAR_PLAN.md).
+> ETF All-World: vedi [`INVESTING_PILLAR_PLAN.md`](../esercizio/pac/INVESTING_PILLAR_PLAN.md).
 >
 > Conservato per la **research metodologica** (TAA, vendor dati point-in-time), non come piano.
 

@@ -3,7 +3,7 @@
 > **DECISIONE (2026-05-30): TSMOM single-asset ARCHIVIATA** (come London, dati conservati). Sviluppo nuove strategie in pausa: focus su consolidamento dell'avviabile (signal copier demo, Confluence). Il progetto portafoglio (§4 opzione 2) resta come possibile ripresa futura, non attivo ora.
 
 > Estende la review single-asset [docs/reviews/tsmom_jpy-2026-05-29.md](tsmom_jpy-2026-05-29.md) con i dati multi-pair raccolti dall'utente.
-> Codice [mql5/tsmom_jpy.mq5](../../mql5/tsmom_jpy.mq5) · [strategies/tsmom/](../../strategies/tsmom/) · dati [backtest_results/TSMOM/](../../backtest_results/TSMOM/).
+> Codice [mql5/tsmom_jpy.mq5](../../esercizio/mql5/tsmom_jpy.mq5) · [strategies/tsmom/](../../strategies/tsmom/) · dati [backtest_results/TSMOM/](../../backtest_results/TSMOM/).
 
 ## 1. Dati disponibili (e cosa permettono / non permettono)
 

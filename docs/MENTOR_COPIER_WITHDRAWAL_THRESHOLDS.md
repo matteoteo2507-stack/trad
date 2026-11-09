@@ -142,7 +142,7 @@ nemmeno per dire "sta andando bene".
 ## 4. Il gate di esecuzione — **C5**, e non e' un dettaglio
 
 Il replay riempie **a `entry`**, aspettando fino a 6h che il prezzo ci torni. Il copier vero piazza
-`order_type="market"` sul trigger "NOW" del canale (`signal_copier/executor.py`). **Sono due
+`order_type="market"` sul trigger "NOW" del canale (`esercizio/signal_copier/executor.py`). **Sono due
 esecuzioni diverse**, e la differenza e' enorme:
 
 | modello di esecuzione | E[R] |
@@ -175,7 +175,7 @@ ha dimensionato **e** il TP1 si allontana. Il gate di oggi (`max_slippage_pips: 
 > una taratura: **20 pip era gia' il valore dichiarato**, si toglie solo una restrizione che i dati
 > mostrano dannosa. Modifica di **modellazione dell'esecuzione**, non ricerca di parametri (§3).
 
-**Da implementare** in `signal_copier/planner.py`: il gate `anti_late` deve misurare lo scostamento
+**Da implementare** in `esercizio/signal_copier/planner.py`: il gate `anti_late` deve misurare lo scostamento
 **con segno** rispetto alla direzione del segnale e applicare `max_slippage_pips` **solo** quando il
 prezzo si e' mosso **contro** di noi.
 

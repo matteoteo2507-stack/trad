@@ -1,4 +1,4 @@
-"""Health-check SETTIMANALE persistito — scrive un report datato in docs/health/.
+"""Health-check SETTIMANALE persistito — scrive un report datato in esercizio/sorveglianza/report/.
 
 Perche' esiste. Il 2026-08-27 e' emerso che il problema non era la mancanza dello
 strumento (`deployment_healthcheck.py` esisteva ed era corretto) ma che **nessuno lo
@@ -20,8 +20,8 @@ La differenza fra questo script e `deployment_healthcheck.py`:
     Terza variante dello stesso errore: leggere UNA fonte parziale e chiamarla stato.
 
 Uso:
-    python analysis/ops/weekly_healthcheck.py            # scrive docs/health/YYYY-MM-DD.md
-    python analysis/ops/weekly_healthcheck.py --stdout   # stampa e basta
+    python esercizio/sorveglianza/weekly_healthcheck.py            # scrive esercizio/sorveglianza/report/YYYY-MM-DD.md
+    python esercizio/sorveglianza/weekly_healthcheck.py --stdout   # stampa e basta
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ import sys
 from collections import defaultdict
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-OUTDIR = os.path.join(ROOT, "docs", "health")
+OUTDIR = os.path.join(ROOT, "esercizio", "sorveglianza", "report")
 
 # --- configurazione: cio' che il protocollo considera vincolante -------------------
 MAGIC = {26071: "nxt_fade", 26052: "orb_nasdaq"}
@@ -103,7 +103,7 @@ def render(mt5) -> str:
     today = dt.date.today()
     L = []
     L.append(f"# Health-check deployment — {today:%Y-%m-%d}\n")
-    L.append("> Generato da `analysis/ops/weekly_healthcheck.py`. **Il conteggio e' sempre "
+    L.append("> Generato da `esercizio/sorveglianza/weekly_healthcheck.py`. **Il conteggio e' sempre "
              "separato prima/dopo i fix noti**: un aggregato cumulato fa sembrare in corso "
              "un guasto gia' risolto (accaduto il 2026-08-27).\n")
     if acc:

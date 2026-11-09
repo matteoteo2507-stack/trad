@@ -100,7 +100,7 @@ e non si dichiara nulla in nessuna direzione.
 
 - **Non** è un test di esecuzione (vedi §6.2) né una validazione del copier.
 - **Non** produce alcuna autorizzazione a operare su **capitale prop**: il divieto di seguire segnali
-  di terzi è indipendente dall'esito ([PROP_FIRM_CRITERIA.md §4](PROP_FIRM_CRITERIA.md)).
+  di terzi è indipendente dall'esito ([PROP_FIRM_CRITERIA.md §4](../esercizio/prop/PROP_FIRM_CRITERIA.md)).
 - **Non** è l'occasione per tarare il gate anti-ritardo. Quella domanda — *quale scarto in prezzo
   massimo preserva l'edge?* — richiede la sua pre-registrazione, perché è ottimizzazione di un
   parametro sui dati. Nota che l'audit ha misurato la tolleranza al **ritardo in tempo** (fino a

@@ -13,7 +13,7 @@ DOVE ARRIVA IL CODICE
 Il numero va in formato internazionale: +39XXXXXXXXXX
 
 Uso (in un terminale INTERATTIVO, non da script):
-    python -m signal_copier.login
+    python -m esercizio.signal_copier.login
 """
 from __future__ import annotations
 

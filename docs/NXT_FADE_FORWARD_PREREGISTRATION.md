@@ -34,7 +34,7 @@ indipendente possibile. Stato attuale: **LEAD**, non edge ([STRATEGY_LIFECYCLE �
 ## 2. Strategia — parametri congelati
 
 Definizione operativa in `analysis/nxt/closure.py` (config **A1**), eseguita da
-[`mql5/nxt_fade.mq5`](../mql5/nxt_fade.mq5). Parametri **immutabili** per tutta la durata del test:
+[`esercizio/mql5/nxt_fade.mq5`](../esercizio/mql5/nxt_fade.mq5). Parametri **immutabili** per tutta la durata del test:
 
 | Parametro | Valore |
 |---|---|
@@ -194,7 +194,7 @@ fuori universo dal conteggio.
 > (`[tp 28292.80]`, `[sl 4409.82]`). Attribuendo per commento avevo incluso le chiusure di
 > `orb_nasdaq` (magic 26052) dentro quelle di `nxt_fade`. **L'attribuzione corretta è per MAGIC**,
 > che invece sopravvive su entrambe le deal. Verificato in
-> [`analysis/ops/deployment_healthcheck.py`](../analysis/ops/deployment_healthcheck.py), che usa il
+> [`esercizio/sorveglianza/deployment_healthcheck.py`](../esercizio/sorveglianza/deployment_healthcheck.py), che usa il
 > magic e va usato come fonte del conteggio da qui in avanti.
 
 > ⚠️ **CAVEAT DI COMPOSIZIONE — obbligatorio nel verdetto finale.** Le prime tre settimane del
@@ -212,7 +212,7 @@ vedere se lo strumento si sbloccasse. Si è sbloccato: l'EA ha armato un nuovo o
 dopo**, alle 14:00 del 27/08. Non era una stranezza dell'ordine — era il sintomo di un difetto.
 
 **Il meccanismo, verificato nel sorgente.** La finestra di fill di **48 barre H1** (parametro
-CONGELATO, §2) è calcolata in [`mql5/nxt_fade.mq5`](../mql5/nxt_fade.mq5) da `g_pending_swingend`,
+CONGELATO, §2) è calcolata in [`esercizio/mql5/nxt_fade.mq5`](../esercizio/mql5/nxt_fade.mq5) da `g_pending_swingend`,
 variabile che **vive solo in RAM** e che `OnInit()` **non ripristinava**. Dopo ogni riavvio
 dell'EA — ricompilazione, restart del terminale, **spostamento sul VPS Windows** — tornava a `0`:
 
@@ -240,7 +240,7 @@ riempimenti realmente avvenuti (72 ordini riempiti in universo): attesa **median
 Nessun fill è avvenuto su un segnale scaduto. **I valori di R raccolti restano validi; N valido
 resta 36/50.**
 
-**La correzione** (2026-08-27, `mql5/nxt_fade.mq5`):
+**La correzione** (2026-08-27, `esercizio/mql5/nxt_fade.mq5`):
 - `OnInit()` ricostruisce `g_pending_swingend` dall'ordine vivo via `ORDER_TIME_SETUP` — proxy
   dello swing di fine con scarto **≤ 1-2 barre su 48**, e mai in difetto (il pending può vivere
   pochissimo in più, mai in meno);
@@ -282,7 +282,7 @@ Esposizione aperta rilevata: **2,00% dell'equity** contro l'1,00% previsto.
 ### Perché azzera invece di riparare
 
 Il §2 congela tre parametri: **SL 1R**, **TP 3R**, **R = 28,6% dell'ampiezza**. Il ramo a mercato di
-[`mql5/nxt_fade.mq5`](../mql5/nxt_fade.mq5) li viola **tutti e tre contemporaneamente**. Non è un
+[`esercizio/mql5/nxt_fade.mq5`](../esercizio/mql5/nxt_fade.mq5) li viola **tutti e tre contemporaneamente**. Non è un
 difetto di contorno: su quel 40% dei trade **la strategia eseguita non è quella pre-registrata**.
 
 Si applica il **§4.3** — *"qualunque modifica azzera il test e ne apre uno nuovo, con nuovo N e
@@ -313,7 +313,7 @@ dentro campione non esisteva**, quindi non c'era nulla da validare.
 
 ### ⚠️ Aggiornamento 2026-09-17 — le condizioni sono ancora aperte, e ora c'e' un numero
 
-Verificato **nel sorgente** (`mql5/nxt_fade.mq5`, righe 432-451): l'EA **entra ancora a mercato**
+Verificato **nel sorgente** (`esercizio/mql5/nxt_fade.mq5`, righe 432-451): l'EA **entra ancora a mercato**
 quando il prezzo ha superato l'entry, con volume dimensionato sulla distanza teorica. La condizione 3
 qui sotto e' **non soddisfatta**, come la 1 e la 2.
 

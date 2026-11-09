@@ -13,7 +13,7 @@ nota: "CHIUSO all'intake il 02/10 (decisione di Matteo), 0 trial. gold_5tp disat
 ## 1. È il canale `gold_5tp` che il nostro copier seguiva
 
 Formato e refuso coincidono con il parser `gold_5tp` (canale `gfetyydh8959` in
-[config.yaml](../../signal_copier/config.yaml)), compreso "READY FOR GOLD Sl**G**NAL" con la "l"
+[config.yaml](../../esercizio/signal_copier/config.yaml)), compreso "READY FOR GOLD Sl**G**NAL" con la "l"
 minuscola, presente anche nel nostro log live di giugno (`logs/messages_received.jsonl`). È **quasi
 certamente lo stesso canale**: l'handle non compare nell'export. Il copier lo ha seguito in demo a giugno,
 ed è disattivato dal 02/10 per un altro motivo (il test N = 60 prevede solo XAT).

@@ -5,7 +5,7 @@ della fonte, e misura sui nostri dati l'argomento dei "giorni migliori persi".
 
 Cosa stampa:
 1. COMMISSIONI (video HBCGczqLGNY): 300 al mese per 40 anni ai tassi della fonte, poi lo stesso conto col costo
-   annuo del nostro PAC (OCF e bollo, fonte: docs/INVESTING_PILLAR_PLAN.md par. 0).
+   annuo del nostro PAC (OCF e bollo, fonte: esercizio/pac/INVESTING_PILLAR_PLAN.md par. 0).
 2. GIORNI MIGLIORI (video HBCGczqLGNY): crescita dell'S&P 500 togliendo i giorni migliori, i peggiori, entrambi,
    e quanti dei migliori cadono subito dopo un peggiore. Dati: Dukascopy D1, solo prezzo, senza dividendi.
 3. COERENZA (video 9MuAacOIAv4): i versamenti dichiarati, investiti ai rendimenti che la fonte stessa elenca,

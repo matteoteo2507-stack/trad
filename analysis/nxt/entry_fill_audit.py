@@ -10,7 +10,7 @@ backtest riempie comunque **a `entry`**: un prezzo che il mercato aveva lasciato
 indietro prima che potessimo agire.
 
 Non e' look-ahead di INFORMAZIONE (il pivot e' confermato): e' look-ahead di PREZZO.
-Live e' esattamente il ramo in cui `mql5/nxt_fade.mq5` (righe ~436-450) rinuncia al
+Live e' esattamente il ramo in cui `esercizio/mql5/nxt_fade.mq5` (righe ~436-450) rinuncia al
 pending ed entra a mercato tenendo SL/TP del livello teorico -> rischio 1,3-4,0x,
 RR fino a 1:0,00.
 

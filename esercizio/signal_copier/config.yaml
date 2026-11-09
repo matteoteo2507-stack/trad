@@ -1,5 +1,5 @@
 # Configurazione signal copier. Solo parametri NON sensibili (i segreti — api_id,
-# api_hash, session — stanno in .env). Vedi signal_copier/README.md.
+# api_hash, session — stanno in .env). Vedi esercizio/signal_copier/README.md.
 
 # Modalità di default. "dry_run" = parsa e logga senza inviare. "live" = apre su MT5.
 # Passare a "live" è una scelta esplicita (CLI --mode live), non un default silenzioso.

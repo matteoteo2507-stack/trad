@@ -10,7 +10,7 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 2. **[blueprints/](blueprints/)** — sistemi *buildabili* (agenti/skill/infra). Sono **idee NON
    committate**: materiale di riferimento, **non** un mandato a costruire. Vedi [DECISIONS.md](../DECISIONS.md).
 3. **[strategie_candidate/](strategie_candidate/)** — spec di strategie tradabili pronte a essere
-   promosse a `strategies/` o `mql5/` **se** prioritizzate.
+   promosse a `strategies/` o `esercizio/mql5/` **se** prioritizzate.
 
 > **Regola anti-allucinazione.** Questa cartella raccoglie *materiale*, non *decisioni*. Prima di
 > proporre "costruiamo X" da un blueprint o una candidata, controlla [DECISIONS.md](../DECISIONS.md):

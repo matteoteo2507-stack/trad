@@ -3,7 +3,7 @@
 > **Nota sul nome.** La cartella resta `strategies/` (namespace Python importato da
 > `core/runner`, `core/registry` e dai test). Concettualmente è l'area "strategie" del progetto.
 > Questo file è l'**indice unico** di tutte le strategie e i componenti operativi, anche quelli
-> che vivono fuori da `strategies/` (`mql5/`, `signal_copier/`).
+> che vivono fuori da `strategies/` (`esercizio/mql5/`, `esercizio/signal_copier/`).
 
 I **sistemi** (semiautomatico → automatico) sono uno **spettro di maturità esecutiva**, non
 etichette fisse: un sistema nasce semiauto (l'utente piazza) e gradua ad auto. Vedi
@@ -49,8 +49,8 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 
 | Componente | Stato | Habitat | Quant review | Fondamenti |
 |---|---|---|---|---|
-| [../signal_copier/](../signal_copier/) | demo full-auto | demo MT5 | — | — |
-| [../mql5/](../mql5/) London Breakout | **archived-NO-GO** | MetaQuotes VPS | [review](../docs/reviews/london_breakout-2026-05-29.md) · [postmortem](../docs/reviews/london_breakout-postmortem-2026-05-30.md) | [regimi/macro](../fondamenti_tecnici/03_regimi_macro/) |
+| [../signal_copier/](../esercizio/signal_copier/) | demo full-auto | demo MT5 | — | — |
+| [../mql5/](../esercizio/mql5/) London Breakout | **archived-NO-GO** | MetaQuotes VPS | [review](../docs/reviews/london_breakout-2026-05-29.md) · [postmortem](../docs/reviews/london_breakout-postmortem-2026-05-30.md) | [regimi/macro](../fondamenti_tecnici/03_regimi_macro/) |
 | [tsmom/](tsmom/) | **NO-GO** / stub | (Python) | [review](../docs/reviews/tsmom_jpy-2026-05-29.md) | [quant](../fondamenti_tecnici/04_quant_metodologia/) |
 | [confluence_auto/](confluence_auto/) | shadow run | VPS Hetzner | — | [liquidità/POC](../fondamenti_tecnici/02_liquidita_orderflow/) |
 | OctoBot (crypto) | **DORMIENTE** (stand-by 2026-06-14, rispolverabile) | esterno | — | [quant](../fondamenti_tecnici/04_quant_metodologia/) |

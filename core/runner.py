@@ -77,7 +77,7 @@ def run(
     if strategy not in runner_factories:
         raise typer.BadParameter(
             f"Strategia '{strategy}' non ha un runner Python. "
-            f"Le strategie automatiche girano come EA MQL5: vedi `mql5/`. "
+            f"Le strategie automatiche girano come EA MQL5: vedi `esercizio/mql5/`. "
             f"Strategie Python disponibili: {sorted(runner_factories.keys())}"
         )
 

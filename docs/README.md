@@ -55,7 +55,7 @@ Ipotesi, metriche e soglie fissate **prima** di guardare i dati. Nessun test è 
 
 | Documento | Cosa contiene |
 |---|---|
-| [INVESTING_PILLAR_PLAN.md](INVESTING_PILLAR_PLAN.md) | **Documento vivo** del PAC: due secchi, glide-path, guardrail, candidati broker/ETF, input personali mancanti |
+| [INVESTING_PILLAR_PLAN.md](../esercizio/pac/INVESTING_PILLAR_PLAN.md) | **Documento vivo** del PAC: due secchi, glide-path, guardrail, candidati broker/ETF, input personali mancanti |
 | [INVESTMENT_ALGO_DESIGN.md](INVESTMENT_ALGO_DESIGN.md) | Perché niente algoritmo custom sul pilastro investing |
 
 ## Sistema e architettura

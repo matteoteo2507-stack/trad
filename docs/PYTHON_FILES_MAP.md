@@ -4,7 +4,7 @@
 >
 > Dichiara di coprire **ogni** file `.py`, ma e' fermo al 2026-06-02. Mancano almeno:
 > `analysis/intake/`, `analysis/trend/`, `analysis/nxt/{excursion,stops,weekend}.py`,
-> `analysis/ops/weekly_healthcheck.py`, `analysis/mentor_signals/oos_validation.py`.
+> `esercizio/sorveglianza/weekly_healthcheck.py`, `analysis/mentor_signals/oos_validation.py`.
 > Usalo per orientarti sul vecchio, **non** come inventario.
 
 > Spiegazione one-liner di OGNI file `.py`. Quando torni qui dopo giorni, parti da questo file per orientarti.
@@ -162,7 +162,7 @@ trad/
 │   ├── telegram.py                 ← USATO
 │   └── _pip_table.py               ← lookup pip
 ├── tests/                          ← 81 test offline + 2 live
-├── mql5/                           ← EA in MQL5 (NO Python)
+├── esercizio/mql5/                           ← EA in MQL5 (NO Python)
 │   ├── london_breakout.mq5
 │   └── include/
 └── docs/                           ← guide operative

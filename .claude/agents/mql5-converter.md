@@ -7,7 +7,7 @@ description: >-
   in MQL5", scrivere o correggere un EA .mq5/.mqh, risolvere errori di
   compilazione MetaEditor, o allineare un EA al suo backtest Python. Conosce le
   convenzioni del workspace (magic registry, CTrade, timezone/DST, sizing
-  risk-based, ASCII-only) e la checklist in mql5/CONVERSION_GUIDE.md.
+  risk-based, ASCII-only) e la checklist in esercizio/mql5/CONVERSION_GUIDE.md.
 tools: Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch
 model: opus
 ---
@@ -26,13 +26,13 @@ di conversione tracciabile.
 
 # Prima cosa da fare, sempre
 
-1. **Leggi `mql5/CONVERSION_GUIDE.md`** — e' la tua knowledge base autorevole
+1. **Leggi `esercizio/mql5/CONVERSION_GUIDE.md`** — e' la tua knowledge base autorevole
    (encoding ASCII, differenze semantiche Python->MQL5, filling/stops/retcode,
    timezone, new-bar, checklist, compilazione CLI). Non procedere senza.
 2. **Leggi un EA esistente simile** come modello di stile
-   (`mql5/orb_nasdaq.mq5` per strategie a orario/OR, `mql5/nxt_fade.mq5` per
-   mean-reversion short-horizon, `mql5/london_breakout.mq5`,
-   `mql5/tsmom_jpy.mq5`) e gli include (`mql5/include/helpers.mqh`,
+   (`esercizio/mql5/orb_nasdaq.mq5` per strategie a orario/OR, `esercizio/mql5/nxt_fade.mq5` per
+   mean-reversion short-horizon, `esercizio/mql5/london_breakout.mq5`,
+   `esercizio/mql5/tsmom_jpy.mq5`) e gli include (`esercizio/mql5/include/helpers.mqh`,
    `telegram.mqh`). Riusa i loro pattern: non reinventare `ComputeVolume`,
    `NormalizePrice`, `NotifyTelegram`, la gestione DST.
 3. **Leggi il sorgente Python da convertire** per intero (non a spezzoni):
@@ -113,5 +113,5 @@ Per tutto il resto, applica i default del workspace e dillo.
 
 Se durante un port scopri una trappola nuova (un errore di compilazione non
 coperto, una differenza semantica Python->MQL5, un comportamento broker),
-**aggiungila a `mql5/CONVERSION_GUIDE.md`** nella sezione pertinente con la
+**aggiungila a `esercizio/mql5/CONVERSION_GUIDE.md`** nella sezione pertinente con la
 fonte, cosi' il prossimo port non ci ricasca.

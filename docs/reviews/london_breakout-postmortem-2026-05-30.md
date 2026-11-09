@@ -1,7 +1,7 @@
 # London Breakout — Resoconto, lezioni apprese e archiviazione — 2026-05-30
 
 > Documento di chiusura. Decisione utente (2026-05-30): **archiviare** la strategia, **conservare** tutti i dati raccolti. Nessuna eliminazione.
-> Basato su: [docs/reviews/london_breakout-2026-05-29.md](london_breakout-2026-05-29.md) (review formale) · codice [mql5/london_breakout.mq5](../../mql5/london_breakout.mq5) · dati [backtest_results/london_breakout/](../../backtest_results/london_breakout/).
+> Basato su: [docs/reviews/london_breakout-2026-05-29.md](london_breakout-2026-05-29.md) (review formale) · codice [mql5/london_breakout.mq5](../../esercizio/mql5/london_breakout.mq5) · dati [backtest_results/london_breakout/](../../backtest_results/london_breakout/).
 
 ## 1. Cosa è stato fatto
 
@@ -35,7 +35,7 @@ La famiglia di edge (Osler, AER 2003: clustering di stop-order) è plausibilment
 
 ## 4. Stato di archiviazione
 
-- **Codice**: [mql5/london_breakout.mq5](../../mql5/london_breakout.mq5) — conservato, non più in sviluppo. NON deployare (neppure demo): gate quant non superato.
+- **Codice**: [mql5/london_breakout.mq5](../../esercizio/mql5/london_breakout.mq5) — conservato, non più in sviluppo. NON deployare (neppure demo): gate quant non superato.
 - **Dati**: [backtest_results/london_breakout/](../../backtest_results/london_breakout/) — conservati come evidenza storica.
 - **Review + questo post-mortem**: restano in `docs/reviews/` come motivazione tracciata della decisione.
 - **`activation` rule / regime CSV**: NON modificare sulla base di questi numeri (erano look-ahead).

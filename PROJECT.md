@@ -12,13 +12,13 @@ Il percorso, nell'ordine:
 
 1. **Un sistema in profitto per almeno un mese su demo.**
 2. **Prop firm**: superare una challenge low-cost col sistema validato
-   ([criteri nostri](docs/PROP_FIRM_CRITERIA.md)).
+   ([criteri nostri](esercizio/prop/PROP_FIRM_CRITERIA.md)).
 3. **Scalare con le prop**: reinvestire i guadagni in challenge nuove, su conti multipli e piu' grandi, fino a un conto
    da 100k.
 4. **Allocare le entrate delle prop**:
    - **(a) portafoglio semi-passivo.** Il concetto resta, lo strumento e' da definire. Lo Stock Selector non e'
      applicabile (archiviato; lo score fondamentale e' una famiglia da testare, DECISIONS 2026-11-05);
-   - **(b) PAC**: operativo dal 09/10/2026 ([piano](docs/INVESTING_PILLAR_PLAN.md) §0);
+   - **(b) PAC**: operativo dal 09/10/2026 ([piano](esercizio/pac/INVESTING_PILLAR_PLAN.md) §0);
    - **(c) dati**: fra i primi acquisti coi payout (DECISIONS 2026-11-07).
 
 A che punto siamo: nessun sistema e' oggi candidato alla prop. Le 14 famiglie testate sono chiuse

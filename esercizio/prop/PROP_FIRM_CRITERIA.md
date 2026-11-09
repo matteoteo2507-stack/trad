@@ -67,7 +67,7 @@ Una regola tipo il **40% best-day** di Alpha Capital limita quanta parte del pro
 un solo giorno. Con payoff 1:3 il nostro P&L giornaliero è **a code grasse per costruzione**: pochi
 giorni fanno la maggior parte del risultato.
 
-→ **MISURATO il 2026-08-07** — motore [`analysis/nxt/consistency.py`](../analysis/nxt/consistency.py)
+→ **MISURATO il 2026-08-07** — motore [`analysis/nxt/consistency.py`](../../analysis/nxt/consistency.py)
 (rigioca la config A1 pre-registrata catturando la barra di uscita; riproduce esattamente i numeri di
 `closure.py`: E[R] +0.354 → **+0.308 dopo il fix sui fill del 2026-08-14**, win 31.3%, n=10.280).
 
@@ -138,13 +138,13 @@ giornaliero, consistency) va simulata sopra, non ignorata.
 
 **Simulata sopra, dal 2026-10-06:** il simulatore di challenge completo (fasi, giornaliero, trailing,
 consistency, giorni minimi, funded con payout) e' `prop-lab`, raggiunto da `trad` via
-[`core/prop_sim.py`](../core/prop_sim.py). `evaluate_ci` riporta pass rate ed EV con l'**incertezza di
+[`core/prop_sim.py`](../../core/prop_sim.py). `evaluate_ci` riporta pass rate ed EV con l'**incertezza di
 stima** e lo stesso calcolo a **vantaggio zero** con gli stessi percorsi; si cita `ev_vs_zero`, la parte di
 EV dovuta al vantaggio. Perche': il 05/10 una strategia a vantaggio zero passava ~30% delle due fasi
 10%+5% e aveva EV ~+1.900 € per tentativo col profilo guardia giornaliera al 3% (la challenge e'
 un'opzione). E il rischio che massimizza il pass rate **dipende dal vantaggio e dal limite di tempo** (piu' il
 vantaggio e' scarso o il tempo corto, piu' e' alto): scegliere il profilo che massimizza l'EV su un campione premia il gioco audace, cioe' chi un
-vantaggio non ce l'ha ([STRATEGY_LIFECYCLE §4quater](STRATEGY_LIFECYCLE.md)). Le regole di
+vantaggio non ce l'ha ([STRATEGY_LIFECYCLE §4quater](../../docs/STRATEGY_LIFECYCLE.md)). Le regole di
 `prop-lab/config/prop_rules.yaml` sono modelli parametrici: per un numero operativo vanno allineate alla
 griglia del §3.
 
@@ -180,7 +180,7 @@ Non sui comparatori. Se un dato non è pubblicato, si scrive **NON PRESENTE** e 
 | 1.8 | Italia + postura MiFID II | 📎 Italia ammessa; si dichiara simulazione, non broker | 📎 Italia ammessa; dichiara di non rientrare nella regolazione ordinaria | 📎 non trovato | ❓ | |
 
 📎 = dato del **secondo passaggio di Comet** (06/10), con la **frase citata e il nome della pagina, senza URL**: per
-orientarsi, non per una decisione con soldi. Fonte integrale: [prop_regolamenti_comet_2026-10-06](reviews/prop_regolamenti_comet_2026-10-06.md).
+orientarsi, non per una decisione con soldi. Fonte integrale: [prop_regolamenti_comet_2026-10-06](../../docs/reviews/prop_regolamenti_comet_2026-10-06.md).
 ⚠️ = i due passaggi di Comet si contraddicono. Le celle senza simbolo vengono dalle verifiche precedenti.
 
 **Candidate da aggiungere alla griglia** (emerse come "no consistency rule + static DD + EA su MT5",
@@ -216,7 +216,7 @@ ne' da FundedNext. ⚠️ Quel criterio era stato derivato da `nxt_fade` (posizi
 strumenti), oggi KILL: per una strategia intraday il flottante pesa molto meno. Tutti i criteri del §1 vanno
 riletti sulla forma della prossima strategia candidata, non su quelle morte (§0).
 
-**Secondo passaggio (06/10, portato il 07/10)** — [fonte integrale](reviews/prop_regolamenti_comet_2026-10-06.md).
+**Secondo passaggio (06/10, portato il 07/10)** — [fonte integrale](../../docs/reviews/prop_regolamenti_comet_2026-10-06.md).
 Ora ogni valore ha la frase citata e il motivo dei `null`; gli URL restano nomi di pagina (stato
 `citato_senza_url`). Risolto: la perdita giornaliera **FTMO** (5% del capitale iniziale, misurata dal saldo
 delle 00:00 CE(S)T, flottante incluso: e' esattamente come la modella il simulatore); gli obiettivi FundedNext
@@ -256,7 +256,7 @@ quelli di un copier. Il rilevamento avviene per **pattern identici tra account**
 review** — cioè si tradano mesi e i profitti vengono negati alla richiesta.
 
 → **L'edge mentore va operato su capitale proprio, o non va.** Riapertura solo con evidenza esterna
-nuova ([STRATEGY_LIFECYCLE §7](STRATEGY_LIFECYCLE.md)).
+nuova ([STRATEGY_LIFECYCLE §7](../../docs/STRATEGY_LIFECYCLE.md)).
 
 ---
 

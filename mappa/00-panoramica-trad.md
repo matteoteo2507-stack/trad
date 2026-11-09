@@ -41,9 +41,9 @@ flowchart LR
   QG{{quant-gatekeeper}} -. controlla .-> P
   QG -. controlla .-> V
   V --> D[DECISIONS.md<br/>+ stato nel frontmatter]
-  D -->|LEAD| F[Forward su demo<br/>EA mql5/ o copier]
+  D -->|LEAD| F[Forward su demo<br/>EA esercizio/mql5/ o copier]
   D -->|NO-GO · KILL · CLOSED| X[Famiglia chiusa]
-  F --> H[Sorveglianza<br/>analysis/ops/]
+  F --> H[Sorveglianza<br/>esercizio/sorveglianza/]
   H --> D
   T[(trial_ledger)] -. conta i tentativi .-> P
 ```
@@ -58,7 +58,7 @@ flowchart LR
   TG[Canale Telegram<br/>del mentore] --> R[reader<br/>Telethon]
   R --> PA[parser<br/>per canale]
   PA --> PL[planner<br/>sizing + gate]
-  CF[(signal_copier/<br/>config.yaml)] --> PL
+  CF[(esercizio/signal_copier/<br/>config.yaml)] --> PL
   PL --> EX[executor<br/>+ gate alla riconciliazione]
   EX --> MT[brokers/mt5.py] --> MT5[(MetaTrader 5<br/>demo)]
   EX --> J[journal JSONL]
@@ -82,9 +82,9 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 |---|---|---|---|
 | `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `docs/EARLY_STAGE_AUDIT_*`, `docs/BACKLOG_RICERCA.md`, `docs/trial_ledger.json` | il metodo | 1 · ciclo di vita e gate | vivo |
 | `docs/*_PREREGISTRATION.md`, `DECISIONS.md`, `docs/reviews/`, `docs/README.md`, `mappa/_cruscotto.base` | stato e storia delle decisioni | 2 · stato canonico | vivo |
-| `signal_copier/` (configurazione propria in `signal_copier/config.yaml`), `docs/COPIER_EXECUTION_PREREGISTRATION.md` | copia dei segnali Telegram → MT5 | 3 · signal copier | vivo (demo dal 21/09) |
-| `mql5/`, `analysis/ops/`, `docs/health/`, `docs/FADE_LIVE_AUDIT_PROTOCOL.md` | Expert Advisor e loro sorveglianza | 4 · EA e VPS | sorveglianza |
-| `analysis/mentor_signals/`, `analysis/{mentor_entries,mentor_momentum,export_dataset,probe_mt5}.py`, `docs/MENTOR_*`, `docs/PROP_FIRM_CRITERIA.md`, `_export_telegram/` (dati, fuori da git) | misura del track record del mentore | 5 · segnali mentore | vivo |
+| `esercizio/signal_copier/` (configurazione propria in `esercizio/signal_copier/config.yaml`), `docs/COPIER_EXECUTION_PREREGISTRATION.md` | copia dei segnali Telegram → MT5 | 3 · signal copier | vivo (demo dal 21/09) |
+| `esercizio/mql5/`, `esercizio/sorveglianza/` (script e `report/`), `docs/FADE_LIVE_AUDIT_PROTOCOL.md`; in `docs/health/` e `analysis/ops/` restano solo output e script degli audit di famiglia (vanno nel registro) | Expert Advisor e loro sorveglianza | 4 · EA e VPS | sorveglianza |
+| `analysis/mentor_signals/`, `analysis/{mentor_entries,mentor_momentum,export_dataset,probe_mt5}.py`, `docs/MENTOR_*`, `esercizio/prop/PROP_FIRM_CRITERIA.md`, `_export_telegram/` (dati, fuori da git) | misura del track record del mentore | 5 · segnali mentore | vivo |
 | `core/` (tranne runner, registry, regime, prop_sim, sizing), `core/tests/`, `config/risk.yaml` (letto da `core/risk_gate.py`) | primitive di misura e gate di rischio delle strategie meccaniche | 6 · primitive | vivo |
 | `analysis/trend/`, `docs/TREND_*`, `docs/B2_KICHEV_POTENZA.md` | uno studio completo, usato come esempio | 7 · anatomia di uno studio | vivo |
 | `analysis/{level_research,nxt,opening_range,meanrev,meanrev_indici,round_grid,extension,trading-bot-eval,veltrix,forexgump,ultima_mezzora,vtob_intake,pac_intake}/`, `strategies/{tsmom,meanrev,seasonality}/`, i restanti `docs/*` di famiglia (`LEVEL_RESEARCH_PLAN`, `NXT_EXIT_CEILING_ADDENDUM`, `B3_*`, `ULTIMA_MEZZORA_FATTIBILITA`) | tutte le famiglie studiate | 8 · catalogo delle famiglie | archivio: nessuna famiglia viva (stato di ciascuna: `python -m core.trial_ledger`); `vtob_intake` e' un intake in attesa della decisione di Matteo |
@@ -92,8 +92,10 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 | `CLAUDE.md`, `.claude/`, `memoria/trad/` (nell'hub) | come lavora Claude su trad | 10 · Claude in trad | vivo (`agents/` e `skills/` alla radice ritirati il 13/10: nessuno strumento li caricava, nessun codice li leggeva) |
 | `pyproject.toml`, `conftest.py`, `tests/`, `config/markets.yaml`, `config/README.md`, `.env.example`, `.gitignore`, `data/`, `CONVENTIONS.md` | ambiente, test, configurazione | 11 · ambiente e test | vivo |
 | `core/{runner,registry}.py`, `strategies/{_base,_template,confluence_levels,confluence_auto}/`, `notifiers/`, `brokers/` (tranne mt5), `backtesters/`, `level_analyzer/`, `journals/`, `docs/{ARCHITECTURE_v2,STAGE2_TESTING_PLAN,OPERATIONAL_GUIDE,TRADING_WORKFLOW_DESIGN,PYTHON_FILES_MAP}.md` | l'architettura di maggio–giugno (pre e post pivot) | 12 · sistemi dormienti | dormiente |
-| `strategies/stock_selector/`, `core/regime.py`, `docs/INVESTING_PILLAR_PLAN.md`, `docs/INVESTMENT_ALGO_DESIGN.md`, `stoxs picks/` | investimento passivo e il vecchio selettore di azioni | 13 · investing | archivio (selettore), vivo (PAC) |
+| `strategies/stock_selector/`, `core/regime.py`, `esercizio/pac/INVESTING_PILLAR_PLAN.md`, `docs/INVESTMENT_ALGO_DESIGN.md`, `stoxs picks/` | investimento passivo e il vecchio selettore di azioni | 13 · investing | archivio (selettore), vivo (PAC) |
 | `prop-lab/` (repo condiviso col socio VELTRIX, allineato con `prop-lab/CHANGELOG.md`), `core/prop_sim.py`, `core/sizing.py` | simulatore di challenge prop, pipeline di famiglia del socio, doppio binario della gestione del rischio | 14 · prop-lab e doppio binario | vivo (dal 06/10) |
+| `esercizio/README.md`, `uscita/README.md` | le prime due macro del riordino (09/11): cosa contengono e le loro regole; `uscita/` resta vuota fino al primo pacchetto | — | vivo |
+| `motore/riordino/sposta.py` | lo strumento della migrazione: sposta file e cartelle e riscrive link, menzioni e import | — | vivo fino alla fine del riordino |
 | `README.md`, `PROJECT.md` | i file d'ingresso: obiettivo comune ai soci, ruoli, dove stanno le cose (riscritti il 09/11, DECISIONS 2026-11-09) | — | vivo |
 | `mappa/` | questa mappa, il cruscotto e il registro modifiche di trad | — | vivo |
 | `backtest_results/`, `logs/`, `output/`, `socio-trading-bot/` | risultati e materiale locale, quasi tutto fuori da git | — | dati |

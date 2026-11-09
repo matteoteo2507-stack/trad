@@ -8,7 +8,7 @@ Tutti i numeri del binario mentore (win-rate OOS 63%, E[R] +0,194, e le soglie d
 ritiro fissate il 2026-09-18) vengono dal **replay**, che riempie **esattamente a
 `entry`** aspettando fino a 6 ore che il prezzo ci torni.
 
-Il copier vero non fa questo. `signal_copier/executor.py` piazza `order_type="market"`
+Il copier vero non fa questo. `esercizio/signal_copier/executor.py` piazza `order_type="market"`
 sul trigger "NOW" del canale, e i livelli arrivano ~1 minuto dopo. Quindi:
 
     replay  : ordine pendente a `entry`, fill al prezzo dichiarato

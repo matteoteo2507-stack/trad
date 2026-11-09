@@ -6,7 +6,7 @@ che ha senso per ciascuna:
   - orb_nasdaq: backtest 14.5 anni -> PER ANNO
   - mentore   : audit + validazione OOS su 2026 -> PER MESE (il periodo e' corto)
 
-Uso: python analysis/ops/report_socio.py > report_socio.txt
+Uso: python esercizio/sorveglianza/report_socio.py > report_socio.txt
 """
 from __future__ import annotations
 

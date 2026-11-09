@@ -33,7 +33,7 @@ di edge sistematici *own*.** Bilancio del pivot post-livelli:
 
 **Prossimo lavoro di più alto valore**: costruire bene il **pilastro passivo** ("strutturato e protetto"),
 che era in sospeso in attesa degli input personali dell'utente ([[project_stock_selector_eval_2026_06]] /
-[docs/INVESTING_PILLAR_PLAN.md](../INVESTING_PILLAR_PLAN.md)). Il reddito attivo resta il mentore manuale.
+[docs/INVESTING_PILLAR_PLAN.md](../../esercizio/pac/INVESTING_PILLAR_PLAN.md)). Il reddito attivo resta il mentore manuale.
 La macchina rigorosa (`core/quant_metrics` + backtester) resta pronta per opportunità future.
 
 ### Riproducibilità

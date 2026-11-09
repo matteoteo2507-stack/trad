@@ -504,7 +504,7 @@ Zero strategie, zero pre-registrazioni, 0 trial. **Nessuna modifica al PAC.** Cl
   **Vincoli**: i suoi rendimenti non entrano nel prior (un caso, sopravvissuto, 2009-2025); la lettura macro non
   tocca il PAC; allocazione USA e norme fiscali USA non si importano.
 - **Aperti, decide Matteo**: il primo blocco di 5 video (scheda §8) e, alla revisione di settembre 2027, la regola
-  dell'aumento della rata a ogni scatto di reddito (scheda §6, [piano §0](docs/INVESTING_PILLAR_PLAN.md)).
+  dell'aumento della rata a ogni scatto di reddito (scheda §6, [piano §0](esercizio/pac/INVESTING_PILLAR_PLAN.md)).
 
 ---
 
@@ -649,7 +649,7 @@ dell'anno: con la rata da 100 €/mese **resta margine**. IBAN del conto Trade R
 clienti **attiva** (interessi gia' accreditati per due mesi); il conto Trade Republic serve **solo al PAC**, le spese
 passano da un altro conto, quindi il vincolo del serbatoio e' separato per costruzione.
 
-**Nessuna decisione nuova: si applica il §0 del 07/08** ([INVESTING_PILLAR_PLAN §0](docs/INVESTING_PILLAR_PLAN.md)).
+**Nessuna decisione nuova: si applica il §0 del 07/08** ([INVESTING_PILLAR_PLAN §0](esercizio/pac/INVESTING_PILLAR_PLAN.md)).
 - La rata resta **100 €/mese**. Il margine e' calcolato su entrate ormai note ma su spese ancora **pianificate**: la
   rata si rivede solo alla revisione di settembre, su surplus **verificato** da un anno di spese reali, e solo per reddito.
 - Il margine entra come **top-up** quando il mese lo permette, cioe' a consuntivo e non in anticipo sul budget, in
@@ -799,7 +799,7 @@ candidato di ricerca con Matteo.
 **Regolamenti** (0 trial, input). Secondo passaggio di Comet portato da Matteo, salvato integrale in
 [reviews/prop_regolamenti_comet_2026-10-06.md](docs/reviews/prop_regolamenti_comet_2026-10-06.md). Ora ogni valore
 ha la frase citata, ma gli "URL" sono nomi di pagina: stato **`citato_senza_url`**, per orientarsi e non per
-decidere con soldi. Griglia aggiornata in [PROP_FIRM_CRITERIA §3 e §3bis](docs/PROP_FIRM_CRITERIA.md).
+decidere con soldi. Griglia aggiornata in [PROP_FIRM_CRITERIA §3 e §3bis](esercizio/prop/PROP_FIRM_CRITERIA.md).
 - Risolti: daily FTMO (5% del capitale iniziale dal saldo delle 00:00 CE(S)T, flottante incluso: come il
   simulatore), obiettivi FundedNext 8%/5%, **The5ers 149 = prezzo promozionale**.
 - **Contraddizioni fra i due passaggi, registrate e non risolte**: FundedNext consistency e costo; FTMO 1-Step
@@ -808,7 +808,7 @@ decidere con soldi. Griglia aggiornata in [PROP_FIRM_CRITERIA §3 e §3bis](docs
   day"*. Resta `null`, ed e' l'unico campo che manca per simulare lo Stellar 2-Step.
 - Per noi: FundedNext ammette EA **solo sotto i 50k**; FTMO 1-Step ha una consistency che tocca i payoff 1:3;
   FundedNext nel funded conta il 40% dei profitti attorno alle news.
-- Domande mirate per il prossimo giro: [prompt_comet_regolamenti_prop.md](docs/prompt_comet_regolamenti_prop.md) §C.
+- Domande mirate per il prossimo giro: [prompt_comet_regolamenti_prop.md](esercizio/prop/prompt_comet_regolamenti_prop.md) §C.
 
 **Correzione della voce del 06/10.** Avevo scritto che il rischio fisso che massimizza il pass rate e' ~2% anche con
 E +0,10R. Quel numero veniva da un orizzonte simulato di 120 giorni, che il simulatore conta come fallimento. Sulle
@@ -848,8 +848,8 @@ commit `c10b846`: tolto dai documenti attuali; dalla storia di GitHub solo con u
 `stato: da_verificare`, perche' sono arrivati senza citazioni, con un campo ambiguo per colpa del prompt (base
 contro punto di misura della perdita giornaliera) e un costo sospetto (The5ers 149 per 100k). Il simulatore ora
 rifiuta un regolamento incompleto con l'elenco dei campi: simulabile solo `ftmo_2step`, per il pass rate. Griglia
-in [PROP_FIRM_CRITERIA §3 e §3bis](docs/PROP_FIRM_CRITERIA.md); prompt corretto in
-[prompt_comet_regolamenti_prop.md](docs/prompt_comet_regolamenti_prop.md). Gia' visibile, se i dati reggono:
+in [PROP_FIRM_CRITERIA §3 e §3bis](esercizio/prop/PROP_FIRM_CRITERIA.md); prompt corretto in
+[prompt_comet_regolamenti_prop.md](esercizio/prop/prompt_comet_regolamenti_prop.md). Gia' visibile, se i dati reggono:
 FTMO e FundedNext contano il flottante nel daily (criterio 1.1), ma quel criterio era nato da `nxt_fade`, oggi KILL.
 
 **Strategia manuale di Matteo** in `fondamenti_tecnici/strategie_candidate/`: il nucleo meccanico e' la famiglia
@@ -2296,7 +2296,7 @@ decisione esistente riaperta.
 - `analysis/ops/weekly_healthcheck.py` riportava *"Stadio 2: N valido = 80/200"* per un test
   **azzerato**. Corretto, insieme a due difetti: il blocco `silent` che la patch del 27/08 non aveva
   mai toccato (lo `str.replace` senza `assert` era fallito in silenzio) e `--stdout` sulla console
-  cp1252. Report in [`docs/health/2026-09-15.md`](docs/health/2026-09-15.md).
+  cp1252. Report in [`docs/health/2026-09-15.md`](esercizio/sorveglianza/report/2026-09-15.md).
 - Il copier del mentore (magic 27050) **non ha mai operato** sul conto 7396683: il deploy su VPS non è
   andato a buon fine per problemi tecnici e di tempo. **Resta aperto.**
 
@@ -2356,7 +2356,7 @@ tutti gli ingressi del forward in MT5:
 | `BUY` / `SELL` a mercato | 17 | **1,3× – 4,0×** | da 1:2,1 fino a **1:0,00** |
 
 **17 su 43 ingressi in universo (40%).** Esposizione aperta misurata **2,00% dell'equity** contro
-l'1,00% da specifica. Causa in [`mql5/nxt_fade.mq5`](mql5/nxt_fade.mq5) (~430-450): se al momento
+l'1,00% da specifica. Causa in [`mql5/nxt_fade.mq5`](esercizio/mql5/nxt_fade.mq5) (~430-450): se al momento
 dell'arm il livello è già stato superato, l'EA rinuncia al pending ed entra **a mercato**, ma
 mantiene SL/TP calcolati sull'entry **teorica** e il volume da `ComputeVolume(|entry - sl|)`.
 
@@ -2515,7 +2515,7 @@ lato/epoca/ora/calendario) restano in `§F` e sono l'unica porta.
 se lo strumento si sbloccava: **si e' sbloccato**, l'EA ha piazzato un nuovo ordine tre minuti dopo.
 Non era una stranezza: era il sintomo.
 
-**Il meccanismo, verificato nel sorgente.** In [`mql5/nxt_fade.mq5`](mql5/nxt_fade.mq5) la scadenza
+**Il meccanismo, verificato nel sorgente.** In [`mql5/nxt_fade.mq5`](esercizio/mql5/nxt_fade.mq5) la scadenza
 del pending (**48 barre H1**, parametro CONGELATO della pre-registrazione) si calcola da
 `g_pending_swingend`, una variabile che **vive solo in RAM** e che `OnInit()` **non ripristinava**.
 Dopo ogni riavvio — ricompilazione, restart del terminale, **spostamento sul VPS Windows** — tornava
@@ -2561,7 +2561,7 @@ risultava *"in universo ma senza alcun ordine"* mentre ne aveva uno attivo. Ora 
 `orders_get()`/`positions_get()`, calcola la breadth includendoli e **segnala i pendenti fermi da
 oltre 3 giorni** — che e' esattamente la firma di questo difetto. **Breadth corretta: 6/6.**
 
-**Link:** [`docs/health/2026-08-27.md`](docs/health/2026-08-27.md) ·
+**Link:** [`docs/health/2026-08-27.md`](esercizio/sorveglianza/report/2026-08-27.md) ·
 [`docs/NXT_FADE_FORWARD_PREREGISTRATION.md`](docs/NXT_FADE_FORWARD_PREREGISTRATION.md) §10 ·
 [`docs/BACKLOG_RICERCA.md`](docs/BACKLOG_RICERCA.md) §A2/§A3/§F
 
@@ -2827,7 +2827,7 @@ Stadio 2**, che richiede lower bound BCa > 0. Il forward va confrontato con **+0
 10,3%** — un weekend su dieci il salto supera l'intero stop. Rileva per il **daily drawdown** di una
 prop, non per l'expectancy.
 
-**6. Corretto un assunto operativo.** [PROP_FIRM_CRITERIA §1.3](docs/PROP_FIRM_CRITERIA.md)
+**6. Corretto un assunto operativo.** [PROP_FIRM_CRITERIA §1.3](esercizio/prop/PROP_FIRM_CRITERIA.md)
 classificava il fade come **swing** per via del cap a 20 giorni: la distribuzione reale dice mediana
 5 ore e 10,5% di trade con weekend. Il criterio "holding weekend consentito" **resta valido ma pesa
 molto meno** — una firm che obbliga a chiudere il venerdì amputerebbe ~1 trade su 10, non la
@@ -3065,7 +3065,7 @@ E[R] +0.20/+0.32) sono probabilmente **leggermente ottimistici**. Il valore real
 **Cosa NON autorizza.** (1) **Non** è un test di esecuzione: il forward reale del copier (2-8 giugno)
 ha rifiutato **5 segnali su 12** perché il prezzo si era mosso oltre 20 pip — questo misura l'edge del
 **segnale**, non quello **catturabile**. (2) **Non** cambia il divieto prop sui segnali di terzi
-([PROP_FIRM_CRITERIA.md §4](docs/PROP_FIRM_CRITERIA.md)): resta capitale proprio. (3) Restano key-man
+([PROP_FIRM_CRITERIA.md §4](esercizio/prop/PROP_FIRM_CRITERIA.md)): resta capitale proprio. (3) Restano key-man
 risk, un solo asset, un solo regime, e **survivorship confermata allo ~0,2%** (1 segnale cancellato
 dal canale tra i due export).
 
@@ -3090,7 +3090,7 @@ lavora sui **regolamenti primari**. L'unico frammento recuperato (Alpha Capital,
 prohibited copy trading"*) sta nella sezione **Trading Activity & Risk Review legata alle richieste
 di payout** → conferma che l'enforcement scatta al **payout review**, non all'apertura.
 
-**2. Criteri nostri prima delle firm** → [docs/PROP_FIRM_CRITERIA.md](docs/PROP_FIRM_CRITERIA.md).
+**2. Criteri nostri prima delle firm** → [docs/PROP_FIRM_CRITERIA.md](esercizio/prop/PROP_FIRM_CRITERIA.md).
 Otto eliminatori derivati da cosa tradiamo davvero. I due che nessun comparatore espone e che ci
 ucciderebbero in silenzio: **(a) daily drawdown su balance, NON su equity flottante** — `nxt_fade`
 tiene posizioni fino a **20 giorni di borsa** su **6 strumenti in parallelo**, quindi un flottante
@@ -3122,7 +3122,7 @@ incompatibili** per qualunque strategia di questa forma, anche futura. È un vin
 ## 2026-08-07 — Pilastro investing OPERATIVO: Trade Republic + VWCE, 100 €/mese da fine settembre
 
 **Decisione.** Il PAC passa da pianificato a **esecutivo**. Piano completo in
-[docs/INVESTING_PILLAR_PLAN.md §0](docs/INVESTING_PILLAR_PLAN.md). **Broker: Trade Republic.
+[docs/INVESTING_PILLAR_PLAN.md §0](esercizio/pac/INVESTING_PILLAR_PLAN.md). **Broker: Trade Republic.
 Strumento: VWCE** (`IE00BK5BQT80`, Vanguard FTSE All-World UCITS **Acc**, TER 0,22%, Irlanda),
 verificato presente nel piano di accumulo dell'app. **Rata 100 €/mese**, data fissa, partenza **fine
 settembre 2026**. **Nessun ribilancio** (uno strumento, 100% azionario, fase 1).
@@ -3292,7 +3292,7 @@ R = 28,6% della gamba, TP 3R, BE a +2R) è **+0,35R** base e **+0,24R** a 3× i 
 perdeva, sugli stessi dati. → **LEAD**, non edge: richiede pre-registrazione nuova e forward OOS
 indipendente. Spec eseguibile:
 [`fade_mr_walkforward_socio.md`](fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md);
-EA [`mql5/nxt_fade.mq5`](mql5/nxt_fade.mq5). Forward pre-registrato il 2026-08-04 (voce sopra).
+EA [`mql5/nxt_fade.mq5`](esercizio/mql5/nxt_fade.mq5). Forward pre-registrato il 2026-08-04 (voce sopra).
 
 ---
 
@@ -3606,7 +3606,7 @@ trend-following low-cost o di saltare del tutto**. Converge con la nostra decisi
 crisis-alpha) e con la cautela sul singolo backtest levered-hedge. Da rileggere quando si riapre lo
 sleeve in fase 2-3 → `github_repo_reviews/FinceptTerminal.md` (memoria di lavoro).
 
-→ [docs/INVESTING_PILLAR_PLAN.md §3b](docs/INVESTING_PILLAR_PLAN.md) ·
+→ [docs/INVESTING_PILLAR_PLAN.md §3b](esercizio/pac/INVESTING_PILLAR_PLAN.md) ·
 teoria [fondamenti_tecnici/05_portfolio_rischio](fondamenti_tecnici/05_portfolio_rischio/principles.md) ·
 caveat evidenza [fondamenti_tecnici/08_asset_allocation_passiva](fondamenti_tecnici/08_asset_allocation_passiva/principles.md)
 
@@ -3662,7 +3662,7 @@ Attenzione **compliance copy-trading** lato prop firm (alcune vietano la copia d
 Architettura: Telethon → parser → risk gate → MT5. I segnali mentori sono oggi **semiautomatici
 in test** ma il target è la **piena automazione**.
 
-→ Codice: [signal_copier/](signal_copier/) · Test: [tests/test_signal_copier.py](tests/test_signal_copier.py)
+→ Codice: [signal_copier/](esercizio/signal_copier/) · Test: [tests/test_signal_copier.py](tests/test_signal_copier.py)
 
 ---
 

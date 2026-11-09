@@ -2,7 +2,7 @@
 
 Procedura passo-passo che il revisore, l'agente
 [`quant-gatekeeper`](../.claude/agents/quant-gatekeeper.md), segue quando rivede una strategia o un test
-(`mql5/*.mq5`, `strategies/*/`, `analysis/*/`).
+(`esercizio/mql5/*.mq5`, `strategies/*/`, `analysis/*/`).
 
 Output finale: report in `docs/reviews/<strategia>-<YYYY-MM-DD>.md` nel formato del
 §"Formato di output" del gatekeeper.

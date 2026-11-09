@@ -234,7 +234,7 @@ umano**. Da cui la condizione operativa:
 
 Per il nostro PAC **oggi non si applica**, e non di poco: capitale finanziario ~0, decenni di reddito davanti, e un
 drawdown si ricompra con i **versamenti successivi** — che e' la monetizzazione, ottenuta gratis dal piano di accumulo
-invece che comprando opzioni (coerente con [`INVESTING_PILLAR_PLAN`](../../docs/INVESTING_PILLAR_PLAN.md) e con il
+invece che comprando opzioni (coerente con [`INVESTING_PILLAR_PLAN`](../../esercizio/pac/INVESTING_PILLAR_PLAN.md) e con il
 rifiuto del market timing). La domanda torna seria **a ridosso del decumulo**, e anche allora solo con un costo
 dichiarato e una regola scritta prima.
 
@@ -293,7 +293,7 @@ Il dato citato dalla fonte (16 paesi, 1900-2011) va nella stessa direzione: rend
 - [[05_portfolio_rischio]] — decomposizione del rischio (idiosincratico, settoriale, sistematico), CAPM, beta: base teorica per capire perche la diversificazione tramite ETF funziona e dove si ferma.
 - [[06_stock_selection]] — selezione titoli come satellite opzionale rispetto al core ETF passivo.
 - [[07_data_sources]] — fonti dati per monitorare composizione e TER degli ETF nel tempo.
-- [../../docs/INVESTING_PILLAR_PLAN.md](../../docs/INVESTING_PILLAR_PLAN.md) — piano dei due secchi (accumulo vs liquidita): il contesto operativo in cui applicare questi principi.
+- [../../docs/INVESTING_PILLAR_PLAN.md](../../esercizio/pac/INVESTING_PILLAR_PLAN.md) — piano dei due secchi (accumulo vs liquidita): il contesto operativo in cui applicare questi principi.
 - [../../docs/INVESTMENT_ALGO_DESIGN.md](../../docs/INVESTMENT_ALGO_DESIGN.md) — design del sistema di investimento algoritmico che automatizza DCA e ribilanciamento.
 
 ## Fonti

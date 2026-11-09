@@ -144,7 +144,7 @@ un overlay nuovo aggiunto dopo aver visto il risultato; un AGGIUNGE letto come v
 
 ## Dipende da / chi dipende da lui
 
-- **Usa:** `core.verifiche.runs_test` (componente 6), i regolamenti di `docs/PROP_FIRM_CRITERIA.md` (5).
+- **Usa:** `core.verifiche.runs_test` (componente 6), i regolamenti di `esercizio/prop/PROP_FIRM_CRITERIA.md` (5).
 - **Lo applicano:** ogni review (QUANT_REVIEW_PROTOCOL Step 5bis) e ogni test futuro (componente 1).
 - **Condiviso con:** il repo del socio VELTRIX, tramite `prop-lab/CHANGELOG.md`.
 

@@ -52,14 +52,14 @@ indipendenti saltano. Crea il demo come hedging.
 
 ```bash
 # Dry-run sui messaggi di esempio (nessuna credenziale, nessun ordine):
-python -m signal_copier dryrun --channel xauusd_analysislab \
-    --samples signal_copier/samples/xau_analysis_lab.txt
+python -m esercizio.signal_copier dryrun --channel xauusd_analysislab \
+    --samples esercizio/signal_copier/samples/xau_analysis_lab.txt
 
 # Live — ascolta soltanto e logga (utile per osservare il parsing dal vivo):
-python -m signal_copier live --mode dry_run
+python -m esercizio.signal_copier live --mode dry_run
 
 # Live — apre ordini su MT5:
-python -m signal_copier live --mode live
+python -m esercizio.signal_copier live --mode live
 ```
 
 ## Configurazione
@@ -95,13 +95,13 @@ api_id/api_hash si ottengono da <https://my.telegram.org> → *API development t
 1. **Demo HEDGING** — verifica che `MT5_DEMO1` in `.env` sia un conto **hedging**
    (non netting). In MT5: *Strumenti → tipo conto*; se netting, apri un nuovo demo
    MetaQuotes di tipo hedging e aggiorna `.env`.
-2. **Dry-run live (≥ 3-5 giorni)** — `python -m signal_copier live --mode dry_run`.
+2. **Dry-run live (≥ 3-5 giorni)** — `python -m esercizio.signal_copier live --mode dry_run`.
    Osserva nel log che **ogni** messaggio del canale sia parsato correttamente
    (segnali, `TP1 SUCCESSFUL`, `Close your trades`). Annota i falsi negativi/positivi.
 3. **Smoke test esecuzione** — con 1 segnale reale a basso rischio, `--mode live`,
    verifica: 3 gambe aperte (3 ticket distinti), SL/TP armati sul broker, BE su TP1,
    flatten su `Close`.
-4. **Live full-auto** — `python -m signal_copier live --mode live` in background
+4. **Live full-auto** — `python -m esercizio.signal_copier live --mode live` in background
    (tmux/servizio). Da qui parte la raccolta dati del mese.
 
 ## Red lines (sicurezza esecuzione automatica)
@@ -144,4 +144,4 @@ Il dry-run su esempi offline scrive su `*_journal_dryrun.jsonl` (dati di test, s
 Questo dataset basta per **ottimizzare il risk management** e alimentare `/quant-review`
 (con ≥ 30-50 segnali). **Manca solo il PnL realizzato per gamba** (prezzi di fill): è una
 riconciliazione opzionale dallo storico MT5 per `ticket`, da aggiungere se/quando servirà
-la misura esatta in valuta. Vedi [DECISIONS.md](../DECISIONS.md) e [PROJECT.md](../PROJECT.md).
+la misura esatta in valuta. Vedi [DECISIONS.md](../../DECISIONS.md) e [PROJECT.md](../../PROJECT.md).

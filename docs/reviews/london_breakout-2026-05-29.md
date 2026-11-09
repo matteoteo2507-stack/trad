@@ -3,7 +3,7 @@
 Reviewer: Quant Reviewer (`agents/quant_reviewer.md`, ritirato il 2026-10-13) ·
 Protocollo: [docs/QUANT_REVIEW_PROTOCOL.md](../QUANT_REVIEW_PROTOCOL.md) ·
 Motore metriche: [core/quant_metrics.py](../../core/quant_metrics.py) ·
-Codice: [mql5/london_breakout.mq5](../../mql5/london_breakout.mq5)
+Codice: [mql5/london_breakout.mq5](../../esercizio/mql5/london_breakout.mq5)
 
 > **Stance:** adversariale. L'onere della prova è sulla strategia. In ogni ambiguità ho scelto il verdict più conservativo.
 

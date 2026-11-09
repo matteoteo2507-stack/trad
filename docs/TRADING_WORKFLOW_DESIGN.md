@@ -2,7 +2,7 @@
 
 > **Stato:** design vivo · 2026-06-18 · scope = **solo trading** (il pilastro investing è
 > finito+rimandato, avrà eventualmente un workflow separato — vedi
-> [INVESTING_PILLAR_PLAN](INVESTING_PILLAR_PLAN.md)).
+> [INVESTING_PILLAR_PLAN](../esercizio/pac/INVESTING_PILLAR_PLAN.md)).
 > Decisioni di architettura (confermate dall'utente): **agentico ma human-gated** · **pilota
 > singolo = Level Analyzer** · **substrato ibrido** (Python nel repo + skill/agenti Claude Code).
 

@@ -18,9 +18,9 @@
 
 | fatto | fonte | verificato |
 |---|---|---|
-| L'EA **entra ancora a mercato** quando il prezzo ha gia' superato l'entry pre-registrata | [`mql5/nxt_fade.mq5`](../mql5/nxt_fade.mq5) righe **432-451**: `else ok = g_trade.Sell(...)` / `g_trade.Buy(...)` | ✅ letto nel codice il 2026-09-17 |
+| L'EA **entra ancora a mercato** quando il prezzo ha gia' superato l'entry pre-registrata | [`esercizio/mql5/nxt_fade.mq5`](../esercizio/mql5/nxt_fade.mq5) righe **432-451**: `else ok = g_trade.Sell(...)` / `g_trade.Buy(...)` | ✅ letto nel codice il 2026-09-17 |
 | Il volume e' dimensionato sulla distanza **teorica** `entry - sl`, non su quella reale | stessa funzione, riga 427: `ComputeVolume(MathAbs(entry - sl))` | ✅ letto nel codice |
-| Al 2026-09-15: **80 trade chiusi**, di cui **19 su 39 (49%) entrati a mercato** dopo il 27/08 | [`docs/health/2026-09-15.md`](health/2026-09-15.md), DECISIONS 2026-09-15 | ✅ gia' noto, nessun esito |
+| Al 2026-09-15: **80 trade chiusi**, di cui **19 su 39 (49%) entrati a mercato** dopo il 27/08 | [`esercizio/sorveglianza/report/2026-09-15.md`](../esercizio/sorveglianza/report/2026-09-15.md), DECISIONS 2026-09-15 | ✅ gia' noto, nessun esito |
 | Ritmo di raccolta | 80 trade in 53 giorni = **1,51/giorno**, di cui ramo onesto ≈ **0,77/giorno** | calcolato da date e conteggi |
 
 ⚠️ Il difetto del 27/08 **non e' stato riparato**. La patch di allora sistemo' i pendenti orfani, non

@@ -25,10 +25,11 @@ aggiorna a ogni passo.
 | `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `CONVENTIONS.md` | il metodo e le convenzioni | `motore/` |
 | `fondamenti_tecnici/` (moduli `0X_*`), `TRADING_PRINCIPLES.md` | teoria | `magazzino/` |
 | `fondamenti_tecnici/_sorgenti/`, `materiale_socio/` | fonti grezze, immutabili | `magazzino/` |
-| `docs/*_PREREGISTRATION.md`, `docs/reviews/`, `analysis/<famiglia>/`, `strategies/{tsmom,meanrev,seasonality}/` | registro degli studi | `magazzino/` |
-| `mql5/`, `signal_copier/`, `analysis/ops/`, `docs/health/`, `docs/INVESTING_PILLAR_PLAN.md`, `docs/PROP_FIRM_CRITERIA.md` | cio' che gira con soldi veri o in demo, e la sua sorveglianza | `esercizio/` |
-| (nasce col primo pacchetto) | pacchetti per i soci | `uscita/` |
-| `prop-lab/` | simulatore prop condiviso con un socio, tenuto allineato al suo repo | da decidere al passo dell'uscita |
+| `docs/*_PREREGISTRATION.md`, `docs/reviews/`, `docs/health/` (output degli audit), `analysis/<famiglia>/` (anche `analysis/ops/a5_potenza_tsmom.py`), `strategies/{tsmom,meanrev,seasonality}/` | registro degli studi | `magazzino/` |
+| [`esercizio/`](esercizio/README.md) | **migrata il 09/11**: EA, copier, sorveglianza, PAC, criteri prop | fatto |
+| [`uscita/`](uscita/README.md) | **creata il 09/11**: pacchetti per i soci, vuota fino al primo | fatto |
+| `motore/riordino/sposta.py` | lo strumento della migrazione: sposta e riscrive i riferimenti | `motore/` (gia' li') |
+| `prop-lab/` | simulatore prop condiviso con un socio, tenuto allineato al suo repo | da decidere (Matteo) |
 | `strategies/{confluence_*,stock_selector,_base,_template}/`, `level_analyzer/`, `backtesters/`, `journals/`, `core/{runner,registry}.py`, documenti di architettura di maggio in `docs/` | sistemi dormienti | da decidere caso per caso |
 
 Restano alla radice: `CLAUDE.md` e `.claude/` (istruzioni e agenti di Claude Code), `pyproject.toml`, `conftest.py`,

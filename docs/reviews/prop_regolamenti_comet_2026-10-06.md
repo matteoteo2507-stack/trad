@@ -10,7 +10,7 @@ stato: citato_senza_url
 
 > **Cos'e'.** L'output integrale di Comet, portato da Matteo il 07/10 (file "Exportcomet da integrare"), **senza
 > modifiche** sotto la riga. E' la fonte delle voci `ftmo_*`, `fundednext_*`, `the5ers_*` di
-> `prop-lab/config/prop_rules.yaml` e della griglia di [PROP_FIRM_CRITERIA §3](../PROP_FIRM_CRITERIA.md).
+> `prop-lab/config/prop_rules.yaml` e della griglia di [PROP_FIRM_CRITERIA §3](../../esercizio/prop/PROP_FIRM_CRITERIA.md).
 >
 > **Come leggerlo (07/10):**
 > - ogni valore ha una **frase citata** e il **nome della pagina**, ma **non l'URL**: la colonna "URL" contiene

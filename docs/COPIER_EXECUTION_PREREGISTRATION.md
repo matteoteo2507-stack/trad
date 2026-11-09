@@ -110,9 +110,9 @@ confuse quando si leggerà quel controfattuale.
 ## 7. Cosa questo test NON decide
 
 - **Non** autorizza capitale reale: `live` qui significa **demo**. Il passaggio a capitale proprio è
-  una decisione separata ed esplicita ([signal_copier/README.md](../signal_copier/README.md), red line 2).
+  una decisione separata ed esplicita ([esercizio/signal_copier/README.md](../esercizio/signal_copier/README.md), red line 2).
 - **Non** cambia nulla sul fronte prop: seguire segnali di terzi resta vietato a prescindere
-  dall'esito ([PROP_FIRM_CRITERIA.md §4](PROP_FIRM_CRITERIA.md)).
+  dall'esito ([PROP_FIRM_CRITERIA.md §4](../esercizio/prop/PROP_FIRM_CRITERIA.md)).
 - **Non** rimuove il **key-man risk**: il mentore può smettere, cambiare stile o cancellare segnali
   (cancellazione confermata a tasso ~0,2%).
 

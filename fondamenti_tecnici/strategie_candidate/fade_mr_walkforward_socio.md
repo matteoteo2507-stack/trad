@@ -74,7 +74,7 @@ Se il live arriva **molto sotto** questi numeri (es. win < 25%, E[R] ≤ 0), il 
 
 ## Raccolta automatica (preferita) — EA MQL5
 
-Per evitare il journaling manuale (tempo + precisione), la strategia è codificata come Expert Advisor: [`mql5/nxt_fade.mq5`](../../mql5/nxt_fade.mq5). Gira su MT5 (demo, VPS), esegue meccanicamente e **lo storico MT5 È la raccolta** — nessun log a mano, nessuna deriva discrezionale nel marcaggio degli swing. Setup e cross-check obbligatorio in [`mql5/README.md`](../../mql5/README.md). Questo documento resta la spec leggibile/di riferimento; l'EA è l'esecuzione.
+Per evitare il journaling manuale (tempo + precisione), la strategia è codificata come Expert Advisor: [`esercizio/mql5/nxt_fade.mq5`](../../esercizio/mql5/nxt_fade.mq5). Gira su MT5 (demo, VPS), esegue meccanicamente e **lo storico MT5 È la raccolta** — nessun log a mano, nessuna deriva discrezionale nel marcaggio degli swing. Setup e cross-check obbligatorio in [`esercizio/mql5/README.md`](../../esercizio/mql5/README.md). Questo documento resta la spec leggibile/di riferimento; l'EA è l'esecuzione.
 
 ## Status onesto (perché lo testiamo così)
 

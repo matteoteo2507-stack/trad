@@ -124,7 +124,7 @@ Operazioni:
 **Test locale (1-2 settimane)**:
 
 1. MT5 desktop loggato sul demo MetaQuotes (DEMO2 nel `.env`).
-2. Copia `mql5/london_breakout.mq5` + `mql5/include/*.mqh` in `<MT5 Data Folder>/MQL5/Experts/...`.
+2. Copia `esercizio/mql5/london_breakout.mq5` + `esercizio/mql5/include/*.mqh` in `<MT5 Data Folder>/MQL5/Experts/...`.
 3. Compile in MetaEditor (F7).
 4. Aggancia EA a grafico GBPUSD M15.
 5. Verifica notifiche Telegram + ordini piazzati.
@@ -135,7 +135,7 @@ Operazioni:
 2. Migrate to virtual server. EA + chart trasferiti automaticamente.
 3. PC di casa libero. Monitor da app mobile.
 
-Vedi `mql5/README.md` per istruzioni dettagliate.
+Vedi `esercizio/mql5/README.md` per istruzioni dettagliate.
 
 ### Backtesting
 
@@ -215,7 +215,7 @@ Output: `Top_Picks.xlsx` + `Analisi_Completa.xlsx`.
 
 - ~~`brokers/mt5.py` non più richiesto~~ Resta come fallback per `--datasource mt5` ma non
   necessario per uso normale.
-- ~~`strategies/london_breakout/` Python~~ ELIMINATA. Sostituita da `mql5/london_breakout.mq5`.
+- ~~`strategies/london_breakout/` Python~~ ELIMINATA. Sostituita da `esercizio/mql5/london_breakout.mq5`.
 - Niente VPS Windows, niente RDP da gestire.
 - Niente bridge Python ↔ MQL5 (no file sync, no socket, no HTTP).
 - Niente ordini automatici dalla Confluence (decisione utente: solo notifica per design).
@@ -234,5 +234,5 @@ In memoria persistente, vedi `~/.claude/projects/.../memory/project_strategies_p
 6. KAMA + ATR breakout
 7. Carry Trade (deprioritized 2026)
 
-Ogni nuova strategia automatica → nuovo `.mq5` in `mql5/`. Ogni nuova strategia analitica
+Ogni nuova strategia automatica → nuovo `.mq5` in `esercizio/mql5/`. Ogni nuova strategia analitica
 (ranking, screening, ML) → nuovo `strategies/<nome>/` Python.

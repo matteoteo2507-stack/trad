@@ -2,11 +2,11 @@
 
 Uso:
     # Dry-run sui messaggi di esempio (nessuna credenziale, nessun ordine):
-    python -m signal_copier dryrun --channel xauusd_analysislab \
-        --samples signal_copier/samples/xau_analysis_lab.txt
+    python -m esercizio.signal_copier dryrun --channel xauusd_analysislab \
+        --samples esercizio/signal_copier/samples/xau_analysis_lab.txt
 
     # Live (richiede .env con TELEGRAM_API_ID/HASH e MT5_DEMO*_):
-    python -m signal_copier live --mode live
+    python -m esercizio.signal_copier live --mode live
 
 Il dry-run è il percorso per validare il parsing prima del live.
 """

@@ -17,7 +17,7 @@ Cosa si usa, e la regola che vale per ognuno:
 
 Perche' il benchmark e' obbligatorio: il 05/10 una strategia a vantaggio **zero** passava ~30% delle challenge
 con EV ~+1.900 per tentativo (profilo guardia giornaliera al 3%). La challenge e' un'opzione: un EV positivo
-non e' prova di vantaggio. Vedi anche `docs/PROP_FIRM_CRITERIA.md` §1.9.
+non e' prova di vantaggio. Vedi anche `esercizio/prop/PROP_FIRM_CRITERIA.md` §1.9.
 
 Le regole in `prop-lab/config/prop_rules.yaml` sono **modelli parametrici**, non i regolamenti delle firm:
 prima di un numero operativo vanno allineate al regolamento primario (PROP_FIRM_CRITERIA §3).

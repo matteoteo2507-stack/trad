@@ -34,9 +34,9 @@ E' la logica del nostro `signal_copier` per questo canale (`entry_mode = "trigge
 e' suo (magic e commenti diversi dal repo):
 
 1. Sul messaggio **"BUY/SELL NOW"** apre 3 gambe **a mercato** con un bracket **provvisorio** centrato sul
-   fill: SL a 10 $, TP a 5/10/15 $ ([planner.py](../../signal_copier/planner.py), `build_market_plan`).
+   fill: SL a 10 $, TP a 5/10/15 $ ([planner.py](../../esercizio/signal_copier/planner.py), `build_market_plan`).
 2. Al messaggio coi livelli **riconcilia**: riscrive SL e TP con quelli postati
-   ([executor.py](../../signal_copier/executor.py), `on_reconcile`).
+   ([executor.py](../../esercizio/signal_copier/executor.py), `on_reconcile`).
 3. Dopo il TP1, SL a break-even (al prezzo di fill della gamba L1) sulle gambe rimaste.
 
 Lo si vede dagli ordini: il bracket d'apertura e' sempre fill ±10 / 5 / 10 / 15, mentre i livelli di
