@@ -15,8 +15,8 @@ da git (`.gitignore`: `/materiale_socio/*/`): restano solo su questo disco.
 |---|---|---|---|
 | `forexgump_telegram_2020-09_2026-09/` | export Telegram di **Forex Gump GOLD VIP** (21 file, 18.688 messaggi, 09/09/2020 → 28/09/2026) | [`../analysis/forexgump/parse.py`](../analysis/forexgump/parse.py) → `signals.csv` | pre-registrazione [`FOREXGUMP_LATENCY_PREREGISTRATION.md`](../docs/FOREXGUMP_LATENCY_PREREGISTRATION.md) |
 | `xat_conto_demo_socio_2026-09/` | export MT5 del conto demo del socio (numero omesso) su cui girava **XAT** (il mentore XAU), 22 segnali × 3 gambe, 21-29/09/2026, con lo script `export.py` del socio. ⚠️ Orari = server **UTC+3** | [`analysis_team_live_2026-09-30.md`](../docs/reviews/analysis_team_live_2026-09-30.md), [`xat_cancellazioni_2026-10-02.md`](../docs/reviews/xat_cancellazioni_2026-10-02.md) | dati descrittivi, fuori dal conteggio N = 60 |
-| `veltrix_alphanalist_chat_2026-06-08/` | export della chat Telegram privata con il bot **VELTRIX** (AlphaAnalist), esportato l'08/06/2026 in quattro formati (md, jsonl, json, html) + il suo README | [`../analysis/veltrix/parse_alphanalist.py`](../analysis/veltrix/parse_alphanalist.py) → `signals.csv`; `validate_levels.py`, `xau_spot_levels.py` | valutazione del bot chiusa il 12/06 ([memoria e DECISIONS](../DECISIONS.md)); dati di lavoro del parser |
-| `veltrix_webapp_conti_2026-09-28/` | export dalla webapp **VELTRIX** del 28/09/2026: due schermate del cruscotto (`dash1.jpg`, `dash2.jpg`) e `operazioni_conti_aggiuntivi.csv` (314 operazioni sui conti aggiuntivi) | nessuno script | citato in [`_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md) (riga Forex Gump): il backtest della webapp **non e' un risultato** |
+| `veltrix_alphanalist_chat_2026-06-08/` | export della chat Telegram privata con il bot **VELTRIX** (AlphaAnalist), esportato l'08/06/2026 in quattro formati (md, jsonl, json, html) + il suo README | [`../analysis/veltrix/parse_alphanalist.py`](../analysis/veltrix/parse_alphanalist.py) → `signals.csv`; `validate_levels.py`, `xau_spot_levels.py` | valutazione del bot chiusa il 12/06 ([memoria e DECISIONS](../decisioni/DECISIONS.md)); dati di lavoro del parser |
+| `veltrix_webapp_conti_2026-09-28/` | export dalla webapp **VELTRIX** del 28/09/2026: due schermate del cruscotto (`dash1.jpg`, `dash2.jpg`) e `operazioni_conti_aggiuntivi.csv` (314 operazioni sui conti aggiuntivi) | nessuno script | citato in [`_INTAKE.md`](../decisioni/_INTAKE.md) (riga Forex Gump): il backtest della webapp **non e' un risultato** |
 
 | `vtob_dati_risultati_2022-07_2026-10/` | pacchetto **VTOB** del socio (11/10/2026), la parte che non va in git: `data/` = barre XAUUSD del suo broker (M15 dal 12/07/2022, M5 dal 09/05/2025, fino al 09/10/2026, ora del server); `risultati/` = i suoi trade, il portafoglio e le quattro griglie. ⚠️ La colonna `spread` **cambia unita'** il 20/10/2025 (millesimi prima, centesimi dopo): per questo le barre restano qui e non nel data hub. I testi (specifiche, Pine, EA, Python) stanno in [`_sorgenti/vtob_socio_2026-10-11/`](../fondamenti_tecnici/_sorgenti/vtob_socio_2026-10-11/) | [`../analysis/vtob_intake/descrittivi.py`](../analysis/vtob_intake/descrittivi.py) | intake dell'11/10 in quarantena: [`vtob_socio_intake_2026-10-11.md`](../docs/reviews/vtob_socio_intake_2026-10-11.md) |
 | `vtob_dati_risultati_usm30_2000-06_2026-10/` | secondo pacchetto **VTOB** del socio (datato 12/10/2026), la parte che non va in git: `dati/` = barre XAUUSD M15, M30 (dal 16/04/2018), H1 e H4 (intraday dal 13/07/2011), D1 e W1 (dal 2000), USTEC M30 (dal 06/07/2022), NAS100 D1 Dukascopy (dal 2016); `backtest/` = i 535 trade, statistiche, mensile, grafici; `mt5/` = EA compilato (`.ex5`, non eseguito da noi). ⚠️ `dati/XAUUSD_M15.csv` e' **identico byte per byte** a quello del primo pacchetto: resta doppio perche' ognuno dei due codici lo cerca nella sua cartella. Stessa avvertenza sull'unita' dello spread dell'oro. ⚠️ Le barre prima del 12/07/2022 **non si usano** per lanciare le regole del socio senza una pre-registrazione. Testi in [`_sorgenti/vtob_socio_2026-10-12/`](../fondamenti_tecnici/_sorgenti/vtob_socio_2026-10-12/) | [`../analysis/vtob_intake/secondo_pacchetto.py`](../analysis/vtob_intake/secondo_pacchetto.py) | chiuso all'intake il 13/10: [nota, §8](../docs/reviews/vtob_socio_intake_2026-10-11.md) |
@@ -27,7 +27,7 @@ da git (`.gitignore`: `/materiale_socio/*/`): restano solo su questo disco.
 "ROYAL TRADING EMPIRE". I numeri e i motivi restano nelle note
 [Ben](../docs/reviews/ben_gold_trader_intake_2026-10-02.md),
 [Gold Sniper](../docs/reviews/gold_sniper_intake_2026-10-02.md) e
-[Royal](../docs/reviews/royal_trading_empire_intake_2026-10-02.md), e nella voce di [DECISIONS](../DECISIONS.md)
+[Royal](../docs/reviews/royal_trading_empire_intake_2026-10-02.md), e nella voce di [DECISIONS](../decisioni/DECISIONS.md)
 del 02/10.
 
 ⚠️ **XAT** e **Gump** sono fonti di segnali seguite dal socio, non materiale *suo*. La distinzione in fondo
@@ -66,14 +66,14 @@ Cartella [`../analysis/trading-bot-eval/`](../analysis/trading-bot-eval/). **Non
 - [`../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md`](../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md) — **spec fade da consegnare al socio** per walk-forward live.
 - [`../fondamenti_tecnici/_sorgenti/NXT strategy Fibonacci Elliott (video ex-socio).txt`](../fondamenti_tecnici/_sorgenti/) — fonte lossless del video dell'ex-socio.
 - Motori: [`../analysis/nxt/backtest.py`](../analysis/nxt/backtest.py) + `closure.py` (leggono il data hub condiviso).
-- Registro: [`../fondamenti_tecnici/_INTAKE.md`](../fondamenti_tecnici/_INTAKE.md) (righe NXT).
+- Registro: [`../fondamenti_tecnici/_INTAKE.md`](../decisioni/_INTAKE.md) (righe NXT).
 
 ## 🔗 Menzioni trasversali *(restano nei documenti globali — solo citate)*
 
-- [`../DECISIONS.md`](../DECISIONS.md) — ORB "idea utente+socio" = NO-GO; il bot del socio è **discrezionale, fuori dal workflow quant**.
+- [`../DECISIONS.md`](../decisioni/DECISIONS.md) — ORB "idea utente+socio" = NO-GO; il bot del socio è **discrezionale, fuori dal workflow quant**.
 - [`../docs/TRADING_WORKFLOW_DESIGN.md`](../docs/TRADING_WORKFLOW_DESIGN.md) — "discrezione del socio scambiata per edge del sistema"; bot del socio fuori dal workflow.
 - [`../docs/LEVEL_RESEARCH_PLAN.md`](../docs/LEVEL_RESEARCH_PLAN.md) — motore livelli basato su `analysis/veltrix/validate_levels.py`.
-- [`../DECISIONS.md`](../DECISIONS.md) 2026-06-14 — OctoBot dormiente.
+- [`../DECISIONS.md`](../decisioni/DECISIONS.md) 2026-06-14 — OctoBot dormiente.
 - [`../signal_copier/README.md`](../signal_copier/README.md) — precedente da non ripetere: chiave Bybit nella git history di VELTRIX. ⚠️ **NB**: il signal_copier riguarda i **mentori**, non il socio — non confondere.
 
 ## 🧠 Memoria persistente *(fuori dal repo: `claude-brain/memoria/trad/`)*

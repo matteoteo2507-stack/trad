@@ -71,7 +71,7 @@ Convenzione: la prima sezione descrive l'identità (chi sei), la seconda il fram
 (come pensi), la terza l'output atteso (formato risposta).
 
 > Fino al 2026-10-13 skill e prompt stavano anche in `skills/` e `agents/` alla radice, che Claude Code non
-> carica: cartelle ritirate ([DECISIONS.md](DECISIONS.md), voce 2026-10-13 (4)).
+> carica: cartelle ritirate ([DECISIONS.md](decisioni/DECISIONS.md), voce 2026-10-13 (4)).
 
 ## Configurazione
 
