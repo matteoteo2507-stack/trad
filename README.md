@@ -19,17 +19,17 @@ aggiorna a ogni passo.
 
 | Oggi | Cosa contiene | Va in |
 |---|---|---|
-| `core/`, `brokers/`, `notifiers/`, `tests/`, `config/`, `data/` | codice, test, configurazione, script dei dati | `motore/` |
-| `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `CONVENTIONS.md` | il metodo e le convenzioni | `motore/` |
-| `fondamenti_tecnici/` (moduli `0X_*`), `TRADING_PRINCIPLES.md` | teoria | `magazzino/` |
-| `fondamenti_tecnici/_sorgenti/`, `materiale_socio/` | fonti grezze, immutabili | `magazzino/` |
-| `docs/*_PREREGISTRATION.md`, `docs/reviews/`, `docs/health/` (output degli audit), `analysis/<famiglia>/` (anche `analysis/ops/a5_potenza_tsmom.py`), `strategies/{tsmom,meanrev,seasonality}/` | registro degli studi | `magazzino/` |
 | [`decisioni/`](decisioni/README.md) | **migrata il 09/11**: `DECISIONS.md`, contatore dei trial, backlog, mappa, ingresso (`Da distillare/`, `_INTAKE.md`) | fatto |
+| [`magazzino/`](magazzino/README.md) | **documenti migrati il 10/11**: teoria (`fondamenti_tecnici/`, con `TRADING_PRINCIPLES.md`), fonti grezze (`fonti/`), registro degli studi (`registro/documenti/`, `registro/referti/`), documenti dormienti (`dormienti/`) | fatto |
 | [`esercizio/`](esercizio/README.md) | **migrata il 09/11**: EA, copier, sorveglianza, PAC, criteri prop | fatto |
 | [`uscita/`](uscita/README.md) | **creata il 09/11**: pacchetti per i soci, vuota fino al primo | fatto |
-| `motore/riordino/sposta.py` | lo strumento della migrazione: sposta e riscrive i riferimenti | `motore/` (gia' li') |
-| `prop-lab/` | simulatore prop condiviso con un socio, tenuto allineato al suo repo | da decidere (Matteo) |
-| `strategies/{confluence_*,stock_selector,_base,_template}/`, `level_analyzer/`, `backtesters/`, `journals/`, `core/{runner,registry}.py`, documenti di architettura di maggio in `docs/` | sistemi dormienti | da decidere caso per caso |
+| `core/`, `brokers/`, `notifiers/`, `tests/`, `config/`, `data/`, `prop-lab/` | codice, test, configurazione, script dei dati, simulatore prop | `motore/` (gia' li': `motore/riordino/sposta.py`) |
+| `docs/STRATEGY_LIFECYCLE.md`, `docs/QUANT_REVIEW_PROTOCOL.md`, `CONVENTIONS.md` | il metodo e le convenzioni | `motore/` |
+| `analysis/` (codice degli studi), `strategies/{tsmom,meanrev,seasonality}/` | codice del registro | `magazzino/registro/` col passo del motore |
+| `strategies/{confluence_*,stock_selector,_base,_template}/`, `level_analyzer/`, `backtesters/`, `core/{runner,registry}.py` | codice dormiente | `magazzino/dormienti/` col passo del motore |
+
+Il codice si sposta tutto insieme nel passo del motore: prima ogni script trova la radice del repo cercando
+`pyproject.toml` invece di contare le cartelle, cosi' spostarlo non lo rompe.
 
 Restano alla radice: `CLAUDE.md` e `.claude/` (istruzioni e agenti di Claude Code), `pyproject.toml`, `conftest.py`,
 `.gitignore`, questo README e PROJECT.

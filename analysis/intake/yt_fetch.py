@@ -41,7 +41,7 @@ from typing import Any
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
-RAW = os.path.join(ROOT, "fondamenti_tecnici", "_sorgenti", "insight_da_yt", "_raw")
+RAW = os.path.join(ROOT, "magazzino", "fonti", "sorgenti", "insight_da_yt", "_raw")
 STATE = os.path.join(HERE, "_state.json")
 
 DELAY_DEFAULT = 90          # secondi fra una trascrizione e l'altra (prudente: la soglia di YouTube non e' nota)

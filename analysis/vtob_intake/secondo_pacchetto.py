@@ -29,8 +29,8 @@ sys.path.insert(0, RADICE)
 from core.trial_ledger import futility_sharpe  # noqa: E402
 from core.verifiche import mde  # noqa: E402
 
-SORGENTE = os.path.join(RADICE, "fondamenti_tecnici", "_sorgenti", "vtob_socio_2026-10-12")
-MATERIALE = os.path.join(RADICE, "materiale_socio", "vtob_dati_risultati_usm30_2000-06_2026-10")
+SORGENTE = os.path.join(RADICE, "magazzino", "fonti", "sorgenti", "vtob_socio_2026-10-12")
+MATERIALE = os.path.join(RADICE, "magazzino", "fonti", "materiale_socio", "vtob_dati_risultati_usm30_2000-06_2026-10")
 INIZIO_REPORT = pd.Timestamp("2022-07-12")
 
 

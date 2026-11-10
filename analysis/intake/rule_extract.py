@@ -27,7 +27,7 @@ import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
-RAW = os.path.join(ROOT, "fondamenti_tecnici", "_sorgenti", "insight_da_yt", "_raw")
+RAW = os.path.join(ROOT, "magazzino", "fonti", "sorgenti", "insight_da_yt", "_raw")
 OUT = os.path.join(RAW, "_digest")
 
 WIN, STRIDE = 45, 22        # finestra e passo, in parole

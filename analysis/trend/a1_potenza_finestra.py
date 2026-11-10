@@ -1,7 +1,7 @@
 """A1 punto 3: la potenza dipende dalla finestra? Conto sui futures GRATIS prima di comprare.
 
 NON e' un test dell'ipotesi e non consuma trial (come `power_two_groups.py`, referto
-docs/TREND_A1_HELDOUT_POWER.md). Usa solo:
+magazzino/registro/documenti/TREND_A1_HELDOUT_POWER.md). Usa solo:
   - i trade del campione di SCOPERTA (gia' usati il 21/09) per scomporre la dispersione fra
     strumenti in due parti: la differenza vera fra strumenti (sigma2_b) e il rumore dovuto ai
     pochi trade per strumento (sigma2_w / m);

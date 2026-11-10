@@ -1,6 +1,6 @@
 """Validazione OOS dei segnali mentore — esegue la pre-registrazione del 2026-08-07.
 
-Vedi docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md. Regole: motore di replay INVARIATO
+Vedi magazzino/registro/documenti/MENTOR_SIGNALS_OOS_PREREGISTRATION.md. Regole: motore di replay INVARIATO
 (backtest.replay), parametri congelati, finestra = segnali MAI replayati dall'audit
 (ts > fine copertura prezzi originale). Nessuna ritaratura.
 

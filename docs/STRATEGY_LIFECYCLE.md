@@ -7,8 +7,8 @@
 > **contabilità dei tentativi**, **dati sigillati** e **criteri di morte dichiarati in anticipo**.
 > Senza questi tre, "ricerca → backtest → rifinitura → ricerca" è p-hacking con più passaggi.
 
-Riferimenti teorici: [04_quant_metodologia §2](../fondamenti_tecnici/04_quant_metodologia/principles.md)
-(overfitting/data snooping, DSR, PBO), [§9](../fondamenti_tecnici/04_quant_metodologia/principles.md)
+Riferimenti teorici: [04_quant_metodologia §2](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)
+(overfitting/data snooping, DSR, PBO), [§9](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)
 (pre-mortem). Protocollo di misura: [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md).
 
 ---
@@ -46,7 +46,7 @@ Riferimenti teorici: [04_quant_metodologia §2](../fondamenti_tecnici/04_quant_m
 **La fase RICERCA ha un metodo** (dal 2026-10-03): prima di cercare candidati si risponde a *chi paga,
 perche' accetta, perche' non e' gia' arbitraggiato*, e si sceglie la **classe** di vantaggio (premio, flusso
 forzato, errore comportamentale, informazione, velocita'). Le nove domande, nell'ordine, stanno in
-[`09_fonti_di_vantaggio`](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md) §4 (bozza in
+[`09_fonti_di_vantaggio`](../magazzino/fondamenti_tecnici/09_fonti_di_vantaggio/principles.md) §4 (bozza in
 quarantena, da confermare con le fonti del suo §6). Un candidato senza classe e' un pattern, non un'ipotesi.
 
 **Due differenze rispetto al loop intuitivo:**
@@ -54,7 +54,7 @@ quarantena, da confermare con le fonti del suo §6). Un candidato senza classe e
 1. **[G1] La pre-registrazione è un gate, non un passaggio.** Sta *fra* formulazione e backtest, e
    fissa **prima di guardare i dati**: ipotesi, metriche, soglie di verdetto, **budget di tentativi**
    e criteri di bocciatura. Se non è scritta prima, il test non è informativo — è una descrizione dei
-   dati. Modello: i cinque `docs/*_PREREGISTRATION.md` già in repo.
+   dati. Modello: i `*_PREREGISTRATION.md` in `magazzino/registro/documenti/`.
 2. **La rifinitura sta *dentro* il TRAIN, mai prima dell'holdout.** Rifinire guardando risultati che
    includono i dati di validazione brucia la validazione. Il walk-forward *non* protegge da questo: i
    suoi segmenti "out-of-sample" li hai già visti se hai tarato sul full-sample.
@@ -109,7 +109,7 @@ ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 | Modellazione **più realistica** di costi/slippage/esecuzione | **No** — può solo peggiorare il risultato, non è ricerca di conferma |
 | Cambio di **parametro** dopo aver visto l'esito | **Sì**, uno per variante |
 | Cambio di **asset o timeframe** dopo aver visto l'esito | **Sì**, uno per combinazione |
-| Passaggio a un **indicatore diverso che misura la stessa grandezza** (RSI → Stocastico, media mobile → Donchian; le grandezze in [10_indicatori_tecnici §2](../fondamenti_tecnici/10_indicatori_tecnici/principles.md)) | **Sì**, ed e' un trial **della stessa famiglia**: non ne apre una nuova (dal 2026-10-08, DECISIONS 2026-10-08 (3)). Un **meccanismo economico** diverso resta una nuova ipotesi (ultima riga della tabella), con parentela dichiarata e senza usare come holdout i dati della famiglia simile (primo caso: DECISIONS 2026-10-09) |
+| Passaggio a un **indicatore diverso che misura la stessa grandezza** (RSI → Stocastico, media mobile → Donchian; le grandezze in [10_indicatori_tecnici §2](../magazzino/fondamenti_tecnici/10_indicatori_tecnici/principles.md)) | **Sì**, ed e' un trial **della stessa famiglia**: non ne apre una nuova (dal 2026-10-08, DECISIONS 2026-10-08 (3)). Un **meccanismo economico** diverso resta una nuova ipotesi (ultima riga della tabella), con parentela dichiarata e senza usare come holdout i dati della famiglia simile (primo caso: DECISIONS 2026-10-09) |
 | Un'ipotesi nuova tratta dalla **stessa teoria** di una famiglia esistente (es. un altro evento previsto dallo stesso modello geopolitico) | **Sì**, ed e' un trial **della stessa famiglia** (dal 2026-10-25, DECISIONS 2026-10-25 (8)): stessa teoria = stessa famiglia, come stessa grandezza = stessa famiglia. Una teoria con un **meccanismo diverso** apre una famiglia nuova |
 | Aggiunta di un **filtro** | **Sì** — ed è il più pericoloso (vedi §4) |
 | **Nuova ipotesi** con razionale economico indipendente | **Sì**, ma apre una **nuova pre-registrazione** |
@@ -226,13 +226,13 @@ misurano separatamente:
 - Scegliere fra 1R e gli overlay per operare e' una **selezione fra al massimo 5**: si dichiara, con il
   criterio "positivo ovunque" (§4ter).
 - Vale **da qui in avanti**. Una famiglia CLOSED non si riapre con un overlay (§7). Il caso delle famiglie
-  chiuse vicine a zero e' in [doppio_binario_closed_2026-10-06](reviews/doppio_binario_closed_2026-10-06.md).
+  chiuse vicine a zero e' in [doppio_binario_closed_2026-10-06](../magazzino/registro/referti/doppio_binario_closed_2026-10-06.md).
 
 ## 5. Tassonomia dei verdetti
 
 | Verdetto | Significato | Cosa succede |
 |---|---|---|
-| **GO** | Edge sopravvive a train + walk-forward + holdout + costi | Promozione a capitale, con pre-mortem ([04 §9](../fondamenti_tecnici/04_quant_metodologia/principles.md)) |
+| **GO** | Edge sopravvive a train + walk-forward + holdout + costi | Promozione a capitale, con pre-mortem ([04 §9](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)) |
 | **LEAD** | Risultato positivo ma **data-derived** o senza OOS indipendente | **Non promuovibile.** Richiede **nuova** pre-registrazione + **forward OOS**. Stato attuale del *fade* NXT. Se l'holdout e' gia' aperto per costruzione (campione intero come holdout, es. Gump D1), il ledger lo ammette solo con `gate_finale: "forward"` dichiarato **prima** dell'esito (DECISIONS 2026-10-02) |
 | **NO-GO** | Questa specifica non regge | La *specifica* muore. La *famiglia* sopravvive solo se ha budget residuo |
 | **NON DIMOSTRATO** | Il test non rifiuta il nullo **e** non aveva la forza per vedere l'effetto plausibile (MDE sopra l'effetto atteso) | Si scrive **sempre con l'MDE** accanto. Non e' "refutato": la casella resta vuota, non chiusa. Puo' chiudere una famiglia, con motivo `potenza` (dal 2026-11-04) |
@@ -275,7 +275,7 @@ Questi non si aggiustano con un parametro. Quando scattano, la strategia (o la f
    negativi.*
 4. **Muore sui costi realistici** — l'edge esiste lordo e sparisce con spread/slippage/commissioni.
 5. **Instabilità parametrica** — piccole variazioni ribaltano l'esito. Già NO-GO in
-   [04](../fondamenti_tecnici/04_quant_metodologia/principles.md).
+   [04](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md).
 6. **Razionale economico falsificato** — non è il numero a fallire, è il *perché*. Se "i livelli sono
    zone di reazione" è falso, muore la **famiglia**, non la singola implementazione.
 
@@ -372,7 +372,7 @@ mai le fasi successive. Due vincoli:
 > Lato ricevente del ponte con il vault `claude-brain` (lato hub: `../CLAUDE.md`, "Lavorare su `trad` dall'hub").
 > Fissato con il gatekeeper il 25/10 su richiesta di Matteo; da rivedere nel rituale
 > ([`decisioni/mappa/_modifiche.md`](../decisioni/mappa/_modifiche.md)). Prima prova: l'idea "insider pesati con la geopolitica",
-> [intake del 25/10](reviews/idee_matteo_hub_intake_2026-10-25.md).
+> [intake del 25/10](../magazzino/registro/referti/idee_matteo_hub_intake_2026-10-25.md).
 
 Un'idea che nasce nell'hub (appunti di Matteo, studio, geopolitica) arriva in [`decisioni/Da distillare/`](../decisioni/Da%20distillare/README.md)
 come ogni altro materiale. Diventa un'**ipotesi** di `trad` solo con questa scheda. Si legge in ordine e **ci si ferma
@@ -389,7 +389,7 @@ al primo campo che manca**.
 | **P5 · Misura fatta nell'hub** | solo se l'idea viene da un registro (es. le previsioni): cosa si e' misurato e su quante osservazioni, metrica e riferimento, intervallo, criterio scritto **prima** con il commit dell'hub che lo data, quante serie o categorie sono state misurate | criterio non datato prima della misura, o nessun riferimento: e' un descrittivo; statistiche di terzi al posto di una misura (vincolo sopra); per la geopolitica, misura assente |
 | **P6 · Baseline previsto** | una riga: che cosa si randomizza | manca (G1 del gatekeeper, Checklist 1) |
 
-**2. Le nove domande** del [modulo 09 §4](../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md), cosi' come sono.
+**2. Le nove domande** del [modulo 09 §4](../magazzino/fondamenti_tecnici/09_fonti_di_vantaggio/principles.md), cosi' come sono.
 Respingono: classe assente (un candidato senza classe e' un pattern: riga in `_INTAKE.md`, niente pre-registrazione);
 "chi paga" incompleto; accessibilita' fuori perimetro ("CFD retail, capitale piccolo, dati liberi", DECISIONS
 2026-10-03 (4); allargato all'azionario il 2026-10-25 (3)) o dato a pagamento senza la regola di [BACKLOG §G](../decisioni/BACKLOG_RICERCA.md); potenza fuori scala (si chiude
@@ -420,7 +420,7 @@ stesso evento. Il calcolo e' fra gli Aperti della nota dell'hub e aspetta la sce
 
 | Esito | Quando | Dove |
 |---|---|---|
-| **Respinta** | un campo P manca o fa scattare il rigetto, o ci si ferma alle domande 1, 2, 6, 7 o 8 | `_INTAKE.md` ("chiuso all'intake, 0 trial", motivo, condizione di riapertura); nota in `docs/reviews/`; `DECISIONS.md` con la decisione di Matteo |
+| **Respinta** | un campo P manca o fa scattare il rigetto, o ci si ferma alle domande 1, 2, 6, 7 o 8 | `_INTAKE.md` ("chiuso all'intake, 0 trial", motivo, condizione di riapertura); nota in `magazzino/registro/referti/`; `DECISIONS.md` con la decisione di Matteo |
 | **Parcheggiata** | condizione nota lato `trad`: dati, perimetro, budget | `_INTAKE.md` (`parcheggiato`) + riga del BACKLOG §D o §G con "si sblocca se" |
 | **Rimandata all'hub** | cio' che manca vive nell'hub (es. la misura di fase 1) | resta nella nota dell'hub (fonte unica); in `trad` al piu' una riga di `_INTAKE.md` con il link |
 | **Accettata** | passa scheda e griglia | `_INTAKE.md` (`distillato`) + riga del BACKLOG §B; famiglia e slot li decide Matteo in `DECISIONS.md`; il contatore la registra all'approvazione della pre-registrazione |
@@ -527,6 +527,6 @@ una modifica, è una **nuova specifica** e riparte dal gate [G1].
 
 - [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md) — come si misura (il *gate*, non la *regola di stop*).
 - [`.claude/agents/quant-gatekeeper.md`](../.claude/agents/quant-gatekeeper.md) — il revisore: fa rispettare questo ciclo ai gate G1 e G2 (dal 2026-10-13 è l'unico).
-- [04_quant_metodologia](../fondamenti_tecnici/04_quant_metodologia/principles.md) — teoria dei bias, DSR/PBO, pre-mortem.
+- [04_quant_metodologia](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md) — teoria dei bias, DSR/PBO, pre-mortem.
 - [DECISIONS.md](../decisioni/DECISIONS.md) — il registro dei verdetti effettivi.
 - Pre-registrazioni esistenti: `TSMOM_`, `OPENING_RANGE_`, `MEANREV_`, `SEASONALITY_`, `LEVEL_RESEARCH_PREREGISTRATION.md`.

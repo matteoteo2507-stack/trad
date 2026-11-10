@@ -180,7 +180,7 @@ Non sui comparatori. Se un dato non è pubblicato, si scrive **NON PRESENTE** e 
 | 1.8 | Italia + postura MiFID II | 📎 Italia ammessa; si dichiara simulazione, non broker | 📎 Italia ammessa; dichiara di non rientrare nella regolazione ordinaria | 📎 non trovato | ❓ | |
 
 📎 = dato del **secondo passaggio di Comet** (06/10), con la **frase citata e il nome della pagina, senza URL**: per
-orientarsi, non per una decisione con soldi. Fonte integrale: [prop_regolamenti_comet_2026-10-06](../../docs/reviews/prop_regolamenti_comet_2026-10-06.md).
+orientarsi, non per una decisione con soldi. Fonte integrale: [prop_regolamenti_comet_2026-10-06](../../magazzino/registro/referti/prop_regolamenti_comet_2026-10-06.md).
 ⚠️ = i due passaggi di Comet si contraddicono. Le celle senza simbolo vengono dalle verifiche precedenti.
 
 **Candidate da aggiungere alla griglia** (emerse come "no consistency rule + static DD + EA su MT5",
@@ -216,7 +216,7 @@ ne' da FundedNext. ⚠️ Quel criterio era stato derivato da `nxt_fade` (posizi
 strumenti), oggi KILL: per una strategia intraday il flottante pesa molto meno. Tutti i criteri del §1 vanno
 riletti sulla forma della prossima strategia candidata, non su quelle morte (§0).
 
-**Secondo passaggio (06/10, portato il 07/10)** — [fonte integrale](../../docs/reviews/prop_regolamenti_comet_2026-10-06.md).
+**Secondo passaggio (06/10, portato il 07/10)** — [fonte integrale](../../magazzino/registro/referti/prop_regolamenti_comet_2026-10-06.md).
 Ora ogni valore ha la frase citata e il motivo dei `null`; gli URL restano nomi di pagina (stato
 `citato_senza_url`). Risolto: la perdita giornaliera **FTMO** (5% del capitale iniziale, misurata dal saldo
 delle 00:00 CE(S)T, flottante incluso: e' esattamente come la modella il simulatore); gli obiettivi FundedNext

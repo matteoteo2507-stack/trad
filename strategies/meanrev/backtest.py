@@ -1,5 +1,5 @@
 """Mean-reversion vol (non-level) — backtester di portafoglio. Spec PRE-REGISTRATA
-(docs/MEANREV_PREREGISTRATION.md). Riusa data/sizing/validazione di strategies/tsmom/backtest.py.
+(magazzino/registro/documenti/MEANREV_PREREGISTRATION.md). Riusa data/sizing/validazione di strategies/tsmom/backtest.py.
 
 Segnale: z-score del prezzo (z = (close - SMA_N)/STD_N, dati <= t). Entry contro-stiramento
 (z<=-Z_ENTRY long / z>=+Z_ENTRY short); exit a ritorno alla media (z cambia segno) o time-stop

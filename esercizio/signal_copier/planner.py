@@ -83,7 +83,7 @@ def late_gate(
     # sfavorevole si tengono 293 segnali su 696 con E[R] = +0,159
     # [+0,076 ; +0,239] -- meglio del replay a limite, con fill a mercato.
     #
-    # Dettagli in docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9.
+    # Dettagli in magazzino/registro/documenti/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9.
     sfavorevole = (
         current_price > signal.entry if signal.side == "BUY"
         else current_price < signal.entry

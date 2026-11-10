@@ -1,7 +1,7 @@
 """Verifiche di metodo: i buchi di PRIORITA' 1 del distillamento Quant Guild (DECISIONS 2026-09-30).
 
 Una primitiva per ogni domanda che prima si rispondeva a mano, in copie sparse, o non si faceva.
-Catalogo e fonti: `fondamenti_tecnici/_sorgenti/insight_da_yt/_triage/quantguild/SINTESI.md` §8.
+Catalogo e fonti: `magazzino/fonti/sorgenti/insight_da_yt/_triage/quantguild/SINTESI.md` §8.
 
 | buco | domanda | primitiva |
 |---|---|---|

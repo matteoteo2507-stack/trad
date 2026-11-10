@@ -2,7 +2,7 @@
 
 Legge la spina riconciliata (trade_records.csv) e dice SE c'e' abbastanza evidenza e
 PER QUALE conclusione — **condizionata** a regime/sessione/asset. NON modifica nulla:
-e' un verdetto, non un'azione. Regole (vedi docs/TRADING_WORKFLOW_DESIGN.md):
+e' un verdetto, non un'azione. Regole (vedi magazzino/dormienti/docs/TRADING_WORKFLOW_DESIGN.md):
 
   - si decide sul LOWER BOUND del CI, mai sul valore centrale (regola d'oro quant);
   - i trade sono CLUSTERATI per giorno -> CI via BLOCK-bootstrap sui giorni (non iid),

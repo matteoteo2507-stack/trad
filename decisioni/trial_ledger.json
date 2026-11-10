@@ -21,7 +21,7 @@
       "fonte_esterna": false,
       "verdetto": "NULL su ogni timeframe",
       "fonti": [
-        "docs/LEVEL_RESEARCH_PREREGISTRATION.md",
+        "magazzino/registro/documenti/LEVEL_RESEARCH_PREREGISTRATION.md",
         "DECISIONS.md 2026-07-06 (v1, 96 trial)",
         "DECISIONS.md 2026-07-07 (v2 volume, cumulato 144)",
         "DECISIONS.md 2026-07-07 v3 (HTF, cumulato 384)"
@@ -44,14 +44,14 @@
       "fonte_esterna": true,
       "verdetto": "KILL della famiglia (2026-09-17)",
       "fonti": [
-        "docs/NXT_FADE_FORWARD_PREREGISTRATION.md:101 (fade = trial #2)",
-        "docs/NXT_FADE_FORWARD_PREREGISTRATION.md:303 (budget 2 di 3, holdout gia' aperto)",
+        "magazzino/registro/documenti/NXT_FADE_FORWARD_PREREGISTRATION.md:101 (fade = trial #2)",
+        "magazzino/registro/documenti/NXT_FADE_FORWARD_PREREGISTRATION.md:303 (budget 2 di 3, holdout gia' aperto)",
         "DECISIONS.md 2026-09-17 (4) - KILL"
       ],
       "note": "Trial #1 = continuazione (NO-GO 2026-07-17), #2 = fade. Il terzo NON e' stato speso. Rinominare la famiglia non azzera il contatore. Il KILL e' per difetto metodologico (fill fantasma, §6a.1), non per budget.",
       "provenienza_ipotesi": "umana_esterna",
       "finestra_dati_fine": "2026-09-17",
-      "nota_provenienza": "Spec degli ex-soci (Fibonacci/Elliott), documentata in fondamenti_tecnici/strategie_candidate/.",
+      "nota_provenienza": "Spec degli ex-soci (Fibonacci/Elliott), documentata in magazzino/registro/documenti/strategie_candidate/.",
       "motivo_chiusura": "metodo",
       "fonte_motivo": "KILL per fill fantasma, LIFECYCLE §6a.1 (DECISIONS 2026-09-17)"
     },
@@ -66,7 +66,7 @@
       "fonte_esterna": false,
       "verdetto": "NO-GO su SPX500; NAS100 NON MISURATO (A5)",
       "fonti": [
-        "docs/OPENING_RANGE_PREREGISTRATION.md",
+        "magazzino/registro/documenti/OPENING_RANGE_PREREGISTRATION.md",
         "DECISIONS.md 2026-07-16",
         "decisioni/BACKLOG_RICERCA.md A3 e A5 (holdout gia' aperto)"
       ],
@@ -87,7 +87,7 @@
       "fonte_esterna": false,
       "verdetto": "dichiarato NO-GO; declassato a NON MISURATO dall'audit A5",
       "fonti": [
-        "docs/TSMOM_PREREGISTRATION.md (n_trials = 8: lookback 4 x ribilanciamento 2)",
+        "magazzino/registro/documenti/TSMOM_PREREGISTRATION.md (n_trials = 8: lookback 4 x ribilanciamento 2)",
         "DECISIONS.md 2026-07-08",
         "DECISIONS.md 2026-09-18 (5) - A5"
       ],
@@ -108,7 +108,7 @@
       "fonte_esterna": false,
       "verdetto": "NO-GO",
       "fonti": [
-        "docs/MEANREV_PREREGISTRATION.md (n_trials = 6: N 3 x Z_ENTRY 2)",
+        "magazzino/registro/documenti/MEANREV_PREREGISTRATION.md (n_trials = 6: N 3 x Z_ENTRY 2)",
         "DECISIONS.md 2026-07-08"
       ],
       "provenienza_ipotesi": "non_dichiarata",
@@ -127,7 +127,7 @@
       "fonte_esterna": false,
       "verdetto": "NO-GO",
       "fonti": [
-        "docs/SEASONALITY_PREREGISTRATION.md (n_trials = 4 finestre)",
+        "magazzino/registro/documenti/SEASONALITY_PREREGISTRATION.md (n_trials = 4 finestre)",
         "DECISIONS.md 2026-07-08"
       ],
       "provenienza_ipotesi": "letteratura",
@@ -148,7 +148,7 @@
       "prereg_esterna_trimestre": "2026-Q3",
       "verdetto": "NULL al primo trial",
       "fonti": [
-        "docs/ROUND_NUMBER_GRID_PREREGISTRATION.md:31 (trial #1 di 3)",
+        "magazzino/registro/documenti/ROUND_NUMBER_GRID_PREREGISTRATION.md:31 (trial #1 di 3)",
         "DECISIONS.md 2026-08-09"
       ],
       "note": "Fonte: Okala / Chart Fanatics. Consuma UNA delle pre-registrazioni esterne del trimestre.",
@@ -170,11 +170,11 @@
       "prereg_esterna_trimestre": "2026-Q3",
       "verdetto": "CLOSED per potenza (25/10, Matteo): coda aperta REFUTATA (14/08); gradiente di volatilita' mai confermato fuori campione, test held-out non finanziabile sullo scenario onesto con nessun dato (fuori scala 2,3-3,8x, referto A1 §9). NON refutato. Round 3 non speso; B2, A1 e D4 chiuse con la famiglia",
       "fonti": [
-        "docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md",
-        "docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md:196 (lacuna: nessun holdout sigillato per Q2)",
+        "magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md",
+        "magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md:196 (lacuna: nessun holdout sigillato per Q2)",
         "DECISIONS.md 2026-08-14 (2)",
         "decisioni/BACKLOG_RICERCA.md A1",
-        "docs/TREND_A1_HELDOUT_POWER.md §9",
+        "magazzino/registro/documenti/TREND_A1_HELDOUT_POWER.md §9",
         "DECISIONS.md 2026-10-25 (5)"
       ],
       "note": "Fonte: Pavel Kichev. Consuma la SECONDA pre-registrazione esterna del trimestre. Round 2 di 3 gia' speso: ne resta uno. NESSUN holdout sigillato per Q2 - dichiarato nella pre-registrazione stessa, non scoperto dopo. Riserva aggiunta il 2026-09-19 (E1): holding mediano 7 giorni sul reale contro 2 sul random. 2026-09-30: il round 3 e' ASSEGNATO a B2 (breakout Kichev) per decisione dell'utente (DECISIONS 2026-09-30), non ancora speso; A1 punto 3 vi rinuncia. Se B2 fallisce la famiglia chiude per budget, con A1 e D4. 2026-10-03: B2 CHIUSA a 0 trial (potenza insufficiente nell'universo della fonte, DECISIONS 2026-10-03): il round 3 NON e' speso e resta alla famiglia, disponibile per B2 o A1 punto 3 quando una delle due avra' potenza. 2026-10-25: CLOSED per potenza per decisione di Matteo (DECISIONS 2026-10-25 (5)), D4 compresa. Riapre solo con evidenza esterna nuova (LIFECYCLE §7), condizioni nella voce DECISIONS.",
@@ -214,13 +214,13 @@
       "fonte_esterna": false,
       "verdetto": "NON DIMOSTRATO, CLOSED (25/10, Matteo): l'OOS positivo del 07/08 e' misurato su un export da cui il canale cancella i perdenti (storico selezionato, segno non determinato); il forward non e' mai partito (copier CLOSED a 0 trade, 13/10). Riapre solo con un registro forward dei segnali, inizio e numero dichiarati prima",
       "fonti": [
-        "docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md",
-        "docs/COPIER_EXECUTION_PREREGISTRATION.md",
+        "magazzino/registro/documenti/MENTOR_SIGNALS_OOS_PREREGISTRATION.md",
+        "magazzino/registro/documenti/COPIER_EXECUTION_PREREGISTRATION.md",
         "DECISIONS.md 2026-08-07",
         "DECISIONS.md 2026-09-18 (4)",
         "DECISIONS.md 2026-10-02 (notte)",
         "DECISIONS.md 2026-10-13 (2)",
-        "docs/reviews/xat_cancellazioni_2026-10-02.md",
+        "magazzino/registro/referti/xat_cancellazioni_2026-10-02.md",
         "DECISIONS.md 2026-10-25 (6)"
       ],
       "note": "B7 (uscita a 1R), C3 (soglie di ritiro), C4 (sizing), C5 (gate di latenza) sono state chiuse a 0 trial: erano misure o verifiche, non ricerca di conferma (LIFECYCLE §3). La correzione del fuso e la sua doppia applicazione sono FIX, non trial. 2026-10-25: CLOSED, non dimostrato, per decisione di Matteo (DECISIONS 2026-10-25 (6)).",
@@ -241,8 +241,8 @@
       "verdetto": "NO-GO per difetto metodologico (regime gating look-ahead)",
       "fonti": [
         "DECISIONS.md 2026-05-30",
-        "docs/reviews/london_breakout-2026-05-29.md",
-        "docs/reviews/london_breakout-postmortem-2026-05-30.md"
+        "magazzino/registro/referti/london_breakout-2026-05-29.md",
+        "magazzino/registro/referti/london_breakout-postmortem-2026-05-30.md"
       ],
       "note": "Kill duro §6a.1: i numeri sono nulli, non 'da correggere'. Conteggio trial mai scritto - precede il ciclo di vita formalizzato (2026-08-04).",
       "provenienza_ipotesi": "non_dichiarata",
@@ -264,12 +264,12 @@
       "prereg_esterna_trimestre": "2026-Q4",
       "verdetto": "NON DIMOSTRATO (MDE 0,130R) al primo e unico trial (02/10): d -0,007 [-0,082; +0,069]; copiato a L=10 s E[R] -0,342 [-0,431; -0,248]",
       "fonti": [
-        "docs/FOREXGUMP_LATENCY_PREREGISTRATION.md §0 D1 (campione intero = holdout, train vuoto)",
-        "docs/FOREXGUMP_LATENCY_PREREGISTRATION.md §7 (contabilita')",
+        "magazzino/registro/documenti/FOREXGUMP_LATENCY_PREREGISTRATION.md §0 D1 (campione intero = holdout, train vuoto)",
+        "magazzino/registro/documenti/FOREXGUMP_LATENCY_PREREGISTRATION.md §7 (contabilita')",
         "DECISIONS.md 2026-10-02 (D1 decisa)",
         "DECISIONS.md 2026-10-02 (approvazione) - pre-registrazione APPROVATA, ripresa, gate_finale",
-        "docs/reviews/forexgump_esito_2026-10-02.md",
-        "docs/reviews/forexgump_G2_2026-10-02.md",
+        "magazzino/registro/referti/forexgump_esito_2026-10-02.md",
+        "magazzino/registro/referti/forexgump_G2_2026-10-02.md",
         "DECISIONS.md 2026-10-05 - Gump CLOSED con condizioni di riapertura"
       ],
       "note": "trial_budget 1 sui dati storici: le varianti sono pre-registrazioni nuove sul forward. Esito max LEAD, GO solo dal forward (gate_finale). DSR n_trial = 1; futilita' ~0,039 di Sharpe per trade. Riapertura (LIFECYCLE §7, fonte nuova), solo con una nuova pre-registrazione: (1) il mentore cambia formato o tempistica dei segnali (pubblica prima di entrare, ordine limite raggiungibile, feed all'istante d'ingresso): si misura sui segnali successivi al cambio; (2) il journal del socio in configurazione 'come postato' arriva a >= 780 trade eseguiti e il limite inferiore del CI 95% a cluster per giornata del suo E[R] supera -0,156R (la simulazione e' smentita). 780 = potenza 80% per 0,156R con sd efficace 1,556 (appendice del referto, 05/10): ~2,6 anni a ~296 segnali/anno. Le configurazioni 8-8 e 10-7 sono geometrie non testate: ipotesi nuove, non riaperture.",
@@ -292,12 +292,12 @@
       "prereg_esterna_trimestre": "2026-Q4",
       "verdetto": "NON DIMOSTRATO (MDE 0,446%) al primo e unico trial (08/10): divario netto +0,307% [-0,009; +0,615]; chiusa per potenza, non refutata",
       "fonti": [
-        "docs/MR_INDICI_RSI2_PREREGISTRATION.md",
-        "docs/MR_INDICI_POTENZA.md",
-        "docs/reviews/rsi2_fonti_comet_2026-10-08.md",
-        "docs/reviews/rsi2_indici_esito_2026-10-08.md",
-        "docs/reviews/rsi2_indici_G2_2026-10-08.md",
-        "docs/reviews/esiti/mr_indici_rsi2_2026-10-08.txt",
+        "magazzino/registro/documenti/MR_INDICI_RSI2_PREREGISTRATION.md",
+        "magazzino/registro/documenti/MR_INDICI_POTENZA.md",
+        "magazzino/registro/referti/rsi2_fonti_comet_2026-10-08.md",
+        "magazzino/registro/referti/rsi2_indici_esito_2026-10-08.md",
+        "magazzino/registro/referti/rsi2_indici_G2_2026-10-08.md",
+        "magazzino/registro/referti/esiti/mr_indici_rsi2_2026-10-08.txt",
         "DECISIONS.md#2026-10-08-4"
       ],
       "note": "Test unico sulla storia 2012-2026, gia' vista da meanrev_vol (08/07) e B1 (17/09): massimo LEAD. Baseline a durata copiata. CLOSED = escluso un eccesso sul caso >= 0,50% (opzione c, 08/10, su delega di Matteo) + tabella di esclusione delle fonti; LEAD contro la distorsione del nullo B_NULL; MDE: pre-registrazione §6. Riapre solo con evidenza esterna nuova (LIFECYCLE §7): un eccesso pubblicato contro un ingresso casuale a durata copiata su dati indipendenti; il forward su questi indici non e' praticabile (~18 anni per un MDE di 0,39%, referto §7).",
@@ -318,17 +318,17 @@
       "gate_finale": "forward",
       "fonte_esterna": true,
       "prereg_esterna_trimestre": "2026-Q4",
-      "verdetto": "CLOSED al train (12/10), primo e unico trial: divario dal casuale -0,51 pb [-2,01; +0,99] (MDE 2,15), limite alto sotto la meta' dell'effetto atteso dalla fonte (2,28 pb); holdout DAX mai aperto. Esito: docs/reviews/esiti/ultima_mezzora_train.txt",
+      "verdetto": "CLOSED al train (12/10), primo e unico trial: divario dal casuale -0,51 pb [-2,01; +0,99] (MDE 2,15), limite alto sotto la meta' dell'effetto atteso dalla fonte (2,28 pb); holdout DAX mai aperto. Esito: magazzino/registro/referti/esiti/ultima_mezzora_train.txt",
       "fonti": [
-        "docs/ULTIMA_MEZZORA_PREREGISTRATION.md",
-        "docs/ULTIMA_MEZZORA_FATTIBILITA.md",
+        "magazzino/registro/documenti/ULTIMA_MEZZORA_PREREGISTRATION.md",
+        "magazzino/registro/documenti/ULTIMA_MEZZORA_FATTIBILITA.md",
         "decisioni/BACKLOG_RICERCA.md",
-        "fondamenti_tecnici/10_indicatori_tecnici/principles.md",
+        "magazzino/fondamenti_tecnici/10_indicatori_tecnici/principles.md",
         "DECISIONS.md#2026-10-09",
         "DECISIONS.md#2026-10-11",
         "DECISIONS.md#2026-10-12",
-        "docs/reviews/esiti/ultima_mezzora_train.txt",
-        "docs/reviews/ultima_mezzora_G2_2026-10-12.md"
+        "magazzino/registro/referti/esiti/ultima_mezzora_train.txt",
+        "magazzino/registro/referti/ultima_mezzora_G2_2026-10-12.md"
       ],
       "note": "Pre-registrazione approvata il 12/10, train eseguito una volta lo stesso giorno: CLOSED, holdout rimasto sigillato (DECISIONS 2026-10-12 (2)). Famiglia nuova per decisione di Matteo (09/10), parente di opening_range (CLOSED): parentela dichiarata e niente holdout sui dati dell'ORB. Due stadi dello stesso trial: train SPX500+NAS100 da 06/2020, poi, solo se PASSA, holdout DAX (sigillato, scaricato l'11/10). Primaria: proporzionale con tetto contro direzione casuale a pari taglia; guardia: divario a taglia fissa positivo al 5% a una coda (strada B, eccezione dichiarata a LIFECYCLE 4quater, DECISIONS 2026-10-11). Massimo esito LEAD, gate finale forward. Terzo slot esterno del 2026-Q4.",
       "provenienza_ipotesi": "letteratura",

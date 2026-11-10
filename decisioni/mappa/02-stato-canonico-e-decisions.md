@@ -18,14 +18,14 @@ Risponde a due domande, ognuna con **una sola fonte**:
 
 | Domanda | Fonte | Forma |
 |---|---|---|
-| **A che punto è** una famiglia o una strategia, oggi? | il **frontmatter** della sua pre-registrazione, `docs/*_PREREGISTRATION.md` | cinque campi: `stato`, `aggiornato`, `decisione`, `metrica_corrente`, `nota` |
+| **A che punto è** una famiglia o una strategia, oggi? | il **frontmatter** della sua pre-registrazione, `magazzino/registro/documenti/*_PREREGISTRATION.md` | cinque campi: `stato`, `aggiornato`, `decisione`, `metrica_corrente`, `nota` |
 | **Cosa abbiamo deciso, quando e perché?** | `DECISIONS.md` | registro cronologico, **la voce più recente in alto**; non si riscrive, si aggiunge una voce nuova |
 
 Tutto il resto **punta** a queste due fonti e non le ripete:
-- `docs/README.md` elenca le pre-registrazioni con "cosa testa", senza stati né numeri;
+- `magazzino/registro/README.md` elenca le pre-registrazioni con "cosa testa", senza stati né numeri;
 - `decisioni/mappa/_cruscotto.base` mostra i frontmatter in una tabella di Obsidian, ed è una vista, non una copia;
 - la memoria di Claude (`memoria/trad/MEMORY.md`) rimanda al frontmatter per stati e numeri;
-- i report in `docs/reviews/` sono fotografie datate: valgono per quel giorno, e se una voce
+- i report in `magazzino/registro/referti/` sono fotografie datate: valgono per quel giorno, e se una voce
   successiva di `DECISIONS.md` li supera, è la voce a vincere.
 
 ## Perché esiste
@@ -33,7 +33,7 @@ Tutto il resto **punta** a queste due fonti e non le ripete:
 Il **27/09/2026** Claude "mescolava le versioni": rispondeva con il numero o lo stato sbagliato,
 perché la stessa informazione stava in molti posti che invecchiavano a velocità diverse. Esempi
 misurati quel giorno (`decisioni/mappa/_modifiche.md`, voci del 27/09):
-- `docs/README.md` diceva **FADE ATTIVO** dieci giorni dopo il KILL del 17/09;
+- `magazzino/registro/README.md` diceva **FADE ATTIVO** dieci giorni dopo il KILL del 17/09;
 - il copier era citato a **+0,194** in alcuni file e a **+0,127** in `DECISIONS.md` dopo la
   correzione del 18/09;
 - `_INTAKE.md` descriveva il FADE come "+0,35R robusto".
@@ -65,10 +65,10 @@ Dopo **ogni** verdetto, anche un NO-GO, nella **stessa sessione** (memoria
 
 | Cosa | Valore atteso | Come si controlla | Chi |
 |---|---|---|---|
-| Campi del frontmatter | ogni `docs/*_PREREGISTRATION.md` ha `stato`, `aggiornato`, `decisione` | lettura del frontmatter (il 02/10: tutte e 11 li hanno) | Claude |
+| Campi del frontmatter | ogni `magazzino/registro/documenti/*_PREREGISTRATION.md` ha `stato`, `aggiornato`, `decisione` | lettura del frontmatter (il 02/10: tutte e 11 li hanno) | Claude |
 | Frontmatter non più vecchio delle decisioni | `aggiornato` ≥ data della voce più recente di `DECISIONS.md` che nomina la famiglia | confronto delle date (il 02/10: **trend non conforme**, vedi sotto; allineato il 13/10) | Claude |
 | Nessuno stato copiato | nei documenti di stato corrente nessuna famiglia KILL, CLOSED o NO-GO descritta come attiva senza "⚠️ Superato" | healthcheck, controllo A.2 | Claude |
-| `docs/README.md` | non contiene stati né numeri | lettura della tabella delle pre-registrazioni | Claude |
+| `magazzino/registro/README.md` | non contiene stati né numeri | lettura della tabella delle pre-registrazioni | Claude |
 
 ## Come si rompe
 
@@ -76,11 +76,11 @@ Dopo **ogni** verdetto, anche un NO-GO, nella **stessa sessione** (memoria
 Non dà errori: chi legge il posto vecchio riceve una risposta plausibile e sbagliata.
 
 **Casi reali:**
-- *27/09:* FADE "ATTIVO" in `docs/README.md` dopo il KILL.
+- *27/09:* FADE "ATTIVO" in `magazzino/registro/README.md` dopo il KILL.
 - *02/10:* `esercizio/mql5/README.md` descriveva l'EA `nxt_fade` come "WALK-FORWARD LIVE (attivo)",
   sempre dopo il KILL del 17/09. Trovato costruendo il catasto, e corretto facendo puntare ogni EA
   alla sua pre-registrazione. Le sezioni degli EA lo descrivevano ancora al presente: marcatori aggiunti il 13/10.
-- *02/10, riparato il 13/10:* il frontmatter di `docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md` aveva
+- *02/10, riparato il 13/10:* il frontmatter di `magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md` aveva
   `aggiornato: 2026-09-21`, mentre `DECISIONS.md` nominava la famiglia il **30/09** (round 3 a B2) e il
   **03/10** (B2 chiusa a 0 trial, round 3 conservato alla famiglia). Lo stato `LEAD` era giusto, ma la nota
   era più vecchia di due decisioni. È rimasta così 11 giorni, finché l'ha segnalata l'healthcheck dell'hub.

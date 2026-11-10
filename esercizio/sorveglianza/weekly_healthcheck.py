@@ -37,7 +37,7 @@ OUTDIR = os.path.join(ROOT, "esercizio", "sorveglianza", "report")
 # --- configurazione: cio' che il protocollo considera vincolante -------------------
 MAGIC = {26071: "nxt_fade", 26052: "orb_nasdaq"}
 
-# universo PRE-REGISTRATO del fade (docs/NXT_FADE_FORWARD_PREREGISTRATION.md §2),
+# universo PRE-REGISTRATO del fade (magazzino/registro/documenti/NXT_FADE_FORWARD_PREREGISTRATION.md §2),
 # coi suffissi effettivi del broker
 UNIVERSE_FADE = {"EURUSD.r", "GBPUSD.r", "USDJPY.r", "XAUUSD.cyr", "US100", "US500"}
 

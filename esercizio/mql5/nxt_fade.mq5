@@ -9,7 +9,7 @@
 //|  STATUS: LEAD DATA-DERIVED, NON un edge dimostrato. Questo EA     |
 //|  serve solo a RACCOGLIERE trade forward OOS su DEMO. Regole        |
 //|  CONGELATE: non toccare i parametri della strategia nel test.     |
-//|  Spec: fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md|
+//|  Spec: magazzino/registro/documenti/strategie_candidate/fade_mr_walkforward_socio.md|
 //|                                                                   |
 //|  LOGICA (H1, PER-SIMBOLO - un'istanza per ognuno di:              |
 //|   EURUSD, GBPUSD, USDJPY, XAUUSD, US100, US500):                  |
@@ -120,7 +120,7 @@ input group "=== Sizing (fixed fractional) ==="
 // -> ordini scartati con [No money]. Il dropout NON e' casuale: colpisce i setup con lo
 // stop piu' stretto, quindi il volume piu' grande. La size NON e' un parametro
 // pre-registrato (il verdetto e' su E[R], in multipli di R) -> modificarla non altera
-// alcuna statistica misurata. Vedi docs/NXT_FADE_FORWARD_PREREGISTRATION.md sez.9.
+// alcuna statistica misurata. Vedi magazzino/registro/documenti/NXT_FADE_FORWARD_PREREGISTRATION.md sez.9.
 input double InpRiskPerTradePct      = 0.0025;     // FRAZIONE di equity per trade (0.25%)
 input double InpFallbackVolume       = 0.10;       // lotti di fallback se il sizing fallisce
 
@@ -471,7 +471,7 @@ void ArmSetup(const bool is_short, const double hi, const double lo,
    // alle barre successive eseguirebbe una regola diversa da quella
    // pre-registrata (e OnNewBar gira a ogni apertura di barra, come il .py).
    // Il ramo a mercato precedente violava insieme SL 1R, TP 3R e R=28.6%
-   // dell'ampiezza: vedi docs/NXT_FADE_FORWARD_PREREGISTRATION.md sez. 11.
+   // dell'ampiezza: vedi magazzino/registro/documenti/NXT_FADE_FORWARD_PREREGISTRATION.md sez. 11.
    if(skipped)
    {
       g_last_armed_leg = endtime;

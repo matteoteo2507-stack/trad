@@ -4,7 +4,7 @@ NON e' un test dell'ipotesi. E' un calcolo di **potenza** fatto PRIMA di raccogl
 impone la regola nata dal FADE (il "secondo test" era fuori scala di 40x). Non consuma trial:
 non cambia regole ne' parametri, e non produce un verdetto su A1.
 
-La domanda. Il diagnostico di durata (docs/TREND_DURATION_DIAGNOSTIC.md) ha lasciato in piedi
+La domanda. Il diagnostico di durata (magazzino/registro/documenti/TREND_DURATION_DIAGNOSTIC.md) ha lasciato in piedi
 il gradiente sulla DIFFERENZA contro random a durata controllata. Il passo successivo sarebbe
 un confronto a **due gruppi** (alta vs bassa volatilita') su strumenti **mai visti**. Quanti
 strumenti servono perche' quel test possa vincere, e quelli che servono esistono?

@@ -1,5 +1,5 @@
 """Stagionalità Turn-of-Month — backtester + controllo giorni-casuali. Spec PRE-REGISTRATA
-(docs/SEASONALITY_PREREGISTRATION.md). Riusa data/sizing/validazione di TSMOM.
+(magazzino/registro/documenti/SEASONALITY_PREREGISTRATION.md). Riusa data/sizing/validazione di TSMOM.
 
 TOM = ultimo giorno del mese (rank-dal-fondo ≤ n_last) o primi n_first del mese (rank ≤ n_first).
 Metrica: (media ret TOM − media ret non-TOM) per non confondere l'effetto col drift (beta); la

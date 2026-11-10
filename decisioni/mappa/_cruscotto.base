@@ -3,7 +3,7 @@ views:
     name: "Pre-registrazioni — stato canonico"
     filters:
       and:
-        - file.inFolder("trad/docs")
+        - file.inFolder("trad/magazzino/registro/documenti")
         - file.name.contains("PREREGISTRATION")
     order:
       - file.name

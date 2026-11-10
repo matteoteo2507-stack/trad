@@ -1,6 +1,6 @@
 """NXT — Fibonacci trend-pullback: backtest ridotto PRE-REGISTRATO.
 
-Spec immutabile: fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md.
+Spec immutabile: magazzino/registro/documenti/strategie_candidate/nxt_fib_trend_pullback.md.
 Riduce la sequenza 0/A/B/C ambigua al primitivo tradabile inequivocabile (step 6-8 del video):
   - trend via struttura swing H1 (ZigZag da fractali k=5), long solo se HH & HL (short simmetrico);
   - impulse leg swingLow->swingHigh (long) di ampiezza >= 1*ATR(14);

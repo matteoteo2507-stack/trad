@@ -1,6 +1,6 @@
 """Motore di replay di Forex Gump: il segnale come lo esegue il copier (pre-registrazione §4-§5).
 
-`docs/FOREXGUMP_LATENCY_PREREGISTRATION.md` e' il contratto: questo file non decide nulla che non sia
+`magazzino/registro/documenti/FOREXGUMP_LATENCY_PREREGISTRATION.md` e' il contratto: questo file non decide nulla che non sia
 scritto li'. Il motore **non si lancia sui segnali** finche' la pre-registrazione non e' approvata e
 registrata nel ledger; prima si usa solo per l'MDE su istanti casuali (`mde_istanti_casuali`).
 

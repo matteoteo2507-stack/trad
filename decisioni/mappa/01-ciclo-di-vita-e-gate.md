@@ -45,14 +45,14 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
 1. **Ricerca e formulazione.** Un razionale economico (chi sta dall'altra parte, e perché continua
    a perdere) e un'ipotesi falsificabile. Le fonti esterne entrano solo da qui, passando da
    `decisioni/_INTAKE.md` (§8). **Dal 03/10 questo passo ha un metodo**:
-   `fondamenti_tecnici/09_fonti_di_vantaggio/principles.md`. *Cosa fa*: prima di cercare candidati
+   `magazzino/fondamenti_tecnici/09_fonti_di_vantaggio/principles.md`. *Cosa fa*: prima di cercare candidati
    si sceglie la classe di vantaggio (premio, flusso forzato, errore comportamentale, informazione,
    velocità) e si risponde a nove domande in ordine (§4). *Input*: un'idea o una fonte. *Output*:
    un'ipotesi con classe, "chi paga", accessibilità e potenza già verificate, pronta per il
    template e la G1, oppure uno stop motivato. *Come si rompe*: se lo si salta si torna a cercare
    per elenco; e la griglia è una bozza di Claude in quarantena, da confermare con le fonti del suo §6.
    **Dal 08/10, per gli indicatori tecnici** (materiale TradingView incluso):
-   `fondamenti_tecnici/10_indicatori_tecnici/principles.md`. *Cosa fa*: riconduce ogni indicatore a
+   `magazzino/fondamenti_tecnici/10_indicatori_tecnici/principles.md`. *Cosa fa*: riconduce ogni indicatore a
    una di sei grandezze (tendenza, spostamento dalla media, volatilità, volume, livelli, forma della
    candela), ne eredita il verdetto della letteratura e dei nostri test, e lo smista con sei domande
    (§10: grandezza, ridisegno, prezzi veri, ancore scelte a occhio, chi paga, quante varianti).
@@ -134,7 +134,7 @@ con file e riga per ogni rilievo.
 ## Input → Output
 
 - **Input:** un'idea con razionale, i dati, il codice dello studio in `analysis/<famiglia>/`. Un'idea dall'hub entra con la scheda del §8.
-- **Output:** una pre-registrazione in `docs/`, un report in `docs/reviews/`, una voce in
+- **Output:** una pre-registrazione in `magazzino/registro/documenti/`, un report in `magazzino/registro/referti/`, una voce in
   `DECISIONS.md`, lo stato nel frontmatter della pre-registrazione, una riga aggiornata in
   `decisioni/trial_ledger.json`.
 
@@ -146,8 +146,8 @@ con file e riga per ogni rilievo.
 | Ogni famiglia CLOSED ha il motivo di chiusura | sì, o `null` dichiarato | `--check` lo controlla; il 04/11: 12 su 14 assegnati, 2 non ricostruibili (meanrev_vol, seasonality_tom) | Claude |
 | Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `decisioni/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
-| Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `docs/*_PREREGISTRATION.md` e le voci del ledger | Claude |
-| Ogni ipotesi arrivata dall'hub ha la scheda d'ingresso | sì | la nota di intake in `docs/reviews/` riporta P1-P6 o il punto in cui si e' fermata (il 25/10: prima prova, insider + geopolitica, fermata a P5 e alla domanda 6) | Claude |
+| Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `magazzino/registro/documenti/*_PREREGISTRATION.md` e le voci del ledger | Claude |
+| Ogni ipotesi arrivata dall'hub ha la scheda d'ingresso | sì | la nota di intake in `magazzino/registro/referti/` riporta P1-P6 o il punto in cui si e' fermata (il 25/10: prima prova, insider + geopolitica, fermata a P5 e alla domanda 6) | Claude |
 
 ## Come si rompe
 

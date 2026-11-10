@@ -1,7 +1,7 @@
 # Confluence Auto — Shadow run algoritmico
 
 > **Sistema:** automatico · **Stato:** shadow run · **Habitat:** VPS Hetzner
-> **Quant review:** — (tuning futuro) · **Fondamenti:** [liquidità/order flow (POC, S/D)](../../fondamenti_tecnici/02_liquidita_orderflow/)
+> **Quant review:** — (tuning futuro) · **Fondamenti:** [liquidità/order flow (POC, S/D)](../../magazzino/fondamenti_tecnici/02_liquidita_orderflow/)
 > Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../decisioni/DECISIONS.md)
 
 Versione **algoritmica** della strategia Confluence Levels. Gira **in parallelo**

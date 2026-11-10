@@ -1,6 +1,6 @@
 """A1 / playground: il gradiente di volatilita' sopravvive a parita' di TEMPO IN MERCATO?
 
-Protocollo scritto prima: docs/TREND_DURATION_DIAGNOSTIC.md. Soglie ed esiti fissati li'.
+Protocollo scritto prima: magazzino/registro/documenti/TREND_DURATION_DIAGNOSTIC.md. Soglie ed esiti fissati li'.
 
 Perche' esiste. Il 2026-09-19 `check_matching` ha mostrato che i due bracci del confronto non
 stanno in mercato per lo stesso tempo: holding mediano 7 giorni sul reale contro 2 sul random.
@@ -202,7 +202,7 @@ def main() -> int:
     print("=" * 84)
     print("A1 - DIAGNOSTICO DI DURATA   W2 %s+   n_reali=%d  n_controlli=%d"
           % (t0.date(), len(real), len(rand)))
-    print("protocollo: docs/TREND_DURATION_DIAGNOSTIC.md   (0 trial)")
+    print("protocollo: magazzino/registro/documenti/TREND_DURATION_DIAGNOSTIC.md   (0 trial)")
     print("=" * 84)
 
     persi_pct = float(rand["coda_mancante"].mean())
@@ -343,7 +343,7 @@ def main() -> int:
     sig_app = (r_app >= 0.74 and p_app < 0.05)
     sig_rnd = (r_rnd >= 0.74 and p_rnd < 0.05)
     print("\n" + "=" * 84)
-    print("ESITO secondo docs/TREND_DURATION_DIAGNOSTIC.md sez.5 (scritta prima)")
+    print("ESITO secondo magazzino/registro/documenti/TREND_DURATION_DIAGNOSTIC.md sez.5 (scritta prima)")
     print("=" * 84)
     if sig_app:
         print("  A1 SOPRAVVIVE: il gradiente resta a parita' di tempo in mercato.")

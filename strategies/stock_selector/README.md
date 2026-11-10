@@ -1,7 +1,7 @@
 # Stock Selector V6.0 (headless)
 
 > **Sistema:** investing (dinamico — **non etichettato per regime**: oggi semiauto, automatizzabile) · **Stato:** active · **Habitat:** PC
-> **Quant review:** — · **Fondamenti:** [stock selection](../../fondamenti_tecnici/06_stock_selection/), [portfolio/rischio](../../fondamenti_tecnici/05_portfolio_rischio/), [data sources](../../fondamenti_tecnici/07_data_sources/)
+> **Quant review:** — · **Fondamenti:** [stock selection](../../magazzino/fondamenti_tecnici/06_stock_selection/), [portfolio/rischio](../../magazzino/fondamenti_tecnici/05_portfolio_rischio/), [data sources](../../magazzino/fondamenti_tecnici/07_data_sources/)
 > Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../decisioni/DECISIONS.md) · Parallelo a PAC + worldmonitor (pilastro investing conclusivo)
 
 Versione modulare e callable del notebook `algoritmo selezione azioni.ipynb` (in questa cartella).

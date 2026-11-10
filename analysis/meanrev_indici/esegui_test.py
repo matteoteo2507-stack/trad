@@ -1,6 +1,6 @@
 """Test unico pre-registrato: RSI(2) di Connors sugli indici USA (candidato A).
 
-Pre-registrazione: docs/MR_INDICI_RSI2_PREREGISTRATION.md. Su dati REALI lo script non parte finche' il frontmatter
+Pre-registrazione: magazzino/registro/documenti/MR_INDICI_RSI2_PREREGISTRATION.md. Su dati REALI lo script non parte finche' il frontmatter
 della pre-registrazione non dice `stato: APPROVATA` e la soglia di chiusura non e' fissata. Con `--sintetico` gira su
 due serie giornaliere seminate, con deriva e correlazione regolabili come quelle degli indici veri: serve a controllare
 il codice senza guardare il mercato.
@@ -32,7 +32,7 @@ from core import quant_metrics as qm                    # noqa: E402
 from core.random_baseline import BarSampler, check_matching   # noqa: E402
 from core.verifiche import runs_test                    # noqa: E402
 
-PREREG = os.path.join(ROOT, "docs", "MR_INDICI_RSI2_PREREGISTRATION.md")
+PREREG = os.path.join(ROOT, "magazzino", "registro", "documenti", "MR_INDICI_RSI2_PREREGISTRATION.md")
 DATI = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "dukascopy_d1")
 # Costi FP Markets letti in MT5 il 08/10/2026 (FPMarkets-Demo): spread in punti indice, swap long per notte in % del
 # prezzo (US500 −1,14 $/lotto su ~7.500 = 0,0152%; US100 −4,24 $/lotto su ~29.700 = 0,0143%), tripla il venerdi'.

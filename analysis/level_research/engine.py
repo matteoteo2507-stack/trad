@@ -7,7 +7,7 @@ Per ogni asset e ogni giorno (punto di decisione = ora fissa DECISION_HOUR):
   4. genera M random DISTANCE-MATCHED (distanza campionata dal pool reale del concetto/side)
      e li misura allo stesso modo.
 Aggrega per (concetto x asset): %REACTION|touch reale vs random con CI block-bootstrap sui
-giorni, + escursione netta mediana. Tutto secondo docs/LEVEL_RESEARCH_PREREGISTRATION.md.
+giorni, + escursione netta mediana. Tutto secondo magazzino/registro/documenti/LEVEL_RESEARCH_PREREGISTRATION.md.
 
 Uso: vedi __main__.py.
 """

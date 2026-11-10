@@ -31,7 +31,7 @@ A che punto siamo: nessun sistema e' oggi candidato alla prop. Le 14 famiglie te
 | **I soci**, nei loro workspace (derivati in parte da questa infrastruttura) | test, backtest, walk-forward, riformulazione e test continui di strategie; parte della ricerca di strategie nuove |
 | **`trad`** (Matteo) | i **fondamenti tecnici** su cui poggia la ricerca di edge, e la direzione della ricerca: strumenti di lettura del prezzo coerenti col mercato reale; l'analisi da quant di modelli trovati in fonti scelte (limiti, applicazioni, uso da solo o combinato); i **pacchetti** per i soci (report `.md` + file `.py`). Tiene il **metodo** (gatekeeper, contatore unico dei trial, `DECISIONS.md`) e il PAC |
 
-**Strategia e strumento** sono definiti in [04_quant_metodologia §0](fondamenti_tecnici/04_quant_metodologia/principles.md).
+**Strategia e strumento** sono definiti in [04_quant_metodologia §0](magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md).
 In breve: uno strumento e' una lettura del prezzo con una proprieta' misurabile, senza regole di trade; una strategia
 aggiunge ingresso, uscita e gestione del rischio, e produce trade.
 
@@ -73,7 +73,7 @@ La maggior parte sono fork di studio, non codice da integrare; l'integrazione se
 |---|---|
 | `OctoBot` | esecuzione crypto, **dormiente** dal 2026-06-14 |
 | `worldmonitor` | dashboard macro e geopolitica; senza storico datato, non regge un backtest (DECISIONS 2026-10-25 (3)) |
-| `claude-trading-skills` | catalogo di skill di trading, fonte di `fondamenti_tecnici/blueprints/` |
+| `claude-trading-skills` | catalogo di skill di trading, fonte di `magazzino/fondamenti_tecnici/blueprints/` |
 | `ai-hedge-fund`, `TradingAgents`, `dexter`, `paperclip-zero-human-trading-firm`, `AI_Stock_Trading` | pattern multi-agente e design di bot (studio) |
 | `pybroker`, `Q-Fin`, `Kronos` | backtester, utility quantitative, modello di base su OHLCV (riferimento) |
 | `QuantDinger`, `FinceptTerminal`, `Vibe-Trading` | piattaforme di riferimento (studio) |

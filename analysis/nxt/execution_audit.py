@@ -1,6 +1,6 @@
 """Audit di ESECUZIONE del forward FADE — verifica di conformita', non di risultato.
 
-Esegue le verifiche V1-V6 di docs/FADE_LIVE_AUDIT_PROTOCOL.md sullo storico MT5.
+Esegue le verifiche V1-V6 di magazzino/registro/documenti/FADE_LIVE_AUDIT_PROTOCOL.md sullo storico MT5.
 
 PERCHE' ESISTE
 --------------
@@ -62,7 +62,7 @@ def _assert_no_pnl(rec: dict) -> None:
             if v in low:
                 raise AssertionError(
                     "Questo script non puo' esporre '%s': vedi docstring e "
-                    "docs/FADE_LIVE_AUDIT_PROTOCOL.md sez.4" % k
+                    "magazzino/registro/documenti/FADE_LIVE_AUDIT_PROTOCOL.md sez.4" % k
                 )
 
 
@@ -222,7 +222,7 @@ def esegui(mt5):
     A = L.append
     A("# Audit di esecuzione FADE (magic %d)" % MAGIC)
     A("")
-    A("Generato il %s. Protocollo: docs/FADE_LIVE_AUDIT_PROTOCOL.md"
+    A("Generato il %s. Protocollo: magazzino/registro/documenti/FADE_LIVE_AUDIT_PROTOCOL.md"
       % dt.date.today().isoformat())
     A("")
     A("**Questo report non contiene P&L, per costruzione.** Misura la conformita'")

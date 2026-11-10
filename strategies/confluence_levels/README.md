@@ -1,7 +1,7 @@
 # Strategia — Confluence Levels Trader
 
 > **Sistema:** semiautomatico · **Stato:** active (Fase A) · **Habitat:** VPS Hetzner
-> **Quant review:** — · **Fondamenti:** [price action](../../fondamenti_tecnici/01_price_action/), [liquidità/order flow](../../fondamenti_tecnici/02_liquidita_orderflow/)
+> **Quant review:** — · **Fondamenti:** [price action](../../magazzino/fondamenti_tecnici/01_price_action/), [liquidità/order flow](../../magazzino/fondamenti_tecnici/02_liquidita_orderflow/)
 > Indice: [strategies/README.md](../README.md) · Decisioni: [DECISIONS.md](../../decisioni/DECISIONS.md)
 
 Strategia **semiautomatica** che monitora la prossimità del prezzo a livelli operativi

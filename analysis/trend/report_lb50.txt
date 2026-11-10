@@ -1,7 +1,7 @@
 Esclusi per copertura (start > 2018-01-01): USTBOND(2018-12-18), XPT(2021-12-01), XPD(2022-02-15)
 ==============================================================================
 TREND - uscita a coda aperta x gradiente di liquidita'
-Pre-registrazione: docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md
+Pre-registrazione: magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md
 ==============================================================================
 
 Universo: 27 strumenti, 8 gruppi. Lookback entrata = 50g

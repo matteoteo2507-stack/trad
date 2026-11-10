@@ -3,7 +3,7 @@
 `classify()` e' copiato *fedele* da analysis/trading-bot-eval/level_reaction_analysis.py
 (la versione vagliata dall'Agent C): look-ahead-safe, tolleranze ATR-relative, nessuna
 ottimizzazione. Qui il side e' "SUPPORT"/"RESISTANCE" (piu' leggibile) invece di long/short.
-Le soglie sono quelle PRE-REGISTRATE (docs/LEVEL_RESEARCH_PREREGISTRATION.md): NON toccarle
+Le soglie sono quelle PRE-REGISTRATE (magazzino/registro/documenti/LEVEL_RESEARCH_PREREGISTRATION.md): NON toccarle
 dopo aver visto i risultati.
 
 Aggiunta rispetto all'originale: `bootstrap_diff_by_day` ricampiona i GIORNI (cluster reale

@@ -1,6 +1,6 @@
 """Run della matrice concetto x asset (reazione-vs-random) con holdout + breadth + DSR.
 
-Esegue il protocollo PRE-REGISTRATO (docs/LEVEL_RESEARCH_PREREGISTRATION.md):
+Esegue il protocollo PRE-REGISTRATO (magazzino/registro/documenti/LEVEL_RESEARCH_PREREGISTRATION.md):
   - detection walk-forward look-ahead-safe per asset (una passata),
   - split temporale TRAIN 70% / TEST 30% dei giorni,
   - misura reale vs random distance-matched, CI block-bootstrap sui giorni,

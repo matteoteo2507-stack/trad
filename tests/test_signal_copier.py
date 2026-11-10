@@ -302,7 +302,7 @@ def test_plan_accepts_favourable_displacement():
     mentore, cioe' entrare meglio. Sono 30 pip, oltre la soglia di 20, ma dalla
     parte giusta. Il gate simmetrico di prima li buttava via, ed erano i segnali
     piu' redditizi: E[R] +0,209 contro -0,337 dell'altro lato (C5, 696 segnali,
-    docs/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9).
+    magazzino/registro/documenti/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md §9).
     """
     sig = _parser().parse(SIGNAL_TXT)
     plan = build_plan(sig, 10000, COPIER_CFG, current_price=4539.0)

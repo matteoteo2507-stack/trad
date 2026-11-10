@@ -1,6 +1,6 @@
 """B3 - la condizione di STRUTTURA sull'estensione estrema porta informazione?
 
-Protocollo scritto prima: docs/B3_EXTENSION_STRUCTURE_PROTOCOL.md. Soglie, celle, direzione
+Protocollo scritto prima: magazzino/registro/documenti/B3_EXTENSION_STRUCTURE_PROTOCOL.md. Soglie, celle, direzione
 attesa e significato di un mancato rifiuto sono fissati li'.
 
 Due fonti indipendenti (Marius C3.4, Kyle C3.5) convergono non su "l'estensione estrema si
@@ -193,7 +193,7 @@ def main() -> int:
 
     print("=" * 92)
     print("B3 - CONDIZIONE DI STRUTTURA SULL'ESTENSIONE ESTREMA")
-    print("protocollo: docs/B3_EXTENSION_STRUCTURE_PROTOCOL.md   (0 trial)")
+    print("protocollo: magazzino/registro/documenti/B3_EXTENSION_STRUCTURE_PROTOCOL.md   (0 trial)")
     print("finestra %s+   %d strumenti   soglia primaria E>=%.1f ATR   L in [%d,%d]"
           % (t0.date(), len(volinfo), E_PRIM, L_MIN, L_MAX))
     print("=" * 92)
@@ -298,7 +298,7 @@ def main() -> int:
 
     # --- verdetto secondo H1/H2 dichiarate prima ---
     print("\n" + "=" * 92)
-    print("ESITO secondo docs/B3_EXTENSION_STRUCTURE_PROTOCOL.md sez.5 (scritta prima)")
+    print("ESITO secondo magazzino/registro/documenti/B3_EXTENSION_STRUCTURE_PROTOCOL.md sez.5 (scritta prima)")
     print("=" * 92)
     att = risultati.get("range+ / vol+")
     if att is None:

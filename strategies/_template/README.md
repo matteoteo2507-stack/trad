@@ -9,7 +9,7 @@ Copia questa cartella in `strategies/<nome_strategia>/` e personalizza i 3 file.
 > **Sistema:** semiauto | auto | investing | candidata
 > **Stato:** active | shadow | backlog | archived-NO-GO | stub
 > **Habitat:** VPS Hetzner | MetaQuotes VPS | PC | demo MT5
-> **Quant review:** <link a docs/reviews/...> oppure —
+> **Quant review:** <link a magazzino/registro/referti/...> oppure —
 > **Fondamenti:** <link a ../../fondamenti_tecnici/...>
 ```
 

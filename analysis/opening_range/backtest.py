@@ -1,5 +1,5 @@
 """Opening-Range Breakout + retest (US100 M5) — backtester GREZZO (v1). Spec PRE-REGISTRATA
-(docs/OPENING_RANGE_PREREGISTRATION.md). Scopo: capire il POTENZIALE (no filtro news).
+(magazzino/registro/documenti/OPENING_RANGE_PREREGISTRATION.md). Scopo: capire il POTENZIALE (no filtro news).
 
 OR = 09:30-10:00 ET (apertura cash USA, fuso convertito Europe/Bucharest->America/New_York,
 DST-safe e verificato dal profilo di volatilità). Break = candela che CHIUDE oltre ORH/ORL;

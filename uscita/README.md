@@ -2,7 +2,7 @@
 
 Quinta macro del repo (DECISIONS 2026-11-09). Qui sta cio' che `trad` **consegna** ai soci: uno strumento di lettura del
 prezzo che l'analisi da quant ha trovato applicabile coi nostri mezzi. Cos'e' uno strumento e cosa lo distingue da una
-strategia: [04_quant_metodologia §0](../fondamenti_tecnici/04_quant_metodologia/principles.md).
+strategia: [04_quant_metodologia §0](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md).
 
 La cartella resta anche vuota finche' non esce il primo pacchetto, come `decisioni/Da distillare/`.
 

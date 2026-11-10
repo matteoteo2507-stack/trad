@@ -1,6 +1,6 @@
 """Trend following: uscita a coda aperta x gradiente di liquidita' — motore PRE-REGISTRATO.
 
-Spec immutabile: docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md.
+Spec immutabile: magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md.
 
 Q1: tenendo FISSA l'entrata (Donchian 100g), un'uscita a coda aperta (trailing SMA10, niente
     target) batte le uscite che troncano (stop1R/target3R, uscita a tempo)?
@@ -431,7 +431,7 @@ def main():
     t_start = cov["start"].max()
     print("=" * 78)
     print("TREND - uscita a coda aperta x gradiente di liquidita'")
-    print("Pre-registrazione: docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md")
+    print("Pre-registrazione: magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md")
     print("=" * 78)
     print(f"\nUniverso: {len(cov)} strumenti, {cov['group'].nunique()} gruppi. "
           f"Lookback entrata = {lookback}g")

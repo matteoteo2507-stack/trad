@@ -1,6 +1,6 @@
 """Doppio binario sui trade ORB v2 (famiglia CLOSED): misura DESCRITTIVA, 0 trial, nessuna riapertura.
 
-Dichiarata in docs/reviews/doppio_binario_closed_2026-10-06.md §2, nel commit PRECEDENTE all'esecuzione.
+Dichiarata in magazzino/registro/referti/doppio_binario_closed_2026-10-06.md §2, nel commit PRECEDENTE all'esecuzione.
 Domanda di Matteo (06/10): fra le famiglie CLOSED ce n'e' una per cui il doppio binario darebbe un risultato
 diverso? L'aritmetica (§1 del referto) lascia in piedi solo NAS100; SPX500 e' il controllo.
 

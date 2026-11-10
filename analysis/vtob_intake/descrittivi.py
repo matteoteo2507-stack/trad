@@ -28,8 +28,8 @@ sys.path.insert(0, RADICE)
 from core.trial_ledger import futility_sharpe  # noqa: E402
 from core.verifiche import mde, n_richiesto, runs_test  # noqa: E402
 
-SORGENTE = os.path.join(RADICE, "fondamenti_tecnici", "_sorgenti", "vtob_socio_2026-10-11")
-MATERIALE = os.path.join(RADICE, "materiale_socio", "vtob_dati_risultati_2022-07_2026-10")
+SORGENTE = os.path.join(RADICE, "magazzino", "fonti", "sorgenti", "vtob_socio_2026-10-11")
+MATERIALE = os.path.join(RADICE, "magazzino", "fonti", "materiale_socio", "vtob_dati_risultati_2022-07_2026-10")
 HUB = os.path.join(RADICE, "analysis", "trading-bot-eval", "data")
 VARIANTI_DICHIARATE = 46_080
 # riga scelta in ogni griglia: pivot, TF della media, eta' del trend, lato, stop (x vol), target (R)

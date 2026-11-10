@@ -19,7 +19,7 @@ continuazione -- ed e' proprio la direzione che puo' aver **prodotto** il NO-GO.
 
 Un NO-GO nato da un difetto che peggiora i numeri e' l'errore piu' pericoloso del
 workspace: e' invisibile e definitivo, perche' la strategia non esiste piu' e non
-genera dati che lo contraddicano (docs/EARLY_STAGE_AUDIT_PROTOCOL.md).
+genera dati che lo contraddicano (magazzino/registro/documenti/EARLY_STAGE_AUDIT_PROTOCOL.md).
 
 Cosa fa
 -------

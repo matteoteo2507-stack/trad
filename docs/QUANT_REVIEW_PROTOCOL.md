@@ -4,7 +4,7 @@ Procedura passo-passo che il revisore, l'agente
 [`quant-gatekeeper`](../.claude/agents/quant-gatekeeper.md), segue quando rivede una strategia o un test
 (`esercizio/mql5/*.mq5`, `strategies/*/`, `analysis/*/`).
 
-Output finale: report in `docs/reviews/<strategia>-<YYYY-MM-DD>.md` nel formato del
+Output finale: report in `magazzino/registro/referti/<strategia>-<YYYY-MM-DD>.md` nel formato del
 §"Formato di output" del gatekeeper.
 
 > Fino al 2026-10-13 questo protocollo nominava un secondo revisore, il "Quant Reviewer"
@@ -300,7 +300,7 @@ tab_prop = confronta_overlay_prop(day_trades, rules, base_pct=1.0)   # prop: 1R,
 ## Step 6 — Pre-mortem (10 min)
 
 Rispondi per iscritto a tre domande (il pre-mortem di
-[04_quant_metodologia](../fondamenti_tecnici/04_quant_metodologia/principles.md) §9):
+[04_quant_metodologia](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md) §9):
 
 1. **Quale cambiamento di regime la rompe?**
    (es. "London Breakout fallisce in Sideways Quiet quando range Asia >
@@ -332,7 +332,7 @@ e' stata bocciata a **−0,44R** quando il numero onesto era **−0,118R**.
 
 ## Step 8 — Output report
 
-Salva in `docs/reviews/<strategia>-<YYYY-MM-DD>.md` con il formato del
+Salva in `magazzino/registro/referti/<strategia>-<YYYY-MM-DD>.md` con il formato del
 §"Formato di output" del gatekeeper. Link relativi a:
 - Codice strategia.
 - Trade log usati.

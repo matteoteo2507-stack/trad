@@ -65,7 +65,7 @@ GO / LEAD / NO-GO / CLOSED li dichiara l'utente. Se ti trovi a scrivere
 | `docs/QUANT_REVIEW_PROTOCOL.md` | gli step della review e le soglie operative. **Step 3bis** = gate sull'ottenibilita' dei fill, bloccante |
 | `core/quant_metrics.py` | **cio' che esiste gia' e non va reimplementato**: `deflated_sharpe_ratio`, `pbo_cscv`, `cpcv_splits`, `walk_forward`, `mc_permutation_test`, `whites_reality_check`, `bca_bootstrap_ci`, metriche di rischio |
 | `DECISIONS.md` | le famiglie gia' chiuse e il perche'. **Si legge prima**, non dopo |
-| `fondamenti_tecnici/04_quant_metodologia/principles.md` | le correzioni tecniche gia' distillate (es. §2b: il Monte Carlo che rimescola i trade misura il maxDD, **non** l'overfitting) |
+| `magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md` | le correzioni tecniche gia' distillate (es. §2b: il Monte Carlo che rimescola i trade misura il maxDD, **non** l'overfitting) |
 
 Se una di queste letture contraddice cio' che ti e' stato chiesto, **la
 contraddizione e' il tuo output principale**.
@@ -446,7 +446,7 @@ Budget in vigore (li stampa il comando, non fidarti di questa riga se diverge):
   previsto dallo stesso modello geopolitico) e' un trial della famiglia esistente. Se la pre-registrazione dichiara una
   famiglia nuova, chiedi da quale teoria viene → **BLOCCA** se coincide con una famiglia del contatore;
 - **stessa grandezza = stessa famiglia** (dal 2026-10-08, DECISIONS 2026-10-08 (3)): un indicatore diverso che misura la
-  grandezza di una famiglia esistente (`fondamenti_tecnici/10_indicatori_tecnici/principles.md` §2) **non** apre una
+  grandezza di una famiglia esistente (`magazzino/fondamenti_tecnici/10_indicatori_tecnici/principles.md` §2) **non** apre una
   famiglia nuova e **non** riapre una CLOSED. Se una pre-registrazione dichiara una famiglia nuova, chiedi quale grandezza
   misura il segnale; se coincide con quella di una famiglia del contatore, la contabilita' e' sbagliata → **BLOCCA**.
   **Eccezione**: una famiglia nuova decisa da Matteo in `DECISIONS.md` perche' ha un **meccanismo economico
@@ -515,14 +515,14 @@ invalida il risultato. La 1 e la 3 tornano **prima del capitale**: scelta del ri
 1. **Crescita geometrica accanto alla media.** Il referto riporta la crescita geometrica (media − varianza/2)
    accanto a media e Sharpe? Un'attesa positiva con varianza alta puo' non far crescere il conto, e la leva
    amplifica la perdita di crescita come il suo quadrato. Il rischio proposto sta sotto il Kelly frazionario?
-   Teoria: `fondamenti_tecnici/05_portfolio_rischio/principles.md` (volatility drag, Kelly frazionario);
+   Teoria: `magazzino/fondamenti_tecnici/05_portfolio_rischio/principles.md` (volatility drag, Kelly frazionario);
    codice: `kelly_crescita`, `kelly_ottimo`, `kelly_frazionario` in `core/verifiche.py`.
 2. **Sharpe sopra 2 su una strategia retail** = campanello. Sopra 3 senza una prova rigorosa e' quasi sempre un
    errore di metodo: prima di leggere il risultato si ricontrollano i fill (Checklist 3), il look-ahead e la
    survivorship (Checklist 4).
 3. **Regime.** In quale regime (direzione x volatilita', `TRADING_PRINCIPLES.md` §1) e' nata l'ipotesi? E' stata
    provata negli altri, e qual e' il peggiore? La durata dei regimi non si stima con ADF/KPSS
-   (`fondamenti_tecnici/04_quant_metodologia/principles.md` §12): si stima dagli stati, con l'incertezza di
+   (`magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md` §12): si stima dagli stati, con l'incertezza di
    `core.verifiche.matrice_transizione`.
 4. **Contributo al book.** Una strategia entra accanto ad altri flussi di rendimento: correlazione o R² con quelli
    esistenti, misurati **dentro i drawdown** e con frequenza e finestra dichiarate (`correlazione_dichiarata`).
@@ -532,7 +532,7 @@ invalida il risultato. La 1 e la 3 tornano **prima del capitale**: scelta del ri
 **Dove sta il resto del vecchio revisore** (non ripetuto qui): PBO, DSR, CPCV, walk-forward, permutazioni e Reality
 Check in `QUANT_REVIEW_PROTOCOL.md` Step 4 e nel modulo `04`; costi nello Step 5 e nella Checklist 3; pre-mortem
 nello Step 6; decadimento dopo la pubblicazione nei "Casi speciali" del protocollo; microstruttura FX in
-`TRADING_PRINCIPLES.md`; letteratura in `fondamenti_tecnici/RIFERIMENTI.md`. **Non e' passato** il formato
+`TRADING_PRINCIPLES.md`; letteratura in `magazzino/fondamenti_tecnici/RIFERIMENTI.md`. **Non e' passato** il formato
 GO / NO-GO / RAFFINA: il verdetto non lo dichiari tu.
 
 ---

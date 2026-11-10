@@ -26,8 +26,8 @@ Ogni `README.md` di strategia inizia con un **blocco metadati**:
 > **Sistema:** semiauto | auto | investing | candidata
 > **Stato:** active | shadow | backlog | archived-NO-GO | stub
 > **Habitat:** VPS Hetzner | MetaQuotes VPS | PC | demo MT5
-> **Quant review:** <link a docs/reviews/...> oppure —
-> **Fondamenti:** <link a fondamenti_tecnici/...>
+> **Quant review:** <link a magazzino/registro/referti/...> oppure —
+> **Fondamenti:** <link a magazzino/fondamenti_tecnici/...>
 ```
 
 Per creare una nuova strategia: copia [`_template/`](_template/), compila i 3 file, aggiungi il
@@ -42,7 +42,7 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 
 | Componente | Stato | Habitat | Quant review | Fondamenti |
 |---|---|---|---|---|
-| [confluence_levels/](confluence_levels/) | active (Fase A) | VPS Hetzner | — | [price action](../fondamenti_tecnici/01_price_action/), [liquidità](../fondamenti_tecnici/02_liquidita_orderflow/) |
+| [confluence_levels/](confluence_levels/) | active (Fase A) | VPS Hetzner | — | [price action](../magazzino/fondamenti_tecnici/01_price_action/), [liquidità](../magazzino/fondamenti_tecnici/02_liquidita_orderflow/) |
 | Analisi canali Telegram mentori | in test (→ auto) | mobile/PC | — | — |
 
 ### 2. Automatico — *segnali eseguiti direttamente*
@@ -50,10 +50,10 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 | Componente | Stato | Habitat | Quant review | Fondamenti |
 |---|---|---|---|---|
 | [../signal_copier/](../esercizio/signal_copier/) | demo full-auto | demo MT5 | — | — |
-| [../mql5/](../esercizio/mql5/) London Breakout | **archived-NO-GO** | MetaQuotes VPS | [review](../docs/reviews/london_breakout-2026-05-29.md) · [postmortem](../docs/reviews/london_breakout-postmortem-2026-05-30.md) | [regimi/macro](../fondamenti_tecnici/03_regimi_macro/) |
-| [tsmom/](tsmom/) | **NO-GO** / stub | (Python) | [review](../docs/reviews/tsmom_jpy-2026-05-29.md) | [quant](../fondamenti_tecnici/04_quant_metodologia/) |
-| [confluence_auto/](confluence_auto/) | shadow run | VPS Hetzner | — | [liquidità/POC](../fondamenti_tecnici/02_liquidita_orderflow/) |
-| OctoBot (crypto) | **DORMIENTE** (stand-by 2026-06-14, rispolverabile) | esterno | — | [quant](../fondamenti_tecnici/04_quant_metodologia/) |
+| [../mql5/](../esercizio/mql5/) London Breakout | **archived-NO-GO** | MetaQuotes VPS | [review](../magazzino/registro/referti/london_breakout-2026-05-29.md) · [postmortem](../magazzino/registro/referti/london_breakout-postmortem-2026-05-30.md) | [regimi/macro](../magazzino/fondamenti_tecnici/03_regimi_macro/) |
+| [tsmom/](tsmom/) | **NO-GO** / stub | (Python) | [review](../magazzino/registro/referti/tsmom_jpy-2026-05-29.md) | [quant](../magazzino/fondamenti_tecnici/04_quant_metodologia/) |
+| [confluence_auto/](confluence_auto/) | shadow run | VPS Hetzner | — | [liquidità/POC](../magazzino/fondamenti_tecnici/02_liquidita_orderflow/) |
+| OctoBot (crypto) | **DORMIENTE** (stand-by 2026-06-14, rispolverabile) | esterno | — | [quant](../magazzino/fondamenti_tecnici/04_quant_metodologia/) |
 
 ### 3. Manuale / Investing — *lungo termine, da entrate prop (parte conclusiva)*
 
@@ -67,10 +67,10 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 
 | Candidata | Fonte | Note |
 |---|---|---|
-| [NYSE Scalping](../fondamenti_tecnici/strategie_candidate/nyse_scalping.md) | fondamenti_tecnici | VWAP+TPO+OTF; da promuovere se prioritizzata |
-| Backlog automatiche | [ARCHITECTURE_v2 §backlog](../docs/ARCHITECTURE_v2.md) | TSMOM multiasset, Donchian, DXY z-score, mean-reversion, KAMA+ATR |
+| [NYSE Scalping](../magazzino/registro/documenti/strategie_candidate/nyse_scalping.md) | fondamenti_tecnici | VWAP+TPO+OTF; da promuovere se prioritizzata |
+| Backlog automatiche | [ARCHITECTURE_v2 §backlog](../magazzino/dormienti/docs/ARCHITECTURE_v2.md) | TSMOM multiasset, Donchian, DXY z-score, mean-reversion, KAMA+ATR |
 
-> Le candidate e i [blueprints](../fondamenti_tecnici/blueprints/) restano in fondo alle priorità
+> Le candidate e i [blueprints](../magazzino/fondamenti_tecnici/blueprints/) restano in fondo alle priorità
 > finché la raccolta dati non è completa ([DECISIONS.md](../decisioni/DECISIONS.md)). NB: OctoBot **dormiente**
 > dal 2026-06-14, non più gating per le custom.
 
@@ -78,7 +78,7 @@ del pattern in [CONVENTIONS.md](../CONVENTIONS.md).
 
 ## Riferimenti
 
-- Fondamenti teorici: [fondamenti_tecnici/](../fondamenti_tecnici/)
-- Costituzione operativa: [TRADING_PRINCIPLES.md](../TRADING_PRINCIPLES.md)
+- Fondamenti teorici: [magazzino/fondamenti_tecnici/](../magazzino/fondamenti_tecnici/)
+- Costituzione operativa: [TRADING_PRINCIPLES.md](../magazzino/fondamenti_tecnici/TRADING_PRINCIPLES.md)
 - Convenzioni codice: [CONVENTIONS.md](../CONVENTIONS.md)
 - Quant review: [docs/QUANT_REVIEW_PROTOCOL.md](../docs/QUANT_REVIEW_PROTOCOL.md)

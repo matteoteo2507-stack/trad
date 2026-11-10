@@ -6,7 +6,7 @@ Progetto di ricerca quant di Matteo. Repo git autonomo, annidato nel vault `clau
 ## Ordine di lettura quando serve uno stato o un numero
 
 1. **Stato canonico** di una famiglia/strategia: frontmatter `stato` della sua pre-registrazione in
-   `docs/*_PREREGISTRATION.md` (in migrazione — finché manca, vale il punto 2).
+   `magazzino/registro/documenti/*_PREREGISTRATION.md` (in migrazione — finché manca, vale il punto 2).
 2. **`decisioni/DECISIONS.md`**: registro cronologico. **La voce più recente vince** su tutto ciò che la precede,
    in qualunque file. Se un altro documento contraddice una voce più recente, è quel documento a
    essere vecchio: segnalalo, non mediare.
@@ -15,7 +15,7 @@ Progetto di ricerca quant di Matteo. Repo git autonomo, annidato nel vault `clau
 4. **Conteggi di trial e budget**: `python -m core.trial_ledger`, mai numeri a memoria o copiati.
 
 Non citare mai un risultato (R, win rate, N, p) senza la nota sorgente e la data della misura.
-`_INTAKE.md`, `docs/README.md`, la memoria e il gatekeeper **non sono fonti** di numeri: puntano.
+`_INTAKE.md`, `magazzino/registro/README.md`, la memoria e il gatekeeper **non sono fonti** di numeri: puntano.
 
 ## Mappa e protocollo modifiche
 
@@ -32,7 +32,7 @@ vanno registrate.
 ## Convenzioni
 
 Codice: `CONVENTIONS.md`. Principi di trading: `TRADING_PRINCIPLES.md`. Concetti distillati:
-`fondamenti_tecnici/` (8 moduli `0X_*/principles.md`). Intake da fonti esterne: `decisioni/_INTAKE.md`.
+`magazzino/fondamenti_tecnici/` (8 moduli `0X_*/principles.md`). Intake da fonti esterne: `decisioni/_INTAKE.md`.
 Materiale in arrivo dall'esterno: si appoggia in `decisioni/Da distillare/`, che **si tiene il più possibile vuota**: serve a distillare,
 non a immagazzinare, e uno smistamento chiuso in più sessioni non è una violazione (Matteo, 25/10). La regola completa
 sta nel suo `README.md`, che dice anche dove va cosa e dove si registra.

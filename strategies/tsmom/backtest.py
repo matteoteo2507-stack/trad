@@ -1,6 +1,6 @@
 """TSMOM multi-asset — backtester di PORTAFOGLIO (serie di rendimenti, non sintesi MT5).
 
-Implementa la spec PRE-REGISTRATA (docs/TSMOM_PREREGISTRATION.md): segnale = sign del ritorno
+Implementa la spec PRE-REGISTRATA (magazzino/registro/documenti/TSMOM_PREREGISTRATION.md): segnale = sign del ritorno
 trailing L giorni; sizing vol-target (60g) per asset a pari rischio; media di portafoglio;
 ribilanciamento mensile/giornaliero; costi per turnover; look-ahead-safe (segnale/vol <= t-1,
 posizione applicata al ritorno t+1). Validazione con core/quant_metrics.py.

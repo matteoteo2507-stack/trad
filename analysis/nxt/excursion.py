@@ -7,7 +7,7 @@ registrava — quanto lontano e' andato il prezzo a favore PRIMA di tornare allo
 Serve a rispondere: esiste UNA QUALUNQUE uscita a coda aperta (niente TP, niente BE) che
 riporti E[R] sopra zero? La MFE e' il limite superiore invalicabile di qualsiasi exit rule.
 
-Soglie DICHIARATE PRIMA dell'esecuzione in docs/NXT_EXIT_CEILING_ADDENDUM.md:
+Soglie DICHIARATE PRIMA dell'esecuzione in magazzino/registro/documenti/NXT_EXIT_CEILING_ADDENDUM.md:
   S1  E[R]_oracolo = media di max(MFE, -1) - costi   -> se <= 0: kill immediato
   S2  E[MFE | MFE >= 3R] > 6.5R                      -> se no: tesi "lascia correre" morta
   S3  breadth: maggioranza di asset E di anni sopra soglia
@@ -203,7 +203,7 @@ def cluster_ci(df, col, n_boot=3000, seed=nxt.SEED):
 def main():
     print("=" * 78)
     print("NXT — SOFFITTO DELL'USCITA (MFE/MAE, niente TP, niente BE)")
-    print("Soglie dichiarate prima: docs/NXT_EXIT_CEILING_ADDENDUM.md")
+    print("Soglie dichiarate prima: magazzino/registro/documenti/NXT_EXIT_CEILING_ADDENDUM.md")
     print("=" * 78)
 
     rng = np.random.default_rng(nxt.SEED)

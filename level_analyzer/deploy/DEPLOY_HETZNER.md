@@ -100,7 +100,7 @@ cd ~/trad && git pull && sudo systemctl restart level-analyzer
   **contestualizzato** (regime, sessione, ATR/vol, base spot/futures, versione parametri). Scarica
   periodicamente (`scp matteo@<IP>:~/trad/level_analyzer/trade_records.csv .`) e compila `human_decision`
   (taken/skipped/modified) ed esito reale (`real_entry/exit/cost/real_R/outcome`): è il dataset per il
-  gate di evidenza. Schema e razionale in [`docs/TRADING_WORKFLOW_DESIGN.md`](../../docs/TRADING_WORKFLOW_DESIGN.md).
+  gate di evidenza. Schema e razionale in [`magazzino/dormienti/docs/TRADING_WORKFLOW_DESIGN.md`](../../magazzino/dormienti/docs/TRADING_WORKFLOW_DESIGN.md).
   Dopo `git pull` la nuova spina parte da sola (il vecchio `signals_log.csv` resta intatto come legacy).
 - **Costo**: ~€3.79/mese (CX22). Per spegnere senza fatturare va **eliminato** in console.
 - **Upgrade a spot (oro)**: quando passeremo a semi/full-auto, sostituiremo yfinance con un

@@ -28,7 +28,7 @@ strategies/confluence_levels/levels.yaml
 strategies/*/state.json
 
 # Journal operativi settimanali (dati personali di trading)
-journals/journal_settimana_*.md
+magazzino/dormienti/journals/journal_settimana_*.md
 
 # IDE
 .vscode/
@@ -103,7 +103,7 @@ analysis/intake/_fetch.log
 # Trascrizioni YouTube grezze: contenuto integrale di terzi (canale commerciale),
 # 4,3 MB su repo pubblico. Il triage in _triage/ e' analisi nostra e viene versionato;
 # il verbatim si rigenera con analysis/intake/yt_fetch.py
-fondamenti_tecnici/_sorgenti/insight_da_yt/_raw/
+magazzino/fonti/sorgenti/insight_da_yt/_raw/
 
 # Output trade-level dei backtest (MB di CSV). I *_report.txt aggregati sono versionati.
 analysis/nxt/*_trades.csv
@@ -117,5 +117,5 @@ docs/VPS_COPIER_SETUP.md
 /decisioni/Da distillare/*
 !/decisioni/Da distillare/README.md
 # Export Telegram/MT5 portati dal socio (chat, conti): dati, non codice. Tracciati solo i .md alla radice.
-/materiale_socio/*/
+/magazzino/fonti/materiale_socio/*/
 analysis/forexgump/signals.csv

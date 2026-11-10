@@ -1,6 +1,6 @@
 """Scarica i tick Dukascopy XAU/USD (BID e ASK) nelle finestre dei segnali di Forex Gump.
 
-Pre-registrazione `docs/FOREXGUMP_LATENCY_PREREGISTRATION.md` §3-§4: tick in [messaggio − 10 min,
+Pre-registrazione `magazzino/registro/documenti/FOREXGUMP_LATENCY_PREREGISTRATION.md` §3-§4: tick in [messaggio − 10 min,
 messaggio + 85 min] per ogni segnale dell'universo, per riempire all'istante giusto (messaggio + L) e
 risolvere la prima ora d'uscita senza pareggi intrabar. Oltre l'ora si passa alle barre M1.
 

@@ -5,7 +5,7 @@ Il sistema calcola da solo l'esito di OGNI segnale dal price path successivo
 input umano: sostituisce il lavoro decisionale di "com'e' andato il trade".
 Mirror forward della stessa logica del backtest (analysis/trading-bot-eval).
 
-Vedi docs/TRADING_WORKFLOW_DESIGN.md.  Logica pura, testabile offline.
+Vedi magazzino/dormienti/docs/TRADING_WORKFLOW_DESIGN.md.  Logica pura, testabile offline.
 """
 from __future__ import annotations
 

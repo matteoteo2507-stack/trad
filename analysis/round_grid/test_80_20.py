@@ -1,6 +1,6 @@
 """Griglia a numero tondo .80/.20 sul Nasdaq: zone di reazione o no?
 
-Esegue docs/ROUND_NUMBER_GRID_PREREGISTRATION.md. Riusa `classify()` della ricerca livelli
+Esegue magazzino/registro/documenti/ROUND_NUMBER_GRID_PREREGISTRATION.md. Riusa `classify()` della ricerca livelli
 con le costanti PRE-REGISTRATE invariate, cosi' i due studi sono confrontabili.
 
 Null: stessa geometria, FASE diversa (griglia {20+d, 80+d} mod 100). A griglia fissa il

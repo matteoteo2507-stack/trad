@@ -1,4 +1,4 @@
-"""ESECUZIONE UNICA del test pre-registrato Forex Gump (`docs/FOREXGUMP_LATENCY_PREREGISTRATION.md`).
+"""ESECUZIONE UNICA del test pre-registrato Forex Gump (`magazzino/registro/documenti/FOREXGUMP_LATENCY_PREREGISTRATION.md`).
 
 ⚠️ Si lancia UNA volta sola, dopo l'approvazione. La GUARDIA si rifiuta di partire se:
 - il frontmatter della pre-registrazione non ha `stato: APPROVATA`;
@@ -7,7 +7,7 @@
 - mancano ore di tick o ci sono scarichi falliti (`export_tick.py --conta` deve dire 0 da scaricare);
 - l'allineamento del fuso (`carica.verifica`) e' sotto il 95%.
 Superata la guardia, l'holdout si registra come APERTO nel ledger PRIMA di calcolare, e il referto si
-scrive un pezzo alla volta in `docs/reviews/forexgump_esito_<data>.md` (G1 #2, B1: un errore a meta' non
+scrive un pezzo alla volta in `magazzino/registro/referti/forexgump_esito_<data>.md` (G1 #2, B1: un errore a meta' non
 deve lasciare l'holdout aperto senza referto).
 
 `--ripresa AAAA-MM-GG`: SOLO se l'esecuzione unica si e' interrotta dopo l'apertura dell'holdout (procedura
@@ -46,7 +46,7 @@ from core.random_baseline import check_matching  # noqa: E402
 from core.resolve_trade import OTTIMISTA, PESSIMISTA  # noqa: E402
 from core.verifiche import fattore_potenza  # noqa: E402
 
-PREREG = os.path.join(ROOT, "docs", "FOREXGUMP_LATENCY_PREREGISTRATION.md")
+PREREG = os.path.join(ROOT, "magazzino", "registro", "documenti", "FOREXGUMP_LATENCY_PREREGISTRATION.md")
 LEDGER = os.path.join(ROOT, "decisioni", "trial_ledger.json")
 TICK_DIR = os.path.join(DATA, "_duka_xau_tick_ore")
 FAMIGLIA = "forexgump_signals"
@@ -220,17 +220,17 @@ def main() -> int:
         dest = os.path.join(os.environ.get("TEMP", "."), f"forexgump_prova_a_secco_{dt.date.today()}.md")
         pz = rp.Prezzi(m1_bid=bid, m1_ask=ask, tick=tick_sintetici(bid, ask))   # stesso percorso tick (N1)
     elif a.ripresa:
-        dest = os.path.join(ROOT, "docs", "reviews", f"forexgump_esito_{dt.date.today()}_ripresa.md")
+        dest = os.path.join(ROOT, "magazzino", "registro", "referti", f"forexgump_esito_{dt.date.today()}_ripresa.md")
         guardia_ripresa(dest, a.ripresa)                       # l'apertura NON si tocca
         pz = rp.Prezzi(m1_bid=bid, m1_ask=ask, tick=tick_da_cache)
     else:
-        dest = os.path.join(ROOT, "docs", "reviews", f"forexgump_esito_{dt.date.today()}.md")
+        dest = os.path.join(ROOT, "magazzino", "registro", "referti", f"forexgump_esito_{dt.date.today()}.md")
         guardia(dest)
         apri_holdout()
         pz = rp.Prezzi(m1_bid=bid, m1_ask=ask, tick=tick_da_cache)
     out = Referto(dest)
     out(f"# Forex Gump — esito del test pre-registrato ({dt.date.today()}){' — PROVA A SECCO, istanti spostati' if a.prova_a_secco else ''}",
-        "", "Pre-registrazione: `docs/FOREXGUMP_LATENCY_PREREGISTRATION.md`. Esecuzione unica; holdout = 100% del campione.", "")
+        "", "Pre-registrazione: `magazzino/registro/documenti/FOREXGUMP_LATENCY_PREREGISTRATION.md`. Esecuzione unica; holdout = 100% del campione.", "")
 
     # 1. kill sui dati -------------------------------------------------------------------------
     base = corsa(pz, s, L=10, conv=PESSIMISTA)

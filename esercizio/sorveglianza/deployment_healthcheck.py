@@ -25,7 +25,7 @@ except ImportError:
     print("MetaTrader5 non installato: pip install MetaTrader5")
     sys.exit(1)
 
-# universo PRE-REGISTRATO (docs/NXT_FADE_FORWARD_PREREGISTRATION.md §2), coi suffissi del broker
+# universo PRE-REGISTRATO (magazzino/registro/documenti/NXT_FADE_FORWARD_PREREGISTRATION.md §2), coi suffissi del broker
 UNIVERSE = {"EURUSD.r", "GBPUSD.r", "USDJPY.r", "XAUUSD.cyr", "US100", "US500"}
 MAGIC = {26071: "nxt_fade", 26052: "orb_nasdaq"}
 # Conto su cui gira il forward test. Se ne troviamo un altro, i numeri sono

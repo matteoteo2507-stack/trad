@@ -59,7 +59,7 @@ one_step_trailing:
 
 # =====================================================================================================
 # REGOLAMENTI VERI DELLE FIRM — Comet, due passaggi (06/10). Fonte integrale:
-#   docs/reviews/prop_regolamenti_comet_2026-10-06.md (trad)
+#   magazzino/registro/referti/prop_regolamenti_comet_2026-10-06.md (trad)
 # Stato `citato_senza_url`: ogni valore ha una frase citata e il nome della pagina, ma non l'URL. Utilizzabile per
 # orientarsi, non per una decisione con soldi. I campi ambigui o contraddittori fra i due passaggi restano null,
 # con il motivo e i valori di Comet accanto (`comet_*`): lab.prop.regole_mancanti() li elenca ed evaluate() rifiuta.

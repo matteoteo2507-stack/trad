@@ -1,7 +1,7 @@
 """Scarica lo storico S&P 500 senza survivorship di `Johnbrick123/sp500-data` (strato azionario USA, 05/11/2026).
 
 Perche' questa fonte: prezzi giornalieri di tutti i membri dell'indice dal 1970, delistati compresi, con
-l'appartenenza giorno per giorno (ricerca dati del 25/10, docs/reviews/ricerca_dati_2026-10-25.md §2).
+l'appartenenza giorno per giorno (ricerca dati del 25/10, magazzino/registro/referti/ricerca_dati_2026-10-25.md §2).
 
 Regole:
 - si scarica una release **congelata** (`snapshot-AAAA-MM`), mai la release mobile, cosi' un test sa su quale versione

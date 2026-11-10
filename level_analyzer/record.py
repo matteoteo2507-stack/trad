@@ -5,7 +5,7 @@ ATR/vol, spread assunto, base strumento spot/futures, versione parametri), piu' 
 che umano/riconciliazione riempiranno DOPO: la decisione discrezionale (taken/skipped/
 modified) e l'esito reale netto costi. Senza questi campi non si separa edge-del-sistema
 da edge-della-discrezione, ne' edge-decaduto da costo-aumentato; e il contesto al momento
-della decisione NON e' recuperabile dopo. Vedi docs/TRADING_WORKFLOW_DESIGN.md.
+della decisione NON e' recuperabile dopo. Vedi magazzino/dormienti/docs/TRADING_WORKFLOW_DESIGN.md.
 
 Logica pura, offline-testabile. Nessun ordine, nessuna rete.
 """

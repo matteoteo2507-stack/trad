@@ -34,12 +34,13 @@ HUB = TRAD.parent
 
 TESTO = {".md", ".py", ".yaml", ".yml", ".json", ".toml", ".base", ".txt", ".mq5", ".mqh", ".cfg", ".ini"}
 # Fonti grezze e dati: non si toccano mai.
-INTOCCABILI = ("fondamenti_tecnici/_sorgenti/", "materiale_socio/", "Da distillare/", "prop-lab/data/",
+INTOCCABILI = ("fondamenti_tecnici/_sorgenti/", "materiale_socio/", "Da distillare/", "decisioni/Da distillare/",
+               "magazzino/fonti/", "prop-lab/data/",
                "prop-lab/results/", "signal_copier/samples/", "esercizio/signal_copier/samples/")
 # Registri storici: si aggiornano i link, non il testo.
 STORICI = ("DECISIONS.md", "mappa/_modifiche.md", "docs/reviews/", "docs/health/", "fondamenti_tecnici/_INTAKE.md",
            "esercizio/sorveglianza/report/", "decisioni/DECISIONS.md", "decisioni/mappa/_modifiche.md",
-           "decisioni/_INTAKE.md")
+           "decisioni/_INTAKE.md", "magazzino/registro/referti/")
 # Codice congelato di uno studio chiuso: si sposta ma non si riscrive (si riproduce dal commit del verdetto).
 CONGELATI = ("analysis/ultima_mezzora/", "motore/riordino/")  # anche questo strumento: le sue costanti sono percorsi
 # File dell'hub che citano trad (solo documenti vivi; i registri dell'hub restano come sono).
@@ -99,7 +100,14 @@ def riscrivi_link(testo: str, src_vecchio: str, src_nuovo: str, base: str, spost
         percorso, _, anc = dest.partition("#")
         assoluto = norm(PurePosixPath(dir_v) / unquote(percorso))
         if not assoluto:
-            return m.group(0)
+            # il bersaglio esce dalla radice (es. ../memoria/...): si ricalcola sul disco se il file si sposta
+            if src_nuovo == src_vecchio or base:
+                return m.group(0)
+            radice = HUB if base else TRAD
+            vero = os.path.normpath(radice / dir_v / unquote(percorso))
+            if not os.path.exists(vero):
+                return m.group(0)
+            return m.group(1) + os.path.relpath(vero, radice / dir_n).replace(os.sep, "/") + ("#" + anc if anc else "") + m.group(3)
         if base:  # file dell'hub: interessano solo i bersagli dentro trad
             if not assoluto.startswith(base):
                 return m.group(0)
@@ -107,8 +115,9 @@ def riscrivi_link(testo: str, src_vecchio: str, src_nuovo: str, base: str, spost
         else:
             dentro = assoluto
         cartella = dentro.rstrip("/")
-        if dentro not in esistenti and not any(e.startswith(cartella + "/") for e in esistenti):
-            return m.group(0)  # link gia' rotto o fuori dal repo: non lo tocco
+        su_disco = ((HUB / base) if base else TRAD) / dentro
+        if dentro not in esistenti and not any(e.startswith(cartella + "/") for e in esistenti)                 and not su_disco.exists():
+            return m.group(0)  # link gia' rotto: non lo tocco (i file non tracciati ma presenti valgono)
         dest_nuovo = nuovo_percorso(dentro, spost) or dentro
         if dest_nuovo == dentro and src_nuovo == src_vecchio:
             return m.group(0)

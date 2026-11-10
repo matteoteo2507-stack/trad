@@ -17,7 +17,7 @@ float; nessun asset usa la virgola come decimale, quindi è sicuro.
 
 Uso (dalla radice del repo):
     python -m analysis.veltrix.parse_alphanalist
-Input: materiale_socio/veltrix_alphanalist_chat_*/alphanalist_chat_*.jsonl (export, fuori da git)
+Input: magazzino/fonti/materiale_socio/veltrix_alphanalist_chat_*/alphanalist_chat_*.jsonl (export, fuori da git)
 Output: analysis/veltrix/signals.csv , analysis/veltrix/signals.jsonl
 """
 
@@ -191,9 +191,9 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
     except Exception:
         pass
-    src = sorted(glob.glob("materiale_socio/veltrix_alphanalist_chat_*/alphanalist_chat_*.jsonl"))
+    src = sorted(glob.glob("magazzino/fonti/materiale_socio/veltrix_alphanalist_chat_*/alphanalist_chat_*.jsonl"))
     if not src:
-        raise SystemExit("Nessun file alphanalist_chat_*.jsonl in materiale_socio/veltrix_alphanalist_chat_*/.")
+        raise SystemExit("Nessun file alphanalist_chat_*.jsonl in magazzino/fonti/materiale_socio/veltrix_alphanalist_chat_*/.")
     rows: list[dict] = []
     for line in open(src[0], encoding="utf-8"):
         rec = json.loads(line)
