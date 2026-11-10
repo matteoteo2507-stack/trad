@@ -80,8 +80,6 @@ magazzino/registro/codice/mentor_signals/signals.csv
 # Il file del 07/07 era gia' pubblico e resta tracciato.
 magazzino/registro/codice/mentor_signals/deleted_signals/*.jsonl
 
-# Repo del socio clonato (codice di terzi, ha un proprio .git)
-socio-trading-bot/
 
 # Export Telegram grezzi (pesanti, fuori repo per scelta 2026-08-09)
 /Messaggi tg aggiornati*/

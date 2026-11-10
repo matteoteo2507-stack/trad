@@ -98,7 +98,7 @@ fermo ma legato a qualcosa che gira; *dormiente* = funziona ma non è usato; *ar
 | `motore/riordino/sposta.py` | lo strumento della migrazione: sposta file e cartelle (anche quelle fuori da git) e riscrive link, menzioni e import | — | vivo: serve a ogni spostamento futuro |
 | `README.md`, `PROJECT.md` | i file d'ingresso: obiettivo comune ai soci, ruoli, dove stanno le cose (riscritti il 09/11, DECISIONS 2026-11-09) | — | vivo |
 | `decisioni/mappa/` | questa mappa, il cruscotto e il registro modifiche di trad | — | vivo |
-| `backtest_results/`, `logs/`, `socio-trading-bot/` | risultati e materiale locale, quasi tutto fuori da git (`output/` e `docs/` tolte il 10/11: il loro ultimo file e' nei dormienti e col copier) | — | dati |
+| `backtest_results/`, `logs/` | risultati e materiale locale, quasi tutto fuori da git (`output/` e `docs/` tolte il 10/11: il loro ultimo file e' nei dormienti e col copier; `socio-trading-bot/`, doppione del clone in `trading-bot-eval/vendor-trading-bot/`, cancellato da Matteo il 10/11) | — | dati |
 
 **Moduli condivisi tra componenti:** `motore/brokers/mt5.py` (3 e 4), `motore/notifiers/_pip_table.py` (3 e 5),
 `motore/core/quant_metrics.py` (usato da 22 file di ricerca), `motore/core/risk_gate.py` (6 e 12: lo usano
