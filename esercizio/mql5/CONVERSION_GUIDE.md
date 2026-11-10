@@ -1,7 +1,7 @@
 # Guida alla conversione Python -> MQL5 (EA MetaTrader 5)
 
 Knowledge base operativa per portare i backtest Python del workspace
-(`analysis/**/*.py`) in Expert Advisor MQL5 compilabili e *semanticamente
+(`magazzino/registro/codice/**/*.py`) in Expert Advisor MQL5 compilabili e *semanticamente
 fedeli*. Usata dall'agente `mql5-converter` e come riferimento umano.
 
 Regola d'oro: **un backtest e un EA che divergono sono un bug, non "il live e'
@@ -112,7 +112,7 @@ Queste NON danno errore di compilazione: danno risultati diversi dal backtest.
 
 **ATR: SMA vs Wilder.** Trappola scoperta nel port di `nxt_fade` (2026-07-24).
 Il `iATR` di MT5 e l'`H_ATR` del workspace usano lo smoothing di **Wilder (SMMA)**;
-molti backtest Python (`analysis/nxt/backtest.py: atr()`) usano invece la **media
+molti backtest Python (`magazzino/registro/codice/nxt/backtest.py: atr()`) usano invece la **media
 semplice** del True Range: `pd.Series(tr).rolling(14).mean()`. I due valori
 divergono e, se l'ATR e' una **soglia** (es. filtro ampiezza gamba `rng >= 1*ATR`),
 cambiano quali setup passano il filtro -> trade-set diverso, divergenza silenziosa

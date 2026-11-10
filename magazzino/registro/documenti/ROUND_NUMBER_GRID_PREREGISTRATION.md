@@ -9,7 +9,7 @@ decisione: "DECISIONS 2026-08-09 — griglia .80/.20 NULL, famiglia CLOSED"
 > **Vincolante, scritta il 2026-08-09 PRIMA di qualunque esecuzione.** Nessun risultato è ancora
 > stato calcolato. Le soglie non si modificano dopo aver visto i numeri.
 >
-> Ciclo: [STRATEGY_LIFECYCLE.md](../../../docs/STRATEGY_LIFECYCLE.md). Fonte dell'ipotesi:
+> Ciclo: [STRATEGY_LIFECYCLE.md](../../../motore/metodo/STRATEGY_LIFECYCLE.md). Fonte dell'ipotesi:
 > [`_sorgenti/insight_da_yt/okala_80-20_nasdaq_ChartFanatics.md`](../../fonti/sorgenti/insight_da_yt/okala_80-20_nasdaq_ChartFanatics.md).
 
 ---
@@ -56,7 +56,7 @@ reale per evitare sovrapposizioni.
 |---|---|
 | Serie | `NAS100_M5.csv` — **949.241 barre**, 2012-01-19 → 2026-07-16 |
 | Split | **TRAIN 70% / HOLDOUT 30%** cronologico. L'holdout si apre **una sola volta**, e **solo** se il TRAIN è positivo |
-| Metrica | **%REACTION per touch**, da `analysis/level_research/reaction.py::classify()` — **costanti invariate**: `TOL_ATR=0.10`, `TOUCH_WINDOW=24`, `N_REACT=4`, `REACT_FAV_ATR=1.0` |
+| Metrica | **%REACTION per touch**, da `magazzino/registro/codice/level_research/reaction.py::classify()` — **costanti invariate**: `TOL_ATR=0.10`, `TOUCH_WINDOW=24`, `N_REACT=4`, `REACT_FAV_ATR=1.0` |
 | Punti di decisione | uno ogni **12 barre M5** (1 ora), per limitare la sovrapposizione |
 | Lati | SUPPORT (livello sotto il prezzo) e RESISTANCE (sopra), classificati separatamente e poi poolati |
 | Random | **M = 5** griglie sfasate per punto di decisione (come `M_RANDOM` originale) |

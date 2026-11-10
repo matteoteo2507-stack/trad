@@ -64,8 +64,8 @@ non meccanizzare il discrezionale.
 | Meta | Confluenza (2+ a **nature distinte**) | `confluence_auto/confluence.py` | — | ri-testare corretto |
 
 ## Parte 3 — Orchestrazione (protocollo a priori)
-Motore unico riusabile (base: `analysis/veltrix/validate_levels.py` reazione-vs-random look-ahead-safe
-+ `analysis/trading-bot-eval/level_reaction_analysis.py` tassonomia). Per ogni **asset × concetto**:
+Motore unico riusabile (base: `magazzino/registro/codice/veltrix/validate_levels.py` reazione-vs-random look-ahead-safe
++ `magazzino/registro/codice/trading-bot-eval/level_reaction_analysis.py` tassonomia). Per ogni **asset × concetto**:
 rileva livelli (barre chiuse) → classifica ogni avvicinamento **REACTION / BREAK / NO_TEST /
 SWEEP→BREAK** (criteri/soglie ATR-relative dell'Agent A, fissi) → confronta col **random
 distance-matched**.

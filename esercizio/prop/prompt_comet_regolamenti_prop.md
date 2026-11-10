@@ -7,7 +7,7 @@ creato: 2026-10-07
 # Prompt per Comet — regolamenti delle prop firm
 
 Serve a compilare la griglia di [PROP_FIRM_CRITERIA §3](PROP_FIRM_CRITERIA.md) e le voci reali di
-`prop-lab/config/prop_rules.yaml`. **Versione 2 (07/10)**: corregge tre difetti della prima, usata il 06/10
+`motore/prop-lab/config/prop_rules.yaml`. **Versione 2 (07/10)**: corregge tre difetti della prima, usata il 06/10
 (§3bis): la domanda sulla perdita giornaliera mescolava due cose, i `null` non dicevano perche', e i campi 7-13
 stavano solo nella tabella.
 

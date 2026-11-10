@@ -3,12 +3,12 @@
 > **Documento vincolante.** Creato il **2026-09-18**, **riscritto lo stesso giorno** dopo aver
 > trovato un disallineamento di un'ora fra i timestamp dei segnali e il feed dei prezzi. I numeri
 > della prima stesura sono **nulli e non vanno citati**: §6a n.1 del
-> [ciclo di vita](../../../docs/STRATEGY_LIFECYCLE.md) — un difetto conclamato non si corregge, si rifa' da zero.
+> [ciclo di vita](../../../motore/metodo/STRATEGY_LIFECYCLE.md) — un difetto conclamato non si corregge, si rifa' da zero.
 >
 > Copre le voci **C3** (soglie di ritiro, §8bis) e **C5** (gate anti-ritardo) del
 > [backlog](../../../decisioni/BACKLOG_RICERCA.md). Motori:
-> [`withdrawal_thresholds.py`](../../../analysis/mentor_signals/withdrawal_thresholds.py) ·
-> [`latency_gate.py`](../../../analysis/mentor_signals/latency_gate.py).
+> [`withdrawal_thresholds.py`](../codice/mentor_signals/withdrawal_thresholds.py) ·
+> [`latency_gate.py`](../codice/mentor_signals/latency_gate.py).
 
 ---
 
@@ -62,7 +62,7 @@ lo assorbe quasi tutto:
 > soglia assoluta — la stessa lezione di [[feedback_r_multiple_ceiling_baseline]], qui a nostro
 > favore.
 
-**Correzione applicata** in `analysis/mentor_signals/backtest.py` come `TS_OFFSET`, cosi' vale per
+**Correzione applicata** in `magazzino/registro/codice/mentor_signals/backtest.py` come `TS_OFFSET`, cosi' vale per
 tutti gli script a valle. E' un **bug fix**: non consuma trial (§3).
 
 ---
@@ -350,9 +350,9 @@ direzionale invece di sprecarlo. **Costa un trial** (§3) e va pre-registrata pr
   che convivevano sono stati eliminati dopo aver verificato insiemisticamente che il nuovo li
   contiene tutti. L'unico segnale presente solo nel piu' vecchio era gia' registrato in
   `deleted_signals/` — **cancellato dal mentore dal canale**.
-- Prezzi estesi a oggi con [`extend_prices.py`](../../../analysis/mentor_signals/extend_prices.py):
+- Prezzi estesi a oggi con [`extend_prices.py`](../codice/mentor_signals/extend_prices.py):
   riconciliazione sulla sovrapposizione **+$0,060 / correlazione 1,000000**, identica al riferimento.
-- [`coverage.py`](../../../analysis/mentor_signals/coverage.py) stampa e verifica la finestra dei dati
+- [`coverage.py`](../codice/mentor_signals/coverage.py) stampa e verifica la finestra dei dati
   **prima** di ogni calcolo, e si ferma se l'export e' vuoto.
 
 ---

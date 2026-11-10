@@ -3,7 +3,7 @@
 //|                          Trading System Workspace - Stage 2.6   |
 //|                                                                  |
 //|  Time Series Momentum (Moskowitz-Ooi-Pedersen 2012) su D1.       |
-//|  Porting MQL5 della logica Python `strategies/tsmom/`.           |
+//|  Porting MQL5 della logica Python `magazzino/registro/codice/tsmom/`.           |
 //|                                                                  |
 //|  Riferimenti edge:                                               |
 //|   Moskowitz, Ooi, Pedersen (2012) "Time Series Momentum", JFE.   |

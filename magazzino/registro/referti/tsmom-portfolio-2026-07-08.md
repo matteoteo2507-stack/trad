@@ -1,7 +1,7 @@
 # TSMOM multi-asset (canonico, di portafoglio) — Verdetto: NO-GO — 2026-07-08
 
 > Primo edge del pivot post-livelli. Test **pre-registrato** ([docs/TSMOM_PREREGISTRATION.md](../documenti/TSMOM_PREREGISTRATION.md)),
-> motore [strategies/tsmom/backtest.py](../../../strategies/tsmom/backtest.py), metriche [core/quant_metrics.py](../../../core/quant_metrics.py).
+> motore [strategies/tsmom/backtest.py](../codice/tsmom/backtest.py), metriche [core/quant_metrics.py](../../../motore/core/quant_metrics.py).
 > Universo 16 asset D1 (2003-2026), spec canonica MOP (sign ritorno 252g, vol-target 60g, media di
 > portafoglio, ribilanciamento mensile, costi per turnover, look-ahead-safe).
 

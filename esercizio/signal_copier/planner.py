@@ -6,7 +6,7 @@ Responsabilità:
 - arrotondamento al lot-step del broker.
 
 Nota sul rischio: a differenza delle strategie meccaniche, qui NON applichiamo
-`min_reward_to_risk` di `config/risk.yaml` — il R/R lo decide il mentore, noi
+`min_reward_to_risk` di `motore/config/risk.yaml` — il R/R lo decide il mentore, noi
 copiamo. Il R/R blended viene comunque calcolato e loggato per trasparenza.
 """
 
@@ -16,7 +16,7 @@ import logging
 import math
 from typing import Any, Optional
 
-from notifiers._pip_table import price_delta_pips, suggested_lots
+from motore.notifiers._pip_table import price_delta_pips, suggested_lots
 
 from .models import EntryTrigger, ParsedSignal, TradeLeg, TradePlan
 

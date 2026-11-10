@@ -22,7 +22,7 @@ Il percorso, nell'ordine:
    - **(c) dati**: fra i primi acquisti coi payout (DECISIONS 2026-11-07).
 
 A che punto siamo: nessun sistema e' oggi candidato alla prop. Le 14 famiglie testate sono chiuse
-(`python -m core.trial_ledger`); il PAC e' l'unica parte operativa.
+(`python -m motore.core.trial_ledger`); il PAC e' l'unica parte operativa.
 
 ## Ruoli
 
@@ -44,9 +44,9 @@ modifica dopo i test dei soci (conta come trial). Nessun dato grezzo esce verso 
 - **Capitale di partenza** ~0 €: la prop e' la via d'accesso.
 - **Trading per regole codificate**: niente LLM nel ciclo di esecuzione. Gli agenti lavorano su ricerca, design e
   revisione.
-- **Sicurezza**: mai live senza risk gate; `paper_mode` di default; tetti di drawdown in `config/risk.yaml`
-  ([CONVENTIONS.md](CONVENTIONS.md)).
-- **Metodo**: ogni test passa dal [ciclo di vita](docs/STRATEGY_LIFECYCLE.md) e dal gatekeeper; nessun numero senza
+- **Sicurezza**: mai live senza risk gate; `paper_mode` di default; tetti di drawdown in `motore/config/risk.yaml`
+  ([CONVENTIONS.md](motore/CONVENTIONS.md)).
+- **Metodo**: ogni test passa dal [ciclo di vita](motore/metodo/STRATEGY_LIFECYCLE.md) e dal gatekeeper; nessun numero senza
   nota sorgente e data.
 - **Repo pubblico**: niente nomi, chat, orari o numeri di conto; i dati con licenza personale non entrano in git.
 
@@ -58,11 +58,11 @@ La macrostruttura segue l'ordine del processo: entra, si smista, si studia, si d
 |---|---|
 | `decisioni/` | centro decisionale: cosa e' stato deciso, cosa e' aperto, dove va cio' che entra |
 | `motore/` | cio' che serve per lavorare: codice, test, dati, metodo |
-| `magazzino/` | teoria, fonti grezze immutabili, registro degli studi (una cartella per famiglia) |
+| `magazzino/` | teoria, fonti grezze immutabili, registro degli studi (documenti, referti, codice: per tipo, non per famiglia), cio' che non gira |
 | `esercizio/` | cio' che gira con soldi veri o in demo |
 | `uscita/` | pacchetti per i soci |
 
-**La migrazione e' in corso**, una macro alla volta (DECISIONS 2026-11-09). Dove sta ogni cosa *oggi* lo dice il
+La migrazione e' finita il 10/11, una macro alla volta (DECISIONS 2026-11-09). Dove sta ogni cosa lo dice il
 [README](README.md); il catasto completo e' nella [mappa](decisioni/mappa/00-panoramica-trad.md).
 
 ## Repo esterni di riferimento (audit del 2026-05-31)

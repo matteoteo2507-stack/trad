@@ -24,9 +24,9 @@ sys.path.insert(0, ROOT)
 
 # Tre moduli distinti si chiamano tutti `backtest.py` (nxt, opening_range,
 # mentor_signals): senza isolamento il primo importato vince e gli altri esplodono.
-_DIRS = {"nxt": os.path.join(ROOT, "analysis/nxt"),
-         "orb": os.path.join(ROOT, "analysis/opening_range"),
-         "mentor": os.path.join(ROOT, "analysis/mentor_signals")}
+_DIRS = {"nxt": os.path.join(ROOT, "magazzino/registro/codice/nxt"),
+         "orb": os.path.join(ROOT, "magazzino/registro/codice/opening_range"),
+         "mentor": os.path.join(ROOT, "magazzino/registro/codice/mentor_signals")}
 _COLLIDE = ("backtest", "backtest_v2", "closure", "consistency", "parse",
             "oos_validation", "reaction")
 

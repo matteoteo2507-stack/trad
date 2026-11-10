@@ -7,7 +7,7 @@ tipo: strategia_candidata
 
 # NYSE Scalping (VWAP + TPO + OTF)
 
-> **STATO: candidata — NON costruita.** Spec pronta per essere promossa a strategies/<nome>/ (Python) o esercizio/mql5/ (EA) SE prioritizzata. Oggi NON in piano: vedi ../../DECISIONS.md (strategie custom per ultime) e l'indice ../../strategies/README.md (sezione Candidate).
+> **STATO: candidata — NON costruita.** Spec pronta per essere promossa a magazzino/dormienti/strategies/<nome>/ (Python) o esercizio/mql5/ (EA) SE prioritizzata. Oggi NON in piano: vedi ../../DECISIONS.md (strategie custom per ultime) e l'indice ../../strategies/README.md (sezione Candidate).
 
 ## Ipotesi di mercato
 
@@ -108,12 +108,12 @@ Quando i filtri sono **discordi** → **no trade** (vedi Caso 3).
 
 Quando/se prioritizzata (vedi ../../DECISIONS.md — le strategie custom sono in fondo alla pipeline):
 
-1. **Copia lo scaffold** da ../../strategies/_template/ in `strategies/<nome>/` (proposta: `strategies/nyse_scalping/`).
+1. **Copia lo scaffold** da ../../strategies/_template/ in `magazzino/dormienti/strategies/<nome>/` (proposta: `magazzino/dormienti/strategies/nyse_scalping/`).
 2. Segui i pattern di nuova strategia in ../../CONVENTIONS.md (struttura `strategy.py`, `config.yaml`, `__main__.py`, README).
 3. **Decidi il runtime**: Python (analisi/backtest weekend) oppure **EA MQL5** in `esercizio/mql5/` se va eseguita live sul VPS MetaQuotes — coerente con il pivot ibrido Python/MQL5.
 4. **Modella i componenti** come feature riproducibili senza gli indicatori TradingView proprietari: VWAP di sessione, Value Area (VAH/VAL) da Volume Profile, forma distributiva TPO/STPO, OTF Daily, finestra oraria NY.
 5. **Codifica i filtri** (OTF Daily, Value vs giorno precedente, finestra 15:00–18:00 + delay 15–30 min, esclusione FED/holiday/eventi) e le regole di risk (SL su estremo precedente, scaling 1:2 / 1:3, trailing, break even 1:1, sizing 0,25% / 0,1%).
-6. **Backtest con quant-review** (../../docs/QUANT_REVIEW_PROTOCOL.md): attenzione al **look-ahead** sui Value/TPO calcolati sul giorno stesso (usare il profilo del giorno **precedente** come riferimento, mai il close corrente).
+6. **Backtest con quant-review** ([QUANT_REVIEW_PROTOCOL](../../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md)): attenzione al **look-ahead** sui Value/TPO calcolati sul giorno stesso (usare il profilo del giorno **precedente** come riferimento, mai il close corrente).
 7. **Walk-forward** e validazione prima di qualsiasi live; poi shadow run come da prassi (cfr. confluence_auto).
 
 ## Collegamenti

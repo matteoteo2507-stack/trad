@@ -13,8 +13,8 @@ nota: "CLOSED il 05/10 (decisione di Matteo) dopo G2 PASSA con riserve. Due cond
 > **fuso** (sole entrate contro prezzo). Nessun E[R], nessun win rate, nessun confronto di esiti.
 > Dopo l'approvazione le soglie non si toccano; ogni modifica va datata nel §10.
 >
-> Ciclo: [STRATEGY_LIFECYCLE.md](../../../docs/STRATEGY_LIFECYCLE.md) · review: [QUANT_REVIEW_PROTOCOL.md](../../../docs/QUANT_REVIEW_PROTOCOL.md)
-> (Step 3bis) · modello: il lavoro C5 sul mentore XAU, [latency_gate.py](../../../analysis/mentor_signals/latency_gate.py).
+> Ciclo: [STRATEGY_LIFECYCLE.md](../../../motore/metodo/STRATEGY_LIFECYCLE.md) · review: [QUANT_REVIEW_PROTOCOL.md](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md)
+> (Step 3bis) · modello: il lavoro C5 sul mentore XAU, [latency_gate.py](../codice/mentor_signals/latency_gate.py).
 
 ---
 
@@ -24,23 +24,23 @@ nota: "CLOSED il 05/10 (decisione di Matteo) dopo G2 PASSA con riserve. Due cond
 |---|---|---|---|
 | **D1** | Split | **L'intero campione (1.792 segnali, 09/09/2020 → 28/09/2026) e' l'holdout della famiglia. Il TRAIN e' vuoto.** Si apre **una volta**, alla data dell'esecuzione, registrata in `trial_ledger.json` (`holdout_aperto`). Su questi dati sono ammessi **0 round di rifinitura**. Qualunque variante successiva (latenza, categoria, LIMIT/SKIP, geometria, anno) si valida **solo sul forward** dopo il 28/09/2026, conta come trial e ha una sua pre-registrazione: sui 1.792 resta **descrittiva per sempre**. L'esito positivo massimo e' **LEAD** (LIFECYCLE §5: nessun OOS indipendente); **GO** solo dal forward | ✅ **DECISA da Matteo il 2026-10-02** (DECISIONS 02/10) |
 | **D2** | Trimestre | Il budget esterno e' **3 per trimestre** (allarme a 2), e conta la **data di approvazione**, non quella d'esecuzione. Due strade pulite: **approvare nel Q3** (3 di 3, trimestre pieno) oppure **approvare dal 01/10** (1 del Q4) | ✅ di fatto **Q4**: oggi e' il 02/10, lo slot va alla data d'approvazione (dopo la G1 #2) |
-| **D3** | Messaggi modificati | Se l'export contiene la versione **finale** di messaggi modificati dopo la pubblicazione, il copier ha visto un testo diverso: look-ahead d'informazione. Da verificare **prima** dell'esecuzione: il socio sa se il mentore modifica i segnali? Nell'export compaiono segni di modifica? | ✅ **chiusa come NON MISURABILE** (02/10): non esiste un export piu' vecchio di Gump. Resta il bias §8.3, direzione verso l'alto; lo strumento per misurarlo esiste (`analysis/mentor_signals/confronta_export.py`) e si usera' sul **prossimo** export, per il forward |
+| **D3** | Messaggi modificati | Se l'export contiene la versione **finale** di messaggi modificati dopo la pubblicazione, il copier ha visto un testo diverso: look-ahead d'informazione. Da verificare **prima** dell'esecuzione: il socio sa se il mentore modifica i segnali? Nell'export compaiono segni di modifica? | ✅ **chiusa come NON MISURABILE** (02/10): non esiste un export piu' vecchio di Gump. Resta il bias §8.3, direzione verso l'alto; lo strumento per misurarlo esiste (`magazzino/registro/codice/mentor_signals/confronta_export.py`) e si usera' sul **prossimo** export, per il forward |
 
 ## 0bis. Stato del lavoro (dove siamo, cosa manca)
 
 - ✅ Parser, prezzi M1 BID/ASK, fuso (98,9%), checklist dati — §3.
 - ✅ G1 #1 (quant-gatekeeper, 28/09): **BLOCCA** su 5 punti; testo corretto in questa versione.
-- ✅ **Motore** [`replay.py`](../../../analysis/forexgump/replay.py) (02/10): fill al tick ≥ t+L (ripiego M1), BID/ASK
+- ✅ **Motore** [`replay.py`](../codice/forexgump/replay.py) (02/10): fill al tick ≥ t+L (ripiego M1), BID/ASK
   per lato, SKIP con spread ≥ SL, bracket ricentrato, uscite su tick per 60 min poi M1, troncamento a 24 h di
   calendario, stress, swap per rollover, entrambi i lati, CI a cluster per giornata (22 UTC). Varianti
   `live`, `limit`, `skip1`, `postato` (NON OTTENIBILE), meta' spread. 17 test su prezzi sintetici
-  (`tests/test_forexgump_replay.py`).
-- ✅ **Tick** nelle finestre dei segnali [−10, +85 min]: [`export_tick.py`](../../../analysis/forexgump/export_tick.py),
+  (`motore/tests/test_forexgump_replay.py`).
+- ✅ **Tick** nelle finestre dei segnali [−10, +85 min]: [`export_tick.py`](../codice/forexgump/export_tick.py),
   2.573 ore, **complete il 02/10** (0 fallite; 72 ore vuote, tutte chiusure di mercato con 0 barre M1). Un trade usa i tick solo se TUTTA la sua finestra e' in cache,
   altrimenti va interamente su M1 e la quota si riporta. La guardia richiede 0 ore mancanti e che ogni ora
   vuota sia una chiusura di mercato (0 barre M1).
 - ✅ **MDE sulla differenza appaiata** su istanti casuali (§6): 0,130R a cluster.
-- ✅ **Script d'esecuzione unica** [`esegui_test.py`](../../../analysis/forexgump/esegui_test.py) con **guardia**: non parte
+- ✅ **Script d'esecuzione unica** [`esegui_test.py`](../codice/forexgump/esegui_test.py) con **guardia**: non parte
   se questo frontmatter non dice `stato: APPROVATA` o se la famiglia non e' nel ledger (verificato: blocca).
 - ✅ **G1 #2** (02/10): BLOCCA sul codice (3 punti) + 9 riserve; **tutto corretto lo stesso giorno**, +4 test
   di regressione (14 in totale), prova a secco dello script completo su 60 istanti spostati: arriva in fondo.
@@ -98,20 +98,20 @@ con valore atteso negativo da sola; per chi copia esiste solo il bracket. E il m
 
 | | |
 |---|---|
-| **Segnali** | Export Telegram `magazzino/fonti/materiale_socio/forexgump_telegram_2020-09_2026-09/` (cartella `dati socio1/` fino al 03/10) (21 file, 18.688 messaggi, 09/09/2020 → 28/09/2026) → [parse.py](../../../analysis/forexgump/parse.py) → `signals.csv`. **1.899 bracket**; 54 messaggi con XAU e TP scartati con motivo contato (32 senza prezzo d'entrata, 11 TP e 11 SL dalla parte sbagliata: refusi che un broker rifiuta) |
+| **Segnali** | Export Telegram `magazzino/fonti/materiale_socio/forexgump_telegram_2020-09_2026-09/` (cartella `dati socio1/` fino al 03/10) (21 file, 18.688 messaggi, 09/09/2020 → 28/09/2026) → [parse.py](../codice/forexgump/parse.py) → `signals.csv`. **1.899 bracket**; 54 messaggi con XAU e TP scartati con motivo contato (32 senza prezzo d'entrata, 11 TP e 11 SL dalla parte sbagliata: refusi che un broker rifiuta) |
 | **Universo** | Bracket **con SL, a mercato: 1.792** (978 sell, 814 buy). Esclusi 104 senza SL (il copier rifiuta ordini senza SL — log del 21/09) e 3 ordini stop pendenti. **Tutte le categorie incluse** (il copier le esegue tutte). **Nessuna deduplica**, come il copier: restano i 2 bracket identici ripetuti e i segnali ravvicinati (80 entro 5 min dal precedente, 635 entro 30). Nei messaggi con piu' TP vale il **primo** (`parse.py`) |
-| **Prezzi** | Dukascopy XAU/USD **M1 BID e ASK**, 2020-09-01 → 2026-09-28 ([export_prices.py](../../../analysis/forexgump/export_prices.py)). **Tick** nella finestra [−10 min, +85 min] di ogni segnale: completi dal 02/10, stato nel §0bis. Se per un segnale mancano i tick, **fallback M1** (§4) e la quota si riporta |
+| **Prezzi** | Dukascopy XAU/USD **M1 BID e ASK**, 2020-09-01 → 2026-09-28 ([export_prices.py](../codice/forexgump/export_prices.py)). **Tick** nella finestra [−10 min, +85 min] di ogni segnale: completi dal 02/10, stato nel §0bis. Se per un segnale mancano i tick, **fallback M1** (§4) e la quota si riporta |
 | **Geometria dichiarata** | SL 2 $ (1.631 casi), 3 $ (117); TP 10 $ (1.677). Rapporto TP/SL mediano **5:1** |
 
 ### 3.1 Fuso orario — fissato, una volta sola
 
 L'export etichetta **ogni** messaggio `UTC+01:00`, d'estate e d'inverno. **Eseguito il 2026-09-28**
-([fuso.py](../../../analysis/forexgump/fuso.py), solo entrata contro prezzo): l'orologio e' **l'ora italiana
+([fuso.py](../codice/forexgump/fuso.py), solo entrata contro prezzo): l'orologio e' **l'ora italiana
 con l'ora legale** (Europe/Rome). Entrata postata dentro il range eseguibile di una finestra che va da
 5 minuti prima al minuto del messaggio compreso: **99,1%** d'inverno a UTC+1, **98,8%** d'estate a
 UTC+2; ogni altro offset sotto il 23%. Controprova: messaggio del 28/09 10:48:40 = 08:48:40 UTC,
 apertura del copier 08:48:46 UTC (log del socio). Conversione **solo** in
-[carica.py](../../../analysis/forexgump/carica.py), con `verifica()` che si ferma sotto il 95% (oggi 98,9%).
+[carica.py](../codice/forexgump/carica.py), con `verifica()` che si ferma sotto il 95% (oggi 98,9%).
 Il 98,9% risponde alla domanda "il prezzo postato era vero?", **non** a "era ancora ottenibile?"
 (quella e' la diagnostica dello Step 3bis, §5).
 
@@ -211,7 +211,7 @@ l'E[R] vero e' zero. E' accettabile **solo** perche' i casi 1-2 portano al forwa
 dipende dalla correlazione fra i lati, spesso stoppati entrambi): simulazione su **istanti casuali**
 degli stessi anni e delle stesse ore del giorno, senza toccare gli istanti dei segnali. Riferimento
 grezzo su R (esiti quasi binari +5R/−1R, sd 2,4-2,75R, fattore 2,80): ~0,17-0,18R su 1.792.
-**Misurato il 2026-10-02** ([potenza.py](../../../analysis/forexgump/potenza.py), 1.783 istanti casuali su 445 giornate, giornate spostate in blocco: stessa geometria, stesse ore, stesso raggruppamento; nessun istante dei segnali simulato): **MDE_d = 0,130R** a cluster per giornata (0,102R contando gli eventi come indipendenti); **MDE di E[R] = 0,171R** a cluster (0,132R indipendenti). Il raggruppamento costa ~30% di potenza. SKIP per spread ≥ SL sugli istanti casuali: 0,5% (soglia di kill 10%).
+**Misurato il 2026-10-02** ([potenza.py](../codice/forexgump/potenza.py), 1.783 istanti casuali su 445 giornate, giornate spostate in blocco: stessa geometria, stesse ore, stesso raggruppamento; nessun istante dei segnali simulato): **MDE_d = 0,130R** a cluster per giornata (0,102R contando gli eventi come indipendenti); **MDE di E[R] = 0,171R** a cluster (0,132R indipendenti). Il raggruppamento costa ~30% di potenza. SKIP per spread ≥ SL sugli istanti casuali: 0,5% (soglia di kill 10%).
 
 **Cosa significa un mancato rifiuto, scritto prima:** esclude solo effetti sopra l'MDE; non dimostra
 che l'edge sia zero.

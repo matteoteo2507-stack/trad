@@ -35,16 +35,22 @@ HUB = TRAD.parent
 TESTO = {".md", ".py", ".yaml", ".yml", ".json", ".toml", ".base", ".txt", ".mq5", ".mqh", ".cfg", ".ini"}
 # Fonti grezze e dati: non si toccano mai.
 INTOCCABILI = ("fondamenti_tecnici/_sorgenti/", "materiale_socio/", "Da distillare/", "decisioni/Da distillare/",
-               "magazzino/fonti/", "prop-lab/data/",
+               "magazzino/fonti/", "prop-lab/data/", "motore/prop-lab/data/", "motore/prop-lab/results/",
                "prop-lab/results/", "signal_copier/samples/", "esercizio/signal_copier/samples/")
 # Registri storici: si aggiornano i link, non il testo.
 STORICI = ("DECISIONS.md", "mappa/_modifiche.md", "docs/reviews/", "docs/health/", "fondamenti_tecnici/_INTAKE.md",
            "esercizio/sorveglianza/report/", "decisioni/DECISIONS.md", "decisioni/mappa/_modifiche.md",
            "decisioni/_INTAKE.md", "magazzino/registro/referti/")
 # Codice congelato di uno studio chiuso: si sposta ma non si riscrive (si riproduce dal commit del verdetto).
-CONGELATI = ("analysis/ultima_mezzora/", "motore/riordino/")  # anche questo strumento: le sue costanti sono percorsi
+CONGELATI = ("analysis/ultima_mezzora/", "magazzino/registro/codice/ultima_mezzora/",
+             "motore/riordino/")  # anche questo strumento: le sue costanti sono percorsi
+# ...ma un import di un pacchetto spostato si aggiorna, altrimenti il codice congelato non si importa piu'
+# (lo usa tests/test_ultima_mezzora.py). Cambia la riga di import, non la logica.
+SOLO_IMPORT = ("analysis/ultima_mezzora/", "magazzino/registro/codice/ultima_mezzora/")
+# Sottoprogetti con cartelle proprie (config/, data/, tests/): le menzioni sono relative a loro, non a trad.
+AUTONOMI = ("prop-lab/", "motore/prop-lab/")
 # File dell'hub che citano trad (solo documenti vivi; i registri dell'hub restano come sono).
-HUB_VIVI = ("CLAUDE.md", "README.md", "MEMORY.md", "mappa", "projects", "laboratorio", "global", "memoria/trad",
+HUB_VIVI = ("CLAUDE.md", "README.md", "MEMORY.md", "mappa", "projects", "laboratorio", "global", "memoria/trad", "knowledge",
             ".claude")
 HUB_STORICI = ("mappa/_modifiche.md", "global/registro-epistemico/")
 VIETATE = re.compile(r"personal|personale|personali", re.I)
@@ -143,7 +149,12 @@ def riscrivi_menzioni(testo: str, spost, prefisso: str = "") -> str:
         e_file = bool(PurePosixPath(vecchio).suffix)
         if e_file and "/" not in vecchio and not prefisso:
             continue  # file della radice citato per nome (es. "DECISIONS.md"): e' un nome, non un percorso
-        dopo = r"(?=[\s`'\")\],;:|#]|\.(?!\w)|$)" if e_file else r"(?=/)"
+        fine = r"(?=[\s`'\")\],;:|#]|\.(?!\w)|$)"
+        # Una cartella di un livello solo ("data") vale come percorso solo se seguita da "/": da sola e' una parola.
+        # Una di piu' livelli ("analysis/x/data") e' un percorso anche alla fine della stringa; senza questo, la
+        # regola generale della cartella madre la riscriveva per prima (errore del 10/11 su 23 righe).
+        dopo = fine if e_file else (r"(?=/)|" + fine if "/" in vecchio else r"(?=/)")
+        dopo = f"(?:{dopo})"
         testo = re.sub(rf"(?<![\w/.\-]){v}{dopo}", lambda m: prefisso + nuovo, testo, flags=re.M)
     return testo
 
@@ -173,10 +184,16 @@ def main() -> int:
 
     tracciati = file_tracciati(TRAD)
     esistenti = set(tracciati)
-    for v, _ in spost:
+    fuori_git: set[str] = set()  # cartelle non tracciate (dati fuori da git): si spostano sul disco
+    for v, n in spost:
         if v not in esistenti and not any(e.startswith(v.rstrip("/") + "/") for e in esistenti):
-            print(f"ERRORE: {v} non e' tracciato da git", file=sys.stderr)
-            return 1
+            if not (TRAD / v).exists():
+                print(f"ERRORE: {v} non esiste", file=sys.stderr)
+                return 1
+            fuori_git.add(v)
+            if (TRAD / n).exists():
+                print(f"ERRORE: la destinazione esiste gia': {n}", file=sys.stderr)
+                return 1
     mosse = {f: nuovo_percorso(f, spost) for f in tracciati if nuovo_percorso(f, spost)}
     for f, n in mosse.items():
         if (TRAD / n).exists():
@@ -187,7 +204,8 @@ def main() -> int:
     scritture: dict[Path, str] = {}
     riepilogo: list[str] = []
     for f in tracciati:
-        if Path(f).suffix.lower() not in TESTO or e_storico(f, CONGELATI):
+        solo_import = e_storico(f, SOLO_IMPORT) and f.endswith(".py")
+        if Path(f).suffix.lower() not in TESTO or (e_storico(f, CONGELATI) and not solo_import):
             continue
         if e_storico(f, INTOCCABILI) and Path(f).name != "README.md":
             continue
@@ -197,11 +215,14 @@ def main() -> int:
         except (UnicodeDecodeError, FileNotFoundError):
             continue
         dopo = prima
-        if f.endswith(".md"):
-            dopo = riscrivi_link(dopo, f, mosse.get(f, f), "", spost, esistenti)
-        if not e_storico(f, STORICI):
-            dopo = riscrivi_menzioni(dopo, spost)
+        if solo_import:
             dopo = riscrivi_moduli(dopo, moduli)
+        else:
+            if f.endswith(".md"):
+                dopo = riscrivi_link(dopo, f, mosse.get(f, f), "", spost, esistenti)
+            if not e_storico(f, STORICI) and not e_storico(f, AUTONOMI):
+                dopo = riscrivi_menzioni(dopo, spost)
+                dopo = riscrivi_moduli(dopo, moduli)
         if dopo != prima:
             scritture[TRAD / mosse.get(f, f)] = dopo
             riepilogo.append(f"trad/{f}" + (f" -> {mosse[f]}" if f in mosse else ""))
@@ -244,12 +265,17 @@ def main() -> int:
         return 0
 
     # 2. spostamenti, 3. scritture
+    # L'ordine conta: una cartella si sposta prima che un'altra mossa crei una sua sottocartella di destinazione.
     for v, n in spost:
         (TRAD / n).parent.mkdir(parents=True, exist_ok=True)
-        git("mv", v, n)
+        if v in fuori_git:
+            os.rename(TRAD / v, TRAD / n)
+        else:
+            git("mv", v, n)
     for p, testo in scritture.items():
+        crlf = b"\r\n" in p.read_bytes()  # si conserva il fine riga del file
         tmp = p.with_name(p.name + ".tmp-riordino")
-        tmp.write_text(testo, encoding="utf-8", newline="")
+        tmp.write_text(testo, encoding="utf-8", newline="\r\n" if crlf else "")
         os.replace(tmp, p)
     print("\napplicato")
     return 0

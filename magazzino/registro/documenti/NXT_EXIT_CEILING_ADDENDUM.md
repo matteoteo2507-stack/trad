@@ -4,7 +4,7 @@
 > [`magazzino/registro/documenti/strategie_candidate/nxt_fib_trend_pullback.md`](strategie_candidate/nxt_fib_trend_pullback.md)
 > e al NO-GO del 2026-07-17 ([DECISIONS.md](../../../decisioni/DECISIONS.md)). Non è una nuova strategia:
 > è una **rianalisi dei setup già eseguiti** che misura una quantità che il backtest originale
-> non registrava. Motore: [`analysis/nxt/excursion.py`](../../../analysis/nxt/excursion.py).
+> non registrava. Motore: [`magazzino/registro/codice/nxt/excursion.py`](../codice/nxt/excursion.py).
 
 ## Da dove nasce
 
@@ -13,7 +13,7 @@ a distanza fissa dall'estremo, stop sotto l'estremo — ma **senza take-profit**
 aperto fino a un'uscita a coda aperta (incrocio di medie mobili).
 
 La meccanica di entrata è **identica** a quella già implementata in
-[`analysis/nxt/backtest.py`](../../../analysis/nxt/backtest.py) (`zigzag` k=5 look-ahead-safe, entry
+[`magazzino/registro/codice/nxt/backtest.py`](../codice/nxt/backtest.py) (`zigzag` k=5 look-ahead-safe, entry
 limite al 50% della gamba, SL al 78.6%). L'unico elemento nuovo è **l'uscita**.
 
 ## La domanda (una sola)
@@ -69,7 +69,7 @@ Serve maggioranza di asset **e** di anni sopra soglia.
 2. **Non si usa il filtro sul rischio massimo per salvare il risultato.** L'utente ha indicato un
    vincolo operativo (si entra solo se la distanza entry→stop non supera *tot* pip). La MFE per
    quintile di rischio è riportata come **descrittivo**; usarla per selezionare il sottoinsieme che
-   funziona sarebbe l'aggiunta di filtro di [STRATEGY_LIFECYCLE §4](../../../docs/STRATEGY_LIFECYCLE.md) — il
+   funziona sarebbe l'aggiunta di filtro di [STRATEGY_LIFECYCLE §4](../../../motore/metodo/STRATEGY_LIFECYCLE.md) — il
    p-hack più seducente e più fatale.
 3. **Non si apre l'holdout.** La misura gira sull'intero campione perché è una **rianalisi
    descrittiva di un test già concluso con verdetto NO-GO**, non un nuovo gate: non c'è nulla da
@@ -80,7 +80,7 @@ Serve maggioranza di asset **e** di anni sopra soglia.
 
 Questa misura **non consuma trial**: non cambia nessuna regola pre-registrata e non può migliorare
 il risultato del backtest originale — misura una quantità che quel backtest non registrava
-([STRATEGY_LIFECYCLE §3](../../../docs/STRATEGY_LIFECYCLE.md), riga "modellazione più realistica").
+([STRATEGY_LIFECYCLE §3](../../../motore/metodo/STRATEGY_LIFECYCLE.md), riga "modellazione più realistica").
 
 Se S1, S2 e S3 passano tutte, la costruzione dell'uscita a medie mobili sarà il **round 3 di 3**
 della famiglia NXT (dopo continuazione = NO-GO e fade = LEAD) — l'ultimo che le resta.
@@ -99,7 +99,7 @@ Il controllo che ce l'ha: per ogni setup reale, **3 controlli con stesso asset, 
 rischio in unità di prezzo, stesso anno, ma entrata a istante casuale**. Isola ciò che la struttura
 aggiunge rispetto al puro effetto "stop stretto tenuto a lungo".
 
-Legittimo per [STRATEGY_LIFECYCLE §3](../../../docs/STRATEGY_LIFECYCLE.md): un baseline più severo **può solo
+Legittimo per [STRATEGY_LIFECYCLE §3](../../../motore/metodo/STRATEGY_LIFECYCLE.md): un baseline più severo **può solo
 peggiorare** il risultato → non conta come trial. Regola dichiarata: **se il reale non batte il
 random matched, kill duro n. 2**, indipendentemente da S1-S3.
 

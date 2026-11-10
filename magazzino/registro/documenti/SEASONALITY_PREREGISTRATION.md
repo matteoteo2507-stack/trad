@@ -9,7 +9,7 @@ decisione: "DECISIONS 2026-07-08 — stagionalità TOM NO-GO"
 > **Committata PRIMA dei risultati.** 2026-07-08. Terzo e **ultimo** edge sistematico del pivot (patto
 > con l'utente: se nulla, si smette l'edge-hunting e si rafforza il pilastro passivo). Contratto: spec,
 > universo, varianti, metrica, criteri e kill-switch fissati qui *a priori*; dopo i numeri non si cambiano.
-> Riusa `core/quant_metrics.py` e la struttura `strategies/tsmom/backtest.py`.
+> Riusa `motore/core/quant_metrics.py` e la struttura `magazzino/registro/codice/tsmom/backtest.py`.
 
 ## Domanda (una sola)
 Esiste un effetto **Turn-of-Month** (i rendimenti si concentrano attorno al cambio di mese) **reale,
@@ -43,7 +43,7 @@ Stesso di TSMOM/MR. Si testa su **tutti**; l'atteso è che l'effetto (se c'è) s
 Finestra ∈ { [−1,+3], [−1,+2], [0,+3], [−2,+3] } = **4 varianti**. Primaria = **[−1,+3]**.
 `n_trials = 4` per il DSR.
 
-## Metriche/validazione (via `core/quant_metrics.py`)
+## Metriche/validazione (via `motore/core/quant_metrics.py`)
 - **(TOM − nonTOM)** per asset + **pooled**, con **CI block-bootstrap sui MESI** + **p-value baseline
   giorni-casuali**.
 - **Breadth**: quanti asset hanno (TOM−nonTOM) CI>0.

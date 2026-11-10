@@ -2,8 +2,8 @@
 
 **Data**: 2026-08-14 · **Verdetti**: **Q1 NO-GO** (kill-switch pre-registrato) · **Q2 LEAD**
 **Pre-registrazione**: [TREND_EXIT_PLAYGROUND_PREREGISTRATION.md](../documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md)
-**Motori**: [`analysis/trend/export_d1.py`](../../../analysis/trend/export_d1.py) ·
-[`backtest.py`](../../../analysis/trend/backtest.py) · [`q2_checks.py`](../../../analysis/trend/q2_checks.py)
+**Motori**: [`analysis/trend/export_d1.py`](../codice/trend/export_d1.py) ·
+[`backtest.py`](../codice/trend/backtest.py) · [`q2_checks.py`](../codice/trend/q2_checks.py)
 **Fonte esterna**: Pavel Kichev — spec e claim presi da lui, non inventati da noi.
 
 ---

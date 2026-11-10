@@ -9,7 +9,7 @@ tipo: concetti
 
 # Regimi di mercato (Markov) e timing macro
 
-> Due lenti complementari per dire "dove siamo" nel ciclo. La prima è **probabilistica**: modella il mercato come una catena di Markov a 3 stati (Bull/Bear/Sideways) e ne misura la matrice di transizione, da cui ricava un segnale firmato e un forecast n-step. La seconda è **macro-discrezionale**: il framework Fed (tassi + bilancio) con 4 quadranti di allocazione, una checklist di timing a 5 metriche (empirica, ~80-85% nell'era post-2008 QE) e gli indicatori macro leading da monitorare. Entrambe NON sostituiscono il classificatore deterministico già in repo ([`../../core/regime.py`](../../../core/regime.py), Wilder DMI/ADX/ATR): lo affiancano.
+> Due lenti complementari per dire "dove siamo" nel ciclo. La prima è **probabilistica**: modella il mercato come una catena di Markov a 3 stati (Bull/Bear/Sideways) e ne misura la matrice di transizione, da cui ricava un segnale firmato e un forecast n-step. La seconda è **macro-discrezionale**: il framework Fed (tassi + bilancio) con 4 quadranti di allocazione, una checklist di timing a 5 metriche (empirica, ~80-85% nell'era post-2008 QE) e gli indicatori macro leading da monitorare. Entrambe NON sostituiscono il classificatore deterministico già in repo ([`../../core/regime.py`](../../../motore/core/regime.py), Wilder DMI/ADX/ATR): lo affiancano.
 
 ## Concetti
 
@@ -84,7 +84,7 @@ Logica Fed generale: letture forti → policy contrattiva; letture deboli → po
 
 Sono **complementari, non alternativi**:
 
-| | `core/regime.py` (repo) | Markov (questa nota) |
+| | `motore/core/regime.py` (repo) | Markov (questa nota) |
 |---|---|---|
 | Natura | **deterministico** | **probabilistico** |
 | Stati | 6 (`direzione × volatilità`) | 3 (`Bull/Bear/Sideways`) |
@@ -128,8 +128,8 @@ shock attingendo alle riserve non è illimitata.
 
 - [[markov_regime_skill]] — blueprint implementativo della skill Markov (modulo `regime.py`, HMM, PineScript). STATO: idea non committata.
 - [[06_stock_selection]] — dettaglio archetipi azienda A/B/C/D per quadrante Fed (curato da altro agente).
-- Classificatore deterministico in repo: [`../../core/regime.py`](../../../core/regime.py), documentato in [`../../TRADING_PRINCIPLES.md`](../TRADING_PRINCIPLES.md) §1.
-- Caveat look-ahead della regime timeline: [`../../data/regime_timeline_gbpusd.csv`](../../../data/regime_timeline_gbpusd.csv) e [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
+- Classificatore deterministico in repo: [`../../core/regime.py`](../../../motore/core/regime.py), documentato in [`../../TRADING_PRINCIPLES.md`](../TRADING_PRINCIPLES.md) §1.
+- Caveat look-ahead della regime timeline: [`../../data/regime_timeline_gbpusd.csv`](../../../motore/data/regime_timeline_gbpusd.csv) e [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
 - Priorità di workspace (agenti/strategie custom in fondo): [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
 
 ## Fonti

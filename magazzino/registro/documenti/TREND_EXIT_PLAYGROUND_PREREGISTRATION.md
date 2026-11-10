@@ -13,8 +13,8 @@ nota: "CLOSED per potenza, non refutata: lo scenario onesto del test held-out no
 > [`decisioni/_INTAKE.md`](../../../decisioni/_INTAKE.md). Spec, universo, finestre,
 > varianti, metriche e criteri di kill sono fissati qui **a priori**. Dopo i numeri non si cambiano;
 > un bug si documenta come *fix*; ogni variante extra è un trial in più nel DSR.
-> Motori: [`analysis/trend/export_d1.py`](../../../analysis/trend/export_d1.py) (dati),
-> `analysis/trend/backtest.py` (test). Riusa [`core/quant_metrics.py`](../../../core/quant_metrics.py).
+> Motori: [`magazzino/registro/codice/trend/export_d1.py`](../codice/trend/export_d1.py) (dati),
+> `magazzino/registro/codice/trend/backtest.py` (test). Riusa [`motore/core/quant_metrics.py`](../../../motore/core/quant_metrics.py).
 
 ---
 
@@ -44,16 +44,16 @@ sempre come scusa a ogni null futuro.
 
 ## Dati — feed omogeneo, e perché era obbligatorio
 
-I CSV storici in `data/` **non sono utilizzabili per questo test**: mescolano finestre diverse
+I CSV storici in `motore/data/` **non sono utilizzabili per questo test**: mescolano finestre diverse
 (major FX dal 2003, indici/metalli/crypto dal 2020) e feed diversi. In
-[`strategies/tsmom/backtest.py:88`](../../../strategies/tsmom/backtest.py#L88) lo Sharpe standalone per
+[`magazzino/registro/codice/tsmom/backtest.py:88`](../codice/tsmom/backtest.py#L88) lo Sharpe standalone per
 asset è calcolato con `.dropna()` **per asset**, cioè ognuno sulla propria finestra: il residuo
 "il trend vive sui trender e muore sui cross FX" che ci portiamo dietro da luglio è quindi
 **confondato col periodo campionario** — gli asset positivi sono esattamente quelli che partono nel
 2020. Questa pre-registrazione nasce anche per disfare quel nodo.
 
 → Tutto riscaricato da **Dukascopy, D1, stessa granularità, stesso lato (BID)**, in
-`analysis/trading-bot-eval/data/dukascopy_d1/` (il feed broker **non** viene toccato).
+`motore/data/prezzi/dukascopy_d1/` (il feed broker **non** viene toccato).
 
 ## Universo (dichiarato a priori, 8 gruppi)
 

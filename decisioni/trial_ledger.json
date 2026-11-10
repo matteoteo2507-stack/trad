@@ -1,5 +1,5 @@
 {
-  "_nota": "Contatore trial PERSISTENTE richiesto da docs/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
+  "_nota": "Contatore trial PERSISTENTE richiesto da motore/metodo/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m motore.core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
   "aggiornato": "2026-11-04",
   "budget": {
     "round_rifinitura_per_famiglia": 3,

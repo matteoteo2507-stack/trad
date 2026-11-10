@@ -1,0 +1,109 @@
+# CONVENTIONS — Convenzioni di codice e progetto
+
+Documento da leggere prima di scrivere codice in questo workspace.
+
+## Linguaggio principale
+
+- **Python 3.11+** per tutti i moduli core (strategie, broker, notifier, backtester, agent).
+- **TypeScript** ammesso solo se imposto da un repo esistente (es. `dexter`, `worldmonitor`).
+  Il bridge tra TS e Python passa per file (JSON/CSV) o HTTP.
+
+## Stile codice Python
+
+- **PEP 8** + **black** come formatter (line length 100).
+- **Type hints obbligatori** su funzioni pubbliche e metodi di classe.
+- **Docstring in italiano** stile Google su funzioni e classi pubbliche.
+- **Commenti in italiano** per logica non ovvia. Per blocchi di logica matematica/finanziaria,
+  spiegare il *perché* prima del *come*.
+- **No logging "decorativo"**: log solo dove serve davvero (errori, decisioni di trading, esecuzione ordini).
+- **Niente `print` in produzione**: usare `logging` configurato.
+
+## Naming
+
+- File: `snake_case.py`.
+- Funzioni: `snake_case`.
+- Classi: `PascalCase`.
+- Costanti: `UPPER_SNAKE_CASE`.
+- Variabili private: prefisso `_`.
+
+## Pattern di estensione
+
+### Nuova strategia
+
+Una strategia = una cartella sotto `magazzino/dormienti/strategies/`:
+
+```
+magazzino/dormienti/strategies/<nome_strategia>/
+├── strategy.py       # Classe che eredita da StrategyBase
+├── config.yaml       # Parametri della strategia (size, soglie, timeframe)
+└── README.md         # Cosa fa, ipotesi, riferimenti teorici
+```
+
+Vedi `magazzino/dormienti/strategies/_template/` per lo scaffold.
+
+### Nuovo broker
+
+Sottoclasse di `BrokerBase` in `motore/brokers/<nome_broker>.py`. Implementa l'interfaccia minima
+documentata in `motore/brokers/base.py`.
+
+### Nuovo notifier
+
+Sottoclasse di `NotifierBase` in `motore/notifiers/<canale>.py`. Vedi `motore/notifiers/base.py`.
+
+### Nuova skill (Claude Code)
+
+Cartella sotto `.claude/skills/<nome-skill>/` con un file `SKILL.md` che ha frontmatter standard:
+
+```yaml
+---
+name: nome-skill
+description: Descrizione di quando attivare la skill (per il dispatcher di Claude Code).
+---
+
+# Istruzioni in markdown
+```
+
+### Nuovo subagent
+
+File markdown in `.claude/agents/<nome>.md`, con frontmatter (`name`, `description`; `tools` e `model`
+facoltativi): è l'unico posto da cui Claude Code carica un agente. Il corpo del file è il suo system prompt.
+Convenzione: la prima sezione descrive l'identità (chi sei), la seconda il framework di analisi
+(come pensi), la terza l'output atteso (formato risposta).
+
+> Fino al 2026-10-13 skill e prompt stavano anche in `skills/` e `agents/` alla radice, che Claude Code non
+> carica: cartelle ritirate ([DECISIONS.md](../decisioni/DECISIONS.md), voce 2026-10-13 (4)).
+
+## Configurazione
+
+- File `.env` per **chiavi API e segreti**. Mai committare. `.env.example` è committato come template.
+- File `motore/config/*.yaml` per **parametri non sensibili** (rischio, mercati abilitati, soglie).
+- Niente valori magici nel codice — tutto referenziato dal config.
+
+## Test
+
+- `pytest` come framework.
+- File in `motore/tests/` con prefisso `test_`.
+- Test minimo per ogni strategia: un caso con dati sintetici dove l'output atteso è noto.
+
+## Git
+
+- Commit message in italiano, breve descrizione + opzionale spiegazione del *perché*.
+- Branch principale: `main`.
+- Branch feature: `feat/<descrizione-breve>`.
+- `.gitignore` esclude: `.env`, cache, output backtest, virtualenv, `__pycache__`, `.ipynb_checkpoints`.
+
+## Sicurezza operativa (trading)
+
+- **Mai** scrivere chiavi API hardcoded.
+- **Mai** lanciare trade live senza un risk gate attivo.
+- Ogni broker concrete deve avere un flag `paper_mode` che è il default; passare a `live_mode`
+  richiede modifica esplicita del config + commit dedicato.
+- Limite di drawdown massimo configurato in `motore/config/risk.yaml` — la strategia si auto-disabilita
+  se viene superato.
+
+## Lingua dei deliverable
+
+- Codice e docstring: italiano.
+- Nomi di funzioni/classi/variabili: inglese (convenzione tecnica universale).
+- README di cartella: italiano.
+- Output utente (notifiche Telegram, log critici): italiano.

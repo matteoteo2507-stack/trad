@@ -23,7 +23,7 @@ giustificata**, non a ottimizzare in fretta.
 1. **Contestualizzazione prima di tutto.** Ogni record porta il suo contesto *al momento della
    decisione*. È la spina dorsale; senza, nessuna analisi è onesta.
 2. **Evidence-gated.** Nessuna modifica live senza superare il gate quant (CI, `n_eff`,
-   stratificazione per regime) → [[04_quant_metodologia]], `core/quant_metrics.py`.
+   stratificazione per regime) → [[04_quant_metodologia]], `motore/core/quant_metrics.py`.
 3. **Mappa dei modelli.** Ogni conclusione è *condizionata* (regime/asset/assunzioni), mai un
    verdetto universale → [DECISIONS.md](../../../decisioni/DECISIONS.md).
 4. **Human-gated.** Go-live, ogni modifica a strategia/parametri, e la riconciliazione degli esiti
@@ -39,9 +39,9 @@ Capture → Journal/reconcile → Analyze (gate) → [Scouting → candidati]
 
 | Stadio | Cosa fa | Substrato | Gate |
 |---|---|---|---|
-| **Capture** | logga ogni segnale col contesto *al momento della decisione* + posto per l'esito | **Python (repo)** — `level_analyzer/record.py` | — |
-| **Reconcile (auto)** | calcola l'esito di OGNI segnale dal price path (entry→SL/TP/time-stop), netto costi assunti — **self-labeling, nessun input umano** | **Python (repo)** — `level_analyzer/reconcile.py` | — |
-| **Analyze (gate)** | stratifica per regime/sessione; E[R]+CI, `n_eff`, vs baseline → *stato dell'evidenza* (non una modifica) | **Python (repo)** — riusa `core/quant_metrics.py` | — |
+| **Capture** | logga ogni segnale col contesto *al momento della decisione* + posto per l'esito | **Python (repo)** — `magazzino/dormienti/level_analyzer/record.py` | — |
+| **Reconcile (auto)** | calcola l'esito di OGNI segnale dal price path (entry→SL/TP/time-stop), netto costi assunti — **self-labeling, nessun input umano** | **Python (repo)** — `magazzino/dormienti/level_analyzer/reconcile.py` | — |
+| **Analyze (gate)** | stratifica per regime/sessione; E[R]+CI, `n_eff`, vs baseline → *stato dell'evidenza* (non una modifica) | **Python (repo)** — riusa `motore/core/quant_metrics.py` | — |
 | **Scouting** (bi-settimanale) | scouting web → `_INTAKE.md`, **max N candidati** | skill agente | 🔒 triage |
 | **Experiment** | pre-registra ipotesi+metrica, misura forward vs baseline | Python + skill | 🔒 **approvi tu** |
 | **Risk-gate / go-live** | ogni modifica a parametri/sizing live | — | 🔒 **approvi tu** |
@@ -52,7 +52,7 @@ gate: è automatica. Le decisioni *per-trade* sono interamente sostituite dal si
 solo sulla governance (cosa va live, cosa si cambia).
 
 ## Regola di decisione (gate) — quando l'evidenza basta
-Scritta **a priori** (no p-hacking), implementata in `level_analyzer/gate.py`:
+Scritta **a priori** (no p-hacking), implementata in `magazzino/dormienti/level_analyzer/gate.py`:
 - **Si decide sul LOWER BOUND** del CI, mai sul valore centrale (regola d'oro quant).
 - I trade sono **clusterati per giorno** → CI via **block-bootstrap sui giorni** (non iid); il
   numero di **giorni distinti** è il proxy di `n_eff`.
@@ -65,7 +65,7 @@ Scritta **a priori** (no p-hacking), implementata in `level_analyzer/gate.py`:
   esperimenti + human-gate.
 
 ## La spina dorsale — record contestualizzato
-Oggi `signals_log.csv` ha ~12 campi scarni. La spina (`level_analyzer/trade_records.csv`, gitignored)
+Oggi `signals_log.csv` ha ~12 campi scarni. La spina (`magazzino/dormienti/level_analyzer/trade_records.csv`, gitignored)
 porta ogni record a:
 
 - **identità/segnale:** `record_id, ts_utc, asset, instrument_basis (spot/futures), data_source,
@@ -101,7 +101,7 @@ porta ogni record a:
 
 ## Substrato ibrido — chi fa cosa
 - **Python nel repo** (riproducibile, versionato, dietro il gate): spina (`record.py`), analisi/gate
-  (riusa `core/quant_metrics.py` + `level_analyzer/`), registro esperimenti.
+  (riusa `motore/core/quant_metrics.py` + `magazzino/dormienti/level_analyzer/`), registro esperimenti.
 - **Skill/agenti Claude Code**: scouting/research, assistente di riconciliazione (journal),
   reportistica. Template di riferimento (solo idee, non installati): `paperclip` (firm a 6 agenti),
   `ai-quant-workbench`, `skills` — vedi [[fondamenti_tecnici/blueprints/roan_quant_series_extract]].
@@ -114,9 +114,9 @@ guadagna il posto passando dal gate, e va a competere con il baseline — non si
 ## Collegamenti
 - [`decisioni/_INTAKE.md`](../../../decisioni/_INTAKE.md) — porta del materiale (scouting).
 - [DECISIONS.md](../../../decisioni/DECISIONS.md) — dottrina "mappa dei modelli" (conflitti).
-- [`analysis/trading-bot-eval/SIZING_SPEC.md`](../../../analysis/trading-bot-eval/SIZING_SPEC.md) — il sizing layer (stadio Sizing).
-- [`analysis/trading-bot-eval/LEVEL_ANALYZER_SPEC.md`](../../../analysis/trading-bot-eval/LEVEL_ANALYZER_SPEC.md) — il sistema pilota.
-- `core/quant_metrics.py` — il gate (DSR/PBO/Wilson/bootstrap/`n_eff`).
+- [`magazzino/registro/codice/trading-bot-eval/SIZING_SPEC.md`](../../registro/codice/trading-bot-eval/SIZING_SPEC.md) — il sizing layer (stadio Sizing).
+- [`magazzino/registro/codice/trading-bot-eval/LEVEL_ANALYZER_SPEC.md`](../../registro/codice/trading-bot-eval/LEVEL_ANALYZER_SPEC.md) — il sistema pilota.
+- `motore/core/quant_metrics.py` — il gate (DSR/PBO/Wilson/bootstrap/`n_eff`).
 
 ## Verifica
 - **Incremento 1**: una passata `scan`/`run` scrive un record con TUTTI i campi di contesto popolati

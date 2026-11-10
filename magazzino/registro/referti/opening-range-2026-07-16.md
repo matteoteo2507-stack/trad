@@ -2,8 +2,8 @@
 
 > Primo test del filone **scalping single-asset intraday** (idea utente + socio). Pre-registrato
 > ([docs/OPENING_RANGE_PREREGISTRATION.md](../documenti/OPENING_RANGE_PREREGISTRATION.md)), motore
-> [analysis/opening_range/backtest.py](../../../analysis/opening_range/backtest.py). Dati M5:
-> broker (1.4y) + **Dukascopy 14.5y** (2012-2026, [export_dukascopy.py](../../../analysis/opening_range/export_dukascopy.py)).
+> [analysis/opening_range/backtest.py](../codice/opening_range/backtest.py). Dati M5:
+> broker (1.4y) + **Dukascopy 14.5y** (2012-2026, [export_dukascopy.py](../codice/opening_range/export_dukascopy.py)).
 
 ## La lezione del campione
 - **Broker US100, 1.4 anni (2025-26)**: E[R] **+0.073R**, win 36.8%, entrambi i lati positivi → sembrava
@@ -43,7 +43,7 @@ niente edge meccanico *own* robusto. Motore/dati riusabili (Dukascopy M5 14.5y d
 `data/`) per eventuali varianti pre-registrate future. Reddito = mentore manuale; ricchezza = passivo.
 
 ## v2 (ADX + SL su OR+10 + RR 1:3 + BE a 2R + expiry 12:00 ET) — anch'essa NO-GO
-Iterazione utente+socio ([analysis/opening_range/backtest_v2.py](../../../analysis/opening_range/backtest_v2.py)).
+Iterazione utente+socio ([analysis/opening_range/backtest_v2.py](../codice/opening_range/backtest_v2.py)).
 Filtro volatilità ADX = **leva giusta** (E[R] sale monotòno con ADX), ma tetto ~zero:
 
 | ADX≥25 | NAS100 | SPX500 |

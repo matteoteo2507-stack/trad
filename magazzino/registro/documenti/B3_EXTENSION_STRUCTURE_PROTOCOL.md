@@ -70,14 +70,14 @@ Per ogni strumento e ogni barra `t`:
 ## 4. Cosa si misura
 
 Il segnale è noto alla **chiusura di `t`** → la prima barra azionabile è `t+1`
-([Step 3bis](../../../docs/QUANT_REVIEW_PROTOCOL.md)). Quindi:
+([Step 3bis](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md)). Quindi:
 
 - ingresso all'**apertura di `t+1`**, uscita all'**apertura di `t+1+h`**, con
   **`h ∈ {1, 2, 3, 5}`** dichiarati prima (le fonti danno una finestra di invalidazione di 2
   giorni / massimo 3 tentativi);
 - rendimento espresso in unità di **ATR20 pre-corsa**, con **segno orientato alla corsa**:
   **positivo = continuazione**, **negativo = inversione**. È la direzione che le fonti predicono;
-- **baseline random risk-matched** con [`core/random_baseline.py`](../../../core/random_baseline.py):
+- **baseline random risk-matched** con [`motore/core/random_baseline.py`](../../../motore/core/random_baseline.py):
   stesso strumento, stesso anno, **stessa direzione**, **stesso orizzonte** — solo l'istante è
   casuale, `m = 3` controlli per evento. La durata è identica per costruzione, quindi il confonditore
   trovato su A1 il 21/09 **non si presenta qui**;
@@ -123,11 +123,11 @@ Se nessuna cella si distingue dal random:
 | CI finto su controlli non indipendenti | bootstrap **a cluster sull'evento** (`gap_ci`) |
 | eleggere un vincitore dalla mappa (B1) | la cella attesa è **dichiarata qui sopra**, prima di guardare |
 | molteplicità | 4 celle × 4 orizzonti = 16 combinazioni: la **primaria è una sola** (cella attesa, `h = 2`), le altre sono descrittive e vanno lette come tali |
-| dato non verificato (18/09) | `core/data_checks.py` eseguito **prima**, gate volume del §2 |
+| dato non verificato (18/09) | `motore/core/data_checks.py` eseguito **prima**, gate volume del §2 |
 
 ## 8. Risultati — eseguito il 2026-09-21
 
-Motore: [`analysis/extension/structure.py`](../../../analysis/extension/structure.py).
+Motore: [`magazzino/registro/codice/extension/structure.py`](../codice/extension/structure.py).
 Finestra **2017-12-26 →**, 27 strumenti, **1.733 eventi** a `E ≥ 3,0 ATR`, 5.199 controlli.
 Matching verificato: strumento, direzione e anno coincidono su **tutte** le coppie.
 

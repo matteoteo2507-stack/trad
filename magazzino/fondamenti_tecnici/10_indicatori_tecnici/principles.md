@@ -40,11 +40,11 @@ creato: 2026-10-08
   - **S** sintesi del motore di ricerca, da confermare sull'abstract;
   - **X** post su X o README di GitHub: testimonianza, non evidenza, e mai fonte di un numero.
   Un claim che poggia solo su **S** o **X** resta in quarantena anche se plausibile.
-- **Provenienza** ([STRATEGY_LIFECYCLE §8](../../../docs/STRATEGY_LIFECYCLE.md)). Questo modulo **non genera
+- **Provenienza** ([STRATEGY_LIFECYCLE §8](../../../motore/metodo/STRATEGY_LIFECYCLE.md)). Questo modulo **non genera
   ipotesi da testare**: classifica strumenti. Una regola dedotta da qui passa comunque da `_INTAKE.md` con
   una fonte umana datata.
 - **Regola approvata da Matteo l'08/10:** due indicatori della stessa grandezza sono una famiglia nel
-  contatore ([DECISIONS 2026-10-08 (3)](../../../decisioni/DECISIONS.md), [STRATEGY_LIFECYCLE](../../../docs/STRATEGY_LIFECYCLE.md) §3 e §7).
+  contatore ([DECISIONS 2026-10-08 (3)](../../../decisioni/DECISIONS.md), [STRATEGY_LIFECYCLE](../../../motore/metodo/STRATEGY_LIFECYCLE.md) §3 e §7).
 - **Le strade testabili** uscite da questa ricerca sono nel [backlog, sezione H](../../../decisioni/BACKLOG_RICERCA.md): li'
   vive il lavoro da fare, qui la conoscenza.
 
@@ -73,9 +73,9 @@ Un indicatore e' una funzione **f(prezzi e volumi fino a t) → un numero**. Tre
 
 | # | grandezza | indicatori che la misurano | cosa dice la letteratura (sintesi; dettaglio sotto) | classe e chi paga ([[09_fonti_di_vantaggio]]) | nel nostro perimetro |
 |---|---|---|---|---|---|
-| 1 | **Tendenza** (rendimento passato) | medie mobili e loro incroci, MACD, canali di Donchian e breakout, momentum di serie storica, Supertrend, Parabolic SAR, ADX (forza), Ichimoku (in parte) | la piu' documentata, **su panieri di futures a orizzonte 1-12 mesi**; asset per asset e' debole; le regole su singolo indice sono decadute | 3 (reazione in ritardo, poi eccesso) e in parte 1 (rende nelle crisi): da confermare | TSMOM chiuso; famiglia trend ancora LEAD con la coda aperta refutata e A1 fermo per potenza: stato in `python -m core.trial_ledger` |
+| 1 | **Tendenza** (rendimento passato) | medie mobili e loro incroci, MACD, canali di Donchian e breakout, momentum di serie storica, Supertrend, Parabolic SAR, ADX (forza), Ichimoku (in parte) | la piu' documentata, **su panieri di futures a orizzonte 1-12 mesi**; asset per asset e' debole; le regole su singolo indice sono decadute | 3 (reazione in ritardo, poi eccesso) e in parte 1 (rende nelle crisi): da confermare | TSMOM chiuso; famiglia trend ancora LEAD con la coda aperta refutata e A1 fermo per potenza: stato in `python -m motore.core.trial_ledger` |
 | 2 | **Spostamento dalla media** (oscillatori) | RSI, Stocastico, Williams %R, CCI, %B di Bollinger, z-score, distanza dalla media | il ritorno di breve sulle **azioni singole** e' il compenso per chi fornisce liquidita', e cresce col VIX; le regole classiche su indici: deboli, non corrette per i tentativi multipli | 2-3: paga chi **chiede immediatezza** (vende in fretta) | B1, mean reversion vol e FADE chiusi; RSI(2) sugli indici: stato nella sua [pre-registrazione](../../registro/documenti/MR_INDICI_RSI2_PREREGISTRATION.md) |
-| 3 | **Volatilita'** (ampiezza) | ATR, deviazione standard, larghezza delle Bollinger, Keltner, VIX | il fatto stilizzato piu' robusto: la volatilita' si raggruppa nel tempo. Serve a **dimensionare e mettere stop**, non a prevedere la direzione | nessuna: e' una misura di rischio, non una fonte di rendimento | gia' in uso in `core/sizing.py`; attenzione alle soglie normalizzate ([[feedback_soglia_normalizzata_cancella_distinzione]]) |
+| 3 | **Volatilita'** (ampiezza) | ATR, deviazione standard, larghezza delle Bollinger, Keltner, VIX | il fatto stilizzato piu' robusto: la volatilita' si raggruppa nel tempo. Serve a **dimensionare e mettere stop**, non a prevedere la direzione | nessuna: e' una misura di rischio, non una fonte di rendimento | gia' in uso in `motore/core/sizing.py`; attenzione alle soglie normalizzate ([[feedback_soglia_normalizzata_cancella_distinzione]]) |
 | 4 | **Volume** (partecipazione) | OBV, VWAP, Volume Profile e POC, MFI, accumulazione/distribuzione, delta | regole OBV fra quelle utili per prevedere il premio azionario **mensile** USA; sulle materie prime non profittevoli | VWAP: e' il riferimento con cui si misurano gli esecutori istituzionali (meccanismo plausibile, fonte da acquisire) | **0 celle su 48** per POC/VAH/VAL, VWAP, VWAP ancorato (DECISIONS 2026-07-07). Su CFD e forex il volume e' **di tick**, non scambiato |
 | 5 | **Livelli e struttura** | supporti e resistenze, pivot point, massimi e minimi del giorno prima, numeri tondi, Fibonacci, pitchfork, trendline, Gann, order block, FVG, zigzag, frattali | **unico meccanismo documentato**: prese di profitto ammassate sui numeri tondi, stop appena oltre (forex). Fibonacci: il prezzo rimbalza **altrettanto** su livelli qualsiasi, e la regola non batte livelli casuali. Pitchfork ed Elliott: nessuna evidenza | numeri tondi: 5 (microstruttura degli ordini). Il resto: **nessuna classe**, cioe' un pattern | livelli **384 trial, nessuno batte il casuale** (DECISIONS 2026-07-06/07); griglia a numero tondo NULL (2026-08-09); NXT Fibonacci NO-GO (2026-07-17) |
 | 6 | **Forma della candela e figure** | pattern a candela, testa e spalle, triangoli, armonici (Gartley...), Heikin Ashi | candele: nessuna capacita' predittiva al bootstrap; figure riconosciute da algoritmo: qualche informazione in piu', ma "ottimo per la statistica non e' ottimo per il profitto" | nessuna | mai testate come famiglia |
@@ -218,7 +218,7 @@ di questa ricerca con un "chi paga" esplicito e misurato su molti mercati**:
   ("il prezzo torna sulla mediana l'80% delle volte") non e' mai confrontata con una linea casuale, e la
   mediana sta per costruzione in mezzo all'oscillazione recente: tornarci spesso e' atteso anche nel rumore.
   Si costruisce da **tre pivot**, che si confermano solo barre dopo: e' il primo sospettato di look-ahead di
-  prezzo ([[feedback_fill_ottenibile]]). Il nostro motore `analysis/level_research/` fa gia' il confronto
+  prezzo ([[feedback_fill_ottenibile]]). Il nostro motore `magazzino/registro/codice/level_research/` fa gia' il confronto
   con livelli casuali alla stessa distanza: non ne abbiamo trovato un equivalente pubblico.
 - **Onde di Elliott.** Regole abbastanza lasche, e onde annidabili a piacere, da adattarsi a **qualsiasi**
   tratto di storia: per Aronson non e' una teoria ma un racconto (**S**). **Non falsificabile.**
@@ -336,8 +336,8 @@ nel passato, filtro sul volume probabilmente vero per costruzione, stessa grande
 - [[04_quant_metodologia]] — filtraggio contro lisciamento (§1), overfitting e data snooping (§2).
 - [01_price_action](../01_price_action/principles.md) e [TRADING_PRINCIPLES](../TRADING_PRINCIPLES.md) §4 — Fibonacci e livelli armonici.
 - [LEVEL_RESEARCH_PREREGISTRATION](../../registro/documenti/LEVEL_RESEARCH_PREREGISTRATION.md) — il confronto con livelli casuali.
-- [STRATEGY_LIFECYCLE](../../../docs/STRATEGY_LIFECYCLE.md), [QUANT_REVIEW_PROTOCOL](../../../docs/QUANT_REVIEW_PROTOCOL.md).
-- `prop-lab/lab/indicators.py` — gli indicatori gia' implementati (SMA, EMA, ATR, RSI, z-score, livelli del giorno prima, range di sessione).
+- [STRATEGY_LIFECYCLE](../../../motore/metodo/STRATEGY_LIFECYCLE.md), [QUANT_REVIEW_PROTOCOL](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md).
+- `motore/prop-lab/lab/indicators.py` — gli indicatori gia' implementati (SMA, EMA, ATR, RSI, z-score, livelli del giorno prima, range di sessione).
 - [[feedback_fill_ottenibile]], [[feedback_mass_search_vs_preregistration]], [[feedback_conferme_per_fonte]].
 
 ## Fonti

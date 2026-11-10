@@ -71,7 +71,7 @@ Lo stesso difetto che gonfiava il fade **deprimeva** la continuazione — cioe' 
 lui** il NO-GO.
 
 Rimisurata con i soli fill ottenibili
-([`continuation_obtainable.py`](../../../analysis/nxt/continuation_obtainable.py),
+([`continuation_obtainable.py`](../codice/nxt/continuation_obtainable.py),
 [output](../referti/audit/a5_nxt_continuazione_2026-09-18.txt)):
 
 | | n | E[R] | BCa95 |
@@ -102,7 +102,7 @@ barra M5), ma il verdetto stampa **solo la pessimistica**. Su un NO-GO e' il ver
 convenzione pessimistica deprime, e poteva aver prodotto lei il verdetto — come il 18/09 la stessa
 forbice valeva **0,82R** sul baseline del copier.
 
-Misurata ([`audit_convenzioni.py`](../../../analysis/opening_range/audit_convenzioni.py),
+Misurata ([`audit_convenzioni.py`](../codice/opening_range/audit_convenzioni.py),
 [output](../referti/audit/a5_orb_convenzioni_2026-09-18.txt)): **la forbice e' +0,001R.** Praticamente nulla,
 su ogni scomposizione e su entrambi gli strumenti. **Ipotesi mia, refutata.** Il motivo e'
 strutturale: con RR 1:3 e stop ampio rispetto alla barra M5, le barre ambigue sono rare.
@@ -146,7 +146,7 @@ regola pre-registrata. La review **cita nella stessa pagina** l'aspettativa a pr
 letteratura (Baltas-Kosowski, SG Trend): **Sharpe 0,3-0,5**.
 
 Nessuno ha messo insieme le due righe. Fatto ora
-([`a5_potenza_tsmom.py`](../../../analysis/ops/a5_potenza_tsmom.py),
+([`a5_potenza_tsmom.py`](../codice/ops/a5_potenza_tsmom.py),
 [output](../referti/audit/a5_potenza_tsmom_2026-09-18.txt)), con `SE(SR) ≈ sqrt((1+SR²/2)/T)`:
 
 | Sharpe cercato | anni necessari | ne avevamo 23? |

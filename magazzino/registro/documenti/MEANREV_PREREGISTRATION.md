@@ -8,8 +8,8 @@ decisione: "DECISIONS 2026-07-08 — mean-reversion vol NO-GO"
 
 > **Committata PRIMA dei risultati.** 2026-07-08. Secondo edge del pivot (dopo TSMOM NO-GO). Contratto:
 > spec, universo, varianti, metrica, criteri e kill-switch fissati qui *a priori*; dopo i numeri non si
-> cambiano; ogni variante extra = nuovo trial nel DSR. Riusa `core/quant_metrics.py` e la struttura di
-> `strategies/tsmom/backtest.py`.
+> cambiano; ogni variante extra = nuovo trial nel DSR. Riusa `motore/core/quant_metrics.py` e la struttura di
+> `magazzino/registro/codice/tsmom/backtest.py`.
 
 ## Domanda (una sola)
 Un edge di **mean-reversion di breve termine basato sulla volatilità** (z-score del prezzo, **NON**
@@ -27,7 +27,7 @@ crypto). Lo testiamo su **tutti i 16** (breadth) senza pre-selezionare, e vediam
 
 ## Universo (16 asset, D1) — feed demo4 validato
 Stesso di TSMOM: EURUSD GBPUSD USDJPY AUDUSD USDCAD NZDUSD USDCHF EURJPY.r GBPJPY.r EURGBP.r · XAUUSD
-XAGUSD · BTCUSD ETHUSD · US500 US100. Dati `analysis/trading-bot-eval/data/{PREFIX}_D1.csv`.
+XAGUSD · BTCUSD ETHUSD · US500 US100. Dati `motore/data/prezzi/{PREFIX}_D1.csv`.
 
 ## Spec canonica (fissa)
 - **z-score**: `z_t = (close_t − SMA(close,N)_t) / STD(close,N)_t`, calcolato con dati **≤ t**.
@@ -45,7 +45,7 @@ XAGUSD · BTCUSD ETHUSD · US500 US100. Dati `analysis/trading-bot-eval/data/{PR
 `n_trials = 6` per il DSR. (Z_STOP e MAX_HOLD fissi; loro sensibilità = robustezza a parte.)
 
 ## Metriche, validazione, regola di decisione — IDENTICHE a TSMOM
-Via `core/quant_metrics.py`: Sharpe/Sortino/CAGR/maxDD/Calmar, **breadth** (asset con contributo>0) +
+Via `motore/core/quant_metrics.py`: Sharpe/Sortino/CAGR/maxDD/Calmar, **breadth** (asset con contributo>0) +
 concentrazione, **BCa CI** sullo Sharpe, **DSR** (n_trials=6), **PBO/CSCV** sulla matrice T×6,
 **walk-forward** (anchored 5y/1y), **MC-permutation**, **White's RC** sulle 6 varianti; overlay prop
 (vol 10%, DD giornaliero/totale, giorni). Per-anno (mono-anno?).

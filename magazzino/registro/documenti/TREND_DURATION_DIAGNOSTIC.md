@@ -5,7 +5,7 @@
 >
 > **Costo: 0 trial.** Non cambia regole, parametri, asset o filtri: verifica l'**integrità di
 > un confronto già fatto**, che `STRATEGY_LIFECYCLE.md §3` classifica come modellazione più
-> realistica dell'esecuzione. Stessa natura di `analysis/nxt/entry_fill_audit.py`.
+> realistica dell'esecuzione. Stessa natura di `magazzino/registro/codice/nxt/entry_fill_audit.py`.
 > ⚠️ Se uno degli esiti portasse a **cambiare** la regola, quello sì costerebbe un trial —
 > e sarebbe l'ultimo del ramo trend (round 2 di 3 già speso).
 
@@ -13,14 +13,14 @@
 
 ## 1. Da dove nasce
 
-Il 2026-09-19, accendendo `check_matching` di [`core/random_baseline.py`](../../../core/random_baseline.py)
+Il 2026-09-19, accendendo `check_matching` di [`motore/core/random_baseline.py`](../../../motore/core/random_baseline.py)
 sul motore del playground, è emerso che il braccio reale e il braccio random **non stanno in
 mercato per lo stesso tempo**: holding mediano **7 giorni contro 2** (−71%). Tutti gli altri assi
 (asset, lato, anno, numerosità) risultano matchati.
 
 Non è un difetto del baseline: con le stesse regole d'uscita la durata è un **esito**, non un
 input. Ma significa che il confronto *reale vs random* è **in parte un confronto fra durate**, e
-il controllo C1 di [`analysis/trend/q2_checks.py`](../../../analysis/trend/q2_checks.py) — quello che
+il controllo C1 di [`magazzino/registro/codice/trend/q2_checks.py`](../codice/trend/q2_checks.py) — quello che
 doveva neutralizzare il canale meccanico — è costruito proprio su quella differenza.
 
 ## 2. Perché la durata può produrre il gradiente da sola
@@ -87,7 +87,7 @@ sopravvivono tutti.
 
 ## 6. Risultati — eseguito il 2026-09-21
 
-Motore: [`analysis/trend/duration_diagnostic.py`](../../../analysis/trend/duration_diagnostic.py).
+Motore: [`magazzino/registro/codice/trend/duration_diagnostic.py`](../codice/trend/duration_diagnostic.py).
 Finestra W2 comune **2017-12-26 →**, **1.169** trade reali, **3.507** controlli, 8 gruppi.
 
 ### 6.0 Le verifiche preliminari passano

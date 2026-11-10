@@ -214,7 +214,7 @@ Pianificato dopo 1-2 mesi di dati compilati.
 - Se aggiungi un nuovo `Simbolo`, `Account` o `Strategia/Setup`, fallo direttamente
   da Notion al volo: appare nel Select alla prima compilazione.
 - Se aggiungi un nuovo marker di `Confluenze`, **aggiungilo anche in
-  [`levels.yaml`](../../../strategies/confluence_levels/levels.yaml) sezione VOCABOLARIO**
+  [`levels.yaml`](../strategies/confluence_levels/levels.yaml) sezione VOCABOLARIO**
   per coerenza tra setup planning e trade record.
 - Se modifichi lo schema (rinomini, togli, aggiungi proprietà), aggiorna
   [`NOTION_JOURNAL_SCHEMA.md`](NOTION_JOURNAL_SCHEMA.md).

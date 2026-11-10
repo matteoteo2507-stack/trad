@@ -51,10 +51,10 @@ versionabile solo dopo lo smistamento, nella sua cartella e con le regole di que
 | Fonte da cui imparare: PDF, trascrizione di un video, appunti, report di ricerca, codice di un indicatore o di un EA di terzi | [`magazzino/fonti/sorgenti/`](../../magazzino/fonti/sorgenti/) | riga in [`_INTAKE.md`](../_INTAKE.md), stato `grezzo` |
 | Strategia da valutare | la fonte in `_sorgenti/`, la scheda in [`magazzino/registro/documenti/strategie_candidate/`](../../magazzino/registro/documenti/strategie_candidate/) | riga in `_INTAKE.md` |
 | Materiale portato dai soci: export Telegram, export di conti, schermate | [`magazzino/fonti/materiale_socio/`](../../magazzino/fonti/materiale_socio/)`<fonte>_<tipo>_<periodo>/` (fuori da git) | tabella di [`magazzino/fonti/materiale_socio/README.md`](../../magazzino/fonti/materiale_socio/README.md); anche `_INTAKE.md` se è una fonte di segnali |
-| Export del canale del mentore | `_export_telegram/` (nome fisso, fuori da git) | controllo di copertura con `analysis/mentor_signals/coverage.py` |
-| Dati di prezzo (barre, tick) | `analysis/trading-bot-eval/data/` (fuori da git) | controllo con `python -m core.data_checks <file>` |
+| Export del canale del mentore | `_export_telegram/` (nome fisso, fuori da git) | controllo di copertura con `magazzino/registro/codice/mentor_signals/coverage.py` |
+| Dati di prezzo (barre, tick) | `motore/data/prezzi/` (fuori da git) | controllo con `python -m motore.core.data_checks <file>` |
 | La nostra lettura di un materiale (verdetto, tabella dei claim) | nota in [`magazzino/registro/referti/`](../../magazzino/registro/referti/) | voce in [`DECISIONS.md`](../DECISIONS.md) se chiude o apre qualcosa |
-| Ipotesi che nasce nell'hub (`claude-brain`: appunti di Matteo, studio, geopolitica) | la fonte in `magazzino/fonti/sorgenti/`, la nostra lettura in `magazzino/registro/referti/` | scheda d'ingresso di [`STRATEGY_LIFECYCLE.md`](../../docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub"; riga in `_INTAKE.md` |
+| Ipotesi che nasce nell'hub (`claude-brain`: appunti di Matteo, studio, geopolitica) | la fonte in `magazzino/fonti/sorgenti/`, la nostra lettura in `magazzino/registro/referti/` | scheda d'ingresso di [`STRATEGY_LIFECYCLE.md`](../../motore/metodo/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub"; riga in `_INTAKE.md` |
 | Materiale che non riguarda `trad` (università, altri progetti) | `inbox/` del vault `claude-brain`, fuori da questo repo | triage del vault |
 
 Se un tipo di materiale non è in tabella, si chiede a Matteo dove va e si aggiunge la riga.

@@ -1,7 +1,7 @@
 # Mean-reversion vol (non-level, di portafoglio) — Verdetto: NO-GO — 2026-07-08
 
 > Secondo edge del pivot. Test **pre-registrato** ([docs/MEANREV_PREREGISTRATION.md](../documenti/MEANREV_PREREGISTRATION.md)),
-> motore [strategies/meanrev/backtest.py](../../../strategies/meanrev/backtest.py) (riusa data/sizing/validazione
+> motore [strategies/meanrev/backtest.py](../codice/meanrev/backtest.py) (riusa data/sizing/validazione
 > di TSMOM). Universo 16 asset D1 2003-2026, z-score N=10 Z_ENTRY=1.0, exit media/time-stop/vol-stop.
 
 ## Esito primario (dopo costi)

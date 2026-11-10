@@ -11,7 +11,7 @@ nota: "Audit A5: MISTO — SPX500 refutato, NAS100 mai misurato con potenza suff
 > **Committata PRIMA dei risultati.** 2026-07-08. Primo test del filone **scalping single-asset intraday**
 > (idea utente + socio). Le **regole core** sono fissate qui a priori: dopo i numeri non si toccano. La
 > **validazione** sale a gradini: **v1 grezza** (capire il potenziale) → v2 piena se promette. Riusa
-> `core/quant_metrics.py`. Asset: **US100** (Nasdaq 100 CFD); validazione OOS su **US500**.
+> `motore/core/quant_metrics.py`. Asset: **US100** (Nasdaq 100 CFD); validazione OOS su **US500**.
 
 ## Idea e razionale
 Breakout dell'**opening range** dell'**apertura del cash USA** (09:30 ET) con **entry sul retest**.

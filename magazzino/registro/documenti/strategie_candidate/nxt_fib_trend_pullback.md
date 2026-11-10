@@ -11,7 +11,7 @@ aggiornato: 2026-09-17
 
 > ⚠️ **Stato attuale:** continuazione **NO-GO** (17/07; E[R] rimisurato −0,118 dall'audit A5 del 18/09). Il sottoprodotto FADE ("positivo, robusto" nella tabella sotto) è **KILL dal 2026-09-17**: era fill fantasma. Stato canonico: [NXT_FADE_FORWARD_PREREGISTRATION](../NXT_FADE_FORWARD_PREREGISTRATION.md).
 
-> **STATO: in valutazione — esperimento ridotto pre-registrato.** Strategia usata da alcuni ex-soci dell'utente, spiegata in un video da uno di loro. Questo file contiene (1) il triage onesto, (2) la **pre-registrazione** dell'esperimento ridotto — regole fissate *prima* di vedere i risultati — e (3) il verdetto a valle. Motore: [`analysis/nxt/backtest.py`](../../../../analysis/nxt/backtest.py). Metodologia allineata a [[04_quant_metodologia]] e alla ricerca livelli [[project_level_research_v1_null_2026_07_06]].
+> **STATO: in valutazione — esperimento ridotto pre-registrato.** Strategia usata da alcuni ex-soci dell'utente, spiegata in un video da uno di loro. Questo file contiene (1) il triage onesto, (2) la **pre-registrazione** dell'esperimento ridotto — regole fissate *prima* di vedere i risultati — e (3) il verdetto a valle. Motore: [`magazzino/registro/codice/nxt/backtest.py`](../../codice/nxt/backtest.py). Metodologia allineata a [[04_quant_metodologia]] e alla ricerca livelli [[project_level_research_v1_null_2026_07_06]].
 
 ## 1. Triage: cos'è, tolto il marketing
 
@@ -31,7 +31,7 @@ Sotto Fibonacci + Elliott, la sostanza è **trend-continuation su pullback**: in
 
 ### 2.1 Dati e universo
 - **TF operativo**: H1 (default del presentatore). **Contesto trend**: struttura swing su H1 (no look-ahead).
-- **Strumenti** (pool multi-asset, anti-fortuna-di-singolo-mercato): `EURUSD, GBPUSD, USDJPY, XAUUSD, US100, US500`. Fonte Dukascopy/MT5 già in `analysis/trading-bot-eval/data/*_H1.csv` (H1 dal 2012, ~14y).
+- **Strumenti** (pool multi-asset, anti-fortuna-di-singolo-mercato): `EURUSD, GBPUSD, USDJPY, XAUUSD, US100, US500`. Fonte Dukascopy/MT5 già in `motore/data/prezzi/*_H1.csv` (H1 dal 2012, ~14y).
 - **Holdout temporale 70/30** per strumento: parametri e lettura si "decidono" sul train; il **verdetto vive sul TEST**. In più, **E[R] per anno** (caccia al miraggio "solo post-2020" che ha smascherato ORB v2).
 
 ### 2.2 Regole meccaniche (il primitivo tradabile)
@@ -52,7 +52,7 @@ Riduco la sequenza 0/A/B/C ambigua al **primitivo Fib-pullback** inequivocabile 
 - **H3 — stazionarietà/OOS**: le stat reggono sul **test set** e non solo su un sotto-periodo? Break per anno.
 
 ### 2.4 Metriche e gate (pre-registrati)
-- **Primaria**: `E[R]/trade` con **BCa 95% CI** ([`bca_bootstrap_ci`](../../../../core/quant_metrics.py)). **Decidi sul lower-bound**, non sul valore centrale (regola d'oro [[04_quant_metodologia]]).
+- **Primaria**: `E[R]/trade` con **BCa 95% CI** ([`bca_bootstrap_ci`](../../../../motore/core/quant_metrics.py)). **Decidi sul lower-bound**, non sul valore centrale (regola d'oro [[04_quant_metodologia]]).
 - **Win rate** riportato esplicitamente per confrontarlo col claim 60-70%.
 - **Differenza reale-vs-random / reale-vs-naive** con CI cluster-bootstrap (lower-bound > 0 per rivendicare edge del Fib).
 - **Risoluzione intrabar**: bound **pessimistico** (SL prima di TP nella stessa barra) e ottimistico; il verdetto usa il pessimistico.
@@ -77,11 +77,11 @@ Config primaria pre-registrata (§2), pool 6 asset H1 ~14y, **10.290 setup reali
 
 **Sul "Fib batte il random"**: reale ma economicamente irrilevante (entrambi perdono ~0.4-0.5R) e in gran parte artefatto (il random include ingressi a 0.7 con rischio minuscolo → costo per-R enorme). Nessun edge tradabile nei livelli di Fibonacci — coerente con [[project_level_research_v1_null_2026_07_06]].
 
-**Chiusura.** NXT ridotta al suo primitivo tradabile è NO-GO su 14 anni e 6 mercati. Il kernel momentum non emerge in questa forma (entrata contro-ritracciamento con stop stretto). "Gli ex-soci lo usano" non implica profitto (cfr. [[project_veltrix_bot_eval_2026_06_12]]). Motore riproducibile in [`analysis/nxt/backtest.py`](../../../../analysis/nxt/backtest.py).
+**Chiusura.** NXT ridotta al suo primitivo tradabile è NO-GO su 14 anni e 6 mercati. Il kernel momentum non emerge in questa forma (entrata contro-ritracciamento con stop stretto). "Gli ex-soci lo usano" non implica profitto (cfr. [[project_veltrix_bot_eval_2026_06_12]]). Motore riproducibile in [`magazzino/registro/codice/nxt/backtest.py`](../../codice/nxt/backtest.py).
 
 ## 4. Chiusura definitiva — test dell'ipotesi "stop dentro il rumore" (run 2026-07-17b)
 
-Diagnosi del §3: lo stop a 0.786 vive dentro il rumore del ritracciamento. Due implicazioni testabili, pre-registrate in [`analysis/nxt/closure.py`](../../../../analysis/nxt/closure.py) (4 config, verdetto su holdout+anno+asset, **multiple-testing esplicito**). Pool 6 asset H1 ~14y, bound pessimistico.
+Diagnosi del §3: lo stop a 0.786 vive dentro il rumore del ritracciamento. Due implicazioni testabili, pre-registrate in [`magazzino/registro/codice/nxt/closure.py`](../../codice/nxt/closure.py) (4 config, verdetto su holdout+anno+asset, **multiple-testing esplicito**). Pool 6 asset H1 ~14y, bound pessimistico.
 
 | Config | Descrizione | E[R] pess | Esito |
 |---|---|---|---|
@@ -103,7 +103,7 @@ Diagnosi del §3: lo stop a 0.786 vive dentro il rumore del ritracciamento. Due 
 **Bottom line NXT.** La strategia degli ex-soci (continuazione Fib) è **NO-GO chiuso**. Il sottoprodotto — *fadare* il ritracciamento delle gambe mature (short-horizon mean-reversion) — è **il lead più forte mai prodotto in questo repo** e apre un thread NUOVO, separato da NXT, da validare con rigore indipendente. Vedi [[project_nxt_fib_nogo_2026_07_17]] (NEXT).
 
 ## Collegamenti
-- [`analysis/nxt/backtest.py`](../../../../analysis/nxt/backtest.py) — motore.
+- [`magazzino/registro/codice/nxt/backtest.py`](../../codice/nxt/backtest.py) — motore.
 - [[04_quant_metodologia]] — bias, BS-test, gate; [[05_portfolio_rischio]] — momentum come edge ancorato.
 - [[project_level_research_v1_null_2026_07_06]] — precedente NULL sul meccanismo level-reaction.
 - [[project_veltrix_bot_eval_2026_06_12]] — nello stesso giro, claim gonfiati (53% vs 80-90%): "gli ex-soci lo usano" ≠ evidenza di profitto.
@@ -111,4 +111,4 @@ Diagnosi del §3: lo stop a 0.786 vive dentro il rumore del ritracciamento. Due 
 
 ---
 
-⚠️ **Corretto il 2026-08-14** (`analysis/nxt/weekend.py`): il backtest assumeva il fill dello stop *esattamente* al livello, ma il **12,7%** degli stop apre gia' oltre (fill vero −1,29R contro −0,75R assunto). **E[R] reale +0,308R**, non +0,354. Fix di modellazione dell'esecuzione → non consuma trial. Verdetto invariato (LEAD).
+⚠️ **Corretto il 2026-08-14** (`magazzino/registro/codice/nxt/weekend.py`): il backtest assumeva il fill dello stop *esattamente* al livello, ma il **12,7%** degli stop apre gia' oltre (fill vero −1,29R contro −0,75R assunto). **E[R] reale +0,308R**, non +0,354. Fix di modellazione dell'esecuzione → non consuma trial. Verdetto invariato (LEAD).

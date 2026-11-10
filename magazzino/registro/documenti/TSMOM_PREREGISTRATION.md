@@ -12,7 +12,7 @@ nota: "Audit A5: NON MISURATO (potenza insufficiente). Resta chiuso ma non vale 
 > (384 trial null, [DECISIONS.md](../../../decisioni/DECISIONS.md)). Contratto: spec, universo, varianti, metrica,
 > **criteri di successo e kill-switch** sono fissati qui *a priori*. Dopo i numeri non si cambiano;
 > un bug si documenta come *fix*, non come nuova definizione; ogni variante extra = nuovo trial nel DSR.
-> Attua il piano `~/.claude/plans/…`. Riusa `core/quant_metrics.py`.
+> Attua il piano `~/.claude/plans/…`. Riusa `motore/core/quant_metrics.py`.
 
 ## Domanda (una sola)
 Un programma **time-series momentum canonico, multi-asset, vol-targeted** produce un edge
@@ -29,7 +29,7 @@ asset): qui lo rifacciamo **multi-asset sulle serie di rendimenti** (non sulle s
 
 ## Universo (16 asset, D1) — feed demo4 validato
 EURUSD GBPUSD USDJPY AUDUSD USDCAD NZDUSD USDCHF EURJPY.r GBPJPY.r EURGBP.r · XAUUSD XAGUSD ·
-BTCUSD ETHUSD · US500 US100. Dati: `analysis/trading-bot-eval/data/{PREFIX}_D1.csv`.
+BTCUSD ETHUSD · US500 US100. Dati: `motore/data/prezzi/{PREFIX}_D1.csv`.
 **Limite dichiarato**: correlazioni alte (molte gambe USD, 2 indici USA, 2 metalli, 2 crypto); ⚠️ *(Buco Quant Guild 46, 30/09: affermazione **qualitativa**, nessuna correlazione misurata qui; frequenza e finestra non dichiarate. Se diventa un criterio di scelta si misura con `core.verifiche.correlazione_dichiarata`.)*
 espansione a bond/commodities/indici regionali solo se il concetto mostra vita.
 
@@ -52,7 +52,7 @@ Lookback **{21, 63, 126, 252}** × ribilanciamento **{mensile, giornaliero}** = 
 Primario = **(252, mensile)**. Stop on/off riportato come robustezza (non entra nel conteggio primario).
 `n_trials = 8` per il DSR.
 
-## Metriche e validazione (a priori, via `core/quant_metrics.py`)
+## Metriche e validazione (a priori, via `motore/core/quant_metrics.py`)
 - Portafoglio: **Sharpe** (ann.), Sortino, CAGR, **maxDD**, Calmar, % anni positivi.
 - **Breadth**: quanti asset hanno contributo standalone positivo; concentrazione (top asset % del PnL).
 - **BCa bootstrap CI** sullo Sharpe (`bca_bootstrap_ci`) → **lower bound**.

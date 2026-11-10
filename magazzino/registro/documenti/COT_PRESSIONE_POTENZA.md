@@ -31,11 +31,11 @@ nota: "0 trial. Nessun rendimento calcolato sui nostri prezzi, nessun segnale CO
 **giorni 1-4**, quando le posizioni del martedi' **non sono ancora pubbliche** (il report esce il venerdi'
 sera): +0,21%, t 3,04, cioe' un terzo dei 67 punti base. La parte ottenibile parte dal giorno 5:
 +0,30% nei giorni 5-10 (t 3,62) e +0,15% nei giorni 11-20 (t 1,23). E' lo stesso campanello del
-fill fantasma ([Step 3bis](../../../docs/QUANT_REVIEW_PROTOCOL.md)): il numero di copertina non e' tutto incassabile.
+fill fantasma ([Step 3bis](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md)): il numero di copertina non e' tutto incassabile.
 
 ## 2. Quanti anni ci sono davvero fuori campione
 
-Il COT legacy (`data/cache/free/cot_legacy_fut.parquet`, scaricato il 03/10) ha **24 report l'anno**
+Il COT legacy (`motore/data/cache/free/cot_legacy_fut.parquet`, scaricato il 03/10) ha **24 report l'anno**
 dal 1986 al 1991, 31 nel 1992 e **52 dal 1993**. Prima del 1993 il disegno settimanale e' impossibile;
 quello mensile si'.
 

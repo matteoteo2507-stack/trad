@@ -4,7 +4,7 @@ stato: chiusa_non_testabile
 aggiornato: 2026-10-03
 decisione: "DECISIONS 2026-10-03 (strada A: B2 chiusa a 0 trial, round 3 conservato alla famiglia)"
 metrica_corrente: "X=5: MDE 0,092-0,184 ATR contro costo 3x 0,081-0,099 → sotto potenza in ogni universo"
-nota: "0 trial. Nessuna media direzionale calcolata. Motore: analysis/trend/b2_potenza.py"
+nota: "0 trial. Nessuna media direzionale calcolata. Motore: magazzino/registro/codice/trend/b2_potenza.py"
 ---
 # B2 — breakout Kichev: il test puo' vedere un effetto che conti? (passo 0, 0 trial)
 
@@ -15,7 +15,7 @@ nota: "0 trial. Nessuna media direzionale calcolata. Motore: analysis/trend/b2_p
 
 ## Cosa e' stato misurato, e cosa no
 
-Motore: [`analysis/trend/b2_potenza.py`](../../../analysis/trend/b2_potenza.py), feed Dukascopy D1 con il
+Motore: [`magazzino/registro/codice/trend/b2_potenza.py`](../codice/trend/b2_potenza.py), feed Dukascopy D1 con il
 loader che fonde il weekend. **Nessuna media direzionale** degli eventi e' stata calcolata: la varianza
 viene dal **quadrato** del movimento dopo il trigger, identico per long e short, e dal quadrato del
 movimento su tutti i giorni (controlli a lato casuale). L'ipotesi — dopo un breakout il prezzo
@@ -24,7 +24,7 @@ movimento su tutti i giorni (controlli a lato casuale). L'ipotesi — dopo un br
 Specifica usata (scelte **nostre**; la fonte da' solo esempi: *"your sixth candle will move by 2%"*,
 *"you have to do your research"*): range H-L ≥ 2 × media delle 5 barre precedenti; direzione = colore
 della barra; ingresso all'apertura del giorno dopo, uscita a tempo dopo X giorni, nessuno stop; unita'
-ATR(20); 3 controlli per evento; costo per gruppo di `analysis/trend/backtest.py`.
+ATR(20); 3 controlli per evento; costo per gruppo di `magazzino/registro/codice/trend/backtest.py`.
 
 ## Risultato (30/09/2026)
 

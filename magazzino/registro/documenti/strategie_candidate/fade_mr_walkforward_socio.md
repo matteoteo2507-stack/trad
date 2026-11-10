@@ -1,7 +1,7 @@
 ---
 titolo: FADE mean-reversion — spec per walk-forward live (hand-off al socio)
 fonti:
-  - "analysis/nxt/closure.py (config A1)"
+  - "magazzino/registro/codice/nxt/closure.py (config A1)"
 tipo: strategia_candidata
 stato: KILL
 aggiornato: 2026-09-17
@@ -82,4 +82,4 @@ Questa variante è stata **trovata analizzando i dati** (invertendo una strategi
 
 ---
 
-⚠️ **Corretto il 2026-08-14** (`analysis/nxt/weekend.py`): il backtest assumeva il fill dello stop *esattamente* al livello, ma il **12,7%** degli stop apre gia' oltre (fill vero −1,29R contro −0,75R assunto). **E[R] reale +0,308R**, non +0,354. Fix di modellazione dell'esecuzione → non consuma trial. Verdetto invariato (LEAD).
+⚠️ **Corretto il 2026-08-14** (`magazzino/registro/codice/nxt/weekend.py`): il backtest assumeva il fill dello stop *esattamente* al livello, ma il **12,7%** degli stop apre gia' oltre (fill vero −1,29R contro −0,75R assunto). **E[R] reale +0,308R**, non +0,354. Fix di modellazione dell'esecuzione → non consuma trial. Verdetto invariato (LEAD).

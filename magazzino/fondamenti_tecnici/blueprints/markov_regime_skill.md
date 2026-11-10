@@ -7,7 +7,7 @@ tipo: blueprint
 
 # Blueprint — Skill Markov regime (osservabile + HMM opzionale)
 
-> **STATO: idea — NON committata.** Vedi [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md) (priorità 2026-05-30: agenti/strategie custom per ultime). Nel repo c'è già [`../../core/regime.py`](../../../core/regime.py) deterministico; questa skill sarebbe un'alternativa/estensione probabilistica, da valutare, non in piano.
+> **STATO: idea — NON committata.** Vedi [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md) (priorità 2026-05-30: agenti/strategie custom per ultime). Nel repo c'è già [`../../core/regime.py`](../../../motore/core/regime.py) deterministico; questa skill sarebbe un'alternativa/estensione probabilistica, da valutare, non in piano.
 
 > Distillato implementativo della skill `markov-hedge-fund-method`: un modulo Python che etichetta i regimi da rolling return, costruisce la matrice di transizione, risolve la stazionaria, fa forecast n-step e gira un walk-forward senza look-ahead — più un layer HMM opzionale e un indicatore PineScript per la visualizzazione live su TradingView. La teoria sottostante è in [[principles]] (`03_regimi_macro`).
 
@@ -72,13 +72,13 @@ uv run python -m markov_hedge_fund_method.run --ticker SPY --years 10 --window 2
 
 Flag: `--ticker` (default `SPY`), `--years` (default 10), `--window` (rolling-return in giorni di trading, default 20), `--threshold` (default 0.02), `--no-hmm` (salta l'HMM anche se presente). Dipendenze core: `yfinance`, `numpy`, `pandas`, `scikit-learn`; opzionale `hmmlearn`. Dati via yfinance (Yahoo Finance, free, no key). Output a ogni run: header ticker/date/righe, matrice 3×3 con diagonale di persistenza, distribuzione stazionaria, Sharpe walk-forward + max drawdown, ed eventuali rendimenti medi per regime HMM.
 
-> **Nota di adattamento al repo (se mai si valutasse).** Questa skill è generica su ticker azionari/crypto via yfinance; il workspace lavora soprattutto su forex (EURUSD, XAUUSD, GBPUSD). La sorgente dati e i simboli andrebbero ripensati, e il rapporto con [`../../core/regime.py`](../../../core/regime.py) chiarito (complementare, non sostitutivo — vedi [[principles]]). Resta comunque idea non committata: vedi [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
+> **Nota di adattamento al repo (se mai si valutasse).** Questa skill è generica su ticker azionari/crypto via yfinance; il workspace lavora soprattutto su forex (EURUSD, XAUUSD, GBPUSD). La sorgente dati e i simboli andrebbero ripensati, e il rapporto con [`../../core/regime.py`](../../../motore/core/regime.py) chiarito (complementare, non sostitutivo — vedi [[principles]]). Resta comunque idea non committata: vedi [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
 
 ## Collegamenti
 
 - [[principles]] — teoria dei regimi Markov + macro timing (`03_regimi_macro/principles.md`).
-- Classificatore deterministico già in repo: [`../../core/regime.py`](../../../core/regime.py) (Wilder DMI/ADX/ATR), documentato in [`../../TRADING_PRINCIPLES.md`](../TRADING_PRINCIPLES.md) §1.
-- Caveat look-ahead da non ripetere: [`../../data/regime_timeline_gbpusd.csv`](../../../data/regime_timeline_gbpusd.csv) e [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
+- Classificatore deterministico già in repo: [`../../core/regime.py`](../../../motore/core/regime.py) (Wilder DMI/ADX/ATR), documentato in [`../../TRADING_PRINCIPLES.md`](../TRADING_PRINCIPLES.md) §1.
+- Caveat look-ahead da non ripetere: [`../../data/regime_timeline_gbpusd.csv`](../../../motore/data/regime_timeline_gbpusd.csv) e [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
 - Priorità di workspace (custom in fondo): [`../../DECISIONS.md`](../../../decisioni/DECISIONS.md).
 
 ## Fonti

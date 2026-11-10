@@ -12,7 +12,7 @@ nota: "Chiuso per costo il 13/10 (Matteo): la demo su PC2 prevista dal 05/10 non
 > Nessun trade è ancora stato eseguito su questo conto. Le soglie non si modificano dopo aver
 > visto i numeri; ogni modifica va datata e dichiarata in §8.
 >
-> Ciclo: [STRATEGY_LIFECYCLE.md](../../../docs/STRATEGY_LIFECYCLE.md).
+> Ciclo: [STRATEGY_LIFECYCLE.md](../../../motore/metodo/STRATEGY_LIFECYCLE.md).
 > Presupposto: [MENTOR_SIGNALS_OOS_PREREGISTRATION.md](MENTOR_SIGNALS_OOS_PREREGISTRATION.md) —
 > l'edge del **segnale** è **CONFERMATO** fuori campione (63,0% direzione vs 35,0% random;
 > E[R] **+0,194** dopo costi, BCa95 [+0,079, +0,289]).

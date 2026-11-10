@@ -33,7 +33,7 @@ Concetti di riferimento in [`../TRADING_PRINCIPLES.md`](../../fondamenti_tecnici
 
 | Sezione | Quando si compila | Riferimento principi |
 |---|---|---|
-| `## Regime corrente` | Domenica (output `python -m core.regime`) | §1 Regimi |
+| `## Regime corrente` | Domenica (output `python -m motore.core.regime`) | §1 Regimi |
 | `## Monthly / Weekly / Daily / H4 / H1 <simbolo>` | Domenica | §2 S/R · §3 S/D freshness |
 | `## Fibonacci <simbolo>` | Domenica | §4 Fibonacci |
 | `## POC <simbolo>` | Domenica | §7 Volume Profile / POC |

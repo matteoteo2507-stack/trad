@@ -4,7 +4,7 @@
 //|                                                                   |
 //|  EA MECCANICO per il WALK-FORWARD LIVE della variante "fade"      |
 //|  (mean-reversion) emersa da NXT. Port fedele della config A1 di   |
-//|  analysis/nxt/closure.py (leg-detection in analysis/nxt/backtest.py).|
+//|  magazzino/registro/codice/nxt/closure.py (leg-detection in magazzino/registro/codice/nxt/backtest.py).|
 //|                                                                   |
 //|  STATUS: LEAD DATA-DERIVED, NON un edge dimostrato. Questo EA     |
 //|  serve solo a RACCOGLIERE trade forward OOS su DEMO. Regole        |
@@ -463,7 +463,7 @@ void ArmSetup(const bool is_short, const double hi, const double lo,
    }
 
    // --- FIX 2026-09-17: variante SKIP, niente ingressi a mercato -------------
-   // Definizione autorevole: analysis/nxt/entry_fill_audit.py righe 131-132,
+   // Definizione autorevole: magazzino/registro/codice/nxt/entry_fill_audit.py righe 131-132,
    //   fa = cb + 1;  already = (O[fa] > entry) if pos_long else (O[fa] < entry)
    // "already" si valuta UNA SOLA VOLTA, all'apertura della prima barra
    // azionabile: se il livello e' gia' oltrepassato il trade NON si prende e la

@@ -2,7 +2,7 @@
 
 **Data**: 2026-08-14 · **Verdetto**: **NO-GO / kill duro n. 2 e n. 3**
 **Pre-registrazione**: [NXT_EXIT_CEILING_ADDENDUM.md](../documenti/NXT_EXIT_CEILING_ADDENDUM.md) (scritta prima dell'esecuzione)
-**Motore**: [`analysis/nxt/excursion.py`](../../../analysis/nxt/excursion.py) · output `analysis/nxt/excursion_report.txt`
+**Motore**: [`analysis/nxt/excursion.py`](../codice/nxt/excursion.py) · output `analysis/nxt/excursion_report.txt`
 
 ---
 
@@ -42,7 +42,7 @@ L'errore è di chi ha scritto l'addendum, non del test.
 ### Il baseline random ribalta il verdetto
 
 Controllo aggiunto **dopo** aver visto S1-S3, e legittimo perché può solo **alzare** l'asticella
-([STRATEGY_LIFECYCLE §3](../../../docs/STRATEGY_LIFECYCLE.md), riga "modellazione più realistica"): per ogni
+([STRATEGY_LIFECYCLE §3](../../../motore/metodo/STRATEGY_LIFECYCLE.md), riga "modellazione più realistica"): per ogni
 setup reale, 3 controlli con **stesso asset, stesso lato, stesso rischio in unità di prezzo, stesso
 anno**, ma entrata a un **istante casuale**. Isola esattamente ciò che la struttura (pivot + gamba
 impulsiva + ritracciamento al 50%) aggiunge rispetto a "stop stretto tenuto 20 giorni".
@@ -87,7 +87,7 @@ round 3 — ma non c'è nulla su cui spenderlo in questa direzione.
 
 Il test copre H1 con pivot frattale k=5, entrata al 50%, 6 asset. **Non** copre la variante a scala
 di sessione su M5 proposta dall'utente (esempio: minimo della sessione di Londra). Ma spostarsi lì
-sarebbe **shopping di timeframe** ([§4](../../../docs/STRATEGY_LIFECYCLE.md)) — modifica motivata dall'esito —
+sarebbe **shopping di timeframe** ([§4](../../../motore/metodo/STRATEGY_LIFECYCLE.md)) — modifica motivata dall'esito —
 e costerebbe l'ultimo round della famiglia. Contro: il fallimento non è marginale (−1,44R sul
 soffitto, 0/6, 0/15) e il meccanismo di morte è già stato misurato **due volte su scale diverse**
 (NXT continuazione su H1; estremi di periodo su H4/D1/W1 nella ricerca livelli, null o negativi).

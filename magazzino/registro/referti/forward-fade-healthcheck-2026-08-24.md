@@ -84,7 +84,7 @@ cioè nella direzione che gonfia l'E[R]" — cade con le sue premesse.** Post-fi
    è escluso, e il conteggio autorevole è **36 in universo**.
 
 Nessuna delle due tocca la regola pre-registrata → per
-[`LIFECYCLE §3`](../../../docs/STRATEGY_LIFECYCLE.md) **nessun trial consumato**.
+[`LIFECYCLE §3`](../../../motore/metodo/STRATEGY_LIFECYCLE.md) **nessun trial consumato**.
 
 ---
 

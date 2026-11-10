@@ -70,7 +70,7 @@ Conseguenze, in ordine di importanza operativa:
 ### Kelly frazionario: le ragioni quantitative (buco Quant Guild 16, 2026-09-30)
 
 Il repo diceva "Kelly frazionario" e "Kelly pieno = red flag" senza i numeri. Sono in
-[`core/verifiche.py`](../../../core/verifiche.py) (`kelly_crescita`, `kelly_ottimo`, `kelly_frazionario`):
+[`motore/core/verifiche.py`](../../../motore/core/verifiche.py) (`kelly_crescita`, `kelly_ottimo`, `kelly_frazionario`):
 
 - **La parabola** $g(f)=f\mu-\tfrac12 f^2\sigma^2$: massimo in $f^*=\mu/\sigma^2$, crescita **zero** a $2f^*$ e
   negativa oltre, **anche con edge positivo**. E' la stessa formula del volatility drag qui sopra: esporsi di
@@ -205,7 +205,7 @@ L'obiettivo non è "battere il mercato" ma **targettizzare le esposizioni ai fat
 
 ## Collegamenti
 
-- Repo: [`../../strategies/stock_selector/`](../../../strategies/stock_selector/) — lo scoring fondamentale + RRG applica questa logica di fattori e decomposizione del rischio.
+- Repo: [`../../strategies/stock_selector/`](../../dormienti/strategies/stock_selector/) — lo scoring fondamentale + RRG applica questa logica di fattori e decomposizione del rischio.
 - [[06_stock_selection]] — selezione titoli a valle della logica fattoriale.
 - [[03_regimi_macro]] — il rischio di mercato (sistematico) dipende dal regime; correlazioni e beta cambiano con il regime.
 - [[08_asset_allocation_passiva]] — applicazione al pilastro investing (hedge-leg / managed futures) con il caveat di evidenza già calibrato lì.

@@ -9,7 +9,7 @@ farne, e qui sta lo stato di tutto cio' che e' stato deciso.
 | 2. Smistamento | [`_INTAKE.md`](_INTAKE.md) | la porta: ogni fonte nuova, il suo stato e dove e' finita |
 | 3. Cosa resta da fare | [`BACKLOG_RICERCA.md`](BACKLOG_RICERCA.md) | strade di ricerca, dati mancanti (§G), debito di protocollo |
 | 4. Il registro | [`DECISIONS.md`](DECISIONS.md) | ogni decisione, dalla piu' recente; **la voce piu' recente vince** su tutto |
-| 5. Il contatore | [`trial_ledger.json`](trial_ledger.json) | famiglie, trial spesi, budget, motivo di chiusura. Si legge e si verifica con `python -m core.trial_ledger` (`--check`), mai a mano |
+| 5. Il contatore | [`trial_ledger.json`](trial_ledger.json) | famiglie, trial spesi, budget, motivo di chiusura. Si legge e si verifica con `python -m motore.core.trial_ledger` (`--check`), mai a mano |
 | 6. La mappa | [`mappa/`](mappa/00-panoramica-trad.md) | cosa fa ogni componente, il cruscotto e il registro delle modifiche di architettura |
 
 ## Regole

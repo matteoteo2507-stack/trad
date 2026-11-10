@@ -44,7 +44,7 @@ chiusura sono i numeri tondi del mentore.
 
 ## 3. L'entrata postata si ricava dai livelli, e il fill e' 2,6 $ peggio
 
-Sui 255 segnali del mentore da giugno 2026 ([signals.csv](../../../analysis/mentor_signals/signals.csv),
+Sui 255 segnali del mentore da giugno 2026 ([signals.csv](../codice/mentor_signals/signals.csv),
 fino al 18/09) la geometria e' fissa nel **97%** dei casi (TP a ±5/10/15 $, SL a ±10 $) e l'entrata e'
 sempre un numero intero. Quindi, quando una gamba chiude su un livello riconciliato,
 **entrata postata = livello ∓ la sua distanza**. Il calcolo e' possibile su 18 segnali su 22, e fra le

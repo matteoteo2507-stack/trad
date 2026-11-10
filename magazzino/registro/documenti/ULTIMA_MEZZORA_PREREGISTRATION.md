@@ -5,7 +5,7 @@ approvata: "2026-10-12, Matteo, dopo la seconda passata G1 (passa con riserve, r
 aggiornato: 2026-10-12
 decisione: "Matteo: famiglia nuova (09/10); metrica primaria proporzionale con tetto, pre-registrazione subito nel terzo slot esterno del 2026-Q4, guardia a taglia fissa al 5% a una coda (strada B) (11/10); testo approvato il 12/10 dopo la seconda passata G1. DECISIONS 2026-10-09, 2026-10-11 e 2026-10-12"
 metrica_corrente: "CLOSED al train (12/10): divario dal casuale -0,51 pb [-2,01; +0,99], MDE 2,15; limite alto sotto la meta' dell'effetto atteso (2,28 pb). Holdout DAX mai aperto (esito magazzino/registro/referti/esiti/ultima_mezzora_train.txt)"
-nota: "Due stadi, una esecuzione ciascuno: train (SPX500 + NAS100) e, solo se PASSA, holdout (DAX). Massimo esito LEAD con gate finale forward. Script: analysis/ultima_mezzora/esegui_test.py"
+nota: "Due stadi, una esecuzione ciascuno: train (SPX500 + NAS100) e, solo se PASSA, holdout (DAX). Massimo esito LEAD con gate finale forward. Script: magazzino/registro/codice/ultima_mezzora/esegui_test.py"
 ---
 
 # Pre-registrazione — Momentum dell'ultima mezz'ora (famiglia `momentum_ultima_mezzora`, backlog H1)
@@ -78,7 +78,7 @@ margine sui costi e lo stress 3x, e si misura solo in forward.
   (0,20 pb misurati; FTSE 0,96; Euro Stoxx 2,58, cioe' quasi tutto il lordo stimato). Scelta fatta sui costi, prima
   di calcolare qualunque rendimento. I tre sono attesi molto correlati: contano come uno.
 - "Mai usato" vale per l'M5. Il DAX **giornaliero** e' passato dall'inventario di volatilita' di
-  `analysis/trend/heldout_pool.py` (0 trial, nessuna regola).
+  `magazzino/registro/codice/trend/heldout_pool.py` (0 trial, nessuna regola).
 - Il campione della fonte finisce a maggio 2020: tutto il test e' fuori campione rispetto al paper.
 - **Controlli, prima di ogni numero che dipende dal segnale.** `core.data_checks.checklist_dati` completa (monotonia,
   duplicati, file piu' completo; le barre per anno sono solo riportate, senza soglia) sul file grezzo; impronta SHA-256 dei file; sul train la
@@ -86,7 +86,7 @@ margine sui costi e lo stress 3x, e si misura solo in forward.
   tolleranza 0,1 pb e 2 sedute). Se un controllo e' ROTTO, i numeri noti non tornano o piu' del 5% delle sedute dei
   primari e' escluso, lo script esce prima (NESSUN VERDETTO).
 - La lettura delle barre (`sedute_da_barre`: fuso, calendario, chiusure anticipate, barre mancanti) e' coperta da
-  `tests/test_ultima_mezzora.py` su barre finte con prezzi noti.
+  `motore/tests/test_ultima_mezzora.py` su barre finte con prezzi noti.
 - **Differenze dalla fonte, dichiarate:** CFD Dukascopy lato bid, non futures; il fuso e' UTC (nessun dato MT5 nel test,
   quindi il problema dello scarto del server non c'e').
 
@@ -207,8 +207,8 @@ operazione non e' definito, e una versione con stop sarebbe un'altra regola.
 
 ## 9. Calibrazione sul sintetico (11/10, prima del mercato) e revisione G1
 
-Codice del test ([`esegui_test.py`](../../../analysis/ultima_mezzora/esegui_test.py)) su sedute seminate
-([`calibra_nullo.py`](../../../analysis/ultima_mezzora/calibra_nullo.py)): volatilita' a grappoli comune, code grasse (t a 5
+Codice del test ([`esegui_test.py`](../codice/ultima_mezzora/esegui_test.py)) su sedute seminate
+([`calibra_nullo.py`](../codice/ultima_mezzora/calibra_nullo.py)): volatilita' a grappoli comune, code grasse (t a 5
 gradi), due strumenti correlati a 0,96, 1.540 sedute come il train, **300 serie per scenario**, con B_NULL = 0,2 e la
 guardia a 1,645 errori standard. Per velocita' la calibrazione usa 1.000 repliche di bootstrap e 300 spostamenti (il
 test vero 5.000 e 1.000). I quattro nulli "cattivi" sono quelli costruiti dal gatekeeper nella prima passata.
@@ -242,7 +242,7 @@ test vero 5.000 e 1.000). I quattro nulli "cattivi" sono quelli costruiti dal ga
   concentrato in pochi giorni o cambiare segno dopo il 2021 (opzioni a scadenza giornaliera). Le code del sintetico
   sono piu' pesanti di quelle misurate sul train (curtosi in eccesso mediana 17 contro 4,5 e 4,3).
 - **Guardie e lettura delle barre:** con la pre-registrazione in BOZZA lo script rifiuta i dati reali (codice 2);
-  `tests/test_ultima_mezzora.py` passa (7 casi: seduta normale, chiusura anticipata, settimana del cambio d'ora,
+  `motore/tests/test_ultima_mezzora.py` passa (7 casi: seduta normale, chiusura anticipata, settimana del cambio d'ora,
   barre mancanti, scala nota prima).
 
 ### Revisione G1 del gatekeeper
@@ -278,7 +278,7 @@ Cinque riserve, chiuse il 12/10 prima dell'approvazione:
 3. *"La guardia costa circa 6 punti"*: **corretto** in "al piu' 6 punti" (lo scarto contiene anche le altre condizioni).
 4. *Il controllo "barre per anno" non puo' fermare lo script* (senza un intervallo atteso e' solo riportato):
    **testo allineato** al §3.
-5. Minori: l'holdout ora verifica che `analysis/ultima_mezzora` non sia cambiato dal commit del train (**corretto**);
+5. Minori: l'holdout ora verifica che `magazzino/registro/codice/ultima_mezzora` non sia cambiato dal commit del train (**corretto**);
    l'etichetta "verdetto sul vantaggio" sulla riga 1R dell'overlay e' sostituita (**corretto**); i test coprono il
    calendario di New York e non `carica` ne' il calendario di Francoforte dell'holdout (**dichiarato**: li' la
    protezione sono i controlli meccanici dell'11/10 e la lettura diretta del codice).

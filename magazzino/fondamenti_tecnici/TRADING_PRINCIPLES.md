@@ -23,12 +23,12 @@ Il mercato è in uno di **6 stati** in ogni momento, dato da `direzione × volat
 
 **Come identificare il regime (automatizzato, deterministico):**
 
-Esegui `python -m core.regime --symbols EURUSD=X,XAUUSD=X --journal` e copia
+Esegui `python -m motore.core.regime --symbols EURUSD=X,XAUUSD=X --journal` e copia
 l'output nel journal. La classificazione segue un albero deterministico basato
 sul **DMI di Wilder (1978)**, senza più conteggi visuali HH/HL (rimossi nella
 versione 2026-05-25 perché empirici e generavano dati sporchi):
 
-1. **Direzione** (gated da ADX, vedi [`core/regime.py`](../../core/regime.py)):
+1. **Direzione** (gated da ADX, vedi [`motore/core/regime.py`](../../motore/core/regime.py)):
    - `ADX(14) < 25` → **Sideways** (direzione ignorata, trend troppo debole).
    - `ADX(14) ≥ 25` AND `+DI(14) > -DI(14)` → **Bull**.
    - `ADX(14) ≥ 25` AND `-DI(14) > +DI(14)` → **Bear**.
@@ -45,7 +45,7 @@ versione 2026-05-25 perché empirici e generavano dati sporchi):
      indicatori nuovi.
 
 **Regola operativa**: il regime viene scritto in cima al `journal_settimana_*.md`
-ogni domenica come output di `python -m core.regime`. Se `Sideways Volatile`,
+ogni domenica come output di `python -m motore.core.regime`. Se `Sideways Volatile`,
 **dimezza il size o stai fuori**. Niente eccezioni.
 
 **Riferimenti**:

@@ -4,7 +4,7 @@ approvata: "2026-10-08, Matteo, dopo la terza passata G1 (passa con riserve, ris
 aggiornato: 2026-10-08
 decisione: "Matteo (08/10): test sulla storia 'per sicurezza e per avere una misura nostra', a prescindere dall'esito, accettando il costo del trial"
 metrica_corrente: "NON DIMOSTRATO (MDE 0,446%): divario netto +0,307% [-0,009; +0,615]; chiusa per potenza, non refutata (referto magazzino/registro/referti/rsi2_indici_esito_2026-10-08.md)"
-nota: "Una sola esecuzione. Massimo esito: LEAD con gate finale forward (storia gia' vista). Script: analysis/meanrev_indici/esegui_test.py"
+nota: "Una sola esecuzione. Massimo esito: LEAD con gate finale forward (storia gia' vista). Script: magazzino/registro/codice/meanrev_indici/esegui_test.py"
 ---
 
 # Pre-registrazione — RSI(2) di Connors sugli indici USA (candidato A)
@@ -54,7 +54,7 @@ regola e' quella delle fonti, non tarata da noi.
 
 ## 3. Dati
 
-Dukascopy D1, `analysis/trading-bot-eval/data/dukascopy_d1/{SPX500,NAS100}_D1.csv`, 16/01/2012 → 13/08/2026
+Dukascopy D1, `motore/data/prezzi/dukascopy_d1/{SPX500,NAS100}_D1.csv`, 16/01/2012 → 13/08/2026
 (barre del sabato e della domenica escluse: i file grezzi hanno 4.453 e 4.463 righe, le barre scartate si
 stampano). Controllo `core.data_checks` sul file **grezzo**, stampato prima del calcolo. Le barre
 Dukascopy si chiudono alle 00:00 UTC, non alla chiusura della borsa USA: l'RSI e' quello del CFD, non dello SPY delle
@@ -132,7 +132,7 @@ sola crescita riproduce lo 0,51% pubblicato: e' il "beta-trap" del 17/08 in cifr
 **Distorsione del nullo (B_NULL).** Sotto il nullo il divario a durata copiata esce in media **positivo**: la durata e' un
 esito del cammino del trade reale, e il pool dello stesso anno contiene finestre sovrapposte a quel cammino selezionato
 dal segnale (seconda passata G1, ~+0,05%). Misurata **prima** del test con il codice del test
-(`analysis/meanrev_indici/calibra_nullo.py`, 200 serie per condizione): **B_NULL = 0,09%** (distorsione misurata +0,063% [+0,038; +0,088] con crescita 0,05%/giorno e indici a 0,9; +0,047%
+(`magazzino/registro/codice/meanrev_indici/calibra_nullo.py`, 200 serie per condizione): **B_NULL = 0,09%** (distorsione misurata +0,063% [+0,038; +0,088] con crescita 0,05%/giorno e indici a 0,9; +0,047%
 [+0,018; +0,075] senza crescita; scelto il limite alto della condizione piu' vicina ai dati veri, arrotondato in su). Il LEAD richiede il
 limite basso del divario sopra B_NULL. CLOSED e NON DIMOSTRATO non la correggono: la distorsione li sposta nella
 direzione prudente. **Ipotesi dichiarata:** B_NULL viene da serie con volatilita' costante (t5, 1,1% al giorno) e crescita

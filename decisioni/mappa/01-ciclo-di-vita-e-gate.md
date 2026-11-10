@@ -23,10 +23,10 @@ macchina di rifiuto attorno al modello"* (`.claude/agents/quant-gatekeeper.md`, 
 
 | Pezzo | File | Ruolo |
 |---|---|---|
-| **La legge** | `docs/STRATEGY_LIFECYCLE.md` | il loop, cosa conta come tentativo, i verdetti possibili, quando si uccide |
-| **La procedura di misura** | `docs/QUANT_REVIEW_PROTOCOL.md` | gli step di una review: gradi di libertà, fill ottenibili, metriche, costi, pre-mortem, verdetto |
+| **La legge** | `motore/metodo/STRATEGY_LIFECYCLE.md` | il loop, cosa conta come tentativo, i verdetti possibili, quando si uccide |
+| **La procedura di misura** | `motore/metodo/QUANT_REVIEW_PROTOCOL.md` | gli step di una review: gradi di libertà, fill ottenibili, metriche, costi, pre-mortem, verdetto |
 | **Il guardiano** | `.claude/agents/quant-gatekeeper.md` | l'agente che controlla G1 e G2 e **blocca**; non decide il verdetto, che dichiara Matteo |
-| **Il contatore** | `core/trial_ledger.py` + `decisioni/trial_ledger.json` | quanti tentativi ha speso ogni famiglia, e quale Sharpe servirebbe ancora. *Cos'è una famiglia*: un'ipotesi con il suo razionale; dal 08/10 due indicatori che misurano la **stessa grandezza** sono la stessa famiglia (`STRATEGY_LIFECYCLE.md` §3), così cambiare indicatore non ricarica il budget |
+| **Il contatore** | `motore/core/trial_ledger.py` + `decisioni/trial_ledger.json` | quanti tentativi ha speso ogni famiglia, e quale Sharpe servirebbe ancora. *Cos'è una famiglia*: un'ipotesi con il suo razionale; dal 08/10 due indicatori che misurano la **stessa grandezza** sono la stessa famiglia (`STRATEGY_LIFECYCLE.md` §3), così cambiare indicatore non ricarica il budget |
 
 ## Perché esiste
 
@@ -60,7 +60,7 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
    *Come si rompe*: se si contano come candidati diversi due indicatori della stessa grandezza; ed è
    in quarantena, con molte fonti lette solo come sintesi del motore di ricerca.
    **Dal 25/10, per le idee che nascono nell'hub** (`claude-brain`: appunti di Matteo, studio, geopolitica):
-   `docs/STRATEGY_LIFECYCLE.md` §8, "Ingresso dall'hub". *Cosa fa*: una scheda di sei campi (fonte unica nell'hub,
+   `motore/metodo/STRATEGY_LIFECYCLE.md` §8, "Ingresso dall'hub". *Cosa fa*: una scheda di sei campi (fonte unica nell'hub,
    provenienza, controllo contro il repo, dati gia' guardati, misura fatta nell'hub, baseline previsto) da compilare
    prima delle nove domande del modulo 09; ci si ferma al primo campo che manca. Per la geopolitica chiede la misura
    del registro delle previsioni (Brier contro un riferimento, registro intero, criterio scritto prima). *Input*: un
@@ -78,7 +78,7 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
    è un verdetto (§5).
 6. **Dopo il verdetto.** Un LEAD richiede una nuova pre-registrazione e un **forward** sul futuro
    (se l'holdout era gia' tutto il campione, come per Gump, il contatore lo accetta solo con
-   `gate_finale: "forward"` scritto prima dell'esito, `core/trial_ledger.py`, funzione `verifica`),
+   `gate_finale: "forward"` scritto prima dell'esito, `motore/core/trial_ledger.py`, funzione `verifica`),
    l'unico dato davvero pulito e rinnovabile. Una strategia che ha già capitale si giudica contro
    la distribuzione dei suoi drawdown attesi, non contro l'umore (§8bis).
 
@@ -112,7 +112,7 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   non lo dicono il campo resta vuoto, e la tabella mostra `?`.
 - **Due binari per la gestione del rischio** (§4quater, dal 06/10): ogni test riporta il binario a
   **rischio fisso 1R**, l'unico su cui si dà il verdetto, e gli overlay della libreria fissa di
-  `core/sizing.py`. Un overlay non salva un NO-GO; in prop si legge `ev_vs_zero`, mai l'EV da solo.
+  `motore/core/sizing.py`. Un overlay non salva un NO-GO; in prop si legge `ev_vs_zero`, mai l'EV da solo.
   Componente 14: [[14-prop-lab-e-doppio-binario]].
 - **Quattro domande in più, non bloccanti** (gatekeeper, Checklist 9, dal 13/10): crescita geometrica e Kelly,
   Sharpe sopra 2 come campanello, regime, contributo al book. Vengono dal primo revisore, ritirato quel giorno;
@@ -121,9 +121,9 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
 ## Come si lancia
 
 ```
-python -m core.trial_ledger                  # stato di ogni famiglia + verifica
-python -m core.trial_ledger --futilita 250   # Sharpe minimo per famiglia, a 250 osservazioni
-python -m core.trial_ledger --check          # solo verifica: exit 1 se un budget è sforato
+python -m motore.core.trial_ledger                  # stato di ogni famiglia + verifica
+python -m motore.core.trial_ledger --futilita 250   # Sharpe minimo per famiglia, a 250 osservazioni
+python -m motore.core.trial_ledger --check          # solo verifica: exit 1 se un budget è sforato
 ```
 
 Il gatekeeper si chiama da una sessione Claude aperta su `trad/`, con il suo nome: *"usa il
@@ -133,7 +133,7 @@ con file e riga per ogni rilievo.
 
 ## Input → Output
 
-- **Input:** un'idea con razionale, i dati, il codice dello studio in `analysis/<famiglia>/`. Un'idea dall'hub entra con la scheda del §8.
+- **Input:** un'idea con razionale, i dati, il codice dello studio in `magazzino/registro/codice/<famiglia>/`. Un'idea dall'hub entra con la scheda del §8.
 - **Output:** una pre-registrazione in `magazzino/registro/documenti/`, un report in `magazzino/registro/referti/`, una voce in
   `DECISIONS.md`, lo stato nel frontmatter della pre-registrazione, una riga aggiornata in
   `decisioni/trial_ledger.json`.
@@ -142,7 +142,7 @@ con file e riga per ogni rilievo.
 
 | Cosa | Valore atteso | Come si controlla | Chi |
 |---|---|---|---|
-| Contatore coerente | nessun problema | `python -m core.trial_ledger --check` → exit 0 (il 02/10: exit 0) | Claude |
+| Contatore coerente | nessun problema | `python -m motore.core.trial_ledger --check` → exit 0 (il 02/10: exit 0) | Claude |
 | Ogni famiglia CLOSED ha il motivo di chiusura | sì, o `null` dichiarato | `--check` lo controlla; il 04/11: 12 su 14 assegnati, 2 non ricostruibili (meanrev_vol, seasonality_tom) | Claude |
 | Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `decisioni/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
@@ -155,7 +155,7 @@ con file e riga per ogni rilievo.
 - *Contatore che non esiste.* Fino al 19/09 il conteggio dei tentativi andava ricostruito a mano,
   proprio quando si è meno severi con se stessi. Il 14/08 una decisione ("lasciar correre il
   forward ORB") è stata citata per due settimane come se fosse stata eseguita, e non lo era
-  (`core/trial_ledger.py`, righe 11-14).
+  (`motore/core/trial_ledger.py`, righe 11-14).
 - *Soglie superabili senza edge.* Il 14/08 tre soglie assolute sono passate 6 su 6 e 15 su 15;
   solo il baseline random ha mostrato che erano garantite dalla costruzione (gatekeeper, righe 100-105).
 - *Due revisori* (trovato il 02/10, riparato il 13/10). `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9
@@ -181,11 +181,11 @@ di fill non ottenibili; una famiglia CLOSED che rientra "con più dati".
 
 ## Dipende da / chi dipende da lui
 
-- **Usa:** le primitive di misura (componente 6: `core/quant_metrics.py`, `core/random_baseline.py`,
-  `core/resolve_trade.py`, `core/data_checks.py`, `core/verifiche.py`) e il doppio binario con il
-  simulatore prop (componente 14: `core/sizing.py`, `core/prop_sim.py` → `prop-lab/`).
+- **Usa:** le primitive di misura (componente 6: `motore/core/quant_metrics.py`, `motore/core/random_baseline.py`,
+  `motore/core/resolve_trade.py`, `motore/core/data_checks.py`, `motore/core/verifiche.py`) e il doppio binario con il
+  simulatore prop (componente 14: `motore/core/sizing.py`, `motore/core/prop_sim.py` → `motore/prop-lab/`).
 - **Scrive in:** stato canonico e `DECISIONS.md` (componente 2).
-- **Lo applicano:** ogni studio di `analysis/` (componenti 7 e 8), il copier e gli EA nella fase
+- **Lo applicano:** ogni studio di `magazzino/registro/codice/` (componenti 7 e 8), il copier e gli EA nella fase
   dopo il capitale (componenti 3 e 4).
 
 ## Con parole mie

@@ -18,20 +18,20 @@
 
 | Componente | Path | Stato |
 |---|---|---|
-| Tipi base strategie | [strategies/_base.py](../../../strategies/_base.py) | Pronto. `Signal`, `DataRequirement`, `PositionUpdate`, `StrategyBase`, adapter `to_trading_signal` / `to_order`. |
-| Risk gate | [core/risk_gate.py](../../../core/risk_gate.py) | Pronto. `PortfolioState`, `validate_signal`, 8 regole da `config/risk.yaml`. |
-| Orchestrator generico | [core/runner.py](../../../core/runner.py), [core/registry.py](../../../core/registry.py) | Pronto. CLI `python -m core.runner run --strategy <name>`. Registra entrambe le strategie. |
-| Notifier Telegram | [notifiers/telegram.py](../../../notifiers/telegram.py) | Pronto. Outbound only via `requests`. Retry 1/3/9s. Log su `logs/telegram.log`. |
-| Tabella pip | [notifiers/_pip_table.py](../../../notifiers/_pip_table.py) | Pronto. EUR/GBP/USDJPY/XAU/indici/BTC/ETH. |
-| Broker MT5 | [brokers/mt5.py](../../../brokers/mt5.py) | Pronto. `connect/disconnect/get_market_data/get_position/place_order/close_position/modify_position`. **Mai testato live, solo unit test importabilità**. |
+| Tipi base strategie | [motore/core/strategia_base.py](../../../motore/core/strategia_base.py) | Pronto. `Signal`, `DataRequirement`, `PositionUpdate`, `StrategyBase`, adapter `to_trading_signal` / `to_order`. |
+| Risk gate | [motore/core/risk_gate.py](../../../motore/core/risk_gate.py) | Pronto. `PortfolioState`, `validate_signal`, 8 regole da `motore/config/risk.yaml`. |
+| Orchestrator generico | [magazzino/dormienti/orchestratore/runner.py](../orchestratore/runner.py), [magazzino/dormienti/orchestratore/registry.py](../orchestratore/registry.py) | Pronto. CLI `python -m magazzino.dormienti.orchestratore.runner run --strategy <name>`. Registra entrambe le strategie. |
+| Notifier Telegram | [motore/notifiers/telegram.py](../../../motore/notifiers/telegram.py) | Pronto. Outbound only via `requests`. Retry 1/3/9s. Log su `logs/telegram.log`. |
+| Tabella pip | [motore/notifiers/_pip_table.py](../../../motore/notifiers/_pip_table.py) | Pronto. EUR/GBP/USDJPY/XAU/indici/BTC/ETH. |
+| Broker MT5 | [motore/brokers/mt5.py](../../../motore/brokers/mt5.py) | Pronto. `connect/disconnect/get_market_data/get_position/place_order/close_position/modify_position`. **Mai testato live, solo unit test importabilità**. |
 
 ### 1.2 Strategie
 
 | Strategia | Cartella | Tipo | Asset | Demo MT5 | Stato test offline |
 |---|---|---|---|---|---|
-| **Stock Selector V6.0** | [strategies/stock_selector/](../../../strategies/stock_selector/) | Headless screening | SP500 | n/a (yfinance) | 13/13 verdi |
-| **Confluence Levels** | [strategies/confluence_levels/](../../../strategies/confluence_levels/) | Semiautomatica (notifica) | EURUSD, XAUUSD | DEMO1 (AvaTrade) | 24/24 verdi |
-| **London Open Breakout** | `strategies/london_breakout/` (non più nel repo) | Automatica | GBPUSD | DEMO2 (MetaQuotes) | 16/16 verdi |
+| **Stock Selector V6.0** | [magazzino/dormienti/strategies/stock_selector/](../strategies/stock_selector/) | Headless screening | SP500 | n/a (yfinance) | 13/13 verdi |
+| **Confluence Levels** | [magazzino/dormienti/strategies/confluence_levels/](../strategies/confluence_levels/) | Semiautomatica (notifica) | EURUSD, XAUUSD | DEMO1 (AvaTrade) | 24/24 verdi |
+| **London Open Breakout** | `magazzino/dormienti/strategies/london_breakout/` (non più nel repo) | Automatica | GBPUSD | DEMO2 (MetaQuotes) | 16/16 verdi |
 
 **Totale test offline: 88/88 verdi.**
 
@@ -40,12 +40,12 @@
 | Path | Cosa contiene | Da modificare quando |
 |---|---|---|
 | [.env](../../../.env) | Token Telegram, login MT5 DEMO1+DEMO2, API Alpaca, Binance/Bybit testnet | Se cambi broker o token |
-| [config/risk.yaml](../../../config/risk.yaml) | Limiti rischio globali (DD, max position, RR min, cooldown) | Se vuoi essere più/meno aggressivo |
-| [config/markets.yaml](../../../config/markets.yaml) | Mercati abilitati per scopo | Se cambi simboli di default |
-| [strategies/confluence_levels/config.yaml](../../../strategies/confluence_levels/config.yaml) | Flag mode (notify/auto/BE), soglie pip, sessione, news block | Quando attivi Fase B/C/D |
-| [strategies/confluence_levels/levels.yaml](../../../strategies/confluence_levels/levels.yaml) | **Input umano settimanale**: livelli S/R + S/D + Fib | **Ogni weekend** |
-| `strategies/london_breakout/config.yaml` (non più nel repo) | Range Asia, finestre, ATR multiplier, FOMC blacklist | Quando aggiorni date FOMC o cambi simboli |
-| [data/news_calendar.csv](../../../data/news_calendar.csv) | Stub vuoto (header only) | A mano se vuoi testare il filtro news prima di Stage 5 |
+| [motore/config/risk.yaml](../../../motore/config/risk.yaml) | Limiti rischio globali (DD, max position, RR min, cooldown) | Se vuoi essere più/meno aggressivo |
+| [motore/config/markets.yaml](../../../motore/config/markets.yaml) | Mercati abilitati per scopo | Se cambi simboli di default |
+| [magazzino/dormienti/strategies/confluence_levels/config.yaml](../strategies/confluence_levels/config.yaml) | Flag mode (notify/auto/BE), soglie pip, sessione, news block | Quando attivi Fase B/C/D |
+| [magazzino/dormienti/strategies/confluence_levels/levels.yaml](../strategies/confluence_levels/levels.yaml) | **Input umano settimanale**: livelli S/R + S/D + Fib | **Ogni weekend** |
+| `magazzino/dormienti/strategies/london_breakout/config.yaml` (non più nel repo) | Range Asia, finestre, ATR multiplier, FOMC blacklist | Quando aggiorni date FOMC o cambi simboli |
+| [motore/data/news_calendar.csv](../../../motore/data/news_calendar.csv) | Stub vuoto (header only) | A mano se vuoi testare il filtro news prima di Stage 5 |
 
 ---
 
@@ -57,13 +57,13 @@
 
 - [ ] MetaTrader 5 desktop installato e loggato sul demo AvaTrade (login 107054945, server `Ava-Demo 1-MT5`).
 - [ ] Verifica visivamente che EURUSD e XAUUSD siano nel Market Watch del terminale MT5.
-- [ ] Compila [strategies/confluence_levels/levels.yaml](../../../strategies/confluence_levels/levels.yaml) con la mappa dei livelli reali della settimana corrente. Vedi il formato in `levels.example.yaml` (non più nel repo).
-- [ ] Esegui `python -m strategies.confluence_levels validate-levels` → tabella deve mostrare livelli accettati senza errori.
-- [ ] Esegui `python -m strategies.confluence_levels dry-run --symbol EURUSD --price <prezzo_attuale>` → verifica che la decisione mostrata sia coerente con quello che ti aspetti.
+- [ ] Compila [magazzino/dormienti/strategies/confluence_levels/levels.yaml](../strategies/confluence_levels/levels.yaml) con la mappa dei livelli reali della settimana corrente. Vedi il formato in `levels.example.yaml` (non più nel repo).
+- [ ] Esegui `python -m magazzino.dormienti.strategies.confluence_levels validate-levels` → tabella deve mostrare livelli accettati senza errori.
+- [ ] Esegui `python -m magazzino.dormienti.strategies.confluence_levels dry-run --symbol EURUSD --price <prezzo_attuale>` → verifica che la decisione mostrata sia coerente con quello che ti aspetti.
 
 #### Run live (settimana di test)
 
-- [ ] Comando: `python -m strategies.confluence_levels run --account DEMO1`
+- [ ] Comando: `python -m magazzino.dormienti.strategies.confluence_levels run --account DEMO1`
 - [ ] Lascia girare almeno 5 giorni di trading (lun-ven), terminale MT5 sempre aperto.
 - [ ] Tieni d'occhio Telegram per le notifiche di prossimità.
 
@@ -71,8 +71,8 @@
 
 | Variabile | Cosa annotare | Dove cercare |
 |---|---|---|
-| **Numero notifiche totali** | Quante notifiche di prossimità sono arrivate | `logs/telegram.log`, `data/notifications_sent.json` |
-| **Livelli attivati** | Quali ID livello hanno triggerato (e quante volte ognuno) | `data/notifications_sent.json` |
+| **Numero notifiche totali** | Quante notifiche di prossimità sono arrivate | `logs/telegram.log`, `motore/data/notifications_sent.json` |
+| **Livelli attivati** | Quali ID livello hanno triggerato (e quante volte ognuno) | `motore/data/notifications_sent.json` |
 | **Falsi positivi di filtro** | Notifica arrivata per un livello già invalidato dal prezzo | log + memoria visiva del grafico |
 | **Falsi negativi di filtro** | Prezzo è entrato nella zona ma niente notifica | confronto manuale TradingView vs `logs/runner_confluence_levels.log` |
 | **Crash del runner** | Eccezioni non gestite | log Python + status del processo |
@@ -81,7 +81,7 @@
 
 #### Criteri di passaggio Fase A → Fase B (auto_place_pending)
 
-Definiti in [strategies/confluence_levels/README.md](../../../strategies/confluence_levels/README.md):
+Definiti in [magazzino/dormienti/strategies/confluence_levels/README.md](../strategies/confluence_levels/README.md):
 
 - [ ] Almeno **5 notifiche di prossimità** arrivate correttamente.
 - [ ] Almeno **3 setup** che avresti piazzato a mano (giudizio tuo).
@@ -99,11 +99,11 @@ Se tutti soddisfatti → si può attivare `auto_place_pending: true` in `config.
 - [ ] Apri **un secondo terminale MetaTrader 5** sul demo MetaQuotes (login 5050007154, server `MetaQuotes-Demo`).
 - [ ] Aggiungi GBPUSD al Market Watch.
 - [ ] Verifica spread M15 su GBPUSD: dovrebbe essere ≤ 1.5 pip in sessione London. Se è > 5 pip costantemente, MetaQuotes-Demo non va bene → apri un secondo demo Ava.
-- [ ] Esegui `python -m strategies.london_breakout dry-run` → mostra finestra entry, blackout day, simboli.
+- [ ] Esegui `python -m magazzino.dormienti.strategies.london_breakout dry-run` → mostra finestra entry, blackout day, simboli.
 
 #### Run live (settimana di test)
 
-- [ ] Comando: `python -m strategies.london_breakout run --account DEMO2`
+- [ ] Comando: `python -m magazzino.dormienti.strategies.london_breakout run --account DEMO2`
 - [ ] Lascia girare per 5 giorni di trading (lun-ven).
 - [ ] **Importante**: il primo evento utile è alle 07:00 UTC = **09:00 ora italiana**. Avvia il runner prima di quell'orario.
 
@@ -123,7 +123,7 @@ Se tutti soddisfatti → si può attivare `auto_place_pending: true` in `config.
 
 #### Criteri di completamento Stage 2.5
 
-Definiti in `strategies/london_breakout/README.md` (non più nel repo):
+Definiti in `magazzino/dormienti/strategies/london_breakout/README.md` (non più nel repo):
 
 - [ ] Almeno **3-5 trade eseguiti** in 1 settimana (frequenza attesa ~15-20/mese).
 - [ ] Win rate 45-55% (3-5 trade non basta per statistica robusta, ma orientativo).
@@ -137,7 +137,7 @@ Definiti in `strategies/london_breakout/README.md` (non più nel repo):
 Da fare in parallelo durante la settimana, non bloccante:
 
 - [ ] **Telegram retry**: stacca temporaneamente il wifi mentre il runner sta per inviare. Verifica che dopo 3 tentativi non blocchi il loop.
-- [ ] **Riavvio runner**: ferma con Ctrl-C, riavvia. Verifica che `data/notifications_sent.json` e `data/london_breakout_state.json` vengano riletti e non si rimandino notifiche già inviate.
+- [ ] **Riavvio runner**: ferma con Ctrl-C, riavvia. Verifica che `motore/data/notifications_sent.json` e `motore/data/london_breakout_state.json` vengano riletti e non si rimandino notifiche già inviate.
 - [ ] **MT5 disconnesso**: chiudi il terminale MT5 mentre il runner gira. Verifica messaggio di errore pulito (no traceback infinito).
 - [ ] **`levels.yaml` modificato a metà settimana**: aggiungi un livello, verifica che venga preso al ciclo successivo (~60s).
 - [ ] **Risk gate**: forza una violazione (es. metti `max_open_positions: 0` in `risk.yaml`) e verifica che il sistema mandi messaggio di skip senza piazzare.
@@ -149,9 +149,9 @@ Da fare in parallelo durante la settimana, non bloccante:
 ### Domenica sera o lunedì mattina presto
 
 1. **Analisi top-down EURUSD/XAUUSD** → segna livelli su TradingView.
-2. **Compila** [strategies/confluence_levels/levels.yaml](../../../strategies/confluence_levels/levels.yaml) (vedi formato in `levels.example.yaml`).
-3. `python -m strategies.confluence_levels validate-levels` → controlla che sia tutto verde.
-4. **Aggiorna FOMC dates** in `strategies/london_breakout/config.yaml` (non più nel repo) se ci sono nuove date confermate per il mese.
+2. **Compila** [magazzino/dormienti/strategies/confluence_levels/levels.yaml](../strategies/confluence_levels/levels.yaml) (vedi formato in `levels.example.yaml`).
+3. `python -m magazzino.dormienti.strategies.confluence_levels validate-levels` → controlla che sia tutto verde.
+4. **Aggiorna FOMC dates** in `magazzino/dormienti/strategies/london_breakout/config.yaml` (non più nel repo) se ci sono nuove date confermate per il mese.
 5. Apri **due terminali MT5** (DEMO1 Ava + DEMO2 MetaQuotes), entrambi loggati e con simboli nel Market Watch.
 
 ### Lunedì 08:55 ora italiana
@@ -159,10 +159,10 @@ Da fare in parallelo durante la settimana, non bloccante:
 6. Apri due shell PowerShell:
    ```
    # Shell 1
-   python -m strategies.confluence_levels run --account DEMO1
+   python -m magazzino.dormienti.strategies.confluence_levels run --account DEMO1
 
    # Shell 2
-   python -m strategies.london_breakout run --account DEMO2
+   python -m magazzino.dormienti.strategies.london_breakout run --account DEMO2
    ```
 7. Verifica messaggio Telegram di avvio in entrambi.
 
@@ -241,23 +241,23 @@ Crea `notes/week_YYYY-MM-DD.md` ogni venerdì sera. Suggerimento:
 
 ```bash
 # Verifica setup
-python -m pytest tests/                                    # 88/88 dovrebbero passare
-python -m core.runner list                                 # mostra strategie disponibili
+python -m pytest motore/tests/                                    # 88/88 dovrebbero passare
+python -m magazzino.dormienti.orchestratore.runner list                                 # mostra strategie disponibili
 
 # Confluence Levels
-python -m strategies.confluence_levels validate-levels
-python -m strategies.confluence_levels dry-run --symbol EURUSD --price 1.08600
-python -m strategies.confluence_levels run --account DEMO1
-python -m strategies.confluence_levels run --account DEMO1 --once    # singola passata
+python -m magazzino.dormienti.strategies.confluence_levels validate-levels
+python -m magazzino.dormienti.strategies.confluence_levels dry-run --symbol EURUSD --price 1.08600
+python -m magazzino.dormienti.strategies.confluence_levels run --account DEMO1
+python -m magazzino.dormienti.strategies.confluence_levels run --account DEMO1 --once    # singola passata
 
 # London Breakout
-python -m strategies.london_breakout dry-run               # check finestre + blackout day
-python -m strategies.london_breakout run --account DEMO2
-python -m strategies.london_breakout run --account DEMO2 --once
+python -m magazzino.dormienti.strategies.london_breakout dry-run               # check finestre + blackout day
+python -m magazzino.dormienti.strategies.london_breakout run --account DEMO2
+python -m magazzino.dormienti.strategies.london_breakout run --account DEMO2 --once
 
 # Equivalenti via orchestrator generico
-python -m core.runner run --strategy confluence_levels --account DEMO1
-python -m core.runner run --strategy london_breakout --account DEMO2
+python -m magazzino.dormienti.orchestratore.runner run --strategy confluence_levels --account DEMO1
+python -m magazzino.dormienti.orchestratore.runner run --strategy london_breakout --account DEMO2
 
 # Logs
 type logs\telegram.log                                     # ultime righe Telegram
@@ -270,11 +270,11 @@ type logs\runner_confluence_levels.log                     # se creato dal logge
 
 ### Bug noti / minori
 - `_template/strategy.py` ha hint "unused parameter" sui metodi non implementati. Voluto, è un template — ignorabile.
-- `tests/test_risk_gate.py` usa `datetime.utcnow()` deprecated in Python 3.12 (warning, non error). Da sistemare in passaggio successivo.
+- `motore/tests/test_risk_gate.py` usa `datetime.utcnow()` deprecated in Python 3.12 (warning, non error). Da sistemare in passaggio successivo.
 - Il `CronCreate` schedulato per il 9 maggio 19:23 ora italiana è **session-only**: se chiudi Claude Code prima, il job muore. Per renderlo durable serve `durable: true` (modifica `.claude/scheduled_tasks.json`).
 
 ### Feature pending
-- **News calendar dinamico**: `data/news_calendar.csv` è stub vuoto. Stage 5 → integrazione worldmonitor.
+- **News calendar dinamico**: `motore/data/news_calendar.csv` è stub vuoto. Stage 5 → integrazione worldmonitor.
 - **Comandi bot Telegram inline** (`/status`, `/disable`, conferma pending): Stage 5+ con `python-telegram-bot` polling.
 - **Portfolio aggregato cross-broker**: `PortfolioState.from_brokers` esiste ma il runner Confluence interroga solo `[broker]` singolo. Stage 6 quando entreranno ccxt + MT5 in parallelo.
 - **Backtest delle due strategie**: Stage 3. Per ora abbiamo solo test unitari.

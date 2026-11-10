@@ -39,7 +39,7 @@ esercizio/mql5/
 > **congelate**: non toccare i parametri strategia durante il test. Derivazione e verdetto
 > interni: [`../fondamenti_tecnici/strategie_candidate/nxt_fib_trend_pullback.md`](../../magazzino/registro/documenti/strategie_candidate/nxt_fib_trend_pullback.md) §4;
 > spec eseguibile: [`../fondamenti_tecnici/strategie_candidate/fade_mr_walkforward_socio.md`](../../magazzino/registro/documenti/strategie_candidate/fade_mr_walkforward_socio.md).
-> Motore Python di riferimento: [`../analysis/nxt/closure.py`](../../analysis/nxt/closure.py) (config A1).
+> Motore Python di riferimento: [`../analysis/nxt/closure.py`](../../magazzino/registro/codice/nxt/closure.py) (config A1).
 
 **Cosa fa.** Su H1, rileva l'ultima gamba impulsiva (swing ZigZag fractale k=5, filtro trend
 HH&HL/LH&LL, ampiezza ≥ 1×ATR) e apre una posizione **contro il trend** (fade) al 50% di
@@ -92,7 +92,7 @@ Solo dopo il cross-check + 1-2 settimane demo locale → `Migrate to virtual ser
 > **STATUS: NO-GO sui 14.5y.** Il forward NON serve perché "speriamo funzioni": serve a
 > **risolvere la domanda aperta** — il marginale-positivo 2020-2026 è rumore o vero cambio di
 > microstruttura post-COVID? Aspettativa pre-registrata **~0/negativa**. Regole congelate.
-> Port di [`../analysis/opening_range/backtest_v2.py`](../../analysis/opening_range/backtest_v2.py).
+> Port di [`../analysis/opening_range/backtest_v2.py`](../../magazzino/registro/codice/opening_range/backtest_v2.py).
 
 **Cosa fa.** Opening range 09:30-10:00 **ET**; nella finestra 10:00-12:00 ET il primo bar M5 che
 CHIUDE oltre l'OR decide il lato, poi trail del level fino a una chiusura oltre → conferma. Filtro

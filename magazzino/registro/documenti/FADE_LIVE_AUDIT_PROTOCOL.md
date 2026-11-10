@@ -9,7 +9,7 @@
 > strategia. Il perche' e' il contenuto di questo documento.
 >
 > Riferimenti: [`NXT_FADE_FORWARD_PREREGISTRATION.md`](NXT_FADE_FORWARD_PREREGISTRATION.md) §11
-> (test azzerato) · [`STRATEGY_LIFECYCLE.md`](../../../docs/STRATEGY_LIFECYCLE.md) §3, §4 · [`DECISIONS.md`](../../../decisioni/DECISIONS.md)
+> (test azzerato) · [`STRATEGY_LIFECYCLE.md`](../../../motore/metodo/STRATEGY_LIFECYCLE.md) §3, §4 · [`DECISIONS.md`](../../../decisioni/DECISIONS.md)
 > voci 2026-08-27 (2) e 2026-09-15.
 
 ---
@@ -131,7 +131,7 @@ cattura sistematicamente un **tipo di movimento** diverso, e il ramo onesto ered
 
 Le verifiche qui sotto sono **per-trade e binarie**: n=46 e' abbondante, perche' non si stima un
 effetto, si controlla una conformita'. Nessuna consuma trial
-([`STRATEGY_LIFECYCLE`](../../../docs/STRATEGY_LIFECYCLE.md) §3: l'integrita' di esecuzione non e' un tentativo di
+([`STRATEGY_LIFECYCLE`](../../../motore/metodo/STRATEGY_LIFECYCLE.md) §3: l'integrita' di esecuzione non e' un tentativo di
 ricerca).
 
 | # | verifica | criterio di conformita' | cosa si guarda |
@@ -167,7 +167,7 @@ e ora ne aggiungiamo una quinta che prima mancava.
 
 | # | condizione (§11) | stato al 2026-09-17 |
 |---|---|---|
-| 1 | primitiva unica `resolve_trade()` in `core/` | ❌ non esiste |
+| 1 | primitiva unica `resolve_trade()` in `motore/core/` | ❌ non esiste |
 | 2 | backtest a **soli fill ottenibili** con E[R] positivo | ❌ oggi e' negativo per **ogni** variante (−0,32 ÷ −0,03) |
 | 3 | EA che **rifiuta** il setup quando non puo' ottenere l'entrata | ❌ verificato nel codice: entra a mercato |
 | 4 | pre-registrazione nuova con N nuovo | — dipende dalle precedenti |
@@ -217,7 +217,7 @@ Al ritmo del ramo onesto (**0,77 trade/giorno**):
 
 ## 9. Esito dell'audit — eseguito il 2026-09-17
 
-Motore: [`analysis/nxt/execution_audit.py`](../../../analysis/nxt/execution_audit.py).
+Motore: [`magazzino/registro/codice/nxt/execution_audit.py`](../codice/nxt/execution_audit.py).
 Report: [`health/fade_execution_audit_2026-09-17.md`](../referti/audit/fade_execution_audit_2026-09-17.md).
 **Nessun P&L letto**: lo script ha un guard (`_assert_no_pnl`) che solleva un'eccezione se un record
 contiene un campo di risultato.
@@ -261,7 +261,7 @@ continuo**: ha prodotto 23 ingressi non conformi su 45 solo dopo il fix del 27/0
 ### Cosa cambia da qui
 
 1. L'EA e' stato portato a **v1.10** lo stesso giorno: il ramo a mercato **non esiste piu'**, il
-   setup si salta (commit `bbea38e`). Non consuma trial ([`STRATEGY_LIFECYCLE`](../../../docs/STRATEGY_LIFECYCLE.md)
+   setup si salta (commit `bbea38e`). Non consuma trial ([`STRATEGY_LIFECYCLE`](../../../motore/metodo/STRATEGY_LIFECYCLE.md)
    §3: correzione di bug + esecuzione piu' realistica).
 2. Serve **ricompilare e ridistribuire** l'EA sulla VPS perche' il fix abbia effetto.
 3. Il campione raccolto finora **non si somma** a quello nuovo (§4.3 della pre-registrazione, che

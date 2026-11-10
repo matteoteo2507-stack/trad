@@ -27,19 +27,19 @@ Risponde a due domande che `trad` prima non sapeva fare con un numero:
 
 | Pezzo | File | Ruolo |
 |---|---|---|
-| **Simulatore prop** | `prop-lab/lab/prop.py` (`evaluate`, `zero_edge`, `evaluate_ci`) | proprietario unico della logica delle challenge, condiviso col socio |
-| **Modelli di rischio** | `prop-lab/lab/risk.py` (`RiskModel`) | i modificatori (dd_linear, daily_guard, loss_streak, target_coast, floor_cap, …) |
-| **Ponte** | `core/prop_sim.py` | l'unico punto di `trad` che arriva a `prop-lab` (`sys.path` in coda) |
-| **Doppio binario** | `core/sizing.py` (`LIBRERIA`, `confronta_overlay`, `confronta_overlay_prop`) | la libreria dichiarata e i due confronti |
-| **La pipeline del socio** | `prop-lab/lab/pipeline.py`, `cli.py`, `strategies/` | famiglia → backtest ideale → costi → prop × rischio → conferma OOS |
-| **Il cancello** | `prop-lab/lab/gate.py`, `prop-lab/config/gate.yaml` | su dati reali: niente test senza famiglia nel contatore e pre-registrazione APPROVATA; fuori campione aperto una volta (dal 08/10) |
-| **Il controllo** | `prop-lab/lab/strategies/controllo_casuale.py` | ingressi casuali: collauda la pipeline su dati veri senza ipotesi |
-| **La regola** | `docs/STRATEGY_LIFECYCLE.md` §4quater, `docs/QUANT_REVIEW_PROTOCOL.md` Step 5bis | quando e come si usa |
+| **Simulatore prop** | `motore/prop-lab/lab/prop.py` (`evaluate`, `zero_edge`, `evaluate_ci`) | proprietario unico della logica delle challenge, condiviso col socio |
+| **Modelli di rischio** | `motore/prop-lab/lab/risk.py` (`RiskModel`) | i modificatori (dd_linear, daily_guard, loss_streak, target_coast, floor_cap, …) |
+| **Ponte** | `motore/core/prop_sim.py` | l'unico punto di `trad` che arriva a `prop-lab` (`sys.path` in coda) |
+| **Doppio binario** | `motore/core/sizing.py` (`LIBRERIA`, `confronta_overlay`, `confronta_overlay_prop`) | la libreria dichiarata e i due confronti |
+| **La pipeline del socio** | `motore/prop-lab/lab/pipeline.py`, `cli.py`, `magazzino/dormienti/strategies/` | famiglia → backtest ideale → costi → prop × rischio → conferma OOS |
+| **Il cancello** | `motore/prop-lab/lab/gate.py`, `motore/prop-lab/config/gate.yaml` | su dati reali: niente test senza famiglia nel contatore e pre-registrazione APPROVATA; fuori campione aperto una volta (dal 08/10) |
+| **Il controllo** | `motore/prop-lab/lab/strategies/controllo_casuale.py` | ingressi casuali: collauda la pipeline su dati veri senza ipotesi |
+| **La regola** | `motore/metodo/STRATEGY_LIFECYCLE.md` §4quater, `motore/metodo/QUANT_REVIEW_PROTOCOL.md` Step 5bis | quando e come si usa |
 
 ## Perché esiste
 
 Il **04-05/10** il socio VELTRIX ha portato `prop-lab`, generato da un'AI nella sua sessione
-(`prop-lab/docs/sessione_socio_veltrix_2026-10-04_05.md`). Valutandolo il 05/10 sono emerse due cose:
+(`motore/prop-lab/docs/sessione_socio_veltrix_2026-10-04_05.md`). Valutandolo il 05/10 sono emerse due cose:
 
 - il **motore** e' sano (nessun look-ahead; su un random walk a passi di un minuto l'attesa e' zero), e il
   **simulatore prop** e' il pezzo che a `trad` mancava: prima c'era solo la formula a due barriere
@@ -67,30 +67,30 @@ Su dati reali, dentro trad (dal 08/10): prima la famiglia nel contatore (`regist
 cd prop-lab
 python -m lab.cli all --family <famiglia di codice> --symbol XAUUSD --data ../analysis/trading-bot-eval/data/XAUUSD_H1.csv --famiglia <id del contatore>
 python -m lab.cli confirm --run results/<run>      # APRE il fuori campione: una volta sola, su richiesta di Matteo
-cd .. && python -m core.trial_ledger --check        # registro e contatore devono dire la stessa cosa
+cd .. && python -m motore.core.trial_ledger --check        # registro e contatore devono dire la stessa cosa
 ```
 
 Per collaudare senza ipotesi: `--family controllo_casuale` (nessun `--famiglia` richiesto).
 
 ```
-python -m pytest -q prop-lab/tests core/tests/test_sizing.py      # i test di questo componente
-cd prop-lab && python tools/make_demo_data.py && python -m lab.cli all --family mean_reversion --symbol XAUUSD --data data/DEMO_XAUUSD_H1.csv
+python -m pytest -q motore/prop-lab/tests motore/core/tests/test_sizing.py      # i test di questo componente
+cd prop-lab && python tools/make_demo_data.py && python -m lab.cli all --family mean_reversion --symbol XAUUSD --data motore/data/DEMO_XAUUSD_H1.csv
 ```
 
 Da Python, dentro `trad`:
 
 ```python
-from core.sizing import confronta_overlay, confronta_overlay_prop
+from motore.core.sizing import confronta_overlay, confronta_overlay_prop
 tab, runs = confronta_overlay(R)                                  # capitale proprio
 tab_prop = confronta_overlay_prop(day_trades, rules, base_pct=1.0)  # prop
 ```
 
-Esempio completo su dati veri: `analysis/opening_range/doppio_binario.py`.
+Esempio completo su dati veri: `magazzino/registro/codice/opening_range/doppio_binario.py`.
 
 ## Input → Output
 
 - **Input:** una sequenza di R per trade (capitale proprio), oppure i trade per giorno con la loro MAE
-  (`prop_sim.trades_by_day`) e un regolamento in `prop-lab/config/prop_rules.yaml` (prop).
+  (`prop_sim.trades_by_day`) e un regolamento in `motore/prop-lab/config/prop_rules.yaml` (prop).
 - **Output:** una tabella per binario (1R e ogni overlay). Capitale proprio: attesa per unita' di rischio, maxDD,
   banda del rimescolato, `valore_dipendenza`, lettura. Prop: pass rate con intervallo, `pass_zero`, EV, `ev_zero`,
   `ev_vs_zero` con intervallo e probabilita' che sia positivo.
@@ -99,11 +99,11 @@ Esempio completo su dati veri: `analysis/opening_range/doppio_binario.py`.
 
 | Cosa | Valore atteso | Come si controlla | Chi |
 |---|---|---|---|
-| Registro di prop-lab e contatore | coerenti | `python -m core.trial_ledger --check` → exit 0 | Claude |
-| Test del componente | tutti passati | `python -m pytest -q prop-lab/tests core/tests/test_sizing.py` (06/10: 11 + 8 passati) | Claude |
+| Registro di prop-lab e contatore | coerenti | `python -m motore.core.trial_ledger --check` → exit 0 | Claude |
+| Test del componente | tutti passati | `python -m pytest -q motore/prop-lab/tests motore/core/tests/test_sizing.py` (06/10: 11 + 8 passati) | Claude |
 | Vantaggio zero, barriere ±10%, niente timeout | pass ≈ 0,5 | `test_vantaggio_zero_due_barriere_come_la_rovina_del_giocatore` | Claude |
 | Libreria degli overlay | identica alla dichiarazione del §4quater | `test_libreria_dichiarata_non_cambia_di_nascosto` | Claude |
-| Repo del socio allineato | ogni voce di `prop-lab/CHANGELOG.md` riportata anche lì | chiedere al socio | Matteo |
+| Repo del socio allineato | ogni voce di `motore/prop-lab/CHANGELOG.md` riportata anche lì | chiedere al socio | Matteo |
 | Regole prop | due sezioni dichiarate nell'intestazione: modelli parametrici + regolamenti veri `citato_senza_url` (25/10); nessuna decisione con soldi finche' gli URL non sono verificati e il §3 di PROP_FIRM_CRITERIA non e' compilato | leggere l'intestazione di `prop_rules.yaml` (corretta il 25/10) | Matteo |
 
 ## Come si rompe
@@ -146,7 +146,7 @@ un overlay nuovo aggiunto dopo aver visto il risultato; un AGGIUNGE letto come v
 
 - **Usa:** `core.verifiche.runs_test` (componente 6), i regolamenti di `esercizio/prop/PROP_FIRM_CRITERIA.md` (5).
 - **Lo applicano:** ogni review (QUANT_REVIEW_PROTOCOL Step 5bis) e ogni test futuro (componente 1).
-- **Condiviso con:** il repo del socio VELTRIX, tramite `prop-lab/CHANGELOG.md`.
+- **Condiviso con:** il repo del socio VELTRIX, tramite `motore/prop-lab/CHANGELOG.md`.
 
 ## Con parole mie
 

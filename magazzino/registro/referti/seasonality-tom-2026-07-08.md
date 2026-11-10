@@ -2,7 +2,7 @@
 
 > Terzo e **ultimo** edge sistematico del pivot. Test **pre-registrato**
 > ([docs/SEASONALITY_PREREGISTRATION.md](../documenti/SEASONALITY_PREREGISTRATION.md)), motore
-> [strategies/seasonality/backtest.py](../../../strategies/seasonality/backtest.py). 16 asset D1 2003-2026.
+> [strategies/seasonality/backtest.py](../codice/seasonality/backtest.py). 16 asset D1 2003-2026.
 
 ## Esito
 | test | valore | criterio | pass |

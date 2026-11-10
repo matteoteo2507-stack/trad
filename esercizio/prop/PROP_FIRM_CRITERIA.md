@@ -46,7 +46,7 @@ il floor si alza e un normale ritorno alla media diventa una violazione. Statico
 
 ### 1.3 Holding overnight e nel weekend consentito
 
-⚠️ **Ridimensionato il 2026-08-14 su misura diretta** (`analysis/nxt/weekend.py`): il fade era classificato come swing per via del cap a 20 giorni, ma la distribuzione reale dice altro — **holding mediano 5 barre H1** e solo il **10,5%** dei trade attraversa un fine settimana. Il criterio resta valido ma **pesa molto meno**: non e' una strategia che vive nel weekend, e una firm che obbliga a chiudere il venerdi' amputerebbe ~1 trade su 10, non la strategia. Nota di rischio opposta e confermata: quando il weekend c'e', la **varianza** e' reale — un gap oltre 0,5R nel **26,9%** dei weekend e oltre 1R nel **10,3%** (rileva per il daily DD, non per l'aspettativa: il gap medio e' **−0,008R, CI [−0,063, +0,046]**, indistinguibile da zero).
+⚠️ **Ridimensionato il 2026-08-14 su misura diretta** (`magazzino/registro/codice/nxt/weekend.py`): il fade era classificato come swing per via del cap a 20 giorni, ma la distribuzione reale dice altro — **holding mediano 5 barre H1** e solo il **10,5%** dei trade attraversa un fine settimana. Il criterio resta valido ma **pesa molto meno**: non e' una strategia che vive nel weekend, e una firm che obbliga a chiudere il venerdi' amputerebbe ~1 trade su 10, non la strategia. Nota di rischio opposta e confermata: quando il weekend c'e', la **varianza** e' reale — un gap oltre 0,5R nel **26,9%** dei weekend e oltre 1R nel **10,3%** (rileva per il daily DD, non per l'aspettativa: il gap medio e' **−0,008R, CI [−0,063, +0,046]**, indistinguibile da zero).
 
 `nxt_fade` è di fatto **swing**, non intraday. Le firm che obbligano a chiudere prima del weekend, o
 che azzerano i profitti delle posizioni tenute oltre il venerdì, lo rendono ineseguibile. Gli swap
@@ -67,7 +67,7 @@ Una regola tipo il **40% best-day** di Alpha Capital limita quanta parte del pro
 un solo giorno. Con payoff 1:3 il nostro P&L giornaliero è **a code grasse per costruzione**: pochi
 giorni fanno la maggior parte del risultato.
 
-→ **MISURATO il 2026-08-07** — motore [`analysis/nxt/consistency.py`](../../analysis/nxt/consistency.py)
+→ **MISURATO il 2026-08-07** — motore [`magazzino/registro/codice/nxt/consistency.py`](../../magazzino/registro/codice/nxt/consistency.py)
 (rigioca la config A1 pre-registrata catturando la barra di uscita; riproduce esattamente i numeri di
 `closure.py`: E[R] +0.354 → **+0.308 dopo il fix sui fill del 2026-08-14**, win 31.3%, n=10.280).
 
@@ -138,14 +138,14 @@ giornaliero, consistency) va simulata sopra, non ignorata.
 
 **Simulata sopra, dal 2026-10-06:** il simulatore di challenge completo (fasi, giornaliero, trailing,
 consistency, giorni minimi, funded con payout) e' `prop-lab`, raggiunto da `trad` via
-[`core/prop_sim.py`](../../core/prop_sim.py). `evaluate_ci` riporta pass rate ed EV con l'**incertezza di
+[`motore/core/prop_sim.py`](../../motore/core/prop_sim.py). `evaluate_ci` riporta pass rate ed EV con l'**incertezza di
 stima** e lo stesso calcolo a **vantaggio zero** con gli stessi percorsi; si cita `ev_vs_zero`, la parte di
 EV dovuta al vantaggio. Perche': il 05/10 una strategia a vantaggio zero passava ~30% delle due fasi
 10%+5% e aveva EV ~+1.900 € per tentativo col profilo guardia giornaliera al 3% (la challenge e'
 un'opzione). E il rischio che massimizza il pass rate **dipende dal vantaggio e dal limite di tempo** (piu' il
 vantaggio e' scarso o il tempo corto, piu' e' alto): scegliere il profilo che massimizza l'EV su un campione premia il gioco audace, cioe' chi un
-vantaggio non ce l'ha ([STRATEGY_LIFECYCLE §4quater](../../docs/STRATEGY_LIFECYCLE.md)). Le regole di
-`prop-lab/config/prop_rules.yaml` sono modelli parametrici: per un numero operativo vanno allineate alla
+vantaggio non ce l'ha ([STRATEGY_LIFECYCLE §4quater](../../motore/metodo/STRATEGY_LIFECYCLE.md)). Le regole di
+`motore/prop-lab/config/prop_rules.yaml` sono modelli parametrici: per un numero operativo vanno allineate alla
 griglia del §3.
 
 ## 2. Criteri di RANKING (a parità di eliminatori)
@@ -193,7 +193,7 @@ Funded, Blueberry Funded.
 
 Matteo ha fatto girare un prompt su propfirmtrader.com con rimando ai siti ufficiali. Il prompt corretto
 (versione 2, con il completamento per queste tre firm) e' in [prompt_comet_regolamenti_prop.md](prompt_comet_regolamenti_prop.md). I valori sono in
-`prop-lab/config/prop_rules.yaml` (voci `ftmo_*`, `fundednext_*`, `the5ers_*`, `stato: da_verificare`).
+`motore/prop-lab/config/prop_rules.yaml` (voci `ftmo_*`, `fundednext_*`, `the5ers_*`, `stato: da_verificare`).
 
 **Cosa manca per poterli usare:**
 1. **La prova.** Sono arrivati solo i blocchi YAML: niente citazioni, URL, date, e niente campi 1.3, 1.4, 1.6,
@@ -256,7 +256,7 @@ quelli di un copier. Il rilevamento avviene per **pattern identici tra account**
 review** — cioè si tradano mesi e i profitti vengono negati alla richiesta.
 
 → **L'edge mentore va operato su capitale proprio, o non va.** Riapertura solo con evidenza esterna
-nuova ([STRATEGY_LIFECYCLE §7](../../docs/STRATEGY_LIFECYCLE.md)).
+nuova ([STRATEGY_LIFECYCLE §7](../../motore/metodo/STRATEGY_LIFECYCLE.md)).
 
 ---
 

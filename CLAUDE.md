@@ -10,9 +10,9 @@ Progetto di ricerca quant di Matteo. Repo git autonomo, annidato nel vault `clau
 2. **`decisioni/DECISIONS.md`**: registro cronologico. **La voce più recente vince** su tutto ciò che la precede,
    in qualunque file. Se un altro documento contraddice una voce più recente, è quel documento a
    essere vecchio: segnalalo, non mediare.
-3. **Metodo**: `docs/STRATEGY_LIFECYCLE.md` (il loop e i criteri di bocciatura) e
-   `docs/QUANT_REVIEW_PROTOCOL.md` (come si misura). Il revisore è `.claude/agents/quant-gatekeeper.md`.
-4. **Conteggi di trial e budget**: `python -m core.trial_ledger`, mai numeri a memoria o copiati.
+3. **Metodo**: `motore/metodo/STRATEGY_LIFECYCLE.md` (il loop e i criteri di bocciatura) e
+   `motore/metodo/QUANT_REVIEW_PROTOCOL.md` (come si misura). Il revisore è `.claude/agents/quant-gatekeeper.md`.
+4. **Conteggi di trial e budget**: `python -m motore.core.trial_ledger`, mai numeri a memoria o copiati.
 
 Non citare mai un risultato (R, win rate, N, p) senza la nota sorgente e la data della misura.
 `_INTAKE.md`, `magazzino/registro/README.md`, la memoria e il gatekeeper **non sono fonti** di numeri: puntano.
@@ -31,7 +31,7 @@ vanno registrate.
 
 ## Convenzioni
 
-Codice: `CONVENTIONS.md`. Principi di trading: `TRADING_PRINCIPLES.md`. Concetti distillati:
+Codice: `motore/CONVENTIONS.md`. Principi di trading: `magazzino/fondamenti_tecnici/TRADING_PRINCIPLES.md`. Concetti distillati:
 `magazzino/fondamenti_tecnici/` (8 moduli `0X_*/principles.md`). Intake da fonti esterne: `decisioni/_INTAKE.md`.
 Materiale in arrivo dall'esterno: si appoggia in `decisioni/Da distillare/`, che **si tiene il più possibile vuota**: serve a distillare,
 non a immagazzinare, e uno smistamento chiuso in più sessioni non è una violazione (Matteo, 25/10). La regola completa

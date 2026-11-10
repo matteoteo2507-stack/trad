@@ -18,8 +18,8 @@ la sua sorveglianza. Gli studi che hanno portato fin qui (pre-registrazioni, ref
 
 1. **Lo stato di un sistema si verifica alla fonte**: MT5 (magic, storico, ordini e posizioni) o il broker, con la
    finestra dichiarata. Un report del repo e' una fotografia, non lo stato.
-2. **Mai live senza risk gate**; `paper_mode` di default ([CONVENTIONS](../CONVENTIONS.md)).
+2. **Mai live senza risk gate**; `paper_mode` di default ([CONVENTIONS](../motore/CONVENTIONS.md)).
 3. **Si entra qui solo dopo un verdetto**, con la sorveglianza scritta in codice
-   ([STRATEGY_LIFECYCLE §8bis](../docs/STRATEGY_LIFECYCLE.md)).
+   ([STRATEGY_LIFECYCLE §8bis](../motore/metodo/STRATEGY_LIFECYCLE.md)).
 4. **Quando un sistema si spegne**, la decisione va in `DECISIONS.md` e il README della sua cartella lo dice in testa
    ("⚠️ Superato").

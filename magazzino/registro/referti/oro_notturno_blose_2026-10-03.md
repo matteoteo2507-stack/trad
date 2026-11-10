@@ -45,7 +45,7 @@ di una regola di tempismo. Era una lettura sbagliata: vedi §3, punto 3.
    - [Alpha Architect](https://alphaarchitect.com/trading-costs-wipe-out-the-overnight-return-anomaly)
      su SPY: i costi di transazione cancellano l'anomalia.
 
-   E' il **fill fantasma** ([QUANT_REVIEW_PROTOCOL Step 3bis](../../../docs/QUANT_REVIEW_PROTOCOL.md)): il
+   E' il **fill fantasma** ([QUANT_REVIEW_PROTOCOL Step 3bis](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md)): il
    prezzo d'apertura di un dato OHLC non e' un prezzo a cui si poteva eseguire.
 3. **Non e' un premio per il rischio.** "Prezzo troppo alto all'apertura" e' un errore di prezzo
    comportamentale, cioe' un'**anomalia di tempismo**: la categoria che abbiamo falsificato piu' volte.
@@ -77,7 +77,7 @@ verdetto ambiguo, default a NO-GO"*). Il motivo va scritto: **non verificabile**
 
 **Il rendimento per ora del giorno sull'oro spot** (bid/ask M1 Dukascopy, gia' in casa: riga G1 del
 [backlog](../../../decisioni/BACKLOG_RICERCA.md)) come **misura descrittiva**. Serve da baseline "noioso" per i
-segnali sull'oro. Il random di [`oos_validation.py:151`](../../../analysis/mentor_signals/oos_validation.py#L151)
+segnali sull'oro. Il random di [`oos_validation.py:151`](../codice/mentor_signals/oos_validation.py#L151)
 sceglie il lato 50/50: se il mentore compra piu' di quanto vende in un oro al rialzo, una parte del
 vantaggio e' deriva, e quel baseline non la toglie. ⚠️ E' una misura, non una regola: non si
 trasforma in un filtro orario dopo averla vista (stessa regola di B3).

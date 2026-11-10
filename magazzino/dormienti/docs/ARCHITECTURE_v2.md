@@ -47,7 +47,7 @@ deployment, il suo log. Zero accoppiamento, zero failure mode condivise.
 
 ### Cosa fa
 
-L'utente compila a mano `strategies/confluence_levels/levels.yaml` ogni weekend con la mappa
+L'utente compila a mano `magazzino/dormienti/strategies/confluence_levels/levels.yaml` ogni weekend con la mappa
 dei livelli (S/R + S/D + Fibonacci in confluenza) per EURUSD e XAUUSD.
 
 Il runner Python:
@@ -64,9 +64,9 @@ L'utente decide se piazzare l'ordine a mano dall'app del broker (telefono o PC).
 
 ```bash
 cd c:/Users/mmbus/Obsidian/claude-brain/trad
-python -m strategies.confluence_levels validate-levels
-python -m strategies.confluence_levels run                  # default yfinance
-python -m strategies.confluence_levels run --datasource mt5 --account DEMO1   # legacy
+python -m magazzino.dormienti.strategies.confluence_levels validate-levels
+python -m magazzino.dormienti.strategies.confluence_levels run                  # default yfinance
+python -m magazzino.dormienti.strategies.confluence_levels run --datasource mt5 --account DEMO1   # legacy
 ```
 
 **Cloud (produzione)**: VPS Linux economico, sempre online.
@@ -90,14 +90,14 @@ Per girare in background, usa `systemd` user service o `tmux`/`screen`.
 
 ### Configurazione
 
-- `strategies/confluence_levels/config.yaml`: parametri della strategia.
-- `strategies/confluence_levels/levels.yaml`: input umano weekly (gitignored).
+- `magazzino/dormienti/strategies/confluence_levels/config.yaml`: parametri della strategia.
+- `magazzino/dormienti/strategies/confluence_levels/levels.yaml`: input umano weekly (gitignored).
 - `.env`: TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID.
 
 ### Test
 
 ```bash
-python -m pytest tests/
+python -m pytest motore/tests/
 ```
 
 Atteso: 81/81 verdi (offline) + 2 skipped (live yfinance).
@@ -109,7 +109,7 @@ Atteso: 81/81 verdi (offline) + 2 skipped (live yfinance).
 ### Cosa fa
 
 EA scritto in MQL5 nativo che gira dentro il terminale MetaTrader 5. Replica la logica della
-strategia Python originale che era in `strategies/london_breakout/` (eliminata nel pivot).
+strategia Python originale che era in `magazzino/dormienti/strategies/london_breakout/` (eliminata nel pivot).
 
 Operazioni:
 - 00:00–07:00 UTC: costruzione range Asia (high/low M15) per il simbolo configurato.
@@ -153,7 +153,7 @@ finestre temporali, ATR period, TP multiplier, NFP/FOMC blacklist, sizing, Teleg
 
 ### Cosa fa
 
-- `strategies/stock_selector/`: screening SP500 (V6.0, scoring fundamentale + RRG + scenario macro).
+- `magazzino/dormienti/strategies/stock_selector/`: screening SP500 (V6.0, scoring fundamentale + RRG + scenario macro).
 - `agents/consensus/`: 4 personas LLM (Damodaran, Buffett, Burry, Taleb) — Stage 4, mai implementato. ⚠️ Prompt
   ritirati il 2026-10-13: restano in git.
 
@@ -162,14 +162,14 @@ finestre temporali, ATR period, TP multiplier, NFP/FOMC blacklist, sizing, Teleg
 PC di casa, lanciato a mano nei weekend. Niente always-on, niente VPS.
 
 ```bash
-python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing
+python -m magazzino.dormienti.strategies.stock_selector --risk-free 4.2 --liquidity decreasing
 ```
 
 Output: `Top_Picks.xlsx` + `Analisi_Completa.xlsx`.
 
 ### Configurazione
 
-- `strategies/stock_selector/config.yaml`: soglie scoring, parametri RRG, lista fallback.
+- `magazzino/dormienti/strategies/stock_selector/config.yaml`: soglie scoring, parametri RRG, lista fallback.
 
 ---
 
@@ -178,9 +178,9 @@ Output: `Top_Picks.xlsx` + `Analisi_Completa.xlsx`.
 ### Domenica sera
 
 1. **Analisi top-down EURUSD/XAUUSD** su TradingView → segna livelli.
-2. **Compila** `strategies/confluence_levels/levels.yaml`.
-3. `python -m strategies.confluence_levels validate-levels` → verifica.
-4. (Se ti serve weekend update) `python -m strategies.stock_selector ...` → top picks.
+2. **Compila** `magazzino/dormienti/strategies/confluence_levels/levels.yaml`.
+3. `python -m magazzino.dormienti.strategies.confluence_levels validate-levels` → verifica.
+4. (Se ti serve weekend update) `python -m magazzino.dormienti.strategies.stock_selector ...` → top picks.
 
 ### Durante la settimana
 
@@ -213,9 +213,9 @@ Output: `Top_Picks.xlsx` + `Analisi_Completa.xlsx`.
 
 ## Cosa non c'è (esplicito)
 
-- ~~`brokers/mt5.py` non più richiesto~~ Resta come fallback per `--datasource mt5` ma non
+- ~~`motore/brokers/mt5.py` non più richiesto~~ Resta come fallback per `--datasource mt5` ma non
   necessario per uso normale.
-- ~~`strategies/london_breakout/` Python~~ ELIMINATA. Sostituita da `esercizio/mql5/london_breakout.mq5`.
+- ~~`magazzino/dormienti/strategies/london_breakout/` Python~~ ELIMINATA. Sostituita da `esercizio/mql5/london_breakout.mq5`.
 - Niente VPS Windows, niente RDP da gestire.
 - Niente bridge Python ↔ MQL5 (no file sync, no socket, no HTTP).
 - Niente ordini automatici dalla Confluence (decisione utente: solo notifica per design).
@@ -235,4 +235,4 @@ In memoria persistente, vedi `~/.claude/projects/.../memory/project_strategies_p
 7. Carry Trade (deprioritized 2026)
 
 Ogni nuova strategia automatica → nuovo `.mq5` in `esercizio/mql5/`. Ogni nuova strategia analitica
-(ranking, screening, ML) → nuovo `strategies/<nome>/` Python.
+(ranking, screening, ML) → nuovo `magazzino/dormienti/strategies/<nome>/` Python.

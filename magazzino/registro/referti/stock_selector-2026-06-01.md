@@ -1,8 +1,8 @@
 # Quant Review — Stock Selector V6.0 (dati live raccolti) — 2026-06-01
 
 > Analisi del primo mese di pick reali (5 cross-sezioni: 30-12-2025, 10/17/24/31-05-2026).
-> Codice: [strategies/stock_selector/](../../../strategies/stock_selector/).
-> Dati grezzi: [stoxs picks/](../../dormienti/stoxs%20picks/). Script: [analysis/](../../../strategies/stock_selector/analysis/).
+> Codice: [strategies/stock_selector/](../../dormienti/strategies/stock_selector/).
+> Dati grezzi: [stoxs picks/](../../dormienti/stoxs%20picks/). Script: [analysis/](../../dormienti/strategies/stock_selector/analysis/).
 > Output riproducibile: `python -m strategies.stock_selector.analysis.build_dataset && python -m strategies.stock_selector.analysis.analyze`
 
 ## Sommario in 5 righe
@@ -87,7 +87,7 @@ Ipotesi da testare — **in ordine di leva attesa**, non ancora validate:
 
 1. **Lo scenario macro è la leva dominante e a dicembre era sbagliato.** Derivare lo scenario
    da 2 input (tasso > 3% + bool liquidità) è troppo grezzo: ha chiamato *Difensivo* all'inizio
-   di un rally. Il workspace ha già [core/regime.py](../../../core/regime.py) (direzione×volatilità
+   di un rally. Il workspace ha già [core/regime.py](../../../motore/core/regime.py) (direzione×volatilità
    da prezzo) — agganciarlo al posto/oltre la regola tassi. → [[reference_regime_timeline_lookahead]]
    (attenzione al lag, niente same-day label).
 
@@ -131,7 +131,7 @@ Ipotesi da testare — **in ordine di leva attesa**, non ancora validate:
 Obiettivo dichiarato dall'utente: **outperformare l'indice nei rally E restare a netto
 positivo mentre l'indice cala** (profilo asimmetrico). Il backtest serve a verificare con
 evidenza multi-regime se l'architettura attuale può raggiungerlo. Script:
-[backtest.py](../../../strategies/stock_selector/analysis/backtest.py). 148 cross-sezioni
+[backtest.py](../../dormienti/strategies/stock_selector/analysis/backtest.py). 148 cross-sezioni
 mensili, 501 titoli. **Survivorship: costituenti attuali (bias noto, gonfia le CAGR
 long-only — conta solo il differenziale).** Lo score fondamentale non è incluso (no PIT DB).
 
@@ -184,7 +184,7 @@ long-only resta positivo in un vero bear market (2020 −34%, 2022 −25%): cade
 
 → Il profilo asimmetrico desiderato (su nei rally, **netto positivo** nei cali) richiede una
 **leva di timing dell'esposizione** (risk-on/risk-off verso cash/difensivo), **non** una
-migliore selezione cross-sezionale dentro l'SP500. È qui che [core/regime.py](../../../core/regime.py)
+migliore selezione cross-sezionale dentro l'SP500. È qui che [core/regime.py](../../../motore/core/regime.py)
 ha valore: come **interruttore di esposizione di mercato** sull'indice, non come filtro titoli.
 La selezione titoli dentro l'SP500 contribuisce poco alpha dimostrabile (universo efficiente).
 

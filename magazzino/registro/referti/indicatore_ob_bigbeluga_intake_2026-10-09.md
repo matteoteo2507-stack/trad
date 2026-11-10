@@ -96,4 +96,4 @@ segnali a pagamento) rischia di essere uso commerciale: da verificare prima, se 
 
 - [10_indicatori_tecnici](../../fondamenti_tecnici/10_indicatori_tecnici/principles.md): §10 (smistamento), §8 (illusioni), §9 (lista).
 - [BACKLOG_RICERCA §H](../../../decisioni/BACKLOG_RICERCA.md): H4, stessa conclusione per la pitchfork.
-- [LEVEL_RESEARCH_PREREGISTRATION](../documenti/LEVEL_RESEARCH_PREREGISTRATION.md), [STRATEGY_LIFECYCLE](../../../docs/STRATEGY_LIFECYCLE.md) §3 e §7.
+- [LEVEL_RESEARCH_PREREGISTRATION](../documenti/LEVEL_RESEARCH_PREREGISTRATION.md), [STRATEGY_LIFECYCLE](../../../motore/metodo/STRATEGY_LIFECYCLE.md) §3 e §7.

@@ -76,7 +76,7 @@ api_id/api_hash si ottengono da <https://my.telegram.org> → *API development t
    restituisce `ParsedSignal` / `SignalUpdate` / `None`, e chiama `register_parser`.
 2. Importalo in `parsers/__init__.py`.
 3. Aggiungi 5-10 messaggi reali in `samples/<canale>.txt` e un test in
-   `tests/test_signal_copier.py`.
+   `motore/tests/test_signal_copier.py`.
 4. Mappa il canale in `config.yaml` (`channels:`).
 
 ## Stato

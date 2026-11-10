@@ -2,7 +2,7 @@
 titolo: Riferimenti fondativi — da dove vengono le idee che usiamo
 tipo: reference
 aggiornato: 2026-10-13
-nota: "Buco Quant Guild 44. Elenco, non riassunti: le idee applicate stanno nei moduli 0X e in core/."
+nota: "Buco Quant Guild 44. Elenco, non riassunti: le idee applicate stanno nei moduli 0X e in motore/core/."
 ---
 
 # Riferimenti fondativi
@@ -23,7 +23,7 @@ Ogni voce dice **dove la usiamo** nel repo.
 | Dupire, *Pricing with a Smile* (Risk, 1994) | volatilita' locale | fuori perimetro |
 | Carr & Madan, *Towards a Theory of Volatility Trading* (1998) | esposizione alla volatilita' | fuori perimetro; nota sul VRP in `05` |
 
-## Validazione e metodo (gia' usati in `core/`)
+## Validazione e metodo (gia' usati in `motore/core/`)
 
 | Opera | Nel repo |
 |---|---|
@@ -50,13 +50,13 @@ Ogni voce dice **dove la usiamo** nel repo.
 | Thorp, scritti sul criterio di Kelly applicato a giochi e mercati | Kelly frazionario, `05` |
 | MacLean, Thorp, Ziemba, *The Kelly Capital Growth Investment Criterion* (World Scientific, 2011) | crescita ottima contro Sharpe ottimo, rovina con leva eccessiva: `05` |
 | Fernholz, *Stochastic Portfolio Theory* (Springer, 2002) | perdita di crescita da varianza (volatility drag): `05` |
-| Harvey, Hoyle, Korgaonkar e altri, *The Impact of Volatility Targeting* (Journal of Portfolio Management, 2018) | dimensionamento a volatilita' obiettivo: `strategies/tsmom/` |
+| Harvey, Hoyle, Korgaonkar e altri, *The Impact of Volatility Targeting* (Journal of Portfolio Management, 2018) | dimensionamento a volatilita' obiettivo: `magazzino/registro/codice/tsmom/` |
 | Carver, *Systematic Trading* (Harriman House, 2015) | combinare sistemi poco correlati: `05` |
 
 ## Famiglie di strategie (dal primo revisore, 2026-10-13)
 
 | Opera | Nel repo |
 |---|---|
-| Moskowitz, Ooi, Pedersen, *Time Series Momentum* (Journal of Financial Economics, 2012) | famiglia `tsmom`: `strategies/tsmom/`, `magazzino/registro/documenti/TSMOM_PREREGISTRATION.md` |
+| Moskowitz, Ooi, Pedersen, *Time Series Momentum* (Journal of Financial Economics, 2012) | famiglia `tsmom`: `magazzino/registro/codice/tsmom/`, `magazzino/registro/documenti/TSMOM_PREREGISTRATION.md` |
 | Hurst, Ooi, Pedersen, *A Century of Evidence on Trend-Following Investing* (Journal of Portfolio Management, 2017) | il trend come flusso ortogonale al beta azionario: `05`, `08` |
 | Osler, *Currency Orders and Exchange-Rate Dynamics* (American Economic Review, 2003) | termine di confronto nella review di London Breakout |

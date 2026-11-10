@@ -1,7 +1,7 @@
 # Segnali mentore (XAUUSD) — Audit su prezzo reale — 2026-07-08
 
-> Track A del pivot. Parser [analysis/mentor_signals/parse.py](../../../analysis/mentor_signals/parse.py)
-> → replay [analysis/mentor_signals/backtest.py](../../../analysis/mentor_signals/backtest.py) sul feed
+> Track A del pivot. Parser [analysis/mentor_signals/parse.py](../codice/mentor_signals/parse.py)
+> → replay [analysis/mentor_signals/backtest.py](../codice/mentor_signals/backtest.py) sul feed
 > reale M5 (`XAU_spot_M5.csv`, 2026-01-21→2026-06-12). **Non è un backtest disegnato da noi**: è il
 > suo **track record live** (segnali postati in tempo reale) verificato contro prezzo reale indipendente.
 

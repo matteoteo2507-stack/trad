@@ -1,4 +1,4 @@
-"""Aggiunge la root del workspace al sys.path per consentire `import strategies.*` nei test."""
+"""Aggiunge la radice di trad al sys.path, cosi' i test importano `motore.*` e `magazzino.*`."""
 
 import sys
 from pathlib import Path

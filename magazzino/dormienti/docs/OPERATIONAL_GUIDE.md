@@ -176,7 +176,7 @@ Tutte le altre variabili MT5/Alpaca/Binance non servono perché su VPS Linux fai
 `levels.yaml` è gitignored quindi non c'è. Crealo:
 
 ```bash
-nano strategies/confluence_levels/levels.yaml
+nano magazzino/dormienti/strategies/confluence_levels/levels.yaml
 ```
 
 Incolla il contenuto del tuo `levels.yaml` locale (compilato durante il weekend).
@@ -184,8 +184,8 @@ Incolla il contenuto del tuo `levels.yaml` locale (compilato durante il weekend)
 ### I. Prima esecuzione test
 
 ```bash
-python -m strategies.confluence_levels validate-levels
-python -m strategies.confluence_levels run --once --verbose
+python -m magazzino.dormienti.strategies.confluence_levels validate-levels
+python -m magazzino.dormienti.strategies.confluence_levels run --once --verbose
 ```
 
 Atteso: una sola passata, log verbose, messaggio Telegram di start e poi di stop.
@@ -197,7 +197,7 @@ Se ricevi i messaggi Telegram, è tutto a posto.
 ```bash
 tmux new -s confluence
 source venv/bin/activate
-python -m strategies.confluence_levels run
+python -m magazzino.dormienti.strategies.confluence_levels run
 # vedi i log scorrere in console
 # Ctrl+B poi D = "detach" (lascia il runner girare in background)
 ```
@@ -228,7 +228,7 @@ Type=simple
 User=matteo
 WorkingDirectory=/home/matteo/trad
 Environment="PATH=/home/matteo/trad/venv/bin"
-ExecStart=/home/matteo/trad/venv/bin/python -m strategies.confluence_levels run
+ExecStart=/home/matteo/trad/venv/bin/python -m magazzino.dormienti.strategies.confluence_levels run
 Restart=on-failure
 RestartSec=30
 
@@ -475,7 +475,7 @@ Tempo stimato: 30-45 minuti.
 5. Valida:
    ```powershell
    cd c:\Users\mmbus\Obsidian\claude-brain\trad
-   python -m strategies.confluence_levels validate-levels
+   python -m magazzino.dormienti.strategies.confluence_levels validate-levels
    ```
    Verifica che la tabella stampata sia tutta verde.
 
@@ -501,7 +501,7 @@ Tempo stimato: 5-10 minuti (download dati + analisi 503 ticker SP500).
 
 3. Lancia:
    ```powershell
-   python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing
+   python -m magazzino.dormienti.strategies.stock_selector --risk-free 4.2 --liquidity decreasing
    ```
 
    Output console: scenario rilevato, progress bar download SP500, tabella delle Top Picks.
@@ -550,15 +550,15 @@ Spegni il PC di casa fino al weekend successivo.
 cd c:\Users\mmbus\Obsidian\claude-brain\trad
 
 # Test offline
-python -m pytest tests/
+python -m pytest motore/tests/
 
 # Confluence (locale, niente broker MT5 necessario)
-python -m strategies.confluence_levels validate-levels
-python -m strategies.confluence_levels dry-run --symbol EURUSD --price 1.16700
-python -m strategies.confluence_levels run --once --verbose
+python -m magazzino.dormienti.strategies.confluence_levels validate-levels
+python -m magazzino.dormienti.strategies.confluence_levels dry-run --symbol EURUSD --price 1.16700
+python -m magazzino.dormienti.strategies.confluence_levels run --once --verbose
 
 # Stock Selector (weekend tool)
-python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing
+python -m magazzino.dormienti.strategies.stock_selector --risk-free 4.2 --liquidity decreasing
 
 # Push modifiche del codice al GitHub
 git add . ; git commit -m "msg" ; git push
@@ -590,7 +590,7 @@ sudo journalctl -u confluence -n 100 --no-pager
 
 # Run manuale "once" per debug (richiede prima stop del service per evitare doppi messaggi)
 sudo systemctl stop confluence
-cd ~/trad && source venv/bin/activate && python -m strategies.confluence_levels run --once --verbose
+cd ~/trad && source venv/bin/activate && python -m magazzino.dormienti.strategies.confluence_levels run --once --verbose
 sudo systemctl start confluence
 ```
 
@@ -600,13 +600,13 @@ sudo systemctl start confluence
 # 1. Aggiorni levels.yaml in locale e validi
 cd c:\Users\mmbus\Obsidian\claude-brain\trad
 # (modifica levels.yaml a mano)
-python -m strategies.confluence_levels validate-levels
+python -m magazzino.dormienti.strategies.confluence_levels validate-levels
 
 # 2. Sync al VPS (il runner rilegge entro 60s, NO restart)
 scp strategies\confluence_levels\levels.yaml matteo@204.168.249.76:~/trad/strategies/confluence_levels/levels.yaml
 
 # 3. Stock Selector (output Excel)
-python -m strategies.stock_selector --risk-free 4.2 --liquidity decreasing
+python -m magazzino.dormienti.strategies.stock_selector --risk-free 4.2 --liquidity decreasing
 ```
 
 ### Sul VPS Linux (SSH)
@@ -646,7 +646,7 @@ Ordine di lettura suggerito:
 
 1. [magazzino/dormienti/docs/ARCHITECTURE_v2.md](ARCHITECTURE_v2.md) — visione d'insieme.
 2. Questo file (`OPERATIONAL_GUIDE.md`) — step concreti.
-3. [strategies/confluence_levels/README.md](../../../strategies/confluence_levels/README.md) — dettagli Confluence.
+3. [magazzino/dormienti/strategies/confluence_levels/README.md](../strategies/confluence_levels/README.md) — dettagli Confluence.
 4. [esercizio/mql5/README.md](../../../esercizio/mql5/README.md) — dettagli EA.
 
 Se ci sono dubbi o problemi specifici (errori del runner, EA che non parte, sync fallito), apri Claude Code e chiedi diretto. Tutto il contesto è nei plan file e nella memoria persistente.

@@ -12,7 +12,7 @@ misure: "analysis/vtob_intake/descrittivi.py, lanciato l'11/10/2026; ogni numero
 > riparte dal §4*. L'11/10 e' tornato con le **regole complete** e con un **backtest**, non con operazioni registrate.
 > Letto tutto il pacchetto, codice compreso. **0 trial**: nessuna variante provata, nessun ingresso simulato, nessun
 > baseline casuale. I numeri "dichiarati" sono del socio; i numeri "misurati" escono da
-> [`analysis/vtob_intake/descrittivi.py`](../../../analysis/vtob_intake/descrittivi.py) sui suoi file.
+> [`analysis/vtob_intake/descrittivi.py`](../codice/vtob_intake/descrittivi.py) sui suoi file.
 
 ## 1. Cosa e' arrivato
 
@@ -216,7 +216,7 @@ oppure la strada B decisa da Matteo. Un backtest nuovo sugli stessi dati non lo 
 Arrivato in `Da distillare/` come "VTOB A+B+C + US_M30". Testi in
 `fondamenti_tecnici/_sorgenti/vtob_socio_2026-10-12/`, barre, risultati ed EA compilato in
 `materiale_socio/vtob_dati_risultati_usm30_2000-06_2026-10/`. Misure del 13/10 con
-[`analysis/vtob_intake/secondo_pacchetto.py`](../../../analysis/vtob_intake/secondo_pacchetto.py). **0 trial.**
+[`analysis/vtob_intake/secondo_pacchetto.py`](../codice/vtob_intake/secondo_pacchetto.py). **0 trial.**
 
 **Cosa c'e' di nuovo rispetto all'11/10**
 - A e B hanno un'uscita in piu' ("consigliate"): A chiude meta' a 1,5 R, B un terzo a 1 R e un terzo a 2 R.
@@ -263,5 +263,5 @@ diversi, non riapre (DECISIONS 2026-10-13 (5)).
 ## Collegamenti
 
 - [indicatore_ob_bigbeluga_intake_2026-10-09](indicatore_ob_bigbeluga_intake_2026-10-09.md): l'indicatore di partenza.
-- [STRATEGY_LIFECYCLE](../../../docs/STRATEGY_LIFECYCLE.md) §2, §3, §4bis, §7, §8; [QUANT_REVIEW_PROTOCOL](../../../docs/QUANT_REVIEW_PROTOCOL.md) Step 3bis.
+- [STRATEGY_LIFECYCLE](../../../motore/metodo/STRATEGY_LIFECYCLE.md) §2, §3, §4bis, §7, §8; [QUANT_REVIEW_PROTOCOL](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md) Step 3bis.
 - [_INTAKE](../../../decisioni/_INTAKE.md), [materiale_socio](../../fonti/materiale_socio/README.md).

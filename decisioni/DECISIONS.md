@@ -192,7 +192,7 @@ e le domande brevi si misurano presto ma non informano le esclusioni pluriennali
 5. **Idee rimandate all'hub tracciate anche in `_INTAKE.md`** (prima riga: World Monitor).
 6. **Stessa teoria = stessa famiglia** (STRATEGY_LIFECYCLE §3 e §7, gatekeeper).
 
-**Dove sta:** [STRATEGY_LIFECYCLE](../docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub" (gli Aperti sono diventati
+**Dove sta:** [STRATEGY_LIFECYCLE](../motore/metodo/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub" (gli Aperti sono diventati
 Decisioni); gatekeeper (budget); [mappa 01](mappa/01-ciclo-di-vita-e-gate.md). 0 trial.
 
 ---
@@ -328,7 +328,7 @@ campo che manca. Per la geopolitica la misura e' il registro delle previsioni de
 un riferimento con differenza appaiata e cluster sull'evento, criterio scritto prima. Nessun numero minimo fissato:
 aspetta il calcolo di potenza, che aspetta la scelta del riferimento (Aperti di `../projects/geopolitica.md`).
 
-- **Dove vive:** [STRATEGY_LIFECYCLE](../docs/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub". Rimandi: gatekeeper (G1,
+- **Dove vive:** [STRATEGY_LIFECYCLE](../motore/metodo/STRATEGY_LIFECYCLE.md) §8, "Ingresso dall'hub". Rimandi: gatekeeper (G1,
   punto 10), `Da distillare/README.md`, [mappa 01](mappa/01-ciclo-di-vita-e-gate.md). Il `CLAUDE.md` dell'hub va
   collegato dalla prossima sessione sull'hub (voce nella pending).
 - **Prima prova:** insider pesati con la geopolitica: componente geopolitica **rimandata all'hub** (nessuna misura),
@@ -412,7 +412,7 @@ controllo a ingressi casuali (`controllo.py`).
 
 | Ritirato | A cosa serviva | Perche' non serve |
 |---|---|---|
-| `skills/strategy-designer/` | disegnare una strategia e iterare sul backtest finche' "i risultati sono coerenti" | e' il ciclo che [STRATEGY_LIFECYCLE](../docs/STRATEGY_LIFECYCLE.md) vieta: nessuna pre-registrazione, nessun baseline |
+| `skills/strategy-designer/` | disegnare una strategia e iterare sul backtest finche' "i risultati sono coerenti" | e' il ciclo che [STRATEGY_LIFECYCLE](../motore/metodo/STRATEGY_LIFECYCLE.md) vieta: nessuna pre-registrazione, nessun baseline |
 | `skills/backtest-runner/` | lanciare una strategia su piu' backtester | i backtester non esistono (`backtesters/` ha solo l'interfaccia, mai importata); le regole di referto che conteneva sono nel gatekeeper (G2, Checklist 9) e nel modulo `05` |
 | `skills/stock-selector/`, `agents/stock_selector.md` | istruzioni per costruire il modulo dal notebook; copia in prosa delle regole di punteggio | il modulo esiste (`strategies/stock_selector/`), la specifica sono notebook e `scoring.py`; selettore archiviato a giugno 2026 |
 | `agents/consensus/` (4 personas) | secondo parere sulle scelte del selettore (Stage 4) | mai costruito; selettore archiviato |
@@ -422,7 +422,7 @@ controllo a ingressi casuali (`controllo.py`).
 `claude/weekly-stock-selector` (ultimo commit 2026-05-31), e se il suo testo cita questi file.
 
 **Recupero:** `git checkout 30198f4 -- agents skills`. Da ora skill e agenti nuovi vanno solo in `.claude/`
-([CONVENTIONS](../CONVENTIONS.md)).
+([CONVENTIONS](../motore/CONVENTIONS.md)).
 
 ---
 
@@ -435,8 +435,8 @@ controllo a ingressi casuali (`controllo.py`).
    aggiornamento del primo. Il guasto era scritto dal 02/10 in [mappa 01](mappa/01-ciclo-di-vita-e-gate.md). Il primo
    revisore e la skill sono **cancellati** (recupero: `git show 8f0ca54:agents/quant_reviewer.md`). Le sue domande
    ancora valide sono la **Checklist 9** del gatekeeper, **non bloccante**; la sua letteratura e' in
-   [RIFERIMENTI](../magazzino/fondamenti_tecnici/RIFERIMENTI.md). [QUANT_REVIEW_PROTOCOL](../docs/QUANT_REVIEW_PROTOCOL.md) e
-   [STRATEGY_LIFECYCLE](../docs/STRATEGY_LIFECYCLE.md) §9 nominano il gatekeeper.
+   [RIFERIMENTI](../magazzino/fondamenti_tecnici/RIFERIMENTI.md). [QUANT_REVIEW_PROTOCOL](../motore/metodo/QUANT_REVIEW_PROTOCOL.md) e
+   [STRATEGY_LIFECYCLE](../motore/metodo/STRATEGY_LIFECYCLE.md) §9 nominano il gatekeeper.
 2. **Un documento superato si cancella; resta, con "⚠️ Superato" e rimando, solo cio' che serve come storico.**
    Concilia la regola dell'hub del 09/10 con quella di [mappa 02](mappa/02-stato-canonico-e-decisions.md), dove ora
    e' scritta. Un componente che ne sostituisce un altro aggiorna lo stesso file, o ritira il vecchio nella stessa
@@ -495,7 +495,7 @@ ricorrenti, anche per il materiale sulle agevolazioni fiscali.
 **Esito.** Letti per intero, uno alla volta, col flusso gia' validato (`yt_fetch.py` → lettura → `rule_extract.py`).
 Zero strategie, zero pre-registrazioni, 0 trial. **Nessuna modifica al PAC.** Claim con stato e numeri nella
 [scheda](../magazzino/fonti/sorgenti/insight_da_yt/_triage/financial_freedom_101.md); conti rifatti in
-[`analysis/pac_intake/verifiche_ff101.py`](../analysis/pac_intake/verifiche_ff101.py).
+[`analysis/pac_intake/verifiche_ff101.py`](../magazzino/registro/codice/pac_intake/verifiche_ff101.py).
 - **Il canale era gia' una nostra fonte, senza nome**: il blocco 4 degli appunti del 04/08 e' un suo video. Le due
   occorrenze dell'allocazione 70-80% S&P 500 contano **una**. Corretta in `08_asset_allocation_passiva` la frase
   sull'auto-contraddizione, che dava per scontato un autore unico per quattro video diversi.
@@ -738,7 +738,7 @@ volatilita', volume, livelli, forma della candela.
 un parametro. Contarli come famiglie diverse ricaricherebbe il budget di tentativi senza informazione nuova; e' lo stesso
 motivo per cui B2 non poteva essere una famiglia a se' (29/09).
 
-**Dove e' scritta:** [STRATEGY_LIFECYCLE](../docs/STRATEGY_LIFECYCLE.md) §3 (tabella dei trial) e §7; gatekeeper (budget);
+**Dove e' scritta:** [STRATEGY_LIFECYCLE](../motore/metodo/STRATEGY_LIFECYCLE.md) §3 (tabella dei trial) e §7; gatekeeper (budget);
 modulo 10 (Regole operative). Nessun trial speso, nessun verdetto toccato.
 
 **Strade testabili** distillate dalla ricerca dell'08/10 in [BACKLOG_RICERCA §H](BACKLOG_RICERCA.md): una strada vera
@@ -862,7 +862,7 @@ livelli (CLOSED); le parti discrezionali si misurano solo in forward.
 **Origine.** Sessione del 04-05/10 col socio **VELTRIX** (non il socio discrezionale): un'AI ha generato `prop-lab`, una pipeline
 "famiglia di strategie → backtest ideale → costi → prop × 35 profili di rischio → conferma OOS", e la
 sessione ha distillato due video. Valutazione del 05/10 (prove nello scratchpad, riassunte in
-[`prop-lab/CHANGELOG.md`](../prop-lab/CHANGELOG.md)):
+[`prop-lab/CHANGELOG.md`](../motore/prop-lab/CHANGELOG.md)):
 - **motore sano**: nessun look-ahead; su un random walk a passi di un minuto l'attesa lorda e' −0,0004R;
 - **un EV prop positivo non prova niente**: a vantaggio zero il profilo guardia giornaliera al 3% passava ~30%
   delle due fasi con EV ~+1.900 € per tentativo. La challenge e' un'opzione, e scegliere il profilo con l'EV piu'
@@ -878,13 +878,13 @@ sessione ha distillato due video. Valutazione del 05/10 (prove nello scratchpad,
 2. **Doppio binario, sempre, a prescindere dall'esito**: rischio fisso 1R (l'unico per il verdetto) piu' gli
    overlay di una libreria fissa, approvata cosi': **O1 cuscinetto, O2 guardia giornaliera, O3 serie di
    perdite, O4 avvicinamento al target** (O2 e O4 solo prop); anti-martingala esclusa. Regola completa in
-   [STRATEGY_LIFECYCLE §4quater](../docs/STRATEGY_LIFECYCLE.md), step 5bis del protocollo.
+   [STRATEGY_LIFECYCLE §4quater](../motore/metodo/STRATEGY_LIFECYCLE.md), step 5bis del protocollo.
 3. Vale **da qui in avanti**; sulle famiglie CLOSED la domanda e' stata se l'aritmetica lasciasse un dubbio
    (sotto).
 
 **Cosa e' stato costruito (0 trial):** `zero_edge` ed `evaluate_ci` nel simulatore di `prop-lab` (proprietario
-unico della logica), ponte [`core/prop_sim.py`](../core/prop_sim.py), libreria e confronti in
-[`core/sizing.py`](../core/sizing.py); fase 3 della pipeline ordinata per `ev_vs_zero`; correzioni Windows.
+unico della logica), ponte [`core/prop_sim.py`](../motore/core/prop_sim.py), libreria e confronti in
+[`core/sizing.py`](../motore/core/sizing.py); fase 3 della pipeline ordinata per `ev_vs_zero`; correzioni Windows.
 Gli EV del report demo del socio si riproducono al centesimo. Test: 247 passati, 2 saltati.
 
 **Il principio** che regge il doppio binario: guadagno = Σ E[size]·E[R] + Σ Cov(size, R). Una size decisa dal
@@ -1287,7 +1287,7 @@ voce aperta che non costa budget (B2 spenderebbe l'ultimo round del ramo trend, 
 pre-registrazione esterna, e ne resta una sola nel trimestre). Protocollo — soglie, celle,
 direzione attesa e significato di un mancato rifiuto — scritto **prima** di misurare:
 [docs/B3_EXTENSION_STRUCTURE_PROTOCOL.md](../magazzino/registro/documenti/B3_EXTENSION_STRUCTURE_PROTOCOL.md).
-Motore: [analysis/extension/structure.py](../analysis/extension/structure.py). **Costo: 0 trial.**
+Motore: [analysis/extension/structure.py](../magazzino/registro/codice/extension/structure.py). **Costo: 0 trial.**
 
 **L'oggetto.** Non *"l'estensione estrema si inverte"* — lo dicono in cinque ed è infalsificabile
 così. Ma **quale** estensione: Marius (C3.4) e Kyle (C3.5), indipendenti e su mercati diversi,
@@ -1364,8 +1364,8 @@ Restano aperte **B2, B5, B6** — tutte e tre costano budget, quindi sono decisi
 **Cosa è stato fatto.** Secondo dei tre passi concordati, eseguito perché il punto 1 era passato.
 Calcolo di **potenza** + **inventario degli strumenti disponibili**, entrambi *prima* di aprire
 qualunque pre-registrazione. Referto: [docs/TREND_A1_HELDOUT_POWER.md](../magazzino/registro/documenti/TREND_A1_HELDOUT_POWER.md).
-Motori: [power_two_groups.py](../analysis/trend/power_two_groups.py) e
-[heldout_pool.py](../analysis/trend/heldout_pool.py). **Costo: 0 trial.**
+Motori: [power_two_groups.py](../magazzino/registro/codice/trend/power_two_groups.py) e
+[heldout_pool.py](../magazzino/registro/codice/trend/heldout_pool.py). **Costo: 0 trial.**
 
 **Esito: la condizione NON è rispettata.** Il punto 3 non si apre.
 
@@ -1442,7 +1442,7 @@ Sottoprodotto riutilizzabile: 18 serie D1 nuove in
 
 **Cosa è stato fatto.** Primo dei tre passi concordati sul playground (A1). Protocollo e soglie
 scritti **prima** di eseguire: [docs/TREND_DURATION_DIAGNOSTIC.md](../magazzino/registro/documenti/TREND_DURATION_DIAGNOSTIC.md).
-Motore: [analysis/trend/duration_diagnostic.py](../analysis/trend/duration_diagnostic.py).
+Motore: [analysis/trend/duration_diagnostic.py](../magazzino/registro/codice/trend/duration_diagnostic.py).
 **Costo: 0 trial** — verifica dell'integrità di un confronto già fatto, non una regola nuova.
 
 **Da dove nasce.** Il 19/09 `check_matching` (primitiva nuova, debito E1) ha mostrato che i due
@@ -1526,10 +1526,10 @@ avevano tutte la stessa forma, non sei forme diverse.
 
 | debito | cosa e' stato costruito | cosa impedisce |
 |---|---|---|
-| **E6** | [`QUANT_REVIEW_PROTOCOL.md` **Step 3bis**](../docs/QUANT_REVIEW_PROTOCOL.md), gate **bloccante prima delle metriche** + Checklist 3.0 del guardiano + `LIFECYCLE §6a.1` + red flag del reviewer | un verdetto su **fill non ottenibili** |
-| **E1** | [`core/random_baseline.py`](../core/random_baseline.py) (`BarSampler`, `PoolSampler`, `check_matching`, `gap_ci`) | baseline riscritto a mano, matching mai verificato, CI i.i.d. su controlli non indipendenti |
-| **E3** | [`core/data_checks.py`](../core/data_checks.py) | monotonia, duplicati, barre/anno, partenze scaglionate, **file corto accanto a quello lungo**, % di fill fantasma, gap oltre lo stop |
-| **E2** | [`core/trial_ledger.py`](../core/trial_ledger.py) + [`docs/trial_ledger.json`](trial_ledger.json) | contatore trial tenuto a memoria, budget sforati in silenzio |
+| **E6** | [`QUANT_REVIEW_PROTOCOL.md` **Step 3bis**](../motore/metodo/QUANT_REVIEW_PROTOCOL.md), gate **bloccante prima delle metriche** + Checklist 3.0 del guardiano + `LIFECYCLE §6a.1` + red flag del reviewer | un verdetto su **fill non ottenibili** |
+| **E1** | [`core/random_baseline.py`](../motore/core/random_baseline.py) (`BarSampler`, `PoolSampler`, `check_matching`, `gap_ci`) | baseline riscritto a mano, matching mai verificato, CI i.i.d. su controlli non indipendenti |
+| **E3** | [`core/data_checks.py`](../motore/core/data_checks.py) | monotonia, duplicati, barre/anno, partenze scaglionate, **file corto accanto a quello lungo**, % di fill fantasma, gap oltre lo stop |
+| **E2** | [`core/trial_ledger.py`](../motore/core/trial_ledger.py) + [`docs/trial_ledger.json`](trial_ledger.json) | contatore trial tenuto a memoria, budget sforati in silenzio |
 | **E4** | campo `provenienza_ipotesi` nel registro + `LIFECYCLE §8` + `PROTOCOL` Step 2 | contaminazione da knowledge cutoff scritta **in un posto solo** |
 | **E5** | `core/resolve_trade.py` (gia' fatto il 17/09) | 5 convenzioni d'uscita implicite in 4 copie |
 
@@ -1863,7 +1863,7 @@ capitale.
 Prima voce di §8bis mai compilata, e arriva **prima del capitale**: il copier non e' ancora operativo
 (il deploy VPS del 15/09 era fallito). Documento vincolante:
 [`MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md`](../magazzino/registro/documenti/MENTOR_COPIER_WITHDRAWAL_THRESHOLDS.md), motore
-[`analysis/mentor_signals/withdrawal_thresholds.py`](../analysis/mentor_signals/withdrawal_thresholds.py).
+[`analysis/mentor_signals/withdrawal_thresholds.py`](../magazzino/registro/codice/mentor_signals/withdrawal_thresholds.py).
 
 **Il profilo che rende le soglie necessarie.** 477 trade, 101 giorni: E[R] **+0,2025**, sd 0,571,
 **82,6% di vincenti**, payoff **+0,46 / −1,03**. L'equity sale quasi sempre e scende di colpo, e
@@ -1985,7 +1985,7 @@ confermava comunque — ma va guardato se si torna su quel gruppo.
 
 ## 2026-09-17 (5) — B1 (mean reversion Kichev): la fonte dice **molto meno** di quanto le attribuivamo, e la misura descrittiva e' **nulla**
 
-Misura descrittiva, **0 trial**: [`analysis/meanrev/descriptive.py`](../analysis/meanrev/descriptive.py),
+Misura descrittiva, **0 trial**: [`analysis/meanrev/descriptive.py`](../magazzino/registro/codice/meanrev/descriptive.py),
 dichiarata come descrittiva **nel commit precedente all'esecuzione**. Nessuna soglia, nessuno stop,
 nessun GO/NO-GO. Output in [`docs/health/b1_meanrev_descriptive_2026-09-17.txt`](../magazzino/registro/referti/audit/b1_meanrev_descriptive_2026-09-17.txt).
 
@@ -2044,7 +2044,7 @@ vuole guardare, si guarda **dichiarandolo prima**.
 Decisione dell'utente dopo la misura onesta. Chiude la famiglia **NXT/FADE**, aperta a luglio.
 
 **Il numero che chiude la questione.** Con la primitiva unica
-[`core/resolve_trade.py`](../core/resolve_trade.py) e soli **fill ottenibili**, su 10.218 setup / 14 anni / 6 asset:
+[`core/resolve_trade.py`](../motore/core/resolve_trade.py) e soli **fill ottenibili**, su 10.218 setup / 14 anni / 6 asset:
 
 | campione | n | E[R] | BCa 95% |
 |---|---|---|---|
@@ -2057,7 +2057,7 @@ intero** da quei fill: +0,409 col fantasma, **−0,250** senza. Non un aggiustam
 e misurato **sui dati da cui la strategia era stata derivata**, cioe' nelle condizioni piu'
 favorevoli possibili.
 
-**Base regolamentare**: kill duri [`STRATEGY_LIFECYCLE`](../docs/STRATEGY_LIFECYCLE.md) §6a **n. 1**
+**Base regolamentare**: kill duri [`STRATEGY_LIFECYCLE`](../motore/metodo/STRATEGY_LIFECYCLE.md) §6a **n. 1**
 (difetto metodologico conclamato: i vecchi numeri sono **nulli**, rifatti da zero danno −0,25) e
 **n. 3** (fallimento di breadth). Nessun ramo di rifinitura disponibile (§4.4 della pre-registrazione).
 
@@ -2131,7 +2131,7 @@ dimostrato: **non e' risolvibile in meno di circa un anno**, qualunque sia la ri
 EA portato a **v1.10** (commit `bbea38e`): il ramo a mercato **non esiste piu'**, il setup si salta,
 fedele alla definizione della variante SKIP in `entry_fill_audit.py` righe 131-132. **Zero trial**
 (§3: bug fix + esecuzione piu' realistica). Poi audit con
-[`analysis/nxt/execution_audit.py`](../analysis/nxt/execution_audit.py) su **90 ingressi**:
+[`analysis/nxt/execution_audit.py`](../magazzino/registro/codice/nxt/execution_audit.py) su **90 ingressi**:
 
 | verifica | non conformi | esito |
 |---|---|---|
@@ -2373,7 +2373,7 @@ oltrepassato** quando abbiamo il diritto di guardarlo.
 
 ### 3. Il difetto NON è dell'EA: è del backtest
 
-[`analysis/nxt/closure.py`](../analysis/nxt/closure.py) concede il fill al prezzo `entry` ogni volta
+[`analysis/nxt/closure.py`](../magazzino/registro/codice/nxt/closure.py) concede il fill al prezzo `entry` ogni volta
 che una barra successiva lo **tocca**. Se il prezzo è già oltre, il fill viene concesso
 **comunque, al livello** — un prezzo che il mercato aveva lasciato indietro prima che potessimo
 agire.
@@ -2384,7 +2384,7 @@ agire.
 Il ramo a mercato dell'EA è il **tentativo goffo di gestire un caso che il backtest cancellava**.
 Il backtest si regala il fill migliore esattamente dove il live prende il peggiore.
 
-### 4. La misura — [`analysis/nxt/entry_fill_audit.py`](../analysis/nxt/entry_fill_audit.py)
+### 4. La misura — [`analysis/nxt/entry_fill_audit.py`](../magazzino/registro/codice/nxt/entry_fill_audit.py)
 
 E[R] in unità di rischio **inteso**, **intervallo su 4 convenzioni** (pess/opt × la barra di fill
 può stoppare o no). Mai un punto: la terza convenzione vale più delle altre due insieme.
@@ -2410,7 +2410,7 @@ positivo in **0 su 15** e **0 su 6**. Un edge presente in ogni singolo anno e og
 strumento, che sparisce togliendo i fill non ottenibili, è **meccanico** — nessuna anomalia di
 mercato rende lo stesso ammontare nel 2013 e nel 2020, su FX e su indici.
 
-### 5. Il riesame del 2026-08-14 — [`analysis/nxt/excursion_recheck.py`](../analysis/nxt/excursion_recheck.py)
+### 5. Il riesame del 2026-08-14 — [`analysis/nxt/excursion_recheck.py`](../magazzino/registro/codice/nxt/excursion_recheck.py)
 
 `excursion.py` usa **lo stesso identico fill** nel braccio reale, ma il suo controllo random entra a
 `C[k]`, la chiusura di una barra: **un prezzo sempre disponibile**. Il fantasma sta da un solo lato
@@ -2460,7 +2460,7 @@ l'entrata**, in nessuna delle due direzioni.
 ### 8. Contabilità e cosa resta aperto
 
 **Trial consumati: 0.** Entrambi gli audit sono verifiche di integrità dell'esecuzione
-([`LIFECYCLE §3`](../docs/STRATEGY_LIFECYCLE.md), riga *"modellazione più realistica di
+([`LIFECYCLE §3`](../motore/metodo/STRATEGY_LIFECYCLE.md), riga *"modellazione più realistica di
 costi/slippage/esecuzione → No"*), stessa classificazione che il 14/08 si era già dato.
 ⚠️ **Clausola sospensiva**: nel momento in cui una variante venisse **scelta** per proseguire
 ("mettiamo il LIMIT nell'EA"), quello sarebbe un cambio di regola dopo aver visto l'esito →
@@ -2484,8 +2484,8 @@ barra di fill, look-ahead residuo di una barra, copertura confondata col periodo
 fondati, tutti riparati. La **direzione** ha retto; la **magnitudo** no: la prima stesura diceva
 −0,246R, il valore onesto è un intervallo che arriva a −0,027.
 
-**Link:** [`analysis/nxt/entry_fill_audit.py`](../analysis/nxt/entry_fill_audit.py) ·
-[`analysis/nxt/excursion_recheck.py`](../analysis/nxt/excursion_recheck.py) ·
+**Link:** [`analysis/nxt/entry_fill_audit.py`](../magazzino/registro/codice/nxt/entry_fill_audit.py) ·
+[`analysis/nxt/excursion_recheck.py`](../magazzino/registro/codice/nxt/excursion_recheck.py) ·
 [`docs/NXT_FADE_FORWARD_PREREGISTRATION.md`](../magazzino/registro/documenti/NXT_FADE_FORWARD_PREREGISTRATION.md) §11
 
 ---
@@ -2552,7 +2552,7 @@ Richiede **ricompilazione in MetaEditor e riattacco dell'EA**.
 
 **Trial consumati: zero.** Spegnere un forward su famiglia NO-GO non e' una modifica di regole; la
 correzione dell'EA e' un **bug fix** che riporta l'esecuzione **dentro** la spec congelata invece di
-allontanarla ([`LIFECYCLE §3`](../docs/STRATEGY_LIFECYCLE.md)).
+allontanarla ([`LIFECYCLE §3`](../motore/metodo/STRATEGY_LIFECYCLE.md)).
 
 ### 3. Anche il mio health-check leggeva una fonte parziale
 
@@ -2582,7 +2582,7 @@ test pre-registrato** del workspace.
 **A2 — forward FADE: gira davvero, ma il campione non è pulito.** Health-check eseguito
 ([review](../magazzino/registro/referti/forward-fade-healthcheck-2026-08-24.md)). **N valido 29/50** allo Stadio 1,
 breadth 4/6. Quattro difetti, tutti di **esecuzione**, nessuno di strategia → per
-[§3](../docs/STRATEGY_LIFECYCLE.md) **non consumano trial**:
+[§3](../motore/metodo/STRATEGY_LIFECYCLE.md) **non consumano trial**:
 
 1. **197 ordini non inviati** fra il 2 e il 21 agosto — `[nxt_fade] <SIMBOLO> arm fallito, err=4756`,
    su chart a **nome semplice** (`EURUSD`, `USDJPY`, `GBPUSD`) mentre il conto negozia i simboli
@@ -2607,7 +2607,7 @@ adesso sarebbe optional stopping.
 scegliere cosa fare dei **29 trade già raccolti**: tenerli e dichiarare la contaminazione nel report
 finale, oppure **azzerare lo Stadio 1** e ripartire pulito (~30 trade e ~un mese di costo).
 La seconda è quella coerente col protocollo — il forward è l'**unica fonte rinnovabile di dati
-puliti** ([§2](../docs/STRATEGY_LIFECYCLE.md)) — ma non la decido io.
+puliti** ([§2](../motore/metodo/STRATEGY_LIFECYCLE.md)) — ma non la decido io.
 
 **C2 non è più una decisione.** *"Reinserire BTCUSD nel FADE?"* era formulata come scelta aperta:
 sta **già operando fuori universo**. Non c'è da decidere, c'è da staccare l'EA.
@@ -2730,7 +2730,7 @@ triage in [`_INTAKE.md`](_INTAKE.md). Statistiche dichiarate (≈$1M di profitti
 **non entrate nel prior**, come da mandato.
 
 **DISTILLATO — il buco che colma (l'unico tassello).** Il nostro
-[STRATEGY_LIFECYCLE.md](../docs/STRATEGY_LIFECYCLE.md) copriva **solo nascita e morte prima del
+[STRATEGY_LIFECYCLE.md](../motore/metodo/STRATEGY_LIFECYCLE.md) copriva **solo nascita e morte prima del
 capitale**: il loop finiva al verdetto e non diceva nulla su *cosa fare con una strategia già
 operativa che peggiora*. Serve **adesso** (fade in forward, copier mentore verso il live) → nuovo
 **§8bis: ritiro, incubazione, riattivazione**.
@@ -2780,8 +2780,8 @@ dottrina evita, e senza le metriche che la renderebbero legittima.
 **Origine.** Domanda dell'utente: la sua regola manuale — *venerdì sera chiudo le posizioni in
 profitto e lascio aperte solo quelle in perdita* — era mai stata analizzata sul fade? **No, mai**:
 nessuna gestione weekend esiste nei motori, nella spec o nell'EA. Misurata con
-[`analysis/nxt/weekend.py`](../analysis/nxt/weekend.py). Diagnostica di esecuzione, **non** una variante
-di strategia → **non consuma trial** ([STRATEGY_LIFECYCLE §3](../docs/STRATEGY_LIFECYCLE.md)).
+[`analysis/nxt/weekend.py`](../magazzino/registro/codice/nxt/weekend.py). Diagnostica di esecuzione, **non** una variante
+di strategia → **non consuma trial** ([STRATEGY_LIFECYCLE §3](../motore/metodo/STRATEGY_LIFECYCLE.md)).
 Riproduzione validata: n=10.290 ed E[R] assunto **+0,355** contro il +0,354 pre-registrato.
 
 **1. Il fade quasi non vive nel weekend.** Holding **mediano 5 barre H1** (cinque ore); solo il
@@ -2839,7 +2839,7 @@ strategia. **Il forward in corso non è stato toccato**: nessun cambio di regola
 
 **Decisione.** Fonte esterna *Pavel Kichev*, pre-registrata in
 [docs/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md](../magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md),
-motori [`analysis/trend/`](../analysis/trend/), verdetto
+motori [`analysis/trend/`](../magazzino/registro/codice/trend/), verdetto
 [docs/reviews/trend-exit-playground-2026-08-14.md](../magazzino/registro/referti/trend-exit-playground-2026-08-14.md).
 Due domande in un solo esperimento: **Q1** la coda aperta (domanda dell'utente), **Q2** il claim
 "l'edge retail vive sugli asset meno liquidi e più volatili".
@@ -2908,11 +2908,11 @@ esterne** del trimestre.
 piazzare un ordine limite a una distanza fissa dall'estremo, stop sotto l'estremo, **niente TP**,
 uscita all'incrocio di medie mobili. **KILL** senza arrivare alla pre-registrazione completa.
 Addendum pre-registrato [docs/NXT_EXIT_CEILING_ADDENDUM.md](../magazzino/registro/documenti/NXT_EXIT_CEILING_ADDENDUM.md),
-motore [`analysis/nxt/excursion.py`](../analysis/nxt/excursion.py), verdetto
+motore [`analysis/nxt/excursion.py`](../magazzino/registro/codice/nxt/excursion.py), verdetto
 [docs/reviews/nxt-exit-ceiling-2026-08-14.md](../magazzino/registro/referti/nxt-exit-ceiling-2026-08-14.md).
 
 **Perché non è servito un test nuovo.** La meccanica d'entrata descritta è **già implementata** in
-[`analysis/nxt/backtest.py`](../analysis/nxt/backtest.py): `zigzag()` k=5 è il "pivot confermato a N
+[`analysis/nxt/backtest.py`](../magazzino/registro/codice/nxt/backtest.py): `zigzag()` k=5 è il "pivot confermato a N
 barre" (noto solo a `i+k`, look-ahead-safe), l'entry limite al 50% della gamba è l'ordine "a tot
 distanza dall'estremo", lo SL al 78.6% è lo "stop sotto il minimo". Già testata: **E[R] −0,44R,
 6/6 asset e 14/14 anni negativi** (2026-07-17). L'unico elemento nuovo era **l'uscita**.
@@ -2955,7 +2955,7 @@ ritracciamento, il prezzo **prosegue nella direzione del ritracciamento**.
 modificata, holdout non aperto. La famiglia NXT conserva il round 3, senza nulla su cui spenderlo.
 
 **Scope onesto.** Non è coperta la variante a scala di sessione su M5 (es. minimo della sessione di
-Londra). Ma spostarsi lì sarebbe **shopping di timeframe** ([§4](../docs/STRATEGY_LIFECYCLE.md)),
+Londra). Ma spostarsi lì sarebbe **shopping di timeframe** ([§4](../motore/metodo/STRATEGY_LIFECYCLE.md)),
 costerebbe l'ultimo round, e il modo di morte è già misurato su due scale indipendenti (NXT H1;
 estremi di periodo su H4/D1/W1 nella ricerca livelli). **Non falsificata l'uscita a coda aperta in
 sé**: è falsificato il suo accoppiamento con questa entrata.
@@ -2971,7 +2971,7 @@ risk-matched a entrata casuale, mai contro una soglia assoluta.
 **Decisione.** Prima ipotesi estratta dal mandato "insight da YouTube" (fonte: *Okala 80/20*, canale
 Chart Fanatics). Pre-registrata in
 [docs/ROUND_NUMBER_GRID_PREREGISTRATION.md](../magazzino/registro/documenti/ROUND_NUMBER_GRID_PREREGISTRATION.md), eseguita da
-[`analysis/round_grid/test_80_20.py`](../analysis/round_grid/test_80_20.py). **Esito: NULL** →
+[`analysis/round_grid/test_80_20.py`](../magazzino/registro/codice/round_grid/test_80_20.py). **Esito: NULL** →
 famiglia **CLOSED**, nessuna rifinitura.
 
 **Cosa è stato testato.** Solo il **primitivo oggettivo**, non la strategia: la strategia non è
@@ -2999,7 +2999,7 @@ rilevato un effetto di ~1 punto. **Non è un null per mancanza di potenza — è
 
 **L'holdout NON è stato aperto** (TRAIN negativo → si chiude prima), quindi il 30% finale della serie
 resta **sigillato** per ipotesi future. È il meccanismo di
-[STRATEGY_LIFECYCLE §2](../docs/STRATEGY_LIFECYCLE.md) che fa il suo lavoro.
+[STRATEGY_LIFECYCLE §2](../motore/metodo/STRATEGY_LIFECYCLE.md) che fa il suo lavoro.
 
 **Correzione a una mia stima a priori.** Avevo calcolato che i livelli .80/.20 coprono il ~40% del
 territorio di prezzo, deducendone scarsa selettività. Vero **rispetto allo stop di Okala** (10 punti),
@@ -3029,7 +3029,7 @@ VELTRIX e il playbook Chart Fanatics.
 test pre-registrato** in questo workspace. Pre-registrazione:
 [docs/MENTOR_SIGNALS_OOS_PREREGISTRATION.md](../magazzino/registro/documenti/MENTOR_SIGNALS_OOS_PREREGISTRATION.md) (scritta e
 committata **prima** dell'esecuzione, commit `21df57b`). Motore:
-[`analysis/mentor_signals/oos_validation.py`](../analysis/mentor_signals/oos_validation.py).
+[`analysis/mentor_signals/oos_validation.py`](../magazzino/registro/codice/mentor_signals/oos_validation.py).
 
 **Finestra**: 131 segnali completi dal 15/06 al 07/08/2026 — **mai replayati** dall'audit dell'8
 luglio, che si fermava al 12/06 per copertura prezzi. 121 eseguiti (fill entro 6h dall'entry).
@@ -3055,7 +3055,7 @@ minimizzare lo scarto mediano |entry dichiarato − prezzo al timestamp|): −1h
 **+1h → $3.16 (minimo)**; +2h → $7.15. I timestamp Telegram sono **UTC+01:00**, la serie prezzi è in
 **ora server broker (~UTC+2)**: serve **+1h**. Su stop da ~$10 uno scarto di $10.53 non è
 trascurabile. Correzione di **bug**, non ritaratura → non conta come trial
-([STRATEGY_LIFECYCLE §3](../docs/STRATEGY_LIFECYCLE.md)). **Il verdetto regge in entrambi gli
+([STRATEGY_LIFECYCLE §3](../motore/metodo/STRATEGY_LIFECYCLE.md)). **Il verdetto regge in entrambi gli
 allineamenti** (senza fix: 69,0% e E[R] +0.243); i numeri corretti sono più conservativi.
 
 ⚠️ **Conseguenza sull'audit di luglio**: usava lo stesso confronto naive → i suoi numeri (67-72%,
@@ -3082,7 +3082,7 @@ più severo perché i programmi funded richiedono decisioni di trading indipende
 **Il divieto è strutturale, non commerciale**: decine di account che aprono la stessa posizione nello
 stesso minuto sono il rischio concentrato che il modello prop esiste per evitare. Non è una policy
 che cambia da firm a firm per marketing. → **L'edge mentore va su capitale proprio, o non va.**
-Riapertura solo con evidenza esterna nuova ([docs/STRATEGY_LIFECYCLE.md](../docs/STRATEGY_LIFECYCLE.md) §7).
+Riapertura solo con evidenza esterna nuova ([docs/STRATEGY_LIFECYCLE.md](../motore/metodo/STRATEGY_LIFECYCLE.md) §7).
 
 *Nota metodologica*: `propfirmtrader.com` espone i regolamenti per **1 firm su 18** → **non
 utilizzabile a livello di rulebook**, buono solo per censire il perimetro. Conferma la regola: si
@@ -3099,7 +3099,7 @@ consentito** — `nxt_fade` è **swing, non intraday**: le firm che obbligano a 
 rendono ineseguibile. Nel ranking il **profit split è ultimo**, il **rischio di controparte** primo.
 
 **3. Consistency rule: MISURATA, non stimata** — motore
-[`analysis/nxt/consistency.py`](../analysis/nxt/consistency.py) (riproduce esattamente i numeri
+[`analysis/nxt/consistency.py`](../magazzino/registro/codice/nxt/consistency.py) (riproduce esattamente i numeri
 pre-registrati: E[R] +0.354, win 31.3%, n=10.280). Quota del giorno migliore sul profitto della
 finestra, sole finestre in utile: **14 giorni → mediana 57,2%, sfora il 40% nel 74,7% dei casi**;
 30 giorni → 41,9%; 60 giorni → **15,7%**.
@@ -3182,7 +3182,7 @@ esattamente ciò che esiste per impedire: riproporre cose già chiuse.
 
 **Decisione.** Adottato il loop `ricerca → formulazione → [G1] pre-registrazione → backtest (train) →
 rifinitura (train) → walk-forward (train) → [G2] holdout sigillato → verdetto`, con criteri di kill
-espliciti. Documento: [docs/STRATEGY_LIFECYCLE.md](../docs/STRATEGY_LIFECYCLE.md).
+espliciti. Documento: [docs/STRATEGY_LIFECYCLE.md](../motore/metodo/STRATEGY_LIFECYCLE.md).
 
 **Razionale.** Un loop di miglioramento su dataset storico fisso è una **macchina per falsi
 positivi** se non ha contabilità dei tentativi, dati sigillati e criteri di morte dichiarati prima.
@@ -3280,7 +3280,7 @@ nostri dati).
 **Decisione.** La strategia **NXT** degli ex-soci (continuazione: entry al ritracciamento 0.5,
 SL 0.786, target 1:3) è **NO-GO**. Test **pre-registrato** su 6 asset H1 (EURUSD, GBPUSD, USDJPY,
 XAUUSD, US100, US500), ~14 anni, ~10.000 setup — motori
-[`analysis/nxt/backtest.py`](../analysis/nxt/backtest.py) e [`closure.py`](../analysis/nxt/closure.py).
+[`analysis/nxt/backtest.py`](../magazzino/registro/codice/nxt/backtest.py) e [`closure.py`](../magazzino/registro/codice/nxt/closure.py).
 
 **Esito.** Win rate **13,3%** contro il 60-70% dichiarato; **E[R] = −0,44R**; negativa in **14/14
 anni** e **6/6 strumenti**; l'holdout conferma; le varianti wide-stop non salvano. È un **kill duro
@@ -3303,7 +3303,7 @@ EA [`mql5/nxt_fade.mq5`](../esercizio/mql5/nxt_fade.mq5). Forward pre-registrato
 
 Primo test del filone **scalping intraday single-asset**. ORB dell'apertura cash USA (09:30 ET) + retest,
 US100/US500 M5, 1:2, pre-registrato ([docs/OPENING_RANGE_PREREGISTRATION.md](../magazzino/registro/documenti/OPENING_RANGE_PREREGISTRATION.md)),
-motore [analysis/opening_range/](../analysis/opening_range/). Verdetto: [docs/reviews/opening-range-2026-07-16.md](../magazzino/registro/referti/opening-range-2026-07-16.md).
+motore [analysis/opening_range/](../magazzino/registro/codice/opening_range/). Verdetto: [docs/reviews/opening-range-2026-07-16.md](../magazzino/registro/referti/opening-range-2026-07-16.md).
 
 **Lezione del campione:** sul broker (1.4y, 2025-26) sembrava debole-positivo (E[R]+0.073, entrambi lati+),
 ma su **Dukascopy 14.5y (2012-2026, tutti i regimi)** — richiesta utente di allungare lo storico — è
@@ -3332,7 +3332,7 @@ tz-safe (UTC/EET → US-open) + ADX + holdout. Utile per qualunque futuro test i
 ## 2026-07-08 — Stagionalità TOM: NO-GO. Chiusa la ricerca di edge sistematici own → pivot al passivo.
 
 Terzo e **ultimo** edge sistematico. Test pre-registrato ([docs/SEASONALITY_PREREGISTRATION.md](../magazzino/registro/documenti/SEASONALITY_PREREGISTRATION.md)),
-motore [strategies/seasonality/backtest.py](../strategies/seasonality/backtest.py). Verdetto:
+motore [strategies/seasonality/backtest.py](../magazzino/registro/codice/seasonality/backtest.py). Verdetto:
 [docs/reviews/seasonality-tom-2026-07-08.md](../magazzino/registro/referti/seasonality-tom-2026-07-08.md).
 
 **Esito: NO-GO.** La finestra Turn-of-Month **non batte finestre di giorni casuali** (pooled +3.47 bps/g,
@@ -3357,7 +3357,7 @@ La macchina rigorosa (`core/quant_metrics` + backtester riusabili) resta per opp
 ## 2026-07-08 — Mean-reversion vol (secondo edge): NO-GO. Ma emerge la complementarità momentum⟂reversione.
 
 Secondo edge del pivot (dopo TSMOM NO-GO). Test **pre-registrato** ([docs/MEANREV_PREREGISTRATION.md](../magazzino/registro/documenti/MEANREV_PREREGISTRATION.md)),
-motore [strategies/meanrev/backtest.py](../strategies/meanrev/backtest.py) (riusa la struttura TSMOM),
+motore [strategies/meanrev/backtest.py](../magazzino/registro/codice/meanrev/backtest.py) (riusa la struttura TSMOM),
 16 asset D1 2003-2026, z-score N=10 Z=1. Verdetto: [docs/reviews/meanrev-portfolio-2026-07-08.md](../magazzino/registro/referti/meanrev-portfolio-2026-07-08.md).
 
 **Esito: NO-GO.** Primario Sharpe **−0.21**, BCa lower −0.63, DSR 0.011 n.s., MC p=0.50, PBO 0.80,
@@ -3379,7 +3379,7 @@ momentum+reversione (lead forte, thesis-aligned) o (b) prossimo backlog (stagion
 
 Track A del pivot (priorità-1 utente). Parser + replay dei suoi segnali sul prezzo oro REALE (M5,
 Gen-Giu 2026): **non un backtest disegnato, ma l'audit del suo track record live**. Codice
-[analysis/mentor_signals/](../analysis/mentor_signals/); verdetto [docs/reviews/mentor-signals-2026-07-08.md](../magazzino/registro/referti/mentor-signals-2026-07-08.md).
+[analysis/mentor_signals/](../magazzino/registro/codice/mentor_signals/); verdetto [docs/reviews/mentor-signals-2026-07-08.md](../magazzino/registro/referti/mentor-signals-2026-07-08.md).
 
 **Riconciliazione**: i suoi entry stanno nei range intraday dell'oro reale (range 2026 mentore 3964-5553
 vs reale 3999-5415) → è XAUUSD vero. Il mio flag "4670 vs 4155" era errore di allineamento (segnale di
@@ -3408,7 +3408,7 @@ a capitale senza forward.
 
 
 Primo edge dopo la chiusura livelli. Test **pre-registrato** ([docs/TSMOM_PREREGISTRATION.md](../magazzino/registro/documenti/TSMOM_PREREGISTRATION.md)),
-motore di portafoglio [strategies/tsmom/backtest.py](../strategies/tsmom/backtest.py) sulle **serie di
+motore di portafoglio [strategies/tsmom/backtest.py](../magazzino/registro/codice/tsmom/backtest.py) sulle **serie di
 rendimenti** (non le sintesi MT5 del tentativo 2026-05), 16 asset D1 2003-2026, spec canonica MOP
 (sign 252g, vol-target 60g, media portafoglio, mensile, costi, look-ahead-safe). Verdetto completo:
 [docs/reviews/tsmom-portfolio-2026-07-08.md](../magazzino/registro/referti/tsmom-portfolio-2026-07-08.md).
@@ -3482,7 +3482,7 @@ un contesto direzionale/sessione — NON è "reazione al livello", è un'altra i
 **Contesto.** Dopo il NO-GO del conf=2 (sotto), abbiamo rifondato la domanda: *quali criteri trovano
 livelli dove il mercato reagisce davvero?* Test **pre-registrato**
 ([docs/LEVEL_RESEARCH_PREREGISTRATION.md](../magazzino/registro/documenti/LEVEL_RESEARCH_PREREGISTRATION.md)), motore walk-forward
-look-ahead-safe ([analysis/level_research/](../analysis/level_research/)), **6 concetti OHLC-puri** ×
+look-ahead-safe ([analysis/level_research/](../magazzino/registro/codice/level_research/)), **6 concetti OHLC-puri** ×
 **16 asset** (FX/metalli/crypto/indici, feed demo4 validato), metrica = **%REACTION|touch reale vs
 random distance-matched**, CI block-bootstrap sui giorni, breadth, DSR sui 96 trial, holdout 70/30.
 
@@ -3548,8 +3548,8 @@ n=21) e regime "transizione" (n=13); **FVG** (5% reaction, 90% break) e regime "
 XAU inconcludente (futures + n=29). **Bug noti:** conteggio no_fill nel gate (fill reale ~83%), fill/exit
 idealizzati (−0.37 = upper bound).
 
-→ Analisi: [`analysis/trading-bot-eval/level_reaction_analysis.py`](../analysis/trading-bot-eval/level_reaction_analysis.py) ·
-spec [`LEVEL_ANALYZER_SPEC.md`](../analysis/trading-bot-eval/LEVEL_ANALYZER_SPEC.md) ·
+→ Analisi: [`analysis/trading-bot-eval/level_reaction_analysis.py`](../magazzino/registro/codice/trading-bot-eval/level_reaction_analysis.py) ·
+spec [`LEVEL_ANALYZER_SPEC.md`](../magazzino/registro/codice/trading-bot-eval/LEVEL_ANALYZER_SPEC.md) ·
 workflow [`docs/TRADING_WORKFLOW_DESIGN.md`](../magazzino/dormienti/docs/TRADING_WORKFLOW_DESIGN.md)
 
 ---
@@ -3662,7 +3662,7 @@ Attenzione **compliance copy-trading** lato prop firm (alcune vietano la copia d
 Architettura: Telethon → parser → risk gate → MT5. I segnali mentori sono oggi **semiautomatici
 in test** ma il target è la **piena automazione**.
 
-→ Codice: [signal_copier/](../esercizio/signal_copier/) · Test: [tests/test_signal_copier.py](../tests/test_signal_copier.py)
+→ Codice: [signal_copier/](../esercizio/signal_copier/) · Test: [tests/test_signal_copier.py](../motore/tests/test_signal_copier.py)
 
 ---
 
@@ -3709,8 +3709,8 @@ l'edge. È stato il cap della quant-review di London Breakout.
 **Razionale.** Dopo 2 settimane live (London: 2 trade; Confluence: 0 trade per attrito operativo)
 serviva un metro statistico (PBO, DSR, walk-forward, MC permutation).
 
-→ `agents/quant_reviewer.md` (ritirato il 2026-10-13: vedi la voce 2026-10-13 (3)) · [core/quant_metrics.py](../core/quant_metrics.py) ·
-[docs/QUANT_REVIEW_PROTOCOL.md](../docs/QUANT_REVIEW_PROTOCOL.md)
+→ `agents/quant_reviewer.md` (ritirato il 2026-10-13: vedi la voce 2026-10-13 (3)) · [core/quant_metrics.py](../motore/core/quant_metrics.py) ·
+[docs/QUANT_REVIEW_PROTOCOL.md](../motore/metodo/QUANT_REVIEW_PROTOCOL.md)
 
 ---
 
@@ -3722,7 +3722,7 @@ nessun obbligo settimanale. L'energia è sull'**automazione** (`confluence_auto/
 **Razionale.** L'attrito operativo del planning weekend produceva 0 trade. Meglio investire
 sull'estrazione algoritmica dei livelli e raccogliere dati di confronto manuale vs algoritmico.
 
-→ Concetti: [TRADING_PRINCIPLES.md](../magazzino/fondamenti_tecnici/TRADING_PRINCIPLES.md) · [strategies/confluence_auto/](../strategies/confluence_auto/)
+→ Concetti: [TRADING_PRINCIPLES.md](../magazzino/fondamenti_tecnici/TRADING_PRINCIPLES.md) · [strategies/confluence_auto/](../magazzino/dormienti/strategies/confluence_auto/)
 (il vecchio `WEEKEND_CHECKLIST.md` — procedura manuale livelli→`levels.yaml`→VPS — è stato eliminato il 2026-06-14)
 
 ---
@@ -3787,7 +3787,7 @@ che calza il contesto. È l'estensione naturale del principio "edge condizionato
 
 - *"Genera 10.000 strategie e tieni le 25 che sopravvivono"* (ricerca di massa, StrategyQuant e
   affini) **vs** *"una ipotesi per volta, pre-registrata, con budget di trial"* (nostro
-  [STRATEGY_LIFECYCLE](../docs/STRATEGY_LIFECYCLE.md)). **Non si elegge un vincitore**: le due scuole
+  [STRATEGY_LIFECYCLE](../motore/metodo/STRATEGY_LIFECYCLE.md)). **Non si elegge un vincitore**: le due scuole
   pagano la **stessa** tassa di molteplicità in **posti diversi**. La ricerca di massa la paga in
   **deflazione** — con N grande il DSR alza la soglia al punto che serve un effetto molto forte per
   sopravvivere; la nostra la paga in **copertura**, perché esplorando poco possiamo semplicemente non
@@ -3798,7 +3798,7 @@ che calza il contesto. È l'estensione naturale del principio "edge condizionato
   dal rumore. **Nota autocritica**: il nostro repo ha talvolta letto "il data mining è male" come
   "non cercare". La formulazione corretta è **"cerca pure, ma deflaziona sul numero vero e non
   toccare l'holdout"** — e gli strumenti per farlo li abbiamo già in
-  [`core/quant_metrics.py`](../core/quant_metrics.py). Fonte del conflitto: Noel T./SQX, 2026-08-17.
+  [`core/quant_metrics.py`](../motore/core/quant_metrics.py). Fonte del conflitto: Noel T./SQX, 2026-08-17.
 - *"L'analisi tecnica non si può confutare: non puoi rigiocare lo stesso evento tecnico 10.000
   volte, e comunque non sono obbligato a usarla sempre"* (Quant Guild, #119, distillamento
   2026-09-17) **vs** i nostri **384 trial pre-registrati** che hanno chiuso la ricerca sui livelli

@@ -56,7 +56,7 @@ Risposta diretta alla domanda "ha senso monitorare tutti i mercati mondiali?": *
 ## 2. Prototipo Layer 1 — evidenza su dati gratuiti (2003-2026, 282 mesi)
 
 Backtest del motore di esposizione (SPY total-return + FRED WALCL/DFF). Script:
-[layer1_prototype.py](../../../strategies/stock_selector/analysis/layer1_prototype.py).
+[layer1_prototype.py](../strategies/stock_selector/analysis/layer1_prototype.py).
 
 | Strategia | CAGR | vol | Sharpe | maxDD | up-cap | dn-cap | +mesi giù | alpha | a_t |
 |---|---|---|---|---|---|---|---|---|---|
@@ -153,13 +153,13 @@ distinti che migliorano il design. Sintesi operativa.
   macro *ortogonali al prezzo* (vera complementarità) e danno ~70% del valore macro — molto
   meglio del livello WALCL. **Markov è ridondante con Faber** (entrambi momentum di prezzo):
   tenerne UNO come timer, Markov solo come filtro anti-whipsaw (persistenza P[i,i]).
-  `core/regime.py` (Wilder/intraday) **non appartiene** a un motore mensile.
+  `motore/core/regime.py` (Wilder/intraday) **non appartiene** a un motore mensile.
 - **[Quant] La protezione (maxDD/down-capture) è MECCANICA e affidabile; solo l'alpha è da
   provare.** Distinzione chiave: il prodotto "β<1 che taglia i drawdown" è reale già ora.
 - **[Ingegnere] Conflitto di priorità da esplicitare** ([DECISIONS.md](../../../decisioni/DECISIONS.md): custom IN
   FONDO, OctoBot prima; investing = fase conclusiva, entrate prop oggi ~0). Questo lavoro è
   **validazione in slack-time, NON una promozione** e non deve sottrarre energia a OctoBot/
-  Telegram copier. MVP riusa `core/regime.py` + `layer1_prototype.py` (~80% esiste).
+  Telegram copier. MVP riusa `motore/core/regime.py` + `layer1_prototype.py` (~80% esiste).
 
 ## Design v2 mergiato — il Layer 1 da validare
 
@@ -180,7 +180,7 @@ non usare Fed-quadrant come trigger; non promuovere nulla a operatività (rispet
 
 # MVP Layer 1 v2 — risultati del backtest e VERDICT — 2026-06-02
 
-Implementato il design v2 mergiato ([tactical_allocation.py](../../../strategies/stock_selector/analysis/tactical_allocation.py)):
+Implementato il design v2 mergiato ([tactical_allocation.py](../strategies/stock_selector/analysis/tactical_allocation.py)):
 dual-momentum cross-asset (SPY/EFA/EEM/TLT/GLD + AGG), ensemble lookback {3,6,12m} votato,
 vol-targeting continuo, overlay macro (credit spread + curva, percentili espansivi), costi
 turnover, segnali laggati. Universo 2004-11 → 2026-06 (260 mesi, include 2008/2020/2022).

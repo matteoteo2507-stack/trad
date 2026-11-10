@@ -11,8 +11,8 @@ creato: 2026-10-03
 
 # Fonti di vantaggio — come si costruisce un'ipotesi prima di testarla
 
-> Il repo sa **verificare e bocciare** una strategia ([STRATEGY_LIFECYCLE](../../../docs/STRATEGY_LIFECYCLE.md),
-> [QUANT_REVIEW_PROTOCOL](../../../docs/QUANT_REVIEW_PROTOCOL.md), [[04_quant_metodologia]], `core/`), ma fino al
+> Il repo sa **verificare e bocciare** una strategia ([STRATEGY_LIFECYCLE](../../../motore/metodo/STRATEGY_LIFECYCLE.md),
+> [QUANT_REVIEW_PROTOCOL](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md), [[04_quant_metodologia]], `motore/core/`), ma fino al
 > 03/10/2026 non diceva **come si arriva a un'ipotesi che valga la pena verificare**. La fase RICERCA del ciclo
 > di vita era un riquadro con scritto "razionale economico". Il risultato: si cercava **per elenco** (video,
 > canali, materiale del socio) e si passava ogni candidato alla macchina dei verdetti. Questo modulo rovescia
@@ -23,7 +23,7 @@ creato: 2026-10-03
 
 - E' la **bozza B** decisa con Matteo il 03/10: struttura scritta da Claude, da **confermare voce per voce**
   con le fonti del §6 (piano A). Finche' una voce non ha la sua fonte umana, resta `quarantena`.
-- **Provenienza** ([STRATEGY_LIFECYCLE §8](../../../docs/STRATEGY_LIFECYCLE.md)). Questa griglia serve a
+- **Provenienza** ([STRATEGY_LIFECYCLE §8](../../../motore/metodo/STRATEGY_LIFECYCLE.md)). Questa griglia serve a
   **orientare la ricerca di fonti**, non a generare ipotesi da testare. Un'ipotesi che io deduco dalla griglia
   su dati anteriori al mio cutoff **non e' una predizione indipendente**. Diventa ammissibile solo se arriva
   anche da (a) una fonte umana datata, o (b) un razionale che non richiede di conoscere l'esito, o (c) un
@@ -100,9 +100,9 @@ In quest'ordine. Ci si ferma alla prima risposta mancante.
    ([[feedback_potenza_prima_di_raccogliere]]). Va calcolata sullo **Sharpe pubblicato e su meta' di esso**.
 8. **Dove muore.** Cosa falsificherebbe il **meccanismo**, non solo il pattern. Per esempio: se il flusso non
    c'e', anche il rendimento non deve esserci.
-9. **Provenienza.** Da dove arriva l'ipotesi ([STRATEGY_LIFECYCLE §8](../../../docs/STRATEGY_LIFECYCLE.md)).
+9. **Provenienza.** Da dove arriva l'ipotesi ([STRATEGY_LIFECYCLE §8](../../../motore/metodo/STRATEGY_LIFECYCLE.md)).
 
-Solo dopo: [template di strategia](../../../strategies/_template/README.md) e pre-registrazione (G1).
+Solo dopo: [template di strategia](../../dormienti/strategies/_template/README.md) e pre-registrazione (G1).
 
 ### 5. Dove la griglia suggerisce di guardare — direzioni di lettura, non ipotesi
 
@@ -149,7 +149,7 @@ campione.
 
 ## Collegamenti
 
-- [STRATEGY_LIFECYCLE §1](../../../docs/STRATEGY_LIFECYCLE.md): questo modulo e' la fase RICERCA del loop; §8 per la provenienza.
+- [STRATEGY_LIFECYCLE §1](../../../motore/metodo/STRATEGY_LIFECYCLE.md): questo modulo e' la fase RICERCA del loop; §8 per la provenienza.
 - [[04_quant_metodologia]] (verifica), [[05_portfolio_rischio]] (premi, VRP, asimmetria), [[03_regimi_macro]] (canali macro).
 - [[10_indicatori_tecnici]]: questa griglia applicata agli indicatori (quale grandezza misurano, chi paga). Le sue Fonti danno il livello di verifica di McLean-Pontiff 2016 e Baltussen et al. 2021 (abstract letto) e di Gao-Han-Li-Zhou 2018 (ancora solo sintesi del motore di ricerca).
 - [Mappa del ciclo di vita](../../../decisioni/mappa/01-ciclo-di-vita-e-gate.md), passo 1.

@@ -14,7 +14,7 @@ nota: "EA spento. Il +0,31/+0,35/+0,409 era fill fantasma: non citarlo come edge
 > quando fermarsi guardando come sta andando. Le regole di questo file **non si modificano** durante
 > il test; qualunque modifica va datata, motivata e dichiarata nel report finale.
 >
-> Ciclo di riferimento: [STRATEGY_LIFECYCLE.md](../../../docs/STRATEGY_LIFECYCLE.md).
+> Ciclo di riferimento: [STRATEGY_LIFECYCLE.md](../../../motore/metodo/STRATEGY_LIFECYCLE.md).
 > Spec operativa immutabile: [fade_mr_walkforward_socio.md](strategie_candidate/fade_mr_walkforward_socio.md).
 
 ---
@@ -29,11 +29,11 @@ nota: "EA spento. Il +0,31/+0,35/+0,409 era fill fantasma: non citarlo come edge
 **Perché serve.** Il fade è un'ipotesi **data-derived**: è nata invertendo la strategia di
 continuazione che perdeva. Ha superato holdout interno e stress sui costi, ma quei test **girano
 sugli stessi dati che l'hanno generata** e non possono validarla. Questo forward è l'unica evidenza
-indipendente possibile. Stato attuale: **LEAD**, non edge ([STRATEGY_LIFECYCLE §5](../../../docs/STRATEGY_LIFECYCLE.md)).
+indipendente possibile. Stato attuale: **LEAD**, non edge ([STRATEGY_LIFECYCLE §5](../../../motore/metodo/STRATEGY_LIFECYCLE.md)).
 
 ## 2. Strategia — parametri congelati
 
-Definizione operativa in `analysis/nxt/closure.py` (config **A1**), eseguita da
+Definizione operativa in `magazzino/registro/codice/nxt/closure.py` (config **A1**), eseguita da
 [`esercizio/mql5/nxt_fade.mq5`](../../../esercizio/mql5/nxt_fade.mq5). Parametri **immutabili** per tutta la durata del test:
 
 | Parametro | Valore |
@@ -66,7 +66,7 @@ manuale, nessuna discrezionalità nel marcaggio degli swing.
 > a potenza 80% servono **~200-220 trade**. Da qui il disegno sequenziale a due soglie, entrambe
 > fissate **ora**.
 >
-> *(La SD va ricalcolata esattamente sul trade log del backtest — `analysis/nxt/closure.py` — e il
+> *(La SD va ricalcolata esattamente sul trade log del backtest — `magazzino/registro/codice/nxt/closure.py` — e il
 > numero dello Stadio 2 aggiornato di conseguenza **prima** che il campione live vi arrivi.)*
 
 ### Stadio 1 — GATE DI BOCCIATURA · **N = 50 trade chiusi**
@@ -86,7 +86,7 @@ manuale, nessuna discrezionalità nel marcaggio degli swing.
 
 | Esito a N=200 | Decisione |
 |---|---|
-| **BCa 95% lower bound su E[R] > 0** ([`bca_bootstrap_ci`](../../../core/quant_metrics.py)) | **GO** → valutazione per capitale, con pre-mortem obbligatorio |
+| **BCa 95% lower bound su E[R] > 0** ([`bca_bootstrap_ci`](../../../motore/core/quant_metrics.py)) | **GO** → valutazione per capitale, con pre-mortem obbligatorio |
 | Altrimenti | **KILL** — il lead non regge, famiglia archiviata |
 
 ### Se il campione non arriva
@@ -105,7 +105,7 @@ manuale, nessuna discrezionalità nel marcaggio degli swing.
    nuovo, con nuovo N e nuova pre-registrazione — non prosegue quello vecchio.
 4. **Nessuna rifinitura è disponibile su questo lead.** Il fade ha già consumato il suo ramo di
    ricerca: è nato *come* rifinitura di NXT. Un secondo ritocco sarebbe il secondo giro sugli stessi
-   dati ([STRATEGY_LIFECYCLE §4](../../../docs/STRATEGY_LIFECYCLE.md)).
+   dati ([STRATEGY_LIFECYCLE §4](../../../motore/metodo/STRATEGY_LIFECYCLE.md)).
 5. **Contatore trial**: il fade è **trial #2** della famiglia NXT (#1 = continuazione, NO-GO). Un
    eventuale terzo tentativo sarebbe l'ultimo prima del kill di budget (3 round).
 
@@ -121,7 +121,7 @@ Obbligatorie, indipendentemente dall'esito:
   (⚠️ **corretto il 2026-08-14**, era +0,35R: il backtest assumeva il fill dello stop *esattamente*
   al livello, ma il **12,7%** degli stop apre gia' oltre → fill vero −1,29R contro −0,75R assunto.
   Modellazione piu' realistica dell'esecuzione = **fix, non ritaratura**, non consuma trial
-  ([STRATEGY_LIFECYCLE §3](../../../docs/STRATEGY_LIFECYCLE.md)). Motore `analysis/nxt/weekend.py`.
+  ([STRATEGY_LIFECYCLE §3](../../../motore/metodo/STRATEGY_LIFECYCLE.md)). Motore `magazzino/registro/codice/nxt/weekend.py`.
   **Il confronto forward va fatto contro +0,31R, non +0,35R.**)
 - Slippage e spread **reali** vs modellati, **con il gap-attraverso-lo-stop separato**: e' la voce
   che vale −0,047R nel backtest ed e' per il **95%** un fenomeno **infrasettimanale**, non del weekend
@@ -168,7 +168,7 @@ parametro pre-registrato** — §3 congela la geometria, e il verdetto è su **E
 ridurre i lotti non altera alcuna statistica misurata.
 
 **Qualificazione**: **bug fix**, non modifica di spec — il deployment non implementava l'universo
-pre-registrato. Per [STRATEGY_LIFECYCLE §3](../../../docs/STRATEGY_LIFECYCLE.md) **non conta come trial** e non
+pre-registrato. Per [STRATEGY_LIFECYCLE §3](../../../motore/metodo/STRATEGY_LIFECYCLE.md) **non conta come trial** e non
 azzera il test.
 
 **Azioni**: (a) riagganciare l'EA a `EURUSD.r`, `GBPUSD.r`, `USDJPY.r`; (b) staccare **BTCUSD** e
@@ -251,7 +251,7 @@ congelato**: il pendente del 21/08 va cancellato a mano, come è stato fatto per
 
 **Classificazione: BUG FIX.** Riporta l'esecuzione **dentro** la specifica congelata invece di
 allontanarla — la spec dice 48 barre, il codice ne applicava infinite. Nessun parametro cambia,
-nessun filtro aggiunto → **nessun trial consumato** ([`STRATEGY_LIFECYCLE §3`](../../../docs/STRATEGY_LIFECYCLE.md)).
+nessun filtro aggiunto → **nessun trial consumato** ([`STRATEGY_LIFECYCLE §3`](../../../motore/metodo/STRATEGY_LIFECYCLE.md)).
 
 > ⚠️ **Il caveat di composizione del §9 va letto più duro.** Questo difetto si attiva **quando
 > interveniamo**: ogni manutenzione (riaggancio `.r` del 12-13/08, trasloco sul VPS) creava un
@@ -292,7 +292,7 @@ per annullare.
 
 ### E comunque il numero di partenza non c'era
 
-Indipendentemente dall'esecuzione, l'audit [`analysis/nxt/entry_fill_audit.py`](../../../analysis/nxt/entry_fill_audit.py)
+Indipendentemente dall'esecuzione, l'audit [`magazzino/registro/codice/nxt/entry_fill_audit.py`](../codice/nxt/entry_fill_audit.py)
 ha mostrato che il **+0,31R non è mai stato misurato**: `closure.py` concedeva il fill al prezzo
 `entry` anche sul **46,1%** dei setup in cui il mercato lo aveva già oltrepassato — un prezzo non
 ottenibile. Con qualunque esecuzione realmente ottenibile l'E[R] sta fra **−0,32 e −0,03**, mai
@@ -332,11 +332,11 @@ Aggiunto il calcolo che mancava, in [`FADE_LIVE_AUDIT_PROTOCOL.md`](FADE_LIVE_AU
 
 ### ⚠️ Aggiornamento 2026-09-17 (2) — condizione 2 MISURATA: non e' soddisfatta, e non lo sara'
 
-Condizione 1 **fatta**: primitiva unica [`core/resolve_trade.py`](../../../core/resolve_trade.py), con le
+Condizione 1 **fatta**: primitiva unica [`motore/core/resolve_trade.py`](../../../motore/core/resolve_trade.py), con le
 cinque convenzioni come parametri espliciti e l'equivalenza con le implementazioni storiche
-**dimostrata** su migliaia di percorsi ([`core/tests/test_resolve_trade.py`](../../../core/tests/test_resolve_trade.py)).
+**dimostrata** su migliaia di percorsi ([`motore/core/tests/test_resolve_trade.py`](../../../motore/core/tests/test_resolve_trade.py)).
 
-Condizione 2 **misurata** con [`analysis/nxt/fade_obtainable.py`](../../../analysis/nxt/fade_obtainable.py),
+Condizione 2 **misurata** con [`magazzino/registro/codice/nxt/fade_obtainable.py`](../codice/nxt/fade_obtainable.py),
 su 10.218 setup in 14 anni e 6 asset:
 
 | campione | n | E[R] | BCa 95% |
@@ -363,13 +363,13 @@ di metodo da non ripetere, non come causa di nulla.
 
 **Conseguenza sulle condizioni della sez. 11**: la 2 non e' soddisfatta e non c'e' un percorso per
 soddisfarla senza cambiare la strategia — cioe' senza spendere il trial #3 su una variante nuova.
-Si applicano i **kill duri** di [`STRATEGY_LIFECYCLE`](../../../docs/STRATEGY_LIFECYCLE.md) §6a n. 1 (difetto
+Si applicano i **kill duri** di [`STRATEGY_LIFECYCLE`](../../../motore/metodo/STRATEGY_LIFECYCLE.md) §6a n. 1 (difetto
 metodologico conclamato: i vecchi numeri sono nulli e rifatti da zero) e n. 3 (fallimento di
 breadth). **Verdetto proposto all'utente: KILL della famiglia.** Non lo dichiaro io.
 
 ### Cosa serve prima che esista un forward nuovo
 
-1. Una **primitiva unica** `resolve_trade()` in `core/`, con la convenzione sulla barra di fill e sul
+1. Una **primitiva unica** `resolve_trade()` in `motore/core/`, con la convenzione sulla barra di fill e sul
    gap oltre lo stop come parametri espliciti — oggi la stessa logica è reimplementata **quattro
    volte con quattro convenzioni diverse**, ed è ciò che ha prodotto l'ambiguità +0,354 / +0,308 / +0,347.
 2. Un backtest che modelli **solo fill ottenibili**, e il cui E[R] risultante sia positivo. Oggi non

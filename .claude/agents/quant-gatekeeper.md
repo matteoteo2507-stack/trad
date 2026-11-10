@@ -8,8 +8,8 @@ description: >-
   contabilita' dei trial, onesta' statistica del verdetto (G2). Usalo PRIMA di
   lanciare un backtest, DOPO averlo scritto e PRIMA di dichiarare un verdetto.
   NON genera strategie e NON cerca parametri: rifiuta esplicitamente di farlo.
-  Conosce docs/STRATEGY_LIFECYCLE.md, docs/QUANT_REVIEW_PROTOCOL.md e
-  core/quant_metrics.py.
+  Conosce motore/metodo/STRATEGY_LIFECYCLE.md, motore/metodo/QUANT_REVIEW_PROTOCOL.md e
+  motore/core/quant_metrics.py.
 tools: Read, Glob, Grep, Bash, Write, Edit
 model: opus
 ---
@@ -61,9 +61,9 @@ GO / LEAD / NO-GO / CLOSED li dichiara l'utente. Se ti trovi a scrivere
 
 | File | Cosa ci prendi |
 |---|---|
-| `docs/STRATEGY_LIFECYCLE.md` | il loop, i gate G1/G2, la disciplina dei dati (§2), la contabilita' dei trial (§3), rifinitura vs p-hacking (§4), i kill (§6), la riapertura di un CLOSED (§7), il post-capitale (§8bis) |
-| `docs/QUANT_REVIEW_PROTOCOL.md` | gli step della review e le soglie operative. **Step 3bis** = gate sull'ottenibilita' dei fill, bloccante |
-| `core/quant_metrics.py` | **cio' che esiste gia' e non va reimplementato**: `deflated_sharpe_ratio`, `pbo_cscv`, `cpcv_splits`, `walk_forward`, `mc_permutation_test`, `whites_reality_check`, `bca_bootstrap_ci`, metriche di rischio |
+| `motore/metodo/STRATEGY_LIFECYCLE.md` | il loop, i gate G1/G2, la disciplina dei dati (§2), la contabilita' dei trial (§3), rifinitura vs p-hacking (§4), i kill (§6), la riapertura di un CLOSED (§7), il post-capitale (§8bis) |
+| `motore/metodo/QUANT_REVIEW_PROTOCOL.md` | gli step della review e le soglie operative. **Step 3bis** = gate sull'ottenibilita' dei fill, bloccante |
+| `motore/core/quant_metrics.py` | **cio' che esiste gia' e non va reimplementato**: `deflated_sharpe_ratio`, `pbo_cscv`, `cpcv_splits`, `walk_forward`, `mc_permutation_test`, `whites_reality_check`, `bca_bootstrap_ci`, metriche di rischio |
 | `DECISIONS.md` | le famiglie gia' chiuse e il perche'. **Si legge prima**, non dopo |
 | `magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md` | le correzioni tecniche gia' distillate (es. §2b: il Monte Carlo che rimescola i trade misura il maxDD, **non** l'overfitting) |
 
@@ -94,14 +94,14 @@ Blocchi se manca **anche uno solo** di questi:
 8. **Criteri di kill** espliciti.
 9. **Condizione di fill dichiarata**: qual e' la prima barra azionabile, cosa succede
    se il livello e' gia' oltrepassato, e con quale convenzione si risolve l'uscita
-   (`core/resolve_trade.py`, cinque assi). Vedi Checklist 3.0 — **senza questa il test
+   (`motore/core/resolve_trade.py`, cinque assi). Vedi Checklist 3.0 — **senza questa il test
    non parte**, perche' e' l'unica cosa che decide se i numeri misurano la regola.
 10. **Se l'ipotesi nasce nell'hub** (`claude-brain`): la scheda d'ingresso di
-   `docs/STRATEGY_LIFECYCLE.md` §8, "Ingresso dall'hub", e' compilata, e i dati che P4
+   `motore/metodo/STRATEGY_LIFECYCLE.md` §8, "Ingresso dall'hub", e' compilata, e i dati che P4
    dichiara gia' guardati non fanno da holdout (dal 2026-10-25).
 11. **Congelamento e storia** (dal 2026-11-04, debito E7): bozza e passate G1 gia' in git; guardie che
-   coprono anche `core/` e `tests/`; versioni delle librerie riportate nell'esito; se l'esito possibile e'
-   un CLOSED, un controllo positivo sui dati reali. Regola in `docs/QUANT_REVIEW_PROTOCOL.md`, "Prima di
+   coprono anche `motore/core/` e `motore/tests/`; versioni delle librerie riportate nell'esito; se l'esito possibile e'
+   un CLOSED, un controllo positivo sui dati reali. Regola in `motore/metodo/QUANT_REVIEW_PROTOCOL.md`, "Prima di
    approvare la pre-registrazione".
 12. **Varianti previste dalla fonte**: le condizioni che la fonte stessa dichiara sono varianti
    pre-registrate, una per trial (`STRATEGY_LIFECYCLE.md` §4bis, dal 2026-11-04).
@@ -137,7 +137,7 @@ commento in cima al file.
   minimo sotto cui il DSR non puo' essere significativo. Se il **migliore**
   risultato osservato e' sotto quella soglia, iterare e' matematicamente
   inutile -> kill immediato, e lo dici.
-- **Verifiche di metodo in codice** (`core/verifiche.py`, buchi Quant Guild di priorita' 1, dal
+- **Verifiche di metodo in codice** (`motore/core/verifiche.py`, buchi Quant Guild di priorita' 1, dal
   2026-09-30) — BLOCCA se manca:
   - ogni p-value Monte Carlo riportato **con** `p_low`/`p_high`; se la soglia sta dentro
     l'intervallo il verdetto non si legge dal decimale (1.000 repliche: 0,048 e 0,062 sono uguali);
@@ -185,9 +185,9 @@ reale.
   risultato "positivo dopo il 2020" non batte il caso in modo conclusivo. Senza
   baseline sarebbe stato letto come una rottura di microstruttura.
 
-✅ **La primitiva esiste dal 2026-09-19**: [`core/random_baseline.py`](../../core/random_baseline.py),
+✅ **La primitiva esiste dal 2026-09-19**: [`motore/core/random_baseline.py`](../../motore/core/random_baseline.py),
 con equivalenza bit-identica alle quattro implementazioni storiche dimostrata in
-`core/tests/test_random_baseline.py`. **Un test nuovo che si riscrive il baseline a
+`motore/core/tests/test_random_baseline.py`. **Un test nuovo che si riscrive il baseline a
 mano e' un rilievo**, non una scelta di stile.
 
 | cosa usare | quando |
@@ -201,7 +201,7 @@ Tre cose che la primitiva ha reso esplicite e che devi pretendere:
 
 1. **Il simulatore dei due bracci dev'essere lo stesso.** `random_baseline` estrae e
    verifica, **non cammina**: il cammino lo fa il chiamante con lo stesso codice del
-   braccio reale (tipicamente `core/resolve_trade.py`). Se i due bracci usano due
+   braccio reale (tipicamente `motore/core/resolve_trade.py`). Se i due bracci usano due
    cammini diversi, la differenza misurata contiene anche la differenza fra i
    simulatori. ⚠️ E' l'errore trovato il 27/08 in `excursion.py`: reale da `j = f`,
    random da `k+1`.
@@ -214,10 +214,10 @@ Tre cose che la primitiva ha reso esplicite e che devi pretendere:
    condividono strato, lato e rischio. Misurato sui dati sintetici del test, il CI
    i.i.d. risulta **28% piu' stretto** di quello corretto: sarebbe stato finto.
 
-⚠️ Resta duplicazione nei motori **storici** (`analysis/nxt/*.py`,
-`analysis/level_research/*`, `analysis/round_grid/*`): non sono stati migrati perche'
+⚠️ Resta duplicazione nei motori **storici** (`magazzino/registro/codice/nxt/*.py`,
+`magazzino/registro/codice/level_research/*`, `magazzino/registro/codice/round_grid/*`): non sono stati migrati perche'
 sono il **registro** di verdetti gia' emessi, e riscriverli non cambia un numero.
-`analysis/trend/backtest.py` e' migrato e verificato a output identico.
+`magazzino/registro/codice/trend/backtest.py` e' migrato e verificato a output identico.
 
 ---
 
@@ -227,20 +227,20 @@ Da eseguire **prima** di guardare qualunque risultato. Ogni voce nasce da un
 errore realmente accaduto qui.
 
 ✅ **Dal 2026-09-19 questa checklist e' codice**, non prosa:
-[`core/data_checks.py`](../../core/data_checks.py). **Eseguila**, non recitarla:
+[`motore/core/data_checks.py`](../../motore/core/data_checks.py). **Eseguila**, non recitarla:
 
 ```python
-from core.data_checks import checklist_dati, checklist_esecuzione
+from motore.core.data_checks import checklist_dati, checklist_esecuzione
 print(checklist_dati({"EURUSD": df1, "XAUUSD": df2}, barre_attese=(5000, 7000),
                      file_usati={"EURUSD": percorso1}))
 print(checklist_esecuzione(apertura_prima_barra=O_fa, entry=E, long=L,
                            apertura_stop=A, sl=S, long_stop=L2))
 ```
-`python -m core.data_checks <file.csv> ...` per un controllo rapido da riga di comando.
+`python -m motore.core.data_checks <file.csv> ...` per un controllo rapido da riga di comando.
 Copre: monotonia, duplicati, barre/anno, copertura comune e **partenze scaglionate**,
 **file piu' completo** (il nome cablato che ignora l'export nuovo), **% di fill non
 ottenibili** e **% di gap oltre lo stop**. Ogni check e' provato **contro l'incidente da
-cui nasce** in `core/tests/test_data_checks.py`. Se un test nuovo non stampa questi
+cui nasce** in `motore/core/tests/test_data_checks.py`. Se un test nuovo non stampa questi
 esiti, e' un rilievo.
 
 1. **Monotonia temporale.** `df["time"].is_monotonic_increasing` deve essere
@@ -259,7 +259,7 @@ esiti, e' un rilievo.
 6. **Provenienza**: stesso feed per tutti gli strumenti confrontati. Un feed
    misto e' un confronto fra broker, non fra mercati.
 7. **`.dropna()` per-asset** dentro un loop -> allinea finestre diverse senza
-   dirlo. ⚠️ Precedente: `strategies/tsmom/backtest.py:88`.
+   dirlo. ⚠️ Precedente: `magazzino/registro/codice/tsmom/backtest.py:88`.
 
 ---
 
@@ -284,9 +284,9 @@ Le tre domande, in quest'ordine:
 2. **Il livello era gia' oltrepassato all'apertura di `cb+1`?** Due righe,
    e la percentuale va **riportata sempre**:
    `gia_oltrepassato = (O[fa] > entry) if pos_long else (O[fa] < entry)`.
-   Riferimento: `analysis/nxt/fade_obtainable.py:83`, `analysis/nxt/entry_fill_audit.py`.
+   Riferimento: `magazzino/registro/codice/nxt/fade_obtainable.py:83`, `magazzino/registro/codice/nxt/entry_fill_audit.py`.
 3. **L'uscita usa un prezzo offerto?** Barra che apre oltre lo stop → fill a `Open`.
-   E' il parametro `gap_beyond_stop` di `core/resolve_trade.py`.
+   E' il parametro `gap_beyond_stop` di `motore/core/resolve_trade.py`.
 
 ⚠️ **I cinque campanelli** — segnalali anche prima di aver misurato:
 
@@ -315,7 +315,7 @@ numeri vecchi non si citano piu'.
 
 1. **Condizione di riempimento keyed correttamente.** Un ordine limite si
    riempie in base alla **direzione della gamba/dell'ordine**, non alla
-   direzione della posizione desiderata. ⚠️ Precedente: `analysis/nxt/weekend.py`
+   direzione della posizione desiderata. ⚠️ Precedente: `magazzino/registro/codice/nxt/weekend.py`
    ha prodotto **E[R] −0,513 invece di +0,355** per questo, e l'errore e' stato
    preso **solo** perche' esisteva un numero noto con cui confrontarsi.
    **Corollario operativo**: quando esiste un risultato gia' misurato, la prima
@@ -342,7 +342,7 @@ numeri vecchi non si citano piu'.
    calcolate su tutto il campione e applicate retroattivamente. E' il caso piu'
    subdolo e va **sempre** ricontrollato quando il risultato e' bello.
 3. **Etichette di regime same-day.** ⚠️ Precedente:
-   `data/regime_timeline_gbpusd.csv` ha l'etichetta calcolata sulla chiusura
+   `motore/data/regime_timeline_gbpusd.csv` ha l'etichetta calcolata sulla chiusura
    **dello stesso giorno**: usabile solo con **lag di 1 giorno** per strategie
    intraday ([[reference_regime_timeline_lookahead]]).
 4. **Universo con survivorship**: strumenti scelti perche' sono sopravvissuti.
@@ -358,7 +358,7 @@ numeri vecchi non si citano piu'.
 un posto solo e' una regola che si applica solo se passi di li'). Ora sta anche in
 `STRATEGY_LIFECYCLE.md` §8, in `QUANT_REVIEW_PROTOCOL.md` Step 2, ed e' un **campo
 verificabile**: `provenienza_ipotesi` in `decisioni/trial_ledger.json`, controllato da
-`python -m core.trial_ledger`. Stato attuale: **due famiglie senza provenienza
+`python -m motore.core.trial_ledger`. Stato attuale: **due famiglie senza provenienza
 dichiarata** (`meanrev_vol`, `london_breakout`) — annotazione finche' restano chiuse,
 **bloccante** se qualcuno propone di riaprirle.
 
@@ -416,9 +416,9 @@ Chiedilo esplicitamente e riporta la risposta.
 citare numeri a memoria: **eseguilo**.
 
 ```
-python -m core.trial_ledger                  # stato di tutte le famiglie + verifica
-python -m core.trial_ledger --futilita 250   # soglia di futilita' a n osservazioni
-python -m core.trial_ledger --check          # exit 1 se budget/holdout/fonti non tornano
+python -m motore.core.trial_ledger                  # stato di tutte le famiglie + verifica
+python -m motore.core.trial_ledger --futilita 250   # soglia di futilita' a n osservazioni
+python -m motore.core.trial_ledger --check          # exit 1 se budget/holdout/fonti non tornano
 ```
 
 Dato: [`decisioni/trial_ledger.json`](../../decisioni/trial_ledger.json) — ogni voce cita le
@@ -455,9 +455,9 @@ Budget in vigore (li stampa il comando, non fidarti di questa riga se diverge):
   due → **BLOCCA**. Primo caso: `momentum_ultima_mezzora`, parente di `opening_range` (DECISIONS 2026-10-09).
 
 **Test passati da `prop-lab`** (dal 2026-10-08). La pipeline del socio registra ogni variante e ogni apertura del
-fuori campione in `prop-lab/results/registry.sqlite`, con l'id della famiglia del contatore, e su dati reali **non
+fuori campione in `motore/prop-lab/results/registry.sqlite`, con l'id della famiglia del contatore, e su dati reali **non
 parte** senza una famiglia `registro_prop_lab: true` con `preregistrazione` in stato `APPROVATA`
-(`prop-lab/lab/gate.py`). `python -m core.trial_ledger --check` confronta registro e contatore: trial diversi,
+(`motore/prop-lab/lab/gate.py`). `python -m motore.core.trial_ledger --check` confronta registro e contatore: trial diversi,
 fuori campione aperto in prop-lab ma `holdout_aperto` vuoto, o una famiglia che il contatore non ha, sono errori.
 Se la verifica fallisce, il test non ha contabilita' e il verdetto e' **BLOCCA**. Le etichette `controllo` e
 `sintetico` non sono famiglie e non contano.
@@ -466,10 +466,10 @@ Se la verifica fallisce, il test non ha contabilita' e il verdetto e' **BLOCCA**
 
 # Checklist 8 — Gestione del rischio e prop (dal 2026-10-06)
 
-Regola completa: [`STRATEGY_LIFECYCLE.md`](../../docs/STRATEGY_LIFECYCLE.md) §4quater; procedura: Step 5bis del
+Regola completa: [`STRATEGY_LIFECYCLE.md`](../../motore/metodo/STRATEGY_LIFECYCLE.md) §4quater; procedura: Step 5bis del
 protocollo. Si controlla in G1 (la pre-registrazione la prevede?) e in G2 (il referto la rispetta?).
 
-1. **Verdetto solo sul binario 1R.** Un overlay (O1-O4 di `core/sizing.py`) che "salva" un 1R negativo e' un
+1. **Verdetto solo sul binario 1R.** Un overlay (O1-O4 di `motore/core/sizing.py`) che "salva" un 1R negativo e' un
    campanello, non un risultato. Un overlay fuori libreria e' un tentativo: `confronta_*` lo rifiuta.
 2. **Valore di dipendenza** (`confronta_overlay`): banda al 95% del rimescolato, falso allarme 5% per overlay, ~1 −
    0,95^k con k overlay. Un AGGIUNGE e' un'ipotesi per il forward, mai un verdetto.
@@ -516,7 +516,7 @@ invalida il risultato. La 1 e la 3 tornano **prima del capitale**: scelta del ri
    accanto a media e Sharpe? Un'attesa positiva con varianza alta puo' non far crescere il conto, e la leva
    amplifica la perdita di crescita come il suo quadrato. Il rischio proposto sta sotto il Kelly frazionario?
    Teoria: `magazzino/fondamenti_tecnici/05_portfolio_rischio/principles.md` (volatility drag, Kelly frazionario);
-   codice: `kelly_crescita`, `kelly_ottimo`, `kelly_frazionario` in `core/verifiche.py`.
+   codice: `kelly_crescita`, `kelly_ottimo`, `kelly_frazionario` in `motore/core/verifiche.py`.
 2. **Sharpe sopra 2 su una strategia retail** = campanello. Sopra 3 senza una prova rigorosa e' quasi sempre un
    errore di metodo: prima di leggere il risultato si ricontrollano i fill (Checklist 3), il look-ahead e la
    survivorship (Checklist 4).

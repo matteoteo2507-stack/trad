@@ -9,7 +9,7 @@ trial: 0
 # Doppio binario sulle famiglie CLOSED
 
 **Domanda di Matteo (06/10):** fra le famiglie etichettate CLOSED ce n'e' una per cui, per aritmetica, il
-doppio binario (1R fisso + overlay, [STRATEGY_LIFECYCLE §4quater](../../../docs/STRATEGY_LIFECYCLE.md)) potrebbe dare
+doppio binario (1R fisso + overlay, [STRATEGY_LIFECYCLE §4quater](../../../motore/metodo/STRATEGY_LIFECYCLE.md)) potrebbe dare
 un risultato diverso?
 
 **Cosa NON puo' cambiare, per costruzione:** il verdetto. Sta sul binario 1R, che e' quello gia' misurato.
@@ -47,7 +47,7 @@ sequenza degli esiti, cosi' com'e', contiene dipendenza.
 
 ## 2. Misura dichiarata PRIMA dell'esecuzione
 
-Script: [`analysis/opening_range/doppio_binario.py`](../../../analysis/opening_range/doppio_binario.py), scritto e
+Script: [`analysis/opening_range/doppio_binario.py`](../codice/opening_range/doppio_binario.py), scritto e
 committato prima di girare. **0 trial**: nessun parametro, asset o filtro scelto, l'holdout della famiglia e'
 gia' speso, la famiglia resta CLOSED qualunque cosa esca.
 

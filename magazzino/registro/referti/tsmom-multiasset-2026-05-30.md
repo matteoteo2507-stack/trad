@@ -3,7 +3,7 @@
 > **DECISIONE (2026-05-30): TSMOM single-asset ARCHIVIATA** (come London, dati conservati). Sviluppo nuove strategie in pausa: focus su consolidamento dell'avviabile (signal copier demo, Confluence). Il progetto portafoglio (§4 opzione 2) resta come possibile ripresa futura, non attivo ora.
 
 > Estende la review single-asset [docs/reviews/tsmom_jpy-2026-05-29.md](tsmom_jpy-2026-05-29.md) con i dati multi-pair raccolti dall'utente.
-> Codice [mql5/tsmom_jpy.mq5](../../../esercizio/mql5/tsmom_jpy.mq5) · [strategies/tsmom/](../../../strategies/tsmom/) · dati [backtest_results/TSMOM/](../../../backtest_results/TSMOM/).
+> Codice [mql5/tsmom_jpy.mq5](../../../esercizio/mql5/tsmom_jpy.mq5) · [strategies/tsmom/](../codice/tsmom/) · dati [backtest_results/TSMOM/](../../../backtest_results/TSMOM/).
 
 ## 1. Dati disponibili (e cosa permettono / non permettono)
 
@@ -53,7 +53,7 @@ Il *concetto* TSMOM è solido in letteratura (Moskowitz-Ooi-Pedersen, JFE 2012).
 
 1. **Archiviare TSMOM come EA single-asset** (come London). Fondato: single-asset = mono-trade, non validabile; universo retail MT5 inadatto.
 2. **Trasformarla in un progetto di ricerca di portafoglio** *serio*, con aspettative realistiche e modeste:
-   - Universo **largo e a bassa correlazione**: aggiungere commodities (oro, petrolio), bond/rate futures, indici regionali — non solo USD-pair. *Ma*: l'infra retail MT5 ha già mostrato di rompersi sugli indici (SP500m −88%) → serve un motore Python ([strategies/tsmom/](../../../strategies/tsmom/)) con dati daily e vol-targeting **a livello di portafoglio**, validato sulle **serie di rendimenti** (non sulle sintesi).
+   - Universo **largo e a bassa correlazione**: aggiungere commodities (oro, petrolio), bond/rate futures, indici regionali — non solo USD-pair. *Ma*: l'infra retail MT5 ha già mostrato di rompersi sugli indici (SP500m −88%) → serve un motore Python ([strategies/tsmom/](../codice/tsmom/)) con dati daily e vol-targeting **a livello di portafoglio**, validato sulle **serie di rendimenti** (non sulle sintesi).
    - Aspettativa onesta post-2010: Sharpe di programma **~0.3–0.5**, con anni negativi (2023, 2025 YTD −9% per SG Trend Index). Non è un quick win.
 3. **Lasciar perdere TSMOM** e prendere la prossima candidata dalla [[project_strategies_pipeline]].
 
@@ -73,7 +73,7 @@ Allo stato, **TSMOM non è avviabile** più di London. Il segnale dei dati + la 
 
 ---
 ### Riproducibilità
-[backtest_results/TSMOM/_multi.py](../../../backtest_results/TSMOM/_multi.py) (breadth dai 3 XML), [_analysis.py](../../../backtest_results/TSMOM/_analysis.py) (USDJPY trade-level), [_gbp_conc.py](../../../backtest_results/TSMOM/_gbp_conc.py) (GBPUSD concentrazione). Metriche: [core/quant_metrics.py](../../../core/quant_metrics.py).
+[backtest_results/TSMOM/_multi.py](../../../backtest_results/TSMOM/_multi.py) (breadth dai 3 XML), [_analysis.py](../../../backtest_results/TSMOM/_analysis.py) (USDJPY trade-level), [_gbp_conc.py](../../../backtest_results/TSMOM/_gbp_conc.py) (GBPUSD concentrazione). Metriche: [core/quant_metrics.py](../../../motore/core/quant_metrics.py).
 
 ### Fonti (ricerca)
 - Moskowitz, Ooi, Pedersen (2012) — *Time Series Momentum*, JFE 104(2). [PDF](http://docs.lhpedersen.com/TimeSeriesMomentum.pdf)

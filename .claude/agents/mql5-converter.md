@@ -1,7 +1,7 @@
 ---
 name: mql5-converter
 description: >-
-  Converte strategie di trading (backtest Python in analysis/**, pseudocodice,
+  Converte strategie di trading (backtest Python in magazzino/registro/codice/**, pseudocodice,
   o specifiche a parole) in Expert Advisor MQL5 compilabili e semanticamente
   fedeli per MetaTrader 5. Usalo quando l'utente chiede di "portare/convertire
   in MQL5", scrivere o correggere un EA .mq5/.mqh, risolvere errori di

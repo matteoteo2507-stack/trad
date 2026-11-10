@@ -5,8 +5,8 @@ Revisore: `.claude/agents/quant-gatekeeper.md`, dopo l'esecuzione unica del trai
 [ULTIMA_MEZZORA_PREREGISTRATION.md](../documenti/ULTIMA_MEZZORA_PREREGISTRATION.md). Lettura rivista: DECISIONS 2026-10-12 (2).
 
 Le misure fatte in questa revisione stanno in due script nuovi, lanciati il 12/10 sui soli dati del train:
-[`verifiche_g2.py`](../../../analysis/ultima_mezzora/verifiche_g2.py) e
-[`descrittivo_anno_migliore.py`](../../../analysis/ultima_mezzora/descrittivo_anno_migliore.py). Sono **descrittivi a
+[`verifiche_g2.py`](../codice/ultima_mezzora/verifiche_g2.py) e
+[`descrittivo_anno_migliore.py`](../codice/ultima_mezzora/descrittivo_anno_migliore.py). Sono **descrittivi a
 posteriori: non decidono, non sono un trial, non riaprono nulla**. Tutti e due riproducono prima i numeri dell'esito
 e si fermano se non tornano. L'holdout non e' stato aperto ne' letto.
 
@@ -200,7 +200,7 @@ esce nel 53,6% dei casi.
 
 ## 6. Un'ipotesi condizionale nata dai descrittivi ha un percorso? Oggi no
 
-Cosa dice [STRATEGY_LIFECYCLE](../../../docs/STRATEGY_LIFECYCLE.md):
+Cosa dice [STRATEGY_LIFECYCLE](../../../motore/metodo/STRATEGY_LIFECYCLE.md):
 - **§3**: una condizione aggiunta e' un filtro. Conta come trial **della stessa famiglia**, ed e' "il piu' pericoloso".
 - **§4**: e' legittima solo se il razionale la prevedeva **senza guardare quali trade hanno perso**. Il test
   operativo ("l'avresti fatta se il backtest fosse stato positivo?") una condizione nata dall'anno migliore non lo passa.

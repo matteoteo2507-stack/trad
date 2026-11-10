@@ -28,7 +28,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Optional
 
-from brokers.base import Order
+from motore.brokers.base import Order
 
 from .models import ParsedSignal, SignalUpdate, TradePlan
 from .planner import late_gate

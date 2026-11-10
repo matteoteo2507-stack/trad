@@ -12,7 +12,7 @@ nota: "CLOSED, NON DIMOSTRATO (25/10): i numeri qui sono misurati su un export d
 > ancora stato calcolato sulla finestra oggetto del test. Le soglie qui sotto non si modificano dopo
 > aver visto i numeri; qualunque modifica va datata e dichiarata nel §8.
 >
-> Ciclo: [STRATEGY_LIFECYCLE.md](../../../docs/STRATEGY_LIFECYCLE.md). Audit di riferimento:
+> Ciclo: [STRATEGY_LIFECYCLE.md](../../../motore/metodo/STRATEGY_LIFECYCLE.md). Audit di riferimento:
 > [reviews/mentor-signals-2026-07-08.md](../referti/mentor-signals-2026-07-08.md).
 
 ---
@@ -36,7 +36,7 @@ stato fatto. È l'occasione di un OOS vero, a costo zero.
 |---|---|
 | **Segnali** | Export `Messaggi tg aggiornati 07-08/` — canale XAU/USD ANALYSIS TEAM, 3.239 messaggi, 10/01/2026 → 07/08/2026, **618 trigger** `BUY/SELL NOW` |
 | **Finestra OOS** | Segnali con timestamp **> 2026-06-12 22:55** (fine della copertura prezzi dell'audit). ~147 trigger, 59 giorni |
-| **Prezzi** | `analysis/trading-bot-eval/data/XAU_spot_M5_ext.csv` — serie originale dell'audit **estesa** con feed MT5 (`XAUUSD.cyr`, First Prudential Markets) dal 2026-06-13 al 2026-08-07 |
+| **Prezzi** | `motore/data/prezzi/XAU_spot_M5_ext.csv` — serie originale dell'audit **estesa** con feed MT5 (`XAUUSD.cyr`, First Prudential Markets) dal 2026-06-13 al 2026-08-07 |
 
 **Validazione della giunzione (eseguita prima della pre-registrazione, non dipende dagli esiti):**
 8.063 barre M5 in comune tra le due fonti, **correlazione 1.000000**, differenza mediana **+$0.060**
@@ -47,7 +47,7 @@ segmento MT5 prima della giunzione. Su distanze di stop nell'ordine di $10 il re
 
 Identici all'audit dell'8 luglio. **Nessuna ritaratura è ammessa in questo test.**
 
-- Motore: `analysis/mentor_signals/parse.py` → `backtest.py`, invariati.
+- Motore: `magazzino/registro/codice/mentor_signals/parse.py` → `backtest.py`, invariati.
 - Geometria: entry/SL/TP come pubblicati dal canale; exit su **TP1**.
 - Costo: **$0.30** round-trip per operazione.
 - Baseline: **side casuale** sulla stessa geometria e sugli stessi tempi (il confronto che rende il
@@ -85,7 +85,7 @@ e non si dichiara nulla in nessuna direzione.
    dell'08/07 con quello del 07/08: **1 segnale cancellato** (BUY del 07/07 06:25, entry 4130,
    TP 4135/4140/4145, SL 4120) e **0 modifiche** su 2.890 messaggi. Tasso di cancellazione osservato
    ~0,2%. Il delta è conservato in
-   [`analysis/mentor_signals/deleted_signals/`](../../../analysis/mentor_signals/deleted_signals/).
+   [`magazzino/registro/codice/mentor_signals/deleted_signals/`](../codice/mentor_signals/deleted_signals/).
    → L'audit indicava la survivorship come "non escludibile"; ora è **confermata a tasso basso**.
    Un tasso dello 0,2% non sposta le conclusioni, ma **va misurato di nuovo a ogni export**: se
    crescesse, il record del canale smetterebbe di essere una fonte affidabile.

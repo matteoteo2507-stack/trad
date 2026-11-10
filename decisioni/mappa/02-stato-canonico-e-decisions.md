@@ -47,7 +47,7 @@ La cura è stata strutturale: lo stato vive in un posto solo, gli altri file **l
    precede**, in qualunque file. Se un documento contraddice una voce più recente, è quel documento
    a essere vecchio: si segnala, non si fa la media.
 3. **Metodo** (`STRATEGY_LIFECYCLE`, `QUANT_REVIEW_PROTOCOL`) → come si è arrivati al numero.
-4. **Contatori** → `python -m core.trial_ledger`, mai numeri a memoria.
+4. **Contatori** → `python -m motore.core.trial_ledger`, mai numeri a memoria.
 
 ## Come si aggiorna
 

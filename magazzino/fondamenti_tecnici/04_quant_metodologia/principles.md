@@ -8,7 +8,7 @@ tipo: concetti
 
 # Metodologia Quant & Bias del Backtest
 
-> Un backtest bello non prova nulla: è una "scena del crimine" da interrogare, non un trofeo. Un'equity curve in salita con Sharpe 1.5-1.7 fallisce live se le fondamenta statistiche sono marce. I tre bias che distruggono una strategia sono **look-ahead**, **overfitting / data snooping** e **survivorship**; i costi di transazione vengono dopo. Questo file è **la teoria dietro la nostra quant-review** — i rimedi qui descritti sono già implementati in [`core/quant_metrics.py`](../../../core/quant_metrics.py) e operativi nel protocollo [`QUANT_REVIEW_PROTOCOL.md`](../../../docs/QUANT_REVIEW_PROTOCOL.md).
+> Un backtest bello non prova nulla: è una "scena del crimine" da interrogare, non un trofeo. Un'equity curve in salita con Sharpe 1.5-1.7 fallisce live se le fondamenta statistiche sono marce. I tre bias che distruggono una strategia sono **look-ahead**, **overfitting / data snooping** e **survivorship**; i costi di transazione vengono dopo. Questo file è **la teoria dietro la nostra quant-review** — i rimedi qui descritti sono già implementati in [`motore/core/quant_metrics.py`](../../../motore/core/quant_metrics.py) e operativi nel protocollo [`QUANT_REVIEW_PROTOCOL.md`](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md).
 
 ## Concetti
 
@@ -20,7 +20,7 @@ tipo: concetti
 1. **Perimetro**: strumenti, timeframe e orari in cui si applica. Senza perimetro non si sa su quali dati testarla.
 2. **Quando e' accesa.** Le condizioni di regime, se ci sono, fanno parte della strategia e si dichiarano prima. Un
    filtro aggiunto dopo aver visto l'esito e' una componente nuova, e si testa per ablazione
-   ([STRATEGY_LIFECYCLE §4bis](../../../docs/STRATEGY_LIFECYCLE.md)).
+   ([STRATEGY_LIFECYCLE §4bis](../../../motore/metodo/STRATEGY_LIFECYCLE.md)).
 3. **Regole deterministiche, fissate prima dei dati**: con gli stessi dati, due persone o un codice producono gli
    stessi trade. Se serve un giudizio umano e' un metodo **discrezionale**, che si misura col track record prospettico
    e non col backtest.
@@ -30,7 +30,7 @@ tipo: concetti
    Senza, e' un pattern, non un'ipotesi.
 
 Una strategia produce **trade**, e si misura in R contro un baseline casuale con lo stesso rischio
-([QUANT_REVIEW_PROTOCOL](../../../docs/QUANT_REVIEW_PROTOCOL.md)).
+([QUANT_REVIEW_PROTOCOL](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md)).
 
 **Strumento** (di lettura del prezzo): un metodo che trasforma i dati in una lettura (un livello, una previsione di
 volatilita', un regime) con una **proprieta' misurabile**, e **senza regole di trade**. Esempi: il GARCH prevede la
@@ -56,7 +56,7 @@ Insidia chiave: il look-ahead non produce sempre un backtest "troppo perfetto". 
 - normalizzare il segnale con i **forward return**;
 - disallineamento dei timestamp / errori di timing su quando il dato arriva davvero.
 
-**Rimedio**: ogni modello, parametro e dataset deve essere strettamente adattato alla **filtration** dei dati disponibili al momento della decisione — nessun dato futuro deve filtrare nel segnale. Nel repo il rischio è formalizzato dal **purging + embargo** della CPCV ([`cpcv_splits`](../../../core/quant_metrics.py)) e dal caveat operativo sulla regime timeline (`data/regime_timeline_gbpusd.csv`): la label calcolata sul close del giorno stesso è look-ahead e va usata **solo con lag di 1 giorno** per strategie intraday.
+**Rimedio**: ogni modello, parametro e dataset deve essere strettamente adattato alla **filtration** dei dati disponibili al momento della decisione — nessun dato futuro deve filtrare nel segnale. Nel repo il rischio è formalizzato dal **purging + embargo** della CPCV ([`cpcv_splits`](../../../motore/core/quant_metrics.py)) e dal caveat operativo sulla regime timeline (`motore/data/regime_timeline_gbpusd.csv`): la label calcolata sul close del giorno stesso è look-ahead e va usata **solo con lag di 1 giorno** per strategie intraday.
 
 **Criterio generale: filtraggio contro lisciamento** (buco Quant Guild 20, dal 2026-09-30). Tre
 compiti diversi usano informazione diversa:
@@ -100,17 +100,17 @@ rimescolarli restituisce le stesse identiche statistiche in ordine diverso.
 
 - **Cosa misura davvero**: la dipendenza dal percorso → distribuzione del **maxDD** e delle serie
   negative. Serve per il **sizing** e per fissare le soglie di ritiro
-  ([STRATEGY_LIFECYCLE §8bis](../../../docs/STRATEGY_LIFECYCLE.md)), non per validare un edge.
+  ([STRATEGY_LIFECYCLE §8bis](../../../motore/metodo/STRATEGY_LIFECYCLE.md)), non per validare un edge.
 - **Cosa NON misura**: se l'edge esiste. Per quello servono metriche che **penalizzino il numero di
   tentativi** (DSR), che confrontino **best-IS vs mediana-OOS** (PBO/CSCV), o che permutino la
-  **serie dei prezzi** e non l'ordine dei trade ([`mc_permutation_test`](../../../core/quant_metrics.py),
+  **serie dei prezzi** e non l'ordine dei trade ([`mc_permutation_test`](../../../motore/core/quant_metrics.py),
   block bootstrap sui rendimenti).
 
 Regola: *rimescolare i trade risponde a "quanto può andare male il percorso", mai a "il segnale è
 reale".* Un flusso di validazione che ha solo l'OOS singolo e il reshuffle **non ha alcun controllo
 sulla molteplicità**.
 
-**Rimedi nel repo** (tutti in [`core/quant_metrics.py`](../../../core/quant_metrics.py)): il numero di trial provati va penalizzato col **Deflated Sharpe Ratio** ([`deflated_sharpe_ratio`](../../../core/quant_metrics.py)); la probabilità che il best IS sia sotto la mediana OOS è il **PBO via CSCV** ([`pbo_cscv`](../../../core/quant_metrics.py)); il multiple-testing tra varianti si controlla col **White's Reality Check** ([`whites_reality_check`](../../../core/quant_metrics.py)); la robustezza vs rumore col **Monte Carlo permutation test** ([`mc_permutation_test`](../../../core/quant_metrics.py)).
+**Rimedi nel repo** (tutti in [`motore/core/quant_metrics.py`](../../../motore/core/quant_metrics.py)): il numero di trial provati va penalizzato col **Deflated Sharpe Ratio** ([`deflated_sharpe_ratio`](../../../motore/core/quant_metrics.py)); la probabilità che il best IS sia sotto la mediana OOS è il **PBO via CSCV** ([`pbo_cscv`](../../../motore/core/quant_metrics.py)); il multiple-testing tra varianti si controlla col **White's Reality Check** ([`whites_reality_check`](../../../motore/core/quant_metrics.py)); la robustezza vs rumore col **Monte Carlo permutation test** ([`mc_permutation_test`](../../../motore/core/quant_metrics.py)).
 
 ### 3. Survivorship bias
 
@@ -128,7 +128,7 @@ Procedura raccomandata contro l'overfitting:
 3. testa sul successivo blocco out-of-sample;
 4. fai rotolare il processo in avanti nel tempo.
 
-Riduce la probabilità di overfitting e produce set di parametri più robusti. Implementato in [`walk_forward`](../../../core/quant_metrics.py) (anchored e rolling); il protocollo richiede OOS **mai sotto il 20%** del sample e misura il **degrado** IS→OOS come metrica di verdict.
+Riduce la probabilità di overfitting e produce set di parametri più robusti. Implementato in [`walk_forward`](../../../motore/core/quant_metrics.py) (anchored e rolling); il protocollo richiede OOS **mai sotto il 20%** del sample e misura il **degrado** IS→OOS come metrica di verdict.
 
 **Dominio di validità (mappa dei modelli).** Il walk-forward valida la **persistenza di un edge** su regimi già visti; **non** predice il **timing di un evento di coda inedito** (il 2008 non era nel walk-forward del 2007). Sono due domande diverse e non vanno confuse:
 - *"Questa strategia regge fuori campione / cambia regime?"* → sì, è il lavoro del walk-forward (e dell'holdout: vedi [[feedback_backtest_long_history_falsification|storico=laboratorio di falsificazione]]).
@@ -142,7 +142,7 @@ Considerazioni reali ma **non bias core**: costi di transazione, impatto bid-ask
 
 ### 6. Strumenti di backtest (librerie Python) — riferimento
 
-Il nostro harness è custom (`core/runner.py` + `backtesters/`), pensato per integrarsi con la quant-review. Se in futuro servisse un **motore pronto** per esplorare grandi griglie di parametri, walk-forward o portafogli multi-asset più velocemente, le librerie Python serie sono:
+Il nostro harness è custom (`magazzino/dormienti/orchestratore/runner.py` + `magazzino/dormienti/backtesters/`), pensato per integrarsi con la quant-review. Se in futuro servisse un **motore pronto** per esplorare grandi griglie di parametri, walk-forward o portafogli multi-asset più velocemente, le librerie Python serie sono:
 
 - **pybroker** (`pip install lib-pybroker`) — **la più allineata alla nostra filosofia**. Engine NumPy/Numba veloce, ML-native, **walk-forward** integrato, e soprattutto **prevenzione del look-ahead by-design** (gli indicatori vedono solo il passato) + **bootstrap metrics**: `pybroker.eval` calcola CI bootstrap **BCa** (bias-corrected & accelerated) su Sharpe/profit-factor e upper-bound CI sul max drawdown (99.9/99/95/90%). È l'opposto dei "scoring engine" commerciali che premiano il backtest grezzo.
 - **vectorbt** — backtest vettorizzati molto rapidi, ideale per sweep di parametri.
@@ -150,7 +150,7 @@ Il nostro harness è custom (`core/runner.py` + `backtesters/`), pensato per int
 
 Caveat: un motore veloce rende facilissimo il look-ahead e l'overfitting su griglie enormi — vanno comunque passati i gate di §1-§4 (DSR, PBO, walk-forward). Un pattern d'integrazione pulito (review FinceptTerminal) è "**Python single source of truth**": ogni engine dietro un'interfaccia provider comune.
 
-**Complemento metodologico (review pybroker → implementato).** Il nostro `core/quant_metrics.py` copre la *distribuzione null* (MC permutation, White's RC) e la penalizzazione multiple-testing (DSR, PBO). Il tassello complementare — l'**intervallo di confidenza sul metric osservato** (es. lower bound dello Sharpe reale) — è ora implementato dependency-free in [`bca_bootstrap_ci`](../../../core/quant_metrics.py) (bootstrap **BCa**, bias-corrected & accelerated, Efron 1987): dato un array di returns e una metrica, restituisce `point`/`low`/`high`. **Regola d'oro**: decidi sul **lower bound**, non sul valore centrale (uno Sharpe 2.2 su 40 trade può avere CI 95% con estremo inferiore < 0 → edge non affidabile). Resta valida l'opzione di adottare l'engine completo `pip install lib-pybroker` per backtest+eval. Dettagli nel catalogo review esterno (`github_repo_reviews/pybroker.md`).
+**Complemento metodologico (review pybroker → implementato).** Il nostro `motore/core/quant_metrics.py` copre la *distribuzione null* (MC permutation, White's RC) e la penalizzazione multiple-testing (DSR, PBO). Il tassello complementare — l'**intervallo di confidenza sul metric osservato** (es. lower bound dello Sharpe reale) — è ora implementato dependency-free in [`bca_bootstrap_ci`](../../../motore/core/quant_metrics.py) (bootstrap **BCa**, bias-corrected & accelerated, Efron 1987): dato un array di returns e una metrica, restituisce `point`/`low`/`high`. **Regola d'oro**: decidi sul **lower bound**, non sul valore centrale (uno Sharpe 2.2 su 40 trade può avere CI 95% con estremo inferiore < 0 → edge non affidabile). Resta valida l'opzione di adottare l'engine completo `pip install lib-pybroker` per backtest+eval. Dettagli nel catalogo review esterno (`github_repo_reviews/pybroker.md`).
 
 ### 7. Finestre sovrapposte → persistenza/IC fasulla (stride / disjoint sampling)
 
@@ -273,7 +273,7 @@ strumenti correlati non sono indipendenti.
   maggioranza è non-statistica, la validazione quant **non basta** come gate d'accensione.
 - **Il qualitativo genera ipotesi, non valida.** Nessuna profondità di ragionamento promuove una
   strategia bocciata dai gate statistici; nessun aggiornamento bayesiano su dati già usati.
-- **Sharpe primario, max drawdown secondario.** Lo Sharpe è la metrica di test principale; il max DD è di contorno. Ma lo Sharpe assume return normali — affianca sempre Sortino/Calmar/CVaR/Ulcer e, per leggere code e asimmetria senza assumere normalità, **Omega** ([`omega_ratio`](../../../core/quant_metrics.py)) e **Tail ratio** ([`tail_ratio`](../../../core/quant_metrics.py)). Quando esiste un benchmark di riferimento (es. buy&hold dell'asset), usa le metriche relative — alpha, beta, information ratio, tracking error, R² ([`benchmark_metrics`](../../../core/quant_metrics.py)) — per distinguere edge reale da semplice esposizione direzionale.
+- **Sharpe primario, max drawdown secondario.** Lo Sharpe è la metrica di test principale; il max DD è di contorno. Ma lo Sharpe assume return normali — affianca sempre Sortino/Calmar/CVaR/Ulcer e, per leggere code e asimmetria senza assumere normalità, **Omega** ([`omega_ratio`](../../../motore/core/quant_metrics.py)) e **Tail ratio** ([`tail_ratio`](../../../motore/core/quant_metrics.py)). Quando esiste un benchmark di riferimento (es. buy&hold dell'asset), usa le metriche relative — alpha, beta, information ratio, tracking error, R² ([`benchmark_metrics`](../../../motore/core/quant_metrics.py)) — per distinguere edge reale da semplice esposizione direzionale.
 - **Prima i 3 bias, poi i costi.** Non perdere tempo a raffinare spread/slippage su una strategia che non sopravvive a look-ahead/overfitting/survivorship.
 - **Filtration sempre**: nessun dato futuro nella decisione. Regime timeline solo con lag ≥1 giorno per intraday.
 - **Mai persistenza/transizioni/IC da finestre sovrapposte.** Usa stride/disjoint sampling (stride = lunghezza finestra), riporta `n_eff`; l'overlapping va mostrato solo come confronto, mai come prova.
@@ -288,8 +288,8 @@ strumenti correlati non sono indipendenti.
 
 - [[03_regimi_macro]] — l'edge è condizionato al regime; un backtest "tutto in regime favorevole" è una forma di selection bias.
 - [`06_stock_selection`](../06_stock_selection) — dove il survivorship bias morde di più (universo equity).
-- [`core/quant_metrics.py`](../../../core/quant_metrics.py) — implementazione dei rimedi: DSR, PBO via CSCV, CPCV (purging+embargo), walk-forward, Monte Carlo permutation, White's Reality Check, BCa bootstrap CI sul metric osservato (`bca_bootstrap_ci`).
-- [`docs/QUANT_REVIEW_PROTOCOL.md`](../../../docs/QUANT_REVIEW_PROTOCOL.md) — protocollo passo-passo che applica questa teoria.
+- [`motore/core/quant_metrics.py`](../../../motore/core/quant_metrics.py) — implementazione dei rimedi: DSR, PBO via CSCV, CPCV (purging+embargo), walk-forward, Monte Carlo permutation, White's Reality Check, BCa bootstrap CI sul metric osservato (`bca_bootstrap_ci`).
+- [`motore/metodo/QUANT_REVIEW_PROTOCOL.md`](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md) — protocollo passo-passo che applica questa teoria.
 - [`.claude/agents/quant-gatekeeper.md`](../../../.claude/agents/quant-gatekeeper.md) — il revisore: fa rispettare il protocollo ai gate G1 e G2. Dal 2026-10-13 è l'unico: il primo (`agents/quant_reviewer.md`) è ritirato.
 - Casi reali (entrambi **NO-GO**): [`magazzino/registro/referti/london_breakout-2026-05-29.md`](../../registro/referti/london_breakout-2026-05-29.md) e [`magazzino/registro/referti/tsmom_jpy-2026-05-29.md`](../../registro/referti/tsmom_jpy-2026-05-29.md). Per il London Breakout il cap era proprio il **look-ahead della regime timeline** (label same-day).
 - [`DECISIONS.md`](../../../decisioni/DECISIONS.md) — log delle decisioni GO/NO-GO derivanti dalle review.

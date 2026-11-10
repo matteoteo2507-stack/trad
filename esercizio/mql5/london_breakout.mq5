@@ -4,7 +4,7 @@
 //|                                                                  |
 //|  Strategia automatica meccanica: rottura del range della         |
 //|  sessione asiatica all'apertura di Londra. Versione MQL5         |
-//|  della logica Python `strategies/london_breakout/`.              |
+//|  della logica Python `magazzino/dormienti/strategies/london_breakout/`.              |
 //|                                                                  |
 //|  Riferimenti edge:                                               |
 //|   Osler, "Currency Orders and Exchange-Rate Dynamics", AER 2003. |

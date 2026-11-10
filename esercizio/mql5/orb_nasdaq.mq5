@@ -4,8 +4,8 @@
 //|                                                                   |
 //|  EA MECCANICO per il WALK-FORWARD LIVE dell'Opening-Range         |
 //|  Breakout v2 su NAS100 (criteri utente+socio, 1:3).              |
-//|  Port fedele di analysis/opening_range/backtest_v2.py            |
-//|  (load/adx_series/OR_START/OR_END in analysis/opening_range/backtest.py).|
+//|  Port fedele di magazzino/registro/codice/opening_range/backtest_v2.py            |
+//|  (load/adx_series/OR_START/OR_END in magazzino/registro/codice/opening_range/backtest.py).|
 //|                                                                   |
 //|  STATUS: NO-GO sui 14.5y di backtest. Il forward serve SOLO a    |
 //|  risolvere la domanda aperta: il marginale-positivo 2020-2026 e'  |

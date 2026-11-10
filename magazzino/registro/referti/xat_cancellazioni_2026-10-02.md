@@ -45,7 +45,7 @@ cancellazione 0,2%), **non poteva vederli**. Coglie solo i messaggi presenti nel
 secondo, mentre questi spariscono entro pochi giorni, prima di qualunque export.
 
 **Controprova con l'export del 18/09** (ripristinato dall'utente in `_export_telegram_VECCHIO_2026-09-18/`,
-confronto con [confronta_export.py](../../../analysis/mentor_signals/confronta_export.py)):
+confronto con [confronta_export.py](../codice/mentor_signals/confronta_export.py)):
 
 - fra il 18/09 e il 02/10 sono spariti **solo 2 messaggi di spam** (0,05%) e nessun segnale. Nessun
   testo e' stato modificato e nessun id e' stato inserito a posteriori;

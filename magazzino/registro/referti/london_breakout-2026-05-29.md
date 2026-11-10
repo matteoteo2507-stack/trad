@@ -1,8 +1,8 @@
 # Quant Review — London Breakout (GBPUSD M15) — 2026-05-29
 
 Reviewer: Quant Reviewer (`agents/quant_reviewer.md`, ritirato il 2026-10-13) ·
-Protocollo: [docs/QUANT_REVIEW_PROTOCOL.md](../../../docs/QUANT_REVIEW_PROTOCOL.md) ·
-Motore metriche: [core/quant_metrics.py](../../../core/quant_metrics.py) ·
+Protocollo: [docs/QUANT_REVIEW_PROTOCOL.md](../../../motore/metodo/QUANT_REVIEW_PROTOCOL.md) ·
+Motore metriche: [core/quant_metrics.py](../../../motore/core/quant_metrics.py) ·
 Codice: [mql5/london_breakout.mq5](../../../esercizio/mql5/london_breakout.mq5)
 
 > **Stance:** adversariale. L'onere della prova è sulla strategia. In ogni ambiguità ho scelto il verdict più conservativo.
@@ -78,7 +78,7 @@ Net +413.13, PF 1.0824, Sharpe daily **+0.33**, MaxDD −9.7%, **MC p=0.37**, **
 
 ## Robustezza per-regime (il cuore della tesi — e dove cade)
 
-Join dei 686 trade col regime ([data/regime_timeline_gbpusd.csv](../../../data/regime_timeline_gbpusd.csv)) per data di apertura (650 match; 36 trade Gen–Mar 2020 precedono l'inizio della timeline).
+Join dei 686 trade col regime ([data/regime_timeline_gbpusd.csv](../../../motore/data/regime_timeline_gbpusd.csv)) per data di apertura (650 match; 36 trade Gen–Mar 2020 precedono l'inizio della timeline).
 
 **Con label same-day (look-ahead — NON disponibile live alle 07:00):**
 
@@ -137,7 +137,7 @@ Anche i bucket "vincenti" same-day si erodono; combinati col no-look-ahead (sopr
 
 ## Test mancanti prima del live
 
-- [ ] **Produrre i backtest B (`PARTIAL_TRAIL`) e C (`FULL_TRAIL`)** su MT5, stesso periodo/ticks → solo allora PBO exit-mode (s=16, T×3) + White's Reality Check ([core/quant_metrics.py](../../../core/quant_metrics.py)).
+- [ ] **Produrre i backtest B (`PARTIAL_TRAIL`) e C (`FULL_TRAIL`)** su MT5, stesso periodo/ticks → solo allora PBO exit-mode (s=16, T×3) + White's Reality Check ([core/quant_metrics.py](../../../motore/core/quant_metrics.py)).
 - [ ] **Ricostruire il filtro di regime point-in-time** (label di D−1) e ri-misurare Sharpe/DSR/PBO sulla serie *gated*. Senza questo, ogni numero per-regime è inutilizzabile.
 - [ ] **Hold-out OOS reale** (non la coda 2025–2026): walk-forward con riottimizzazione dei parametri per fold, OOS ≥ 20%.
 - [ ] **Costi realistici**: spread variabile da tick + commissione prop (~$7/lot round-turn) + slippage 2× su stop. Ri-misurare PF/Sharpe.
@@ -154,4 +154,4 @@ Non promuovibile a live in nessuna forma con i dati attuali.
 ---
 
 ### Appendice — riproducibilità
-Script di estrazione/analisi in [backtest_results/london_breakout/](../../../backtest_results/london_breakout/): `_extract.py` (pairing in→out + diff duplicati), `_analysis.py` (battery completa), `_regime_lag.py` (look-ahead vs point-in-time). Metriche da [core/quant_metrics.py](../../../core/quant_metrics.py). Dati: i due xlsx variante A + [data/regime_timeline_gbpusd.csv](../../../data/regime_timeline_gbpusd.csv).
+Script di estrazione/analisi in [backtest_results/london_breakout/](../../../backtest_results/london_breakout/): `_extract.py` (pairing in→out + diff duplicati), `_analysis.py` (battery completa), `_regime_lag.py` (look-ahead vs point-in-time). Metriche da [core/quant_metrics.py](../../../motore/core/quant_metrics.py). Dati: i due xlsx variante A + [data/regime_timeline_gbpusd.csv](../../../motore/data/regime_timeline_gbpusd.csv).

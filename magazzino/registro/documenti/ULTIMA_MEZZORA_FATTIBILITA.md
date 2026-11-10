@@ -9,7 +9,7 @@ nota: "Passi a 0 trial prima della G1. Fatti il 09/10: famiglia (1, nuova), cost
 
 > I passi che si fanno **senza guardare nessun rendimento**, per sapere se H1 merita una pre-registrazione.
 > La scheda della strada (fonte, meccanismo, domande aperte) e' nel [backlog, sezione H](../../../decisioni/BACKLOG_RICERCA.md); qui
-> stanno i numeri misurati. Script: [`analysis/ultima_mezzora/spread_mt5.py`](../../../analysis/ultima_mezzora/spread_mt5.py).
+> stanno i numeri misurati. Script: [`magazzino/registro/codice/ultima_mezzora/spread_mt5.py`](../codice/ultima_mezzora/spread_mt5.py).
 
 ## Passo 2 — Costi (accessibilita'): SOTTO la soglia
 
@@ -58,7 +58,7 @@ sono esattamente i giorni **dal 9 al 27 marzo 2026**, quando gli Stati Uniti era
 giorni senza misura sono festivita' USA (3/4, 25/5, 19/6, 3/7, 7/9).
 
 Quindi nel 2026 il server seguiva New York + 7 ore, e la convenzione "Europe/Bucharest" usata per i file MT5 di US100 e
-US500 in [`analysis/opening_range/backtest.py`](../../../analysis/opening_range/backtest.py) (riga 64) **sbaglia di un'ora circa
+US500 in [`magazzino/registro/codice/opening_range/backtest.py`](../codice/opening_range/backtest.py) (riga 64) **sbaglia di un'ora circa
 quattro settimane all'anno** (tre a marzo, una fra fine ottobre e inizio novembre).
 
 - **Impatto sui verdetti: nessuno noto.** Il NO-GO dell'ORB poggia sui dati Dukascopy, che sono in UTC (DECISIONS
@@ -73,8 +73,8 @@ gia' attraversati dall'ORB non fanno da holdout. Motivazione e condizioni: DECIS
 
 ## Passo 3 — Dati: reggono, con quattro condizioni per la G1
 
-**Come.** Script [`analysis/ultima_mezzora/verifica_dati.py`](../../../analysis/ultima_mezzora/verifica_dati.py), lanciato il
-2026-10-09. Per ogni file intraday in casa: controlli meccanici di `core/data_checks.py`, coerenza dei prezzi, fuso orario
+**Come.** Script [`magazzino/registro/codice/ultima_mezzora/verifica_dati.py`](../codice/ultima_mezzora/verifica_dati.py), lanciato il
+2026-10-09. Per ogni file intraday in casa: controlli meccanici di `motore/core/data_checks.py`, coerenza dei prezzi, fuso orario
 (barre nella pausa dei futures USA, 17:15-17:45 ET) e copertura della finestra **seduta per seduta** dal calendario di
 borsa (`exchange_calendars`: XNYS per gli indici, COMEX per l'oro). La finestra segue la Tab. 1 del paper: indici USA
 15:30-16:00 ET (12:30-13:00 nelle chiusure anticipate), oro 13:00-13:30 ET (chiusura COMEX). **Nessun rendimento
@@ -110,7 +110,7 @@ Controlli meccanici (monotonia, duplicati, prezzi non positivi) **a posto su tut
 
 ## Passo 4 — Potenza: gli indici USA bastano solo a effetto pieno; l'oro no; serve un indice europeo
 
-**Come.** Script [`analysis/ultima_mezzora/potenza.py`](../../../analysis/ultima_mezzora/potenza.py), lanciato il 2026-10-09.
+**Come.** Script [`magazzino/registro/codice/ultima_mezzora/potenza.py`](../codice/ultima_mezzora/potenza.py), lanciato il 2026-10-09.
 Dai nostri dati prende **solo** cio' che non dipende dal segnale: la deviazione del rendimento dell'ultima mezz'ora
 (r_LH), la correlazione fra strumenti e il numero di sedute. **Non calcola il rendimento della giornata (r_ROD) ne'
 nessuna media condizionata al segnale.** L'effetto atteso viene dal paper, pieno e dimezzato (09 §4.7), con due metriche:
@@ -173,7 +173,7 @@ cioe' **un'altra ora** rispetto agli USA e
 ## Holdout europeo — dati scaricati (11/10), sigillati
 
 Decisione di Matteo (11/10): si scaricano. Script
-[`analysis/ultima_mezzora/scarica_dukascopy.py`](../../../analysis/ultima_mezzora/scarica_dukascopy.py): DAX, Euro Stoxx 50 e
+[`magazzino/registro/codice/ultima_mezzora/scarica_dukascopy.py`](../codice/ultima_mezzora/scarica_dukascopy.py): DAX, Euro Stoxx 50 e
 FTSE 100 a M5 dal 2020, Dukascopy, UTC. **Sono l'holdout**: su questi file si lanciano solo i controlli meccanici di
 `verifica_dati.py` (nessun rendimento, nemmeno la deviazione) finche' la pre-registrazione non e' approvata.
 

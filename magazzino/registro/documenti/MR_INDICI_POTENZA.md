@@ -10,7 +10,7 @@ trial: 0
 
 **Scelto da Matteo il 08/10** come primo candidato di ricerca dopo il collaudo. Questo e' il **primo passo**: contare
 i segnali e calcolare quanta potenza c'e', **prima** di pre-registrare. Script:
-[`analysis/meanrev_indici/potenza.py`](../../../analysis/meanrev_indici/potenza.py). Non calcola **nessun rendimento
+[`magazzino/registro/codice/meanrev_indici/potenza.py`](../codice/meanrev_indici/potenza.py). Non calcola **nessun rendimento
 successivo a un segnale**: conta i segnali e usa solo l'ATR al segnale (informazione nota prima). 0 trial.
 
 ## 1. Il candidato col metodo della fase RICERCA ([09_fonti_di_vantaggio](../../fondamenti_tecnici/09_fonti_di_vantaggio/principles.md) §4)

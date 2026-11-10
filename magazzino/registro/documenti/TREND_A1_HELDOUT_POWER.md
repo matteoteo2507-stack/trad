@@ -6,8 +6,8 @@
 >
 > **Costo: 0 trial.** È un calcolo di **potenza** e un **inventario**, non un test dell'ipotesi:
 > nessuna regola, nessun parametro, nessun verdetto su A1. Motori:
-> [`analysis/trend/power_two_groups.py`](../../../analysis/trend/power_two_groups.py) e
-> [`analysis/trend/heldout_pool.py`](../../../analysis/trend/heldout_pool.py).
+> [`magazzino/registro/codice/trend/power_two_groups.py`](../codice/trend/power_two_groups.py) e
+> [`magazzino/registro/codice/trend/heldout_pool.py`](../codice/trend/heldout_pool.py).
 >
 > Esiste per la regola nata dal FADE: *una ragione plausibile e non quantificata tiene in piedi
 > lavoro inutile per mesi*. Il "secondo test" del FADE era **fuori scala di 40x**, e nessuno lo
@@ -144,7 +144,7 @@ mappa** — e costerebbe il terzo e ultimo round del ramo trend.
 ## 8. Addendum 2026-10-03 — la condizione §7 contata gratis, prima di comprare
 
 Richiesta di Matteo (03/10): verificare la riga G9 sul broker MT5 e fare il conteggio gratuito.
-Motore: [`analysis/trend/heldout_pool_mt5.py`](../../../analysis/trend/heldout_pool_mt5.py)
+Motore: [`magazzino/registro/codice/trend/heldout_pool_mt5.py`](../codice/trend/heldout_pool_mt5.py)
 (`--scarica`, `--azioni`, `--futures`). **0 trial**: inventario, nessun esito di strategia.
 Stessa finestra (dal 2017-12-26), stessa soglia (20%), stessa formula `n/(1+(n−1)ρ)`.
 
@@ -189,7 +189,7 @@ punto 3 sullo scenario **ottimistico**, dichiarando prima che un nullo sarebbe "
 
 Richiesta di Matteo (25/10): prima di comprare Pinnacle (99 $, [ricerca dati](../referti/ricerca_dati_2026-10-25.md)),
 vedere se bastano i futures gratuiti, che finiscono il **2024-03-28** (ultima riga dei CSV, verificata il 25/10).
-Motore: [`analysis/trend/a1_potenza_finestra.py`](../../../analysis/trend/a1_potenza_finestra.py). **0 trial**: varianza
+Motore: [`magazzino/registro/codice/trend/a1_potenza_finestra.py`](../codice/trend/a1_potenza_finestra.py). **0 trial**: varianza
 dal campione di scoperta (gia' usato il 21/09), sugli strumenti nuovi solo prezzi.
 
 **Il punto di metodo.** La dispersione fra strumenti del §3 (0,417) e' quasi tutta **rumore dei pochi trade**: la

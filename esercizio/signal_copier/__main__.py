@@ -246,7 +246,7 @@ def _build_broker(prefix: str, cfg: dict) -> Any:
       esporre "XAUUSD.cyr". Senza mappatura ogni ordine viene rifiutato dal broker.
       Stessa classe del bug [Trade disabled] del 2026-08-12.
     """
-    from brokers.mt5 import MT5Broker
+    from motore.brokers.mt5 import MT5Broker
 
     login = os.getenv(f"{prefix}_LOGIN")
     password = os.getenv(f"{prefix}_PASSWORD")

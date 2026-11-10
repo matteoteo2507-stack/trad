@@ -1,0 +1,532 @@
+# Ciclo di vita di una strategia — loop di ricerca, gate e criteri di bocciatura
+
+> **Il problema che questo documento risolve.** Un loop di miglioramento è la cosa giusta da fare in
+> ingegneria: provi, misuri, correggi, riprovi. Ma su un **dataset storico fisso** lo stesso loop è
+> una **macchina per generare falsi positivi**: ogni iterazione è un tentativo in più, e se scegli la
+> variante migliore fra molte stai selezionando rumore. Il loop è utile solo se accompagnato da
+> **contabilità dei tentativi**, **dati sigillati** e **criteri di morte dichiarati in anticipo**.
+> Senza questi tre, "ricerca → backtest → rifinitura → ricerca" è p-hacking con più passaggi.
+
+Riferimenti teorici: [04_quant_metodologia §2](../../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)
+(overfitting/data snooping, DSR, PBO), [§9](../../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)
+(pre-mortem). Protocollo di misura: [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md).
+
+---
+
+## 1. Il loop, nella sequenza corretta
+
+```
+                    ┌──────────────────────────────────────────────┐
+                    │                                              │
+                    ▼                                              │
+   RICERCA ──► FORMULAZIONE ──► [G1] PRE-REGISTRAZIONE ──► BACKTEST (solo TRAIN)
+   (razionale     (ipotesi          (ipotesi, metriche,        │
+    economico)     falsificabile)    soglie, N trial,          │
+                                     criteri di kill)          ▼
+                                                          RIFINITURA (solo TRAIN,
+                                                          consuma budget trial)
+                                                               │
+                                                               ▼
+                                                       WALK-FORWARD (solo TRAIN)
+                                                               │
+                                                               ▼
+                                                   [G2] HOLDOUT SIGILLATO
+                                                     (si apre UNA volta)
+                                                               │
+                                                               ▼
+                                                           VERDETTO
+                    ┌──────────────┬───────────────┬───────────┴────┐
+                    ▼              ▼               ▼                ▼
+                   GO            LEAD           NO-GO            CLOSED
+              (capitale)   (nuova prereg   (questa spec        (famiglia
+                            + forward OOS)   muore, famiglia     morta —
+                                             vive se ha budget)  vedi §7)
+```
+
+**La fase RICERCA ha un metodo** (dal 2026-10-03): prima di cercare candidati si risponde a *chi paga,
+perche' accetta, perche' non e' gia' arbitraggiato*, e si sceglie la **classe** di vantaggio (premio, flusso
+forzato, errore comportamentale, informazione, velocita'). Le nove domande, nell'ordine, stanno in
+[`09_fonti_di_vantaggio`](../../magazzino/fondamenti_tecnici/09_fonti_di_vantaggio/principles.md) §4 (bozza in
+quarantena, da confermare con le fonti del suo §6). Un candidato senza classe e' un pattern, non un'ipotesi.
+
+**Due differenze rispetto al loop intuitivo:**
+
+1. **[G1] La pre-registrazione è un gate, non un passaggio.** Sta *fra* formulazione e backtest, e
+   fissa **prima di guardare i dati**: ipotesi, metriche, soglie di verdetto, **budget di tentativi**
+   e criteri di bocciatura. Se non è scritta prima, il test non è informativo — è una descrizione dei
+   dati. Modello: i `*_PREREGISTRATION.md` in `magazzino/registro/documenti/`.
+2. **La rifinitura sta *dentro* il TRAIN, mai prima dell'holdout.** Rifinire guardando risultati che
+   includono i dati di validazione brucia la validazione. Il walk-forward *non* protegge da questo: i
+   suoi segmenti "out-of-sample" li hai già visti se hai tarato sul full-sample.
+
+---
+
+## 2. Disciplina dei dati — la risorsa scarsa
+
+Lo split si fa **all'inizio**, una volta, e non si tocca più:
+
+| Segmento | Quota | Uso | Rinnovabile? |
+|---|---|---|---|
+| **TRAIN** | ~70% | Tutta l'iterazione: backtest, rifinitura, walk-forward | No, ma riutilizzabile (a costo DSR) |
+| **HOLDOUT sigillato** | ~30% | **Una sola apertura per famiglia di ipotesi** | **No — una volta aperto è bruciato** |
+| **FORWARD OOS** | il futuro | Validazione vera, post-verdetto | **Sì — l'unica fonte rinnovabile** |
+
+**Regole non negoziabili:**
+
+- L'holdout si apre **una volta per famiglia**, non per variante. Se la famiglia esaurisce il budget
+  sul train senza un candidato, **muore senza aver mai aperto l'holdout**.
+- Se guardi l'holdout e poi rifinisci, l'holdout **è diventato train**. Non c'è modo di tornare
+  indietro: va dichiarato nel report e la famiglia perde il suo gate finale.
+- Il **forward OOS è l'unico test davvero pulito** che possiamo generare a volontà — ma costa tempo
+  reale. Per questo contaminarlo (optional stopping, cambi di regola in corsa) è l'errore più caro
+  che possiamo fare.
+
+---
+
+## 3. Contabilità dei tentativi — cosa conta come "trial"
+
+Il **Deflated Sharpe Ratio** penalizza il numero di tentativi ([`deflated_sharpe_ratio`](../core/quant_metrics.py)).
+Perché funzioni, il contatore deve **persistere attraverso le iterazioni del loop**, non azzerarsi a
+ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
+
+> ✅ **Dal 2026-09-19 il contatore esiste davvero**: dato in [`decisioni/trial_ledger.json`](../../decisioni/trial_ledger.json),
+> letto e verificato da [`motore/core/trial_ledger.py`](../core/trial_ledger.py).
+> `python -m motore.core.trial_ledger` stampa lo stato di ogni famiglia (trial cumulati, round
+> spesi, holdout, quota di pre-registrazioni esterne del trimestre) e `--check` esce con
+> **exit 1** se un budget e' sforato o se una voce non cita le sue fonti nel repo.
+> ⚠️ Tre famiglie storiche hanno il conteggio a `null` perche' **non e' ricostruibile**:
+> non si inventa un numero, si applica la raccomandazione Bailey-LdP (100 × N_params) e
+> lo si dichiara.
+
+> **Test passati da `prop-lab`** (dal 2026-10-08): ogni variante e ogni apertura del fuori campione finiscono nel
+> registro di `prop-lab` con l'id della famiglia; su dati reali la pipeline non parte senza una famiglia nel
+> contatore con pre-registrazione APPROVATA, e `--check` segnala ogni differenza fra registro e contatore
+> (`motore/prop-lab/lab/gate.py`, `core.trial_ledger.registro_prop_lab`). Il registro e' il diario, il contatore la fonte.
+
+| Azione | Conta come trial? |
+|---|---|
+| Correzione di un **bug**: il codice non implementava la regola pre-registrata | **No** — è la prima esecuzione valida del trial originale. Va documentata |
+| Modellazione **più realistica** di costi/slippage/esecuzione | **No** — può solo peggiorare il risultato, non è ricerca di conferma |
+| Cambio di **parametro** dopo aver visto l'esito | **Sì**, uno per variante |
+| Cambio di **asset o timeframe** dopo aver visto l'esito | **Sì**, uno per combinazione |
+| Passaggio a un **indicatore diverso che misura la stessa grandezza** (RSI → Stocastico, media mobile → Donchian; le grandezze in [10_indicatori_tecnici §2](../../magazzino/fondamenti_tecnici/10_indicatori_tecnici/principles.md)) | **Sì**, ed e' un trial **della stessa famiglia**: non ne apre una nuova (dal 2026-10-08, DECISIONS 2026-10-08 (3)). Un **meccanismo economico** diverso resta una nuova ipotesi (ultima riga della tabella), con parentela dichiarata e senza usare come holdout i dati della famiglia simile (primo caso: DECISIONS 2026-10-09) |
+| Un'ipotesi nuova tratta dalla **stessa teoria** di una famiglia esistente (es. un altro evento previsto dallo stesso modello geopolitico) | **Sì**, ed e' un trial **della stessa famiglia** (dal 2026-10-25, DECISIONS 2026-10-25 (8)): stessa teoria = stessa famiglia, come stessa grandezza = stessa famiglia. Una teoria con un **meccanismo diverso** apre una famiglia nuova |
+| Aggiunta di un **filtro** | **Sì** — ed è il più pericoloso (vedi §4) |
+| **Nuova ipotesi** con razionale economico indipendente | **Sì**, ma apre una **nuova pre-registrazione** |
+
+> **Regola di futilità (stop matematico).** Dato il numero cumulato di trial, esiste uno Sharpe
+> minimo sotto il quale il DSR non può essere significativo. Se il **migliore** risultato osservato
+> su tutte le varianti è sotto quella soglia, continuare a iterare è **matematicamente inutile**:
+> serviresti un effetto più grande di qualunque cosa tu abbia mai visto. → **kill immediato**.
+>
+> Ora è un numero: `futility_sharpe(n_trial, n_obs)` in [`motore/core/trial_ledger.py`](../core/trial_ledger.py),
+> o `python -m motore.core.trial_ledger --futilita <n_obs>`. Su **250 osservazioni** servono Sharpe
+> **1,65** con 1 trial, **3,12** con 8, **4,64** con i 384 della ricerca livelli — cioè a quel punto
+> del libro nessun risultato raggiungibile avrebbe potuto essere significativo. È un **pavimento
+> gaussiano**: con skew negativo o code grasse la soglia sale.
+
+---
+
+## 4. Rifinitura legittima vs p-hacking
+
+Il ramo "ritocca e riparti" è quello che uccide i progetti di ricerca seri. La linea è netta:
+
+**Legittima** — la modifica è motivata da un **razionale formulato senza guardare quali trade hanno
+perso**:
+- Il razionale economico prevede una condizione che non avevamo implementato.
+- L'esecuzione modellata era irrealistica (in senso peggiorativo).
+- Bug conclamato.
+
+**P-hacking** — la modifica è motivata **dall'esito**:
+- *"20 periodi non funziona, provo 30"* → ricerca di parametri post-hoc.
+- *"Non va su EURUSD, provo GBPUSD"* → shopping di asset.
+- *"Funziona solo dal 2020, restringo il campione"* → vedi
+  [[feedback_backtest_long_history_falsification]]: quasi sempre rumore, non rottura di microstruttura.
+- *"Aggiungo un filtro che toglie i trade perdenti"* → il più seducente e il più fatale: stai
+  descrivendo il passato, non modellandolo.
+
+**Test operativo**: *avresti fatto questa modifica se il backtest fosse stato positivo?* Se la
+risposta è no, è p-hacking — conta come trial e va dichiarata.
+
+---
+
+### 4bis. Una componente aggiunta si testa per ABLAZIONE (buco Quant Guild 11, dal 2026-10-02)
+
+Un filtro, una condizione di regime o un'uscita alternativa aggiunti a una regola **non** si valutano come
+strategie nuove. Il formato e' l'**ablazione pre-registrata**: la **stessa** regola **con e senza** la
+componente, sugli **stessi** dati, ciascuna contro lo **stesso** baseline. La metrica e' la differenza
+appaiata fra le due versioni sugli stessi segnali (precedente: B7, uscita a 1R contro TP1, differenza
+-0,0001). E' anche la risposta operativa a *"l'analisi tecnica non si puo' smentire"*: si smentisce una
+componente alla volta.
+
+**Le condizioni che la fonte stessa prevede** (dal 2026-11-04, DECISIONS 2026-11-04, proposta 1 del 12/10): se la
+fonte dice in anticipo che la regola vale *solo* in certe condizioni (un regime, una sessione, una classe di
+strumenti), quelle condizioni si pre-registrano **come varianti dichiarate prima**, accanto alla regola nuda. Ogni
+variante **conta come un trial** della famiglia ed entra nel DSR con tutte le altre. Una condizione che la fonte non
+nomina resta un filtro (§3, §4): non diventa una variante perche' "ci stava".
+
+### 4ter. Si sceglie il parametro POSITIVO OVUNQUE, non quello ottimo da qualche parte (buco 40)
+
+Quando una regola ha un parametro, il criterio di scelta dichiarato nella pre-registrazione e' **"positivo in
+tutti i sottoperiodi e gruppi"**, non "massimo nel campione": la politica ottima di un regime ha spesso EV
+**negativo** in un altro (Quant Guild, G2: Sharpe 3,01 in addestramento, crollo fuori). La robustezza si
+verifica con `core.verifiche.test_perturbazione` (buco 33): se muovere gli input del 10% sposta l'uscita
+oltre la soglia dichiarata, il risultato vive sul punto, non sulla regola.
+
+### 4quater. La gestione del rischio si legge su DUE BINARI (dal 2026-10-06)
+
+Decisione di Matteo del 06/10, dopo la sessione col socio VELTRIX (DECISIONS 2026-10-06). Ogni test o
+backtest di una strategia riporta, **a prescindere dall'esito**:
+
+1. **binario 1R**: rischio fisso per trade. E' l'**unico** su cui si da' il verdetto sul vantaggio.
+2. **binari di overlay**: la stessa sequenza di trade sotto ogni overlay della **libreria dichiarata**
+   in [`motore/core/sizing.py`](../core/sizing.py) (`LIBRERIA`), fissa per tutto il repo e non scelta per strategia:
+
+| overlay | cosa fa | obiettivo | perche' puo' servire | quando danneggia |
+|---|---|---|---|---|
+| **O1 cuscinetto** | rischio proporzionale alla distanza dal limite di perdita (min 0,25×) | proprio, prop | un limite duro lo giustifica anche con esiti indipendenti | costa crescita; con rischio base basso, timeout |
+| **O2 guardia giornaliera** | stop alla giornata a meta' del limite giornaliero o dopo 3 trade; mai un trade che possa sforare | prop | la perdita giornaliera chiude il conto | taglia il vantaggio se e' concentrato in pochi trade del giorno |
+| **O3 serie di perdite** | dimezza dopo 2 perdite di fila, fino a 0,25× | proprio, prop | solo se le perdite arrivano raggruppate | esiti indipendenti (recupero lento) o alternati (toglie valore) |
+| **O4 avvicinamento al target** | dimezza oltre l'80% della strada verso l'obiettivo di fase | prop | obiettivo a barriera | inutile su capitale proprio |
+
+**Il principio** (perche' il verdetto sta solo sul binario 1R): guadagno = Σ E[size]·E[R] + Σ Cov(size, R).
+Una size decisa solo dal passato non ha covarianza con un esito indipendente: un overlay **non crea
+vantaggio**, sposta il rischio nel tempo e cambia il percorso. Ha valore vero solo in due casi, che si
+misurano separatamente:
+
+- **valore di dipendenza** (capitale proprio): gli esiti sono raggruppati. Si misura con
+  `confronta_overlay`, contro la **stessa sequenza rimescolata**, che azzera la covarianza. Banda al 95%:
+  con esiti indipendenti ogni overlay da' un falso allarme con probabilita' 5% (misurato il 06/10 su 200
+  sequenze: 7,0% e 5,5%). **E' un'ipotesi sul processo, non un risultato**: si conferma solo in forward.
+- **valore di struttura** (prop): l'obiettivo e' a barriere, quindi la size ottima dipende dallo stato
+  anche con esiti indipendenti. Ma vale anche per chi non ha vantaggio: si misura con
+  `confronta_overlay_prop`, che riporta per ogni binario il benchmark a **vantaggio zero** e `ev_vs_zero`
+  con l'incertezza di stima. Si legge `ev_vs_zero`, non l'EV grezzo. ⚠️ `ev_vs_zero` toglie il valore
+  d'opzione, **non il caso**: su un random walk i candidati usciti positivi per fortuna hanno `ev_vs_zero`
+  fuori campione positivo al 100% (07/10). Senza il suo intervallo (`evaluate_ci`) non si cita.
+
+**Regole:**
+- Un overlay **non salva un NO-GO e non promuove niente**. Un overlay che trasforma un 1R negativo in
+  positivo e' un campanello: o dipendenza (da confermare) o un difetto.
+- Aggiungere un overlay alla libreria dopo aver visto un risultato e' un **tentativo** (§3); `confronta_*`
+  rifiuta i nomi fuori libreria.
+- **Non sono overlay** il vol targeting, i filtri di regime e la size per "convinzione": usano informazione
+  di mercato ex ante, possono avere covarianza con l'esito, quindi cambiano il segnale. Sono filtri (§4) e
+  si testano per ablazione (§4bis).
+- **Il rischio base si sceglie sull'intervallo, non sul picco.** Il rischio fisso che massimizza il pass
+  rate di una challenge dipende dal vantaggio **e dal limite di tempo**. Misurato il 07/10 sulle regole FTMO
+  2 fasi (10%+5%, daily 5%, max 10% statico, payoff 1:1), con un orizzonte di un anno perche' FTMO non pone
+  limiti: l'ottimo e' ~3% con E = −0,10R, 1-2% con E = 0, **1% con +0,10 (77%) e con +0,20 (97%)**. Con un
+  orizzonte di 120 giorni lo stesso calcolo metteva l'ottimo a 2% anche con vantaggio positivo: era il limite di
+  tempo a spingere verso il rischio alto (il numero del 06/10, scritto qui fino al 07/10, dipendeva da quello).
+  Senza limite di tempo e con un vantaggio vero vince il rischio basso; il gioco audace conviene solo a chi un
+  vantaggio non ce l'ha (Dubins-Savage, da confermare). Quindi: l'**orizzonte della simulazione si sceglie sulla
+  firm**, e l'ottimo puntuale su un campione premia il rumore. Si sceglie il rischio che resta buono su tutto
+  l'intervallo dell'E[R].
+- Scegliere fra 1R e gli overlay per operare e' una **selezione fra al massimo 5**: si dichiara, con il
+  criterio "positivo ovunque" (§4ter).
+- Vale **da qui in avanti**. Una famiglia CLOSED non si riapre con un overlay (§7). Il caso delle famiglie
+  chiuse vicine a zero e' in [doppio_binario_closed_2026-10-06](../../magazzino/registro/referti/doppio_binario_closed_2026-10-06.md).
+
+## 5. Tassonomia dei verdetti
+
+| Verdetto | Significato | Cosa succede |
+|---|---|---|
+| **GO** | Edge sopravvive a train + walk-forward + holdout + costi | Promozione a capitale, con pre-mortem ([04 §9](../../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)) |
+| **LEAD** | Risultato positivo ma **data-derived** o senza OOS indipendente | **Non promuovibile.** Richiede **nuova** pre-registrazione + **forward OOS**. Stato attuale del *fade* NXT. Se l'holdout e' gia' aperto per costruzione (campione intero come holdout, es. Gump D1), il ledger lo ammette solo con `gate_finale: "forward"` dichiarato **prima** dell'esito (DECISIONS 2026-10-02) |
+| **NO-GO** | Questa specifica non regge | La *specifica* muore. La *famiglia* sopravvive solo se ha budget residuo |
+| **NON DIMOSTRATO** | Il test non rifiuta il nullo **e** non aveva la forza per vedere l'effetto plausibile (MDE sopra l'effetto atteso) | Si scrive **sempre con l'MDE** accanto. Non e' "refutato": la casella resta vuota, non chiusa. Puo' chiudere una famiglia, con motivo `potenza` (dal 2026-11-04) |
+| **CLOSED** | L'intera direzione di ricerca è morta | Vedi §7 — non si riapre con un ritocco |
+| **INSUFFICIENT DATA** | `n_trades < 50` | **Non è un verdetto.** Si continua a raccogliere **solo se la soglia era pre-dichiarata** |
+
+**Verdetto di un test e stato di una famiglia sono due cose** (dal 2026-11-04, debito E7). NO-GO, NON DIMOSTRATO e
+NULL sono l'esito di un test; CLOSED e' lo stato della famiglia. Quando una famiglia chiude, il contatore registra
+**perche'** nel campo `motivo_chiusura` di [`trial_ledger.json`](../../decisioni/trial_ledger.json), controllato da
+`motore/core/trial_ledger.py`:
+
+| motivo | significato | vale come prova che l'effetto non c'e'? |
+|---|---|---|
+| `refutata` | il test aveva la forza per vedere l'effetto atteso e lo ha escluso | **si'** |
+| `potenza` | NON DIMOSTRATO: l'MDE supera l'effetto plausibile | **no** |
+| `criterio` | chiusa su un criterio dichiarato prima, senza test | no |
+| `metodo` | difetto di metodo o di dati: i numeri non valgono | no |
+| `null` | le fonti non permettono di dirlo | no: non si inventa |
+
+---
+
+## 6. Criteri di bocciatura
+
+### 6a. Kill duri — nessun ramo di rifinitura disponibile
+
+Questi non si aggiustano con un parametro. Quando scattano, la strategia (o la famiglia) muore.
+
+1. **Difetto metodologico conclamato** — look-ahead **di informazione** (survivorship, finestre
+   sovrapposte, dati contaminati) *oppure* look-ahead **di prezzo** (fill non ottenibile: si transa
+   a un livello disponibile solo *prima* di poter agire). I risultati sono **nulli**, non "da
+   correggere": vanno rifatti da zero e il vecchio numero non si cita più. *Precedenti: London
+   Breakout, edge da regime gating look-ahead · FADE NXT, **+0,409 → −0,250** togliendo il 46,1%
+   di fill fantasma → KILL della famiglia (2026-09-17).* ⚠️ Il difetto **non ha un segno**: lo
+   stesso fantasma aveva reso il NO-GO della continuazione NXT troppo severo (−0,44R contro
+   −0,118R onesto). Gate di verifica: [QUANT_REVIEW_PROTOCOL.md Step 3bis](QUANT_REVIEW_PROTOCOL.md).
+2. **Non batte il baseline random** matched (stessa geometria, stessi tempi, distance-matched).
+   *Precedente: ricerca livelli, 384 trial, NULL su ogni timeframe.*
+3. **Fallimento di breadth** — negativa sulla maggioranza degli asset **e** dei periodi testati.
+   Nessun set di parametri ripara una cosa che non c'è. *Precedente: NXT, 14/14 anni e 6/6 asset
+   negativi.*
+4. **Muore sui costi realistici** — l'edge esiste lordo e sparisce con spread/slippage/commissioni.
+5. **Instabilità parametrica** — piccole variazioni ribaltano l'esito. Già NO-GO in
+   [04](../../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md).
+6. **Razionale economico falsificato** — non è il numero a fallire, è il *perché*. Se "i livelli sono
+   zone di reazione" è falso, muore la **famiglia**, non la singola implementazione.
+
+### 6b. Kill di budget — l'anti-loop-infinito
+
+Servono a impedire che un progetto diventi uno zombie. Si dichiarano nella pre-registrazione.
+
+- **Massimo 3 round di rifinitura** per famiglia di ipotesi. Al quarto giro senza un candidato:
+  **kill**. Se dopo tre tentativi motivati non emerge nulla, il problema è l'ipotesi, non la taratura.
+- **Budget di trial esaurito** → kill (e il DSR usa il conteggio **cumulato**, non quello dell'ultimo
+  giro).
+- **Regola di futilità DSR** (§3) → kill immediato, indipendentemente dal budget residuo.
+- **Budget di tempo**: se una famiglia occupa più di una finestra di ricerca dichiarata senza
+  arrivare a un gate, si sospende e si passa al backlog.
+
+> **Lezione dal nostro registro.** La ricerca livelli è arrivata a **384 trial** su tre round (v1
+> OHLC, v2 volume, v3 HTF) prima di chiudere il libro. Con un budget dichiarato in partenza sarebbe
+> morta a v2, risparmiando un round intero. È esattamente il costo che questa sezione esiste per
+> evitare.
+
+---
+
+## 7. Riapertura di una famiglia CLOSED
+
+Una famiglia chiusa **non si riapre con un ritocco, un parametro nuovo o "riproviamo con più dati"**.
+Si riapre **solo** con **evidenza esterna nuova**:
+
+- una fonte dati nuova che prima non avevamo (non gli stessi dati riorganizzati);
+- una classe di strumenti realmente diversa;
+- un risultato pubblicato e verificabile che contraddice il nostro null.
+
+Un indicatore diverso che misura la **stessa grandezza** non e' evidenza esterna nuova: appartiene alla stessa famiglia
+(§3, dal 2026-10-08). Lo stesso vale per un'altra ipotesi tratta dalla **stessa teoria** (§3, dal 2026-10-25).
+
+Qualunque altra riapertura è il bias di conferma che si ripresenta col cappello. *Precedente
+vincolante: la ricerca livelli è CHIUSA — non riproporre "testiamo i livelli".*
+
+### 7a. Come si contabilizza una riapertura (dal 2026-11-04, debito E7)
+
+Quando il §7 e' soddisfatto, la riapertura:
+- e' una **pre-registrazione nuova nella stessa famiglia**, non una famiglia nuova;
+- **somma** i suoi trial a quelli gia' spesi: il contatore non riparte da zero, e il DSR usa il cumulato;
+- **consuma una quota** del trimestre, quella del suo binario (strategie o hub);
+- **non puo' validarsi sui dati che hanno generato l'idea**: i dati gia' guardati restano dati di scoperta.
+
+### 7b. Forward di una famiglia CLOSED (dal 2026-11-04)
+
+Registrare in avanti una famiglia chiusa **e' ammesso senza il §7**, a quattro condizioni: la regola e' **identica**
+a quella testata, la soglia di verdetto, l'inizio e il numero di osservazioni sono **dichiarati prima**, non c'e'
+capitale, e il registro e' salvato in git man mano. Costa **0 trial**: non si cerca niente, si misura la stessa cosa
+su dati nuovi. Era gia' la condizione di riapertura scritta caso per caso per il mentore (DECISIONS 2026-10-25 (6))
+e per il VTOB (2026-10-13 (5)): da qui vale per tutte.
+
+### 7c. Un'ipotesi nata da un descrittivo (dal 2026-11-04, proposta 2 del 12/10)
+
+Un'ipotesi suggerita dai descrittivi di un test (l'"annata buona", un terzile, una sessione) ha **una sola** prova di
+conferma, e **solo su dati forward**, cioe' nati dopo la data della sua pre-registrazione. Un holdout "mai aperto"
+non basta: che nessuno l'abbia letto non si puo' verificare (referto H1, 12/10, §7). La prova si fa come un forward
+del §7b, ma la regola **non** e' quella gia' testata: e' un trial della stessa famiglia e segue la contabilita' del
+§7a (trial sommati, quota del binario). Fallita la conferma, l'ipotesi si cancella.
+
+Finche' i dati forward non bastano, l'ipotesi sta **parcheggiata** in
+[`BACKLOG_RICERCA.md`](../../decisioni/BACKLOG_RICERCA.md), sezione "Ipotesi nate da un descrittivo", con famiglia, stato
+`quarantena` e data `scade` (la sezione nasce con la prima voce). Senza parcheggio tornerebbe fra qualche mese come
+idea nuova.
+
+---
+
+## 8. Cosa entra nel loop dall'esterno
+
+Le fonti esterne (canali, video, materiale di terzi) entrano da
+[`decisioni/_INTAKE.md`](../../decisioni/_INTAKE.md) e alimentano la fase **RICERCA**,
+mai le fasi successive. Due vincoli:
+
+- **Si raccolgono le regole, si scartano le statistiche dichiarate.** Un "90% win rate" non deve
+  entrare nel prior. Storico del repo: 60-70% dichiarato → 13,3% misurato (NXT); 80-90% → ~53%
+  (VELTRIX); 90% → ~20% (playbook Chart Fanatics, test di terzi).
+- **Budget di ipotesi esterne dichiarato**: max **2-3 pre-registrazioni per trimestre** da fonti
+  esterne. Un funnel aperto non produce più edge — produce più penalità DSR su quelli veri.
+- **Provenienza dell'ipotesi dichiarata** — rischio nuovo, non previsto dalla prima stesura di
+  questo documento. Il knowledge cutoff del modello che assiste la ricerca è **maggio 2026**:
+  un'ipotesi **proposta dall'LLM** su dati **precedenti** a quella data **non è una predizione
+  indipendente**, può essere memorizzazione. Vale solo se arriva da (a) una **fonte esterna umana**
+  datata e citabile, (b) un **razionale economico** che non richiede di conoscere l'esito, o (c) un
+  **forward oltre il cutoff**. Si registra nel campo `provenienza_ipotesi` di
+  [`decisioni/trial_ledger.json`](../../decisioni/trial_ledger.json), e `python -m motore.core.trial_ledger` segnala chi non
+  l'ha dichiarata. Evidenza esterna: *Profit Mirage* (arXiv 2510.07920) — spostando la finestra di
+  test oltre il cutoff, **quasi tutti** gli agenti LLM pubblicati **non battono un baseline
+  random**. ⚠️ Corollario che va nella direzione opposta a quella che verrebbe da pensare: questo
+  **rafforza** il valore del forward OOS, che resta l'unica validazione non contaminabile.
+
+### Ingresso dall'hub (dal 2026-10-25)
+
+> Lato ricevente del ponte con il vault `claude-brain` (lato hub: `../CLAUDE.md`, "Lavorare su `trad` dall'hub").
+> Fissato con il gatekeeper il 25/10 su richiesta di Matteo; da rivedere nel rituale
+> ([`decisioni/mappa/_modifiche.md`](../../decisioni/mappa/_modifiche.md)). Prima prova: l'idea "insider pesati con la geopolitica",
+> [intake del 25/10](../../magazzino/registro/referti/idee_matteo_hub_intake_2026-10-25.md).
+
+Un'idea che nasce nell'hub (appunti di Matteo, studio, geopolitica) arriva in [`decisioni/Da distillare/`](../../decisioni/Da%20distillare/README.md)
+come ogni altro materiale. Diventa un'**ipotesi** di `trad` solo con questa scheda. Si legge in ordine e **ci si ferma
+al primo campo che manca**.
+
+**1. Sei campi del ponte** (la griglia del modulo 09 non li copre):
+
+| Campo | Cosa contiene | Si respinge se |
+|---|---|---|
+| **P1 · Fonte unica** | link alla nota dell'hub da cui nasce l'idea, data, chi l'ha avuta; la scheda richiama la nota, non la copia | manca il link |
+| **P2 · Provenienza** | (a) chi ha avuto l'idea; (b) chi ha scritto razionale e specifica: Matteo, Claude in una sessione sull'hub, una fonte umana datata e citata; la finestra dei dati del test rispetto al cutoff; se il tema e' "famoso e discusso" | provenienza non dichiarata (vale come il caso peggiore, [QUANT_REVIEW_PROTOCOL](QUANT_REVIEW_PROTOCOL.md), "Provenienza"); razionale scritto dall'LLM su dati anteriori al cutoff senza un forward previsto (vincolo sopra) |
+| **P3 · Controllo contro il repo** | famiglia esistente? stessa grandezza di una famiglia del contatore? riga delle "chiuse in partenza" di [BACKLOG §H](../../decisioni/BACKLOG_RICERCA.md)? | ripropone una famiglia CLOSED senza evidenza del §7; stessa grandezza presentata come famiglia nuova (§3); cade fra le chiuse in partenza senza che sia scattata la loro condizione "si riapre se" |
+| **P4 · Dati gia' guardati** | grafici, episodi, "l'ho visto succedere" visti nell'hub; "nessuno" e' una risposta valida | il campo manca. Dati gia' visti non fanno da holdout: un'idea nata da quei dati arriva al massimo a LEAD (§5) |
+| **P5 · Misura fatta nell'hub** | solo se l'idea viene da un registro (es. le previsioni): cosa si e' misurato e su quante osservazioni, metrica e riferimento, intervallo, criterio scritto **prima** con il commit dell'hub che lo data, quante serie o categorie sono state misurate | criterio non datato prima della misura, o nessun riferimento: e' un descrittivo; statistiche di terzi al posto di una misura (vincolo sopra); per la geopolitica, misura assente |
+| **P6 · Baseline previsto** | una riga: che cosa si randomizza | manca (G1 del gatekeeper, Checklist 1) |
+
+**2. Le nove domande** del [modulo 09 §4](../../magazzino/fondamenti_tecnici/09_fonti_di_vantaggio/principles.md), cosi' come sono.
+Respingono: classe assente (un candidato senza classe e' un pattern: riga in `_INTAKE.md`, niente pre-registrazione);
+"chi paga" incompleto; accessibilita' fuori perimetro ("CFD retail, capitale piccolo, dati liberi", DECISIONS
+2026-10-03 (4); allargato all'azionario il 2026-10-25 (3)) o dato a pagamento senza la regola di [BACKLOG §G](../../decisioni/BACKLOG_RICERCA.md); potenza fuori scala (si chiude
+a 0 trial, come COT e carry il 03/10); "dove muore" senza un esito numerico. Il limite all'arbitraggio non respinge:
+"nessuno l'ha visto" si annota come prior basso.
+
+**3. Caso geopolitica** (registro delle previsioni, `../projects/geopolitica.md`). P5 porta:
+- il registro **intero**, non filtrato; la data di emissione e' il commit sull'hub, e una riga modificata dopo
+  l'emissione non vale;
+- solo previsioni **risolte** con un riferimento dello stesso giorno;
+- Brier proprio, Brier del riferimento e **differenza appaiata** per domanda, con bootstrap a cluster sull'evento, piu'
+  la curva di calibrazione;
+- il criterio dichiarato prima (es. il limite alto dell'intervallo di Brier proprio − riferimento sta sotto zero); se
+  non passa, l'MDE accanto;
+- quanti temi o categorie sono stati misurati: promuoverne uno solo e' una selezione multipla;
+- domande con lo **stesso orizzonte** del test in `trad`;
+- la mappa evento → asset (settore, direzione, orizzonte) scritta **prima** di guardare un rendimento: battere un
+  mercato di previsione non vuol dire battere il mercato azionario, che puo' aver gia' prezzato;
+- la potenza del test in `trad` calcolata all'ingresso: se e' fuori scala si chiude a 0 trial anche con una fase 1
+  positiva.
+
+Un numero minimo di previsioni **non e' fissato**: senza calcolo di potenza sarebbe inventato. La forma e'
+MDE = 2,80 × sd(d) / √n_eff, dove d e' la differenza di Brier per domanda e n_eff conta come una sola le domande sullo
+stesso evento. Il calcolo e' fra gli Aperti della nota dell'hub e aspetta la scelta del riferimento.
+
+**4. Esiti e dove si registrano.** In ogni caso la voce si cancella dalla cassetta d'uscita dell'hub
+(`../laboratorio/pending.md`). Le chiusure le dichiara Matteo.
+
+| Esito | Quando | Dove |
+|---|---|---|
+| **Respinta** | un campo P manca o fa scattare il rigetto, o ci si ferma alle domande 1, 2, 6, 7 o 8 | `_INTAKE.md` ("chiuso all'intake, 0 trial", motivo, condizione di riapertura); nota in `magazzino/registro/referti/`; `DECISIONS.md` con la decisione di Matteo |
+| **Parcheggiata** | condizione nota lato `trad`: dati, perimetro, budget | `_INTAKE.md` (`parcheggiato`) + riga del BACKLOG §D o §G con "si sblocca se" |
+| **Rimandata all'hub** | cio' che manca vive nell'hub (es. la misura di fase 1) | resta nella nota dell'hub (fonte unica); in `trad` al piu' una riga di `_INTAKE.md` con il link |
+| **Accettata** | passa scheda e griglia | `_INTAKE.md` (`distillato`) + riga del BACKLOG §B; famiglia e slot li decide Matteo in `DECISIONS.md`; il contatore la registra all'approvazione della pre-registrazione |
+
+**5. Contabilita'.** Scheda, griglia e potenza sui numeri pubblicati costano **0 trial**, purche' non si guardino
+rendimenti nostri del segnale (precedente: COT, 03/10). Il trial si spende all'approvazione della pre-registrazione
+(§3). Il registro di Brier dell'hub non e' un trial di `trad`: non misura rendimenti. Un condizionamento venuto
+dall'hub sopra un segnale esistente (es. un peso geopolitico) e' un **filtro**: un trial, testato per ablazione (§4bis).
+
+**Decisioni di Matteo (25/10, DECISIONS 2026-10-25 (8)), prese dopo una simulazione del percorso geopolitica → `trad`:**
+1. **Quota separata.** Le ipotesi dall'hub hanno un budget loro: **1 pre-registrazione a trimestre**, che non tocca le
+   2-3 da fonte esterna delle strategie. La famiglia porta `binario: "hub"` nel contatore, e `python -m motore.core.trial_ledger`
+   controlla le due quote separatamente. I trial di entrambi restano nello stesso contatore e nello stesso DSR: il budget
+   separato regola il ritmo, non sconta la penalita' dei tentativi.
+2. **Provenienza `utente_llm`**: un'idea di Matteo con il ragionamento scritto insieme a Claude vale come predizione
+   indipendente solo su dati oltre il cutoff; sul passato e' trattata come proposta dall'LLM (il contatore la controlla).
+3. **Fase 1 positiva = solo condizione necessaria.** Battere il riferimento apre la porta al test in `trad`, ma non entra
+   nel giudizio del test: dice che si sa prevedere, non che l'asset non abbia gia' prezzato.
+4. **Esclusioni geopolitiche (fase 2)**: famiglia nel contatore di `trad` (i trial si contano qui), decisione di cambiare
+   il PAC dentro il pilastro investing, con commit separati.
+5. **Le idee rimandate all'hub si tracciano anche in `_INTAKE.md`**, con una riga e il link: un'idea proposta piu' volte
+   non deve essere ritrovata come nuova (World Monitor, 25/10).
+6. **Stessa teoria = stessa famiglia** (§3).
+
+**Cosa la simulazione ha mostrato, per chi prepara il primo test:** l'unita' d'inferenza e' l'**evento**, non il trade
+(intervalli a cluster sull'evento, `motore/core/random_baseline.py`, `gap_ci`); il baseline e' lo stesso asset sullo stesso
+orizzonte in date casuali; un backtest geopolitico sul passato e' un'illustrazione, non una prova; nessun capitale prima
+di una fase 1 misurata, al piu' posizioni simulate registrate in avanti. Manca ancora un calcolatore di potenza per studi
+su eventi: si scrive (0 trial) quando arriva la prima ipotesi.
+
+---
+
+## 8bis. Dopo il capitale — ritiro, incubazione, riattivazione
+
+> **Buco colmato il 2026-08-17.** Fino a qui il documento copre **nascita e morte prima del
+> capitale**: il loop finisce al verdetto. Non diceva nulla su *cosa succede a una strategia già
+> operativa che peggiora*. Serve adesso, non domani: il fade è in forward e il copier mentore va in
+> live. Innesco esterno: fonte *Noel T.* ([`_INTAKE.md`](../../decisioni/_INTAKE.md)), che
+> gestisce un parco di algoritmi con rotazione e incubazione.
+
+**Il problema.** Spegnere una strategia perché "ultimamente perde" è **optional stopping applicato
+al capitale**. La performance di qualunque edge reale è rumorosa: se il criterio è discrezionale, si
+spegne sistematicamente dopo il drawdown — cioè **al minimo** — e si riaccende dopo il recupero.
+È comprare caro e vendere a buon mercato sulle proprie strategie. La versione discrezionale della
+fonte (*"se perde per qualche mese, riduci o spegni"*) ha esattamente questo difetto.
+
+**La regola: si giudica contro la distribuzione, non contro l'umore.** Il backtest non fornisce solo
+un E[R]: fornisce la **distribuzione attesa dei drawdown e delle serie negative**. Una strategia va
+ritirata quando esce da quella distribuzione, non quando fa male.
+
+Da dichiarare **nella pre-registrazione, prima del capitale**, insieme alle soglie di verdetto:
+
+| Soglia | Come si fissa |
+|---|---|
+| **DD di ritiro** | percentile alto (es. 95°) del maxDD nella simulazione Monte Carlo del backtest. Sopra quello, la strategia è fuori distribuzione |
+| **Serie negativa di ritiro** | percentile alto delle perdite consecutive attese |
+| **Finestra minima** | numero di trade sotto il quale **non si valuta affatto** (stesso pavimento del §5: sotto, non è un verdetto) |
+
+**Stati dopo il capitale**, con le transizioni consentite:
+
+```
+   LIVE ──(fuori distribuzione)──► INCUBAZIONE ──(criterio di rientro)──► LIVE
+     │                                   │
+     │                                   └──(secondo fallimento)──► RITIRATA (definitiva)
+     └──(razionale economico falsificato / difetto metodologico)──► RITIRATA (subito)
+```
+
+- **INCUBAZIONE** = continua a girare in **simulazione**, con le stesse regole, e continua a
+  raccogliere dati. Non è un cestino: è l'unico modo di distinguere "rotta" da "sfortunata".
+- **Criterio di rientro dichiarato prima**, mai deciso guardando la curva. Una **seconda** uscita
+  dalla distribuzione dopo un rientro = **RITIRATA definitiva**: due fallimenti indipendenti non
+  sono sfortuna.
+- Il ritiro per **razionale falsificato** o **difetto metodologico** (kill duri §6a n. 1 e n. 6)
+  è **immediato e non passa dall'incubazione**: lì non c'è niente da incubare.
+
+### Sorveglianza in codice (buchi Quant Guild 5, 22, 27, 28, 29, 41 — dal 2026-09-30)
+
+Le soglie qui sopra erano **percentili**: dicono dove fermarsi, non **quando** il forward ha iniziato a
+tradire il backtest. Da dichiarare nella stessa pre-registrazione, con le primitive di
+[`motore/core/verifiche.py`](../core/verifiche.py):
+
+| Cosa | Primitiva | Regola |
+|---|---|---|
+| **Finestra di misura del conto live** (buco 41) | — | data d'inizio, attività incluse e numero di trade della valutazione si scrivono **prima** di guardare. Lo stesso conto da' Sharpe **0,88 o 6,28** cambiando solo la data d'inizio (Quant Guild, G3). I trade gia' visti prima della dichiarazione **non entrano** |
+| **Indipendenza degli esiti** (buco 29) | `runs_test` | prima di fissare serie negative e DD da un Monte Carlo che rimescola i trade. Se `z < 0` (esiti raggruppati) le soglie i.i.d. sono **ottimiste**: si usa il ricampionamento a blocchi (precedente: copier C3, z = −3,37) |
+| **Serie negativa attesa** (buco 27) | `attesa_trade_prima_di_k_perdite`, `prob_serie_perdite` | il riferimento analitico accanto al percentile simulato. Con win rate 50%, 5 perdite di fila arrivano in media entro **62** operazioni: non sono un segnale |
+| **Degrado del win rate** (buco 5) | `SPRTBernoulli(p0, p1)` | test sequenziale con errori dichiarati (α falso allarme, β degrado non visto), aggiornato trade per trade. p0 dal backtest, p1 = degrado che si vuole vedere |
+| **Degrado del payoff** (buchi 5, 28) | `CUSUMInferiore(mu0, sigma0, k, h)` | sulla media di R, con le **innovazioni standardizzate** registrate: media ~0 e varianza ~1 se il modello regge |
+| **Taratura delle soglie** (buco 22) | `test_eccedenze` | ogni soglia "peggior x%" si verifica contando le eccedenze realizzate contro quelle attese. Un limite superato molto piu' spesso del dichiarato **sottostima il rischio** |
+| **DD e serie di ritiro con incertezza sui parametri** (buco 13, priorita' 2) | `rischio_percorsi(r, n_trade, incertezza_parametri=True, blocco=...)` | il Monte Carlo classico rimescola gli stessi trade come se l'E[R] stimato fosse quello vero; qui ogni percorso parte da un campione ricampionato, e le code si allargano quanto l'incertezza della stima |
+| **Soglie come probabilita' di violazione** (buco 39, priorita' 2) | `probabilita_violazione(valori, soglia)` | si dichiara "questo DD di ritiro scatta per caso con probabilita' p ± se", non "e' il 95esimo percentile" |
+
+⚠️ **I parametri di riferimento sono quelli FISSI della pre-registrazione, mai statistiche mobili
+ristimate in corsa**: una banda mobile si ricentra dopo una rottura e **assorbe il degrado**, e dopo
+qualche settimana il livello peggiore diventa "atteso" (Quant Guild, C4).
+
+**Cosa NON si fa.** Non si ritara la strategia durante l'incubazione — sarebbe rifinitura su dati
+che includono il periodo negativo, cioè il p-hacking del §4 con il capitale già in gioco. Se serve
+una modifica, è una **nuova specifica** e riparte dal gate [G1].
+
+---
+
+## 9. Collegamenti
+
+- [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md) — come si misura (il *gate*, non la *regola di stop*).
+- [`.claude/agents/quant-gatekeeper.md`](../../.claude/agents/quant-gatekeeper.md) — il revisore: fa rispettare questo ciclo ai gate G1 e G2 (dal 2026-10-13 è l'unico).
+- [04_quant_metodologia](../../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md) — teoria dei bias, DSR/PBO, pre-mortem.
+- [DECISIONS.md](../../decisioni/DECISIONS.md) — il registro dei verdetti effettivi.
+- Pre-registrazioni esistenti: `TSMOM_`, `OPENING_RANGE_`, `MEANREV_`, `SEASONALITY_`, `LEVEL_RESEARCH_PREREGISTRATION.md`.

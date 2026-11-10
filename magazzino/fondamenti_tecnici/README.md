@@ -10,7 +10,7 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 2. **[blueprints/](blueprints/)** — sistemi *buildabili* (agenti/skill/infra). Sono **idee NON
    committate**: materiale di riferimento, **non** un mandato a costruire. Vedi [DECISIONS.md](../../decisioni/DECISIONS.md).
 3. **[strategie_candidate/](../registro/documenti/strategie_candidate/)** — spec di strategie tradabili pronte a essere
-   promosse a `strategies/` o `esercizio/mql5/` **se** prioritizzate.
+   promosse a `magazzino/dormienti/strategies/` o `esercizio/mql5/` **se** prioritizzate.
 
 > **Regola anti-allucinazione.** Questa cartella raccoglie *materiale*, non *decisioni*. Prima di
 > proporre "costruiamo X" da un blueprint o una candidata, controlla [DECISIONS.md](../../decisioni/DECISIONS.md):
@@ -29,8 +29,8 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 |---|---|---|
 | 01 | [Price Action & Market Structure](01_price_action/principles.md) | confluence_levels, candidate |
 | 02 | [Liquidità & Order Flow (SMC)](02_liquidita_orderflow/principles.md) | confluence_levels, confluence_auto |
-| 03 | [Regimi di mercato & Macro timing](03_regimi_macro/principles.md) | core/regime.py, regime gating |
-| 04 | [Metodologia Quant & Bias del backtest](04_quant_metodologia/principles.md) | quant-review, core/quant_metrics.py |
+| 03 | [Regimi di mercato & Macro timing](03_regimi_macro/principles.md) | motore/core/regime.py, regime gating |
+| 04 | [Metodologia Quant & Bias del backtest](04_quant_metodologia/principles.md) | quant-review, motore/core/quant_metrics.py |
 | 05 | [Portfolio & Decomposizione del rischio](05_portfolio_rischio/principles.md) | stock_selector |
 | 06 | [Stock Selection](06_stock_selection/principles.md) | stock_selector, consensus |
 | 07 | [Data Sources (reference)](07_data_sources/reference.md) | stock_selector/data_sources.py |
@@ -39,7 +39,7 @@ costruiscono strategie, skill, agenti e infrastrutture. Distillato dai documenti
 | 10 | [Indicatori tecnici — cosa misurano, quali tenere e quali scartare](10_indicatori_tecnici/principles.md) ⚠️ quarantena | intake di indicatori e materiale TradingView, smistamento per grandezza |
 
 ### Blueprints (idee non committate)
-- [Markov regime skill](blueprints/markov_regime_skill.md) — alternativa probabilistica a `core/regime.py` (con i 3 fix della "2.0")
+- [Markov regime skill](blueprints/markov_regime_skill.md) — alternativa probabilistica a `motore/core/regime.py` (con i 3 fix della "2.0")
 - [Roan Quant Series extract](blueprints/roan_quant_series_extract.md) — catalogo @RohOnChain + 18 repo `jackson-video-resources` (reference; 3 repo = input workflow)
 - [Hermes optimizer](blueprints/hermes_optimizer.md) — agente auto-migliorante di strategie
 - [Insider constellation](blueprints/insider_constellation.md) — 7 agenti SEC/13F/Fed/on-chain
@@ -63,6 +63,6 @@ Ogni file ha frontmatter (`titolo`, `fonti`, `tipo`) e sezioni: blockquote di si
 
 - Costituzione operativa: [TRADING_PRINCIPLES.md](TRADING_PRINCIPLES.md) (regole già attive su regimi, S/R, S/D, Fib, POC)
 - Decisioni già prese: [DECISIONS.md](../../decisioni/DECISIONS.md)
-- Strategie (indice): [strategies/README.md](../../strategies/README.md)
-- Quant: [core/quant_metrics.py](../../core/quant_metrics.py), [docs/QUANT_REVIEW_PROTOCOL.md](../../docs/QUANT_REVIEW_PROTOCOL.md)
-- Regime engine: [core/regime.py](../../core/regime.py)
+- Strategie (indice): [magazzino/dormienti/strategies/README.md](../dormienti/strategies/README.md)
+- Quant: [motore/core/quant_metrics.py](../../motore/core/quant_metrics.py), [motore/metodo/QUANT_REVIEW_PROTOCOL.md](../../motore/metodo/QUANT_REVIEW_PROTOCOL.md)
+- Regime engine: [motore/core/regime.py](../../motore/core/regime.py)

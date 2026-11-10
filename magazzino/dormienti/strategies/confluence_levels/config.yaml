@@ -1,0 +1,72 @@
+# Parametri della strategia Confluence Levels (post-pivot 2026-05-05).
+#
+# La Confluence è SOLO NOTIFICA per design: l'utente ha deciso che è una
+# strategia umano-centrica e non sarà mai automatica. I flag legacy
+# (auto_place_pending, require_telegram_confirm, auto_be_management) sono stati
+# rimossi insieme al codice morto associato.
+
+# === Strumenti operativi ===
+symbols:
+  - EURUSD
+  - XAUUSD
+
+timeframe: M15      # con yfinance M15 è il sweet-spot: granularità sufficiente,
+                    # latenza dato ~1-2 minuti, gratis senza limiti pratici.
+lookback_bars: 200
+
+# === Risk (per calcolo lottaggio suggerito nelle notifiche Telegram) ===
+# La Confluence non piazza ordini, ma suggerisce il lottaggio nel messaggio
+# Telegram così riduci la friction al momento di eseguire manualmente.
+# Aggiornare account_balance quando cambia (mensilmente, dopo prelievi/depositi).
+risk:
+  account_balance: 10000      # saldo conto in USD (demo MetaQuotes)
+  risk_per_trade: 0.01        # 1% del balance per trade
+
+# === Soglie di trigger ===
+# Entro quanti pip dal livello scattare la notifica. Per-simbolo: i mercati
+# hanno volatilità e pip-size diversi, una soglia unica era inadeguata per XAU.
+# (pip XAU = $0.10 → 50 pip = $5 di tolleranza, congruo coi suoi swing intraday)
+proximity_alert_pips:
+  EURUSD: 15
+  XAUUSD: 50
+min_rr: 3.0                       # RR minimo per considerare il livello operativo
+
+# Massimo SL strutturale per simbolo (in pip). Se il livello richiederebbe SL più
+# largo → skip (livello troppo distante per essere operativo).
+# Pip XAU = $0.10 → 200 pip = $20 di SL strutturale max.
+max_sl_pips:
+  EURUSD: 30
+  XAUUSD: 200
+
+# Buffer di default tra livello e SL (in pip), se non specificato sul livello.
+# Pip XAU = $0.10 → 30 pip = $3 di buffer (lo SL si piazza $3 oltre il livello).
+default_sl_buffer_pips:
+  EURUSD: 5
+  XAUUSD: 30
+
+# === Filtri operativi ===
+session_rome:                     # finestra operativa in ora di Roma
+  start: "09:00"
+  end: "18:00"
+
+news_block_minutes: 30            # skip se evento high impact entro questa finestra
+                                  # (richiede motore/data/news_calendar.csv compilato a mano,
+                                  # Stage 5 → integrazione worldmonitor automatica)
+
+# === Input livelli ===
+# Lista di file letti in ordine. Il primo è quello manuale (umano-centrico),
+# il secondo è il file shadow generato da Confluence Auto (algoritmico, suffisso
+# "-AUTO" sugli ID per distinguibilità). Eventuali file mancanti vengono
+# saltati con warning, quindi puoi commentare il secondo finché non avrai
+# ancora generato `levels_auto.yaml` per la prima volta.
+levels_file:
+  - "levels.yaml"
+  - "levels_auto.yaml"
+
+# === Runtime ===
+poll_interval_seconds: 60         # frequenza polling. Con yfinance M15, valori
+                                  # < 30s sprecano risorse (il dato non aggiorna).
+default_valid_minutes: 240        # validità del segnale Telegram
+
+# === Stato persistente ===
+state_dir: "data"                 # contiene notifications_sent.json
