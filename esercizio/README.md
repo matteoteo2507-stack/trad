@@ -9,7 +9,7 @@ la sua sorveglianza. Gli studi che hanno portato fin qui (pre-registrazioni, ref
 | Cartella | Cosa contiene | Come si usa |
 |---|---|---|
 | [`mql5/`](mql5/README.md) | Expert Advisor MQL5, tutti spenti e conservati come storia; guida di conversione | l'agente `mql5-converter` legge [`mql5/CONVERSION_GUIDE.md`](mql5/CONVERSION_GUIDE.md) |
-| [`signal_copier/`](signal_copier/README.md) | copia dei segnali Telegram → MT5 | `python -m esercizio.signal_copier ...` dalla radice di `trad`; la guida di installazione sul VPS (`docs/VPS_COPIER_SETUP.md`) e' fuori da git |
+| [`signal_copier/`](signal_copier/README.md) | copia dei segnali Telegram → MT5 | `python -m esercizio.signal_copier ...` dalla radice di `trad`; la guida di installazione sul VPS (`esercizio/signal_copier/VPS_COPIER_SETUP.md`) e' fuori da git |
 | `sorveglianza/` | script di controllo di cio' che gira e i loro report datati (`report/`) | `python esercizio/sorveglianza/weekly_healthcheck.py`, `deployment_healthcheck.py`, `report_socio.py` |
 | [`pac/`](pac/INVESTING_PILLAR_PLAN.md) | il piano operativo del PAC | revisione una volta l'anno, a settembre |
 | [`prop/`](prop/PROP_FIRM_CRITERIA.md) | i criteri nostri per scegliere una prop e i regolamenti letti | nessuna decisione con soldi finche' gli URL dei regolamenti non sono verificati |

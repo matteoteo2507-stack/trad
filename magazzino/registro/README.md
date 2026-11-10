@@ -28,7 +28,7 @@ famiglia non sta qui: sta nel frontmatter della sua pre-registrazione e nel cont
 | [`motore/core/resolve_trade.py`](../../motore/core/resolve_trade.py) | le 5 convenzioni d'uscita come parametri espliciti |
 | [TRADING_WORKFLOW_DESIGN.md](../dormienti/docs/TRADING_WORKFLOW_DESIGN.md) | Design del workflow operativo |
 | [OPERATIONAL_GUIDE.md](../dormienti/docs/OPERATIONAL_GUIDE.md) | Guida operativa |
-| [VPS_COPIER_SETUP.md](../../docs/VPS_COPIER_SETUP.md) | **Setup VPS del signal copier** passo passo: scelta macchina, blindatura sistema, MT5, Python, sessione Telethon, avvio automatico, sequenza di go-live, modi di rottura noti |
+| [VPS_COPIER_SETUP.md](../../esercizio/signal_copier/VPS_COPIER_SETUP.md) | **Setup VPS del signal copier** passo passo: scelta macchina, blindatura sistema, MT5, Python, sessione Telethon, avvio automatico, sequenza di go-live, modi di rottura noti |
 
 ## Pre-registrazioni
 

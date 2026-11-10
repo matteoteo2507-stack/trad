@@ -110,8 +110,8 @@ magazzino/fonti/sorgenti/insight_da_yt/_raw/
 magazzino/registro/codice/nxt/*_trades.csv
 magazzino/registro/codice/trend/trades_*.csv
 
-# WIP utente non committabile (committato per errore il 2026-08-24 con git add -A docs/)
-docs/VPS_COPIER_SETUP.md
+# WIP utente non committabile (committato per errore il 2026-08-24 con git add -A docs/; dal 10/11 sta col copier)
+esercizio/signal_copier/VPS_COPIER_SETUP.md
 
 # Cartella di arrivo del materiale esterno: tutto fuori da git, tranne la sua descrizione.
 # Il materiale arriva prima di essere controllato (nomi, chat, conti) e il repo e' pubblico.
