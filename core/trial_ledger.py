@@ -33,12 +33,13 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 from math import sqrt
 from typing import Optional
 
 __all__ = ["load", "famiglia", "futility_sharpe", "verifica", "tabella", "MOTIVI_CHIUSURA"]
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 LEDGER = os.path.join(ROOT, "decisioni", "trial_ledger.json")
 
 Z95 = 1.6448536269514722          # Phi^-1(0.95)
@@ -157,7 +158,7 @@ def _usate(dati: dict, binario: str) -> list:
             if f.get("prereg_esterna_trimestre") == q and f.get("binario", "strategie") == binario]
 
 
-PROP_LAB_REGISTRO = os.path.join(ROOT, "prop-lab", "results", "registry.sqlite")
+PROP_LAB_REGISTRO = os.path.join(ROOT, "prop-lab/results/registry.sqlite")
 TAG_ESENTI = {"sintetico", "controllo", "fuori_gate"}     # etichette di prop-lab/lab/gate.py che non sono famiglie
 
 

@@ -23,10 +23,11 @@ from __future__ import annotations
 import argparse
 import glob
 import os
+from pathlib import Path
 import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 RAW = os.path.join(ROOT, "magazzino", "fonti", "sorgenti", "insight_da_yt", "_raw")
 OUT = os.path.join(RAW, "_digest")
 

@@ -18,13 +18,14 @@ from __future__ import annotations
 
 import argparse
 import os
+from pathlib import Path
 import sys
 import types
 
 import numpy as np
 import pandas as pd
 
-RADICE = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+RADICE = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, RADICE)
 from core.trial_ledger import futility_sharpe  # noqa: E402
 from core.verifiche import mde  # noqa: E402

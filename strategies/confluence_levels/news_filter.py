@@ -24,7 +24,7 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_CSV_PATH = Path(__file__).parent.parent.parent / "data" / "news_calendar.csv"
+DEFAULT_CSV_PATH = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()) / "data/news_calendar.csv"
 
 
 def is_blocked(

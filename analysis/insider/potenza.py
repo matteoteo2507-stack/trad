@@ -18,15 +18,16 @@ Dati: data/cache/sp500data/<snapshot>/ (data/scarica_sp500_data.py) e data/cache
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import re
 import sys
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-SNAP = os.path.join(ROOT, "data", "cache", "sp500data", "snapshot-2026-11")
-F345 = os.path.join(ROOT, "data", "cache", "sec", "form345_mercato.parquet")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+SNAP = os.path.join(ROOT, "data/cache/sp500data/snapshot-2026-11")
+F345 = os.path.join(ROOT, "data/cache/sec/form345_mercato.parquet")
 ORIZZONTI = (21, 63)        # giorni di borsa di detenzione
 FATTORE = 2.80              # z(0,975) + z(0,80): MDE all'80% di potenza, alfa 5% a due code
 N_SORTEGGI = 300

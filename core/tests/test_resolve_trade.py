@@ -10,11 +10,12 @@ convenzione, cioe' il problema che doveva risolvere.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 
 from core.resolve_trade import FillConvention, resolve_trade  # noqa: E402
 

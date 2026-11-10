@@ -24,10 +24,11 @@ from __future__ import annotations
 
 import datetime as dt
 import os
+from pathlib import Path
 import sys
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-DATA = os.path.join(ROOT, "analysis", "trading-bot-eval", "data")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 
 # Quanti giorni di ritardo sono tollerabili fra la fine dei dati e oggi prima di
 # considerarli stantii. Oltre, si avvisa: non e' un errore, ma va visto.

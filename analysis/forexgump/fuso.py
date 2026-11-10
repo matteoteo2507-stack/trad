@@ -17,12 +17,14 @@ Uso: python analysis/forexgump/fuso.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(__file__)
-DATA = os.path.join(HERE, "..", "trading-bot-eval", "data")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 OFFSETS = range(-3, 5)          # ore di anticipo dell'orologio dell'export su UTC
 
 

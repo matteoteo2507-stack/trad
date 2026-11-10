@@ -6,11 +6,12 @@ round-trip append→update by record_id. Nessuna rete, deterministico.
 """
 import csv
 import os
+from pathlib import Path
 import sys
 import tempfile
 from datetime import datetime, timezone
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 from level_analyzer import record  # noqa: E402
 
 SIG = {"side": "long", "zone": 2010.0, "sl": 2008.0, "tp": 2013.0, "rr": 1.5,

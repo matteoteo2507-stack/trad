@@ -21,11 +21,12 @@ import argparse
 import hashlib
 import json
 import os
+from pathlib import Path
 import sys
 import urllib.request
 from datetime import datetime, timezone
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 BASE = "https://github.com/Johnbrick123/sp500-data/releases/download"
 SNAPSHOT_DEFAULT = "snapshot-2026-11"
 FILE_SNAPSHOT = ["prices.parquet", "members.parquet", "membership_intervals.parquet",
@@ -57,7 +58,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--snapshot", default=SNAPSHOT_DEFAULT)
     a = ap.parse_args(argv)
-    out = os.path.join(ROOT, "data", "cache", "sp500data", a.snapshot)
+    out = os.path.join(ROOT, "data/cache/sp500data", a.snapshot)
     os.makedirs(out, exist_ok=True)
     manifesto = {"fonte": "https://github.com/Johnbrick123/sp500-data", "licenza": "non dichiarata: solo uso locale",
                  "snapshot": a.snapshot, "scaricato": datetime.now(timezone.utc).isoformat(timespec="seconds"),

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import csv
 import os
+from pathlib import Path
 from collections import defaultdict
 
 import numpy as np
@@ -23,7 +24,8 @@ from detectors import OHLC_CONCEPTS, VOLUME_CONCEPTS, detect_all  # noqa: F401
 from reaction import (INSUFF, REACTION, TESTED, boot_rate_diff_ci,
                       bootstrap_diff_by_day, classify, TOUCH_WINDOW, N_REACT)
 
-DATA = os.path.join(os.path.dirname(__file__), "..", "trading-bot-eval", "data")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 DECISION_HOUR = 8          # punto di decisione giornaliero (UTC), sessione Londra
 H1_WINDOW = 120            # barre H1 chiuse per la detection (~1 settimana)
 ATR_N = 14

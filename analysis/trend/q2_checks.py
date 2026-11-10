@@ -22,6 +22,7 @@ Uso: python analysis/trend/q2_checks.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
@@ -29,7 +30,7 @@ import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.abspath(os.path.join(HERE, "..", "..")))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 
 from backtest import (LOOKBACK, SEED, realized_vol, run_all, spearman_perm,  # noqa: E402
                       universe_from_coverage, _mean_ci)

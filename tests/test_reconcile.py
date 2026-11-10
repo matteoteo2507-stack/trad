@@ -5,11 +5,12 @@ Verifica forward_resolve (win/loss/no_fill/timestop + netto costi) e il round-tr
 """
 import csv
 import os
+from pathlib import Path
 import sys
 import tempfile
 from datetime import datetime, timedelta, timezone
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 from level_analyzer import reconcile, record  # noqa: E402
 
 # segnale LONG di riferimento: zona 100, SL 98 (sl_dist=2), TP 103 (rr=1.5), costo 0.1

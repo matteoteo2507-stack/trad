@@ -8,12 +8,13 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 import socket
 import sys
 
 import pytest
 
-INTAKE = os.path.join(os.path.dirname(__file__), "..", "analysis", "intake")
+INTAKE = os.path.join(next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()), "analysis/intake")
 sys.path.insert(0, os.path.abspath(INTAKE))
 
 import rule_extract  # noqa: E402

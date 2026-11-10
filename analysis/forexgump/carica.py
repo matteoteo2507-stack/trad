@@ -16,11 +16,13 @@ applicata due volte produce numeri plausibili e sbagliati (fuso del mentore XAU,
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import pandas as pd
 
 HERE = os.path.dirname(__file__)
-DATA = os.path.join(HERE, "..", "trading-bot-eval", "data")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 FUSO_EXPORT = "Europe/Rome"
 SOGLIA_DENTRO = 0.95        # sotto questa quota l'allineamento e' rotto: fermarsi
 

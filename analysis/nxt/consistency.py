@@ -26,13 +26,14 @@ Uso: python analysis/nxt/consistency.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 import backtest as bt  # noqa: E402

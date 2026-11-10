@@ -17,13 +17,14 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-DATA = os.path.join(ROOT, "analysis", "trading-bot-eval", "data")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 EXT = os.path.join(DATA, "XAU_spot_M5_ext.csv")
 SYM = "XAUUSD.cyr"
 SOGLIA_DIFF = 1.0     # dollari: oltre, le due fonti non sono incollabili in silenzio

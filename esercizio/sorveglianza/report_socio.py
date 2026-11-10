@@ -11,6 +11,7 @@ Uso: python esercizio/sorveglianza/report_socio.py > report_socio.txt
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 from collections import defaultdict
 
@@ -18,14 +19,14 @@ import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 
 # Tre moduli distinti si chiamano tutti `backtest.py` (nxt, opening_range,
 # mentor_signals): senza isolamento il primo importato vince e gli altri esplodono.
-_DIRS = {"nxt": os.path.join(ROOT, "analysis", "nxt"),
-         "orb": os.path.join(ROOT, "analysis", "opening_range"),
-         "mentor": os.path.join(ROOT, "analysis", "mentor_signals")}
+_DIRS = {"nxt": os.path.join(ROOT, "analysis/nxt"),
+         "orb": os.path.join(ROOT, "analysis/opening_range"),
+         "mentor": os.path.join(ROOT, "analysis/mentor_signals")}
 _COLLIDE = ("backtest", "backtest_v2", "closure", "consistency", "parse",
             "oos_validation", "reaction")
 

@@ -20,12 +20,13 @@ divario con bootstrap a cluster.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 
 from core.random_baseline import (  # noqa: E402
     BarSampler, PoolSampler, check_matching, gap_ci,

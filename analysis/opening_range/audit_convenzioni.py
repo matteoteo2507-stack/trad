@@ -21,11 +21,12 @@ da una convenzione mai dichiarata**.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core import quant_metrics as qm   # noqa: E402

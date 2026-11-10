@@ -27,7 +27,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-PROP_LAB = Path(__file__).resolve().parents[1] / "prop-lab"
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+PROP_LAB = ROOT / "prop-lab"
 if not (PROP_LAB / "lab" / "prop.py").exists():
     raise ImportError(f"prop-lab non trovato in {PROP_LAB}: il simulatore prop vive li'")
 if str(PROP_LAB) not in sys.path:

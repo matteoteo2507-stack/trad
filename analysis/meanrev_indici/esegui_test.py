@@ -20,12 +20,13 @@ from __future__ import annotations
 
 import argparse
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 from core import data_checks as dc                      # noqa: E402
 from core import quant_metrics as qm                    # noqa: E402
@@ -33,7 +34,7 @@ from core.random_baseline import BarSampler, check_matching   # noqa: E402
 from core.verifiche import runs_test                    # noqa: E402
 
 PREREG = os.path.join(ROOT, "magazzino", "registro", "documenti", "MR_INDICI_RSI2_PREREGISTRATION.md")
-DATI = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "dukascopy_d1")
+DATI = os.path.join(ROOT, "analysis/trading-bot-eval/data/dukascopy_d1")
 # Costi FP Markets letti in MT5 il 08/10/2026 (FPMarkets-Demo): spread in punti indice, swap long per notte in % del
 # prezzo (US500 −1,14 $/lotto su ~7.500 = 0,0152%; US100 −4,24 $/lotto su ~29.700 = 0,0143%), tripla il venerdi'.
 COSTI = {"SPX500": {"spread_pt": 0.25, "swap_notte_pct": 0.0152},

@@ -31,6 +31,7 @@ import argparse
 import datetime as dt
 import json
 import os
+from pathlib import Path
 import re
 import sys
 
@@ -38,7 +39,7 @@ import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 from analysis.forexgump import replay as rp  # noqa: E402
 from analysis.forexgump.carica import DATA, carica_m1, carica_segnali, verifica  # noqa: E402

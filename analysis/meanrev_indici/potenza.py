@@ -21,16 +21,17 @@ contano anche una volta sola (stima degli eventi indipendenti).
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 from core.verifiche import fattore_potenza  # noqa: E402
 
-DATI = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "dukascopy_d1")
+DATI = os.path.join(ROOT, "analysis/trading-bot-eval/data/dukascopy_d1")
 STRUMENTI = ("SPX500", "NAS100")
 K = fattore_potenza(0.05, 0.80)       # 2,80
 HOLD = 3                              # giorni di tenuta tipici di un'uscita "al ritorno" (ipotesi dichiarata)

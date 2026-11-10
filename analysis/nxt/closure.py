@@ -19,13 +19,14 @@ Uso: python analysis/nxt/closure.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 from collections import defaultdict
 
 import numpy as np
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 from core import quant_metrics as qm  # noqa: E402

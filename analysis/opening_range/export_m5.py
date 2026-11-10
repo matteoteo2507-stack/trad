@@ -10,10 +10,12 @@ Uso: python analysis/opening_range/export_m5.py   (terminale MT5 connesso)
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import pandas as pd
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "trading-bot-eval", "data")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+OUT = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 SYMBOLS = [("US100", "US100"), ("US500", "US500")]
 CHUNK = 50_000        # barre per chiamata (COUNT grande -> 'Invalid params')
 MAX_BARS = 1_500_000  # tetto totale (M5 ~ diversi anni)

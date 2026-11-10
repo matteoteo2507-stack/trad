@@ -33,7 +33,7 @@ import numpy as np
 
 ROOT = os.path.abspath(".")
 sys.path.insert(0, ROOT)
-sys.path.insert(0, os.path.join(ROOT, "analysis", "mentor_signals"))
+sys.path.insert(0, os.path.join(ROOT, "analysis/mentor_signals"))
 from coverage import verifica
 from analysis.mentor_signals import backtest as bt
 from core import quant_metrics as qm

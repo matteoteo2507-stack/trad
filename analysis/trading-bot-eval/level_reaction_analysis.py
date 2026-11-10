@@ -34,7 +34,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, str(ROOT))
 
 from level_analyzer.feed import fetch_h1_ts  # noqa: E402  (riuso, non reinvento)
@@ -168,7 +168,7 @@ def main() -> int:
     except Exception:
         pass
 
-    df = pd.read_csv(ROOT / "level_analyzer" / "trade_records.csv")
+    df = pd.read_csv(ROOT / "level_analyzer/trade_records.csv")
     print(f"Record totali nel CSV: {len(df)}")
 
     # --- price path: 2 fetch totali, cache per ticker ---

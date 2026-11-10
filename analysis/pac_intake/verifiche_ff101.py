@@ -16,12 +16,13 @@ Uso: python analysis/pac_intake/verifiche_ff101.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-RADICE = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SPX = os.path.join(RADICE, "analysis", "trading-bot-eval", "data", "dukascopy_d1", "SPX500_D1.csv")
+RADICE = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+SPX = os.path.join(RADICE, "analysis/trading-bot-eval/data/dukascopy_d1/SPX500_D1.csv")
 
 RATA, MESI = 300, 480
 OCF, BOLLO = 0.14, 0.20          # % annuo, dal par. 0 del piano (factsheet al 31/08/2026; bollo di legge)

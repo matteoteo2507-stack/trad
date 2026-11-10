@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import datetime as dt
 import os
+from pathlib import Path
 import sys
 from datetime import timezone
 
@@ -27,11 +28,11 @@ import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-DK = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "dukascopy_d1")
+DK = os.path.join(ROOT, "analysis/trading-bot-eval/data/dukascopy_d1")
 CACHE = os.path.join(DK, "_pool_candidati")
 T0 = pd.Timestamp("2017-12-26")        # inizio della finestra comune W2
 SOGLIA_VOL = 0.20

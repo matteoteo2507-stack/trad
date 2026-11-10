@@ -13,7 +13,7 @@ from esercizio.signal_copier.parsers.xau_analysis_lab import XauAnalysisLabParse
 from esercizio.signal_copier.planner import build_plan
 from esercizio.signal_copier.reader import iter_offline_messages
 
-SAMPLES = Path(__file__).parent.parent / "esercizio" / "signal_copier" / "samples" / "xau_analysis_lab.txt"
+SAMPLES = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()) / "esercizio/signal_copier/samples/xau_analysis_lab.txt"
 
 COPIER_CFG = {
     "symbols_whitelist": ["XAUUSD"],

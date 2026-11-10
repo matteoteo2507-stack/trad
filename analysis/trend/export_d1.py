@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import datetime as dt
 import os
+from pathlib import Path
 import sys
 from datetime import timezone
 
@@ -24,8 +25,8 @@ import pandas as pd
 import dukascopy_python as dk
 import dukascopy_python.instruments as ins
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                   "trading-bot-eval", "data", "dukascopy_d1")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+OUT = os.path.join(ROOT, "analysis/trading-bot-eval/data/dukascopy_d1")
 
 # (nome, codice, gruppo a priori) — il gruppo e' dichiarato QUI, prima di vedere qualunque numero
 UNIVERSE = [

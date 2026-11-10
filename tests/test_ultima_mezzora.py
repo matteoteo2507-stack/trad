@@ -7,6 +7,7 @@ rendimento si calcola a mano dagli orari di chiusura.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import exchange_calendars as xc
@@ -14,7 +15,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "analysis", "ultima_mezzora"))
+sys.path.insert(0, os.path.join(next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()), "analysis/ultima_mezzora"))
 import esegui_test as t  # noqa: E402
 
 ET = "America/New_York"

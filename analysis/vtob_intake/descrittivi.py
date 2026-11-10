@@ -18,19 +18,20 @@ from __future__ import annotations
 
 import argparse
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-RADICE = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+RADICE = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, RADICE)
 from core.trial_ledger import futility_sharpe  # noqa: E402
 from core.verifiche import mde, n_richiesto, runs_test  # noqa: E402
 
 SORGENTE = os.path.join(RADICE, "magazzino", "fonti", "sorgenti", "vtob_socio_2026-10-11")
 MATERIALE = os.path.join(RADICE, "magazzino", "fonti", "materiale_socio", "vtob_dati_risultati_2022-07_2026-10")
-HUB = os.path.join(RADICE, "analysis", "trading-bot-eval", "data")
+HUB = os.path.join(RADICE, "analysis/trading-bot-eval/data")
 VARIANTI_DICHIARATE = 46_080
 # riga scelta in ogni griglia: pivot, TF della media, eta' del trend, lato, stop (x vol), target (R)
 SCELTE = {"M15": ("7/3", "60min", 20, "long", 6, 3.0), "H1": ("10/3", "1440min", 10, "both", 3, 4.0),

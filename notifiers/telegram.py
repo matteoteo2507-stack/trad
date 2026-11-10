@@ -21,7 +21,7 @@ from ._pip_table import format_price, price_delta_pct, price_delta_pips
 
 logger = logging.getLogger(__name__)
 
-LOGS_DIR = Path(__file__).parent.parent / "logs"
+LOGS_DIR = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()) / "logs"
 TELEGRAM_LOG_FILE = LOGS_DIR / "telegram.log"
 
 _BACKOFF_SECONDS = (1, 3, 9)

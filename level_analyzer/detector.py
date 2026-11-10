@@ -9,9 +9,10 @@ PD levels, cluster_confluence). La spec (validata) e':
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
-_VELTRIX = os.path.join(os.path.dirname(__file__), "..", "analysis", "veltrix")
+_VELTRIX = os.path.join(next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()), "analysis/veltrix")
 if _VELTRIX not in sys.path:
     sys.path.insert(0, _VELTRIX)
 import levels_engine as le  # noqa: E402

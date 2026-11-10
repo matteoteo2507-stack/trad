@@ -10,12 +10,13 @@ puliti ma non riconosce il proprio incidente e' decorazione.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 
 from core.data_checks import (  # noqa: E402
     barre_per_anno, checklist_dati, checklist_esecuzione, copertura_comune,

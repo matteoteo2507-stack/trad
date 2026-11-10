@@ -31,14 +31,15 @@ from __future__ import annotations
 
 import argparse
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
-DIR = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "mt5_fp_d1")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DIR = os.path.join(ROOT, "analysis/trading-bot-eval/data/mt5_fp_d1")
 
 T0 = pd.Timestamp("2017-12-26")         # stessa finestra W2 del referto
 INIZIO_MAX = pd.Timestamp("2018-03-01")  # storia "piena": parte entro questa data
@@ -188,8 +189,7 @@ def inventario() -> int:
     return 0
 
 
-DIR_DK = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "dukascopy_d1",
-                      "_pool_azioni_us")
+DIR_DK = os.path.join(ROOT, "analysis/trading-bot-eval/data/dukascopy_d1/_pool_azioni_us")
 
 
 def azioni_dukascopy(scarica_dati: bool) -> int:
@@ -274,7 +274,7 @@ def azioni_dukascopy(scarica_dati: bool) -> int:
     return 0
 
 
-DIR_PST = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "pysystemtrade")
+DIR_PST = os.path.join(ROOT, "analysis/trading-bot-eval/data/pysystemtrade")
 PST = "https://raw.githubusercontent.com/robcarver17/pysystemtrade/master/data/futures/"
 
 #: Futures continui di pysystemtrade (gratis, fermi al 2024) che NON sono gia' in-sample

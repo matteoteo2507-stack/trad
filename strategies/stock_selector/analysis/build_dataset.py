@@ -15,7 +15,7 @@ from pathlib import Path
 import pandas as pd
 import yfinance as yf
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 PICKS_DIR = ROOT / "stoxs picks"
 CACHE = Path(__file__).resolve().parent / "_cache"
 CACHE.mkdir(exist_ok=True)

@@ -12,13 +12,14 @@ falso allarme ~10% sulla coppia. Tutto il resto e' descrittivo.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 import yaml
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from backtest_v2 import ADX_MIN_DEFAULT, run   # noqa: E402

@@ -28,11 +28,12 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import os
+from pathlib import Path
 import sys
 from collections import defaultdict
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-OUTDIR = os.path.join(ROOT, "esercizio", "sorveglianza", "report")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+OUTDIR = os.path.join(ROOT, "esercizio/sorveglianza/report")
 
 # --- configurazione: cio' che il protocollo considera vincolante -------------------
 MAGIC = {26071: "nxt_fade", 26052: "orb_nasdaq"}

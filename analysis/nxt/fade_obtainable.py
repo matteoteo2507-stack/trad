@@ -22,12 +22,13 @@ Non consuma trial: LIFECYCLE sez.3, "modellazione piu' realistica dell'esecuzion
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 
 from analysis.nxt import backtest as bt            # noqa: E402

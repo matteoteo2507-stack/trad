@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import os
+from pathlib import Path
 import time
 from datetime import timezone
 
@@ -32,7 +33,8 @@ import pandas as pd
 import dukascopy_python as dk
 import dukascopy_python.instruments as ins
 
-DATA = os.path.join(os.path.dirname(__file__), "..", "trading-bot-eval", "data")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 CACHE = os.path.join(DATA, "_duka_xau_m1_mesi")      # un file per mese: si riprende se cade
 INIZIO = dt.date(2020, 9, 1)
 LATI = {"bid": dk.OFFER_SIDE_BID, "ask": dk.OFFER_SIDE_ASK}

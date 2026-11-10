@@ -31,6 +31,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from pathlib import Path
 import random
 import re
 import sys
@@ -40,7 +41,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 RAW = os.path.join(ROOT, "magazzino", "fonti", "sorgenti", "insight_da_yt", "_raw")
 STATE = os.path.join(HERE, "_state.json")
 

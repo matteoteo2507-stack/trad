@@ -11,18 +11,19 @@ Uso: python analysis/round_grid/test_80_20.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
-sys.path.insert(0, os.path.join(ROOT, "analysis", "level_research"))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+sys.path.insert(0, os.path.join(ROOT, "analysis/level_research"))
 from reaction import (REACTION, TESTED, boot_rate_diff_ci, classify,  # noqa: E402
                       N_REACT, TOUCH_WINDOW)
 
-DATA = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "NAS100_M5.csv")
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data/NAS100_M5.csv")
 STEP = 12          # un punto di decisione ogni 12 barre M5 (1 ora)
 M_RANDOM = 5       # griglie sfasate per punto di decisione
 MIN_PHASE = 10     # offset minimo dalla griglia reale (punti)

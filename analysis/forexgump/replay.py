@@ -26,6 +26,7 @@ t+L supera 1 $), latenza come parametro.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 from dataclasses import dataclass, field
 
@@ -33,7 +34,7 @@ import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.abspath(os.path.join(HERE, "..", "..")))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 from core.resolve_trade import PESSIMISTA, OTTIMISTA, resolve_trade  # noqa: E402,F401
 
 L_SEC = 10

@@ -15,13 +15,14 @@ Uso: python analysis/forexgump/potenza.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.abspath(os.path.join(HERE, "..", "..")))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 from analysis.forexgump import replay as rp  # noqa: E402
 from analysis.forexgump.carica import carica_m1, carica_segnali  # noqa: E402
 from core.verifiche import fattore_potenza  # noqa: E402

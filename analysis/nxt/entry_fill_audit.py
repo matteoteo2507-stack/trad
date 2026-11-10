@@ -54,12 +54,13 @@ Uso:  python analysis/nxt/entry_fill_audit.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 
 from analysis.nxt import backtest as bt          # noqa: E402
@@ -270,9 +271,8 @@ def main():
     print("  i fill non ottenibili, e' un artefatto meccanico — non un'anomalia di mercato.")
 
     print("\ntrade log -> %s"
-          % os.path.relpath(os.path.join(ROOT, "analysis", "nxt",
-                                         "entry_fill_audit_trades.csv"), ROOT))
-    df.to_csv(os.path.join(ROOT, "analysis", "nxt", "entry_fill_audit_trades.csv"), index=False)
+          % os.path.relpath(os.path.join(ROOT, "analysis/nxt/entry_fill_audit_trades.csv"), ROOT))
+    df.to_csv(os.path.join(ROOT, "analysis/nxt/entry_fill_audit_trades.csv"), index=False)
 
 
 if __name__ == "__main__":

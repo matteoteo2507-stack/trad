@@ -35,10 +35,11 @@ import csv
 import glob
 import html
 import os
+from pathlib import Path
 import re
 from collections import Counter
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 SRC_DIR = os.path.join(ROOT, "magazzino", "fonti", "materiale_socio", "forexgump_telegram_2020-09_2026-09")
 OUT = os.path.join(os.path.dirname(__file__), "signals.csv")
 

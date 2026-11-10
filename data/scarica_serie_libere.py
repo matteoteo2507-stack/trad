@@ -33,14 +33,15 @@ import argparse
 import datetime as dt
 import io
 import os
+from pathlib import Path
 import sys
 import urllib.request
 import zipfile
 
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-OUT = os.path.join(ROOT, "data", "cache", "free")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+OUT = os.path.join(ROOT, "data/cache/free")
 ZIP = os.path.join(OUT, "_zip")
 
 URL_VIX = "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv"

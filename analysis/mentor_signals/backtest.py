@@ -17,15 +17,16 @@ from __future__ import annotations
 import csv
 import datetime as dt
 import os
+from pathlib import Path
 from datetime import datetime
 
 import numpy as np
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 # Feed ESTESO (fino a oggi). Il vecchio XAU_spot_M5.csv si ferma al 2026-06-12 e
 # tagliava in silenzio gli ultimi mesi di segnali: era il default fino al 18/09.
-M5 = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "XAU_spot_M5_ext.csv")
+M5 = os.path.join(ROOT, "analysis/trading-bot-eval/data/XAU_spot_M5_ext.csv")
 SIG = os.path.join(HERE, "signals.csv")
 
 ENTRY_WINDOW = 72     # barre M5 (~6h) per il fill all'entry

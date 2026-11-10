@@ -13,9 +13,10 @@ from __future__ import annotations
 
 import csv
 import os
+from pathlib import Path
 import re
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 # Cartella STABILE dell'export Telegram (2026-09-18): un export nuovo SOSTITUISCE
 # il vecchio. Prima erano tre cartelle datate e si finiva per parsare la piu'
 # vecchia senza accorgersene.

@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import io
 import os
+from pathlib import Path
 import sys
 import time
 import urllib.error
@@ -32,8 +33,8 @@ import zipfile
 
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-OUT = os.path.join(ROOT, "data", "cache", "sec")
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+OUT = os.path.join(ROOT, "data/cache/sec")
 URL = "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/%s_form345.zip"
 COL_SUB = ["ACCESSION_NUMBER", "FILING_DATE", "DOCUMENT_TYPE", "ISSUERCIK", "ISSUERNAME", "ISSUERTRADINGSYMBOL"]
 COL_OWN = ["ACCESSION_NUMBER", "RPTOWNERCIK", "RPTOWNERNAME", "RPTOWNER_RELATIONSHIP", "RPTOWNER_TITLE"]

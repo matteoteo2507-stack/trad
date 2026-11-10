@@ -23,7 +23,8 @@ from strategies._base import Signal
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_RISK_CONFIG_PATH = Path(__file__).parent.parent / "config" / "risk.yaml"
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
+DEFAULT_RISK_CONFIG_PATH = ROOT / "config/risk.yaml"
 
 
 # ---------------------------------------------------------------------------

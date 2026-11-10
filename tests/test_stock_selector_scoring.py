@@ -23,7 +23,7 @@ from strategies.stock_selector.scoring import (
 )
 
 
-CONFIG_PATH = Path(__file__).parent.parent / "strategies" / "stock_selector" / "config.yaml"
+CONFIG_PATH = next(p for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()) / "strategies/stock_selector/config.yaml"
 
 
 @pytest.fixture(scope="module")

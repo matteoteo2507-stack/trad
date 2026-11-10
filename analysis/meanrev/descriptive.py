@@ -36,14 +36,15 @@ Tutto e' calcolato solo su informazione passata al tempo t (SMA, sd e ATR fino a
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
-DATA = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "dukascopy_d1")
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data/dukascopy_d1")
 
 PERIODI = (3, 5, 10, 20)        # la mappa, non una scelta
 ORIZZONTI = (1, 2, 3, 4)        # l'unico numero che la fonte da' davvero

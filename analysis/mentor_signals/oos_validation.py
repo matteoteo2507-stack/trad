@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import glob
 import os
+from pathlib import Path
 import re
 import sys
 from datetime import datetime
@@ -17,7 +18,7 @@ from datetime import datetime
 import numpy as np
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 from core import quant_metrics as qm  # noqa: E402
@@ -37,7 +38,7 @@ if not glob.glob(os.path.join(EXPORT, "messages*.html")):
         EXPORT = _vecchi[-1]
         print("ATTENZIONE: uso l'export datato %r. Spostalo in _export_telegram/"
               % os.path.basename(EXPORT), file=sys.stderr)
-M5_EXT = os.path.join(ROOT, "analysis", "trading-bot-eval", "data", "XAU_spot_M5_ext.csv")
+M5_EXT = os.path.join(ROOT, "analysis/trading-bot-eval/data/XAU_spot_M5_ext.csv")
 # fine della copertura prezzi usata dall'audit -> tutto cio' che segue e' OOS
 OOS_FROM = np.datetime64("2026-06-12T22:55:00")
 

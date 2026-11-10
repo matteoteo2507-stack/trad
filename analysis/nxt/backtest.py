@@ -17,17 +17,18 @@ Uso: python analysis/nxt/backtest.py
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 from collections import defaultdict
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 sys.path.insert(0, ROOT)
 from core import quant_metrics as qm  # noqa: E402
 
-DATA = os.path.join(ROOT, "analysis", "trading-bot-eval", "data")
+DATA = os.path.join(ROOT, "analysis/trading-bot-eval/data")
 
 # ---- parametri PRE-REGISTRATI (immutabili) ---------------------------------
 ASSETS = ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD", "US100", "US500"]

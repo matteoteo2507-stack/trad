@@ -5,11 +5,12 @@ Verifica la regola di decisione (INSUFFICIENTE/EDGE/NEGATIVO/AMBIGUO) e il repor
 """
 import csv
 import os
+from pathlib import Path
 import random
 import sys
 import tempfile
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists()))
 from level_analyzer import gate, record  # noqa: E402
 
 
