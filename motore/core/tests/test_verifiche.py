@@ -287,3 +287,29 @@ def test_fattore_potenza_una_coda_con_holm():
     assert abs(fattore_potenza(0.0125 / 18, code=1) - 4.04) < 0.01   # nodo HMM
     assert abs(fattore_potenza(0.0125, code=1) - 3.08) < 0.01        # premio di volatilita'
     assert mde(1.0, 100, alpha=0.05, code=1) < mde(1.0, 100)         # una coda: MDE piu' stretto a pari alpha
+
+
+def test_procedura_grafica_un_nodo_e_holm():
+    from motore.core.verifiche import procedura_grafica_nodi
+    p = {"a": 0.01, "b": 0.02, "c": 0.04, "d": 0.30}
+    r = procedura_grafica_nodi({"N": p}, {"N": 0.05})["rifiutate"]["N"]
+    # Holm a 0,05 su 4: 0,01 <= 0,0125 si'; 0,02 <= 0,0167 no -> si ferma
+    assert r == ["a"]
+
+
+def test_procedura_grafica_ricicla_ai_nodi_alla_pari():
+    from motore.core.verifiche import procedura_grafica_nodi
+    pv = {"G": {"g1": 1e-6, "g2": 1e-6}, "H": {"h1": 0.03, "h2": 0.9}, "P": {"p": 0.024}}
+    out = procedura_grafica_nodi(pv, {"G": 0.025, "H": 0.0125, "P": 0.0125})["rifiutate"]
+    # G esaurito: 0,025 va 0,0125 a H e 0,0125 a P -> H 0,025 (soglia 0,0125 su 2), P 0,025: p si';
+    # P esaurito: H 0,05, soglia 0,025 su 2 -> h1 = 0,03 no
+    assert out["G"] == ["g1", "g2"] and out["P"] == ["p"] and out["H"] == []
+    # P esaurito: la sua quota (0,025) va a H, unico vivo -> H 0,05, soglia 0,025 su 2: h1 = 0,016 si'
+    pv["H"]["h1"] = 0.016
+    out = procedura_grafica_nodi(pv, {"G": 0.025, "H": 0.0125, "P": 0.0125})["rifiutate"]
+    assert out["H"] == ["h1"]
+
+
+def test_mde_con_t_di_student():
+    from motore.core.verifiche import fattore_potenza
+    assert fattore_potenza(0.0125, code=1, gl=22) > fattore_potenza(0.0125, code=1)   # 23 mesi: soglia piu' alta

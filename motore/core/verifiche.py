@@ -29,7 +29,7 @@ from scipy import stats
 
 # ---- buco 2: potenza e dimensione campionaria --------------------------------------------------
 
-def fattore_potenza(alpha: float = 0.05, potenza: float = 0.80, code: int = 2) -> float:
+def fattore_potenza(alpha: float = 0.05, potenza: float = 0.80, code: int = 2, gl: int | None = None) -> float:
     """z_{1-alpha/code} + z_{potenza}. Con alpha 0,05, due code e potenza 80% vale ~2,80.
 
     `code=1` per un test a una coda; `alpha` e' quello **dopo** la correzione per i confronti multipli (per es. la
@@ -37,10 +37,13 @@ def fattore_potenza(alpha: float = 0.05, potenza: float = 0.80, code: int = 2) -
     a una coda con Holm su 18 coppie servono 3,83 e 4,04)."""
     if code not in (1, 2):
         raise ValueError("code deve essere 1 o 2")
+    if gl is not None:          # t di Student con `gl` gradi di liberta' (campioni piccoli, es. 23 mesi)
+        return float(stats.t.ppf(1 - alpha / code, gl) + stats.t.ppf(potenza, gl))
     return float(stats.norm.ppf(1 - alpha / code) + stats.norm.ppf(potenza))
 
 
-def mde(sd: float, n: float, alpha: float = 0.05, potenza: float = 0.80, code: int = 2) -> float:
+def mde(sd: float, n: float, alpha: float = 0.05, potenza: float = 0.80, code: int = 2,
+        gl: int | None = None) -> float:
     """Effetto minimo rilevabile su una media: fattore * sd / sqrt(n).
 
     `n` e' il numero di osservazioni **indipendenti**: con esiti raggruppati (vedi `runs_test`) va
@@ -49,7 +52,7 @@ def mde(sd: float, n: float, alpha: float = 0.05, potenza: float = 0.80, code: i
     """
     if n <= 0 or not np.isfinite(sd):
         return float("nan")
-    return fattore_potenza(alpha, potenza, code) * sd / math.sqrt(n)
+    return fattore_potenza(alpha, potenza, code, gl) * sd / math.sqrt(n)
 
 
 def n_richiesto(sd: float, effetto: float, alpha: float = 0.05, potenza: float = 0.80, code: int = 2) -> int:
@@ -542,3 +545,52 @@ def correlazione_in_drawdown(x: pd.Series, y: pd.Series, soglia_dd: float = 0.10
            "intero_campione": float(df["x"].corr(df["y"]))}
     out["in_drawdown"] = float(df.loc[stress, "x"].corr(df.loc[stress, "y"])) if stress.sum() > 10 else float("nan")
     return out
+
+
+# ---- strumenti (LIFECYCLE §8ter): procedura grafica per nodi e p-value dello SPA (dal 2026-11-13) ----------------
+
+def procedura_grafica_nodi(pvalori: dict, alfa_nodi: dict) -> dict:
+    """Test multipli con Holm dentro ogni nodo e riciclo alla pari fra nodi (LIFECYCLE §8ter S2, G8).
+
+    `pvalori` = {nodo: {ipotesi: p}}, `alfa_nodi` = {nodo: quota d'errore}. Dentro un nodo il peso del nodo si divide in
+    parti uguali fra le ipotesi non ancora rifiutate (Holm); quando tutte le ipotesi di un nodo sono rifiutate, la sua
+    quota passa **in parti uguali ai nodi** non esauriti, e dentro ciascuno alle ipotesi non rifiutate. E' il limite
+    con archi epsilon della procedura grafica di Bretz et al. (2009): i pesi crescono soltanto, quindi la procedura
+    sequenzialmente rifiutante controlla l'errore di famiglia in senso forte alla somma delle quote.
+    Restituisce {"rifiutate": {nodo: [ipotesi]}, "soglie": {nodo: {ipotesi: soglia all'ultimo passo}}}.
+    """
+    attive = {n: dict(h) for n, h in pvalori.items()}
+    quota = {n: float(alfa_nodi[n]) for n in pvalori}
+    rifiutate = {n: [] for n in pvalori}
+    soglie = {n: {} for n in pvalori}
+    cambiato = True
+    while cambiato:
+        cambiato = False
+        for n in list(attive):
+            if not attive[n]:
+                continue
+            soglia = quota[n] / len(attive[n])
+            for h, p in attive[n].items():
+                soglie[n][h] = soglia
+            da_togliere = [h for h, p in attive[n].items() if p <= soglia]
+            if da_togliere:
+                h = min(da_togliere, key=lambda k: attive[n][k])      # un rifiuto per passo, il p piu' piccolo
+                rifiutate[n].append(h)
+                del attive[n][h]
+                cambiato = True
+                if not attive[n]:                                      # nodo esaurito: quota agli altri nodi
+                    vivi = [m for m in attive if attive[m]]
+                    for m in vivi:
+                        quota[m] += quota[n] / len(vivi)
+                    quota[n] = 0.0
+                break
+    return {"rifiutate": rifiutate, "soglie": soglie}
+
+
+def pvalue_spa(spa, repliche: int, conf: float = 0.95, quale: str = "consistent") -> dict:
+    """p-value di `arch.bootstrap.SPA` come (b+1)/(B+1) con intervallo, attraverso `pvalue_mc`.
+
+    `arch` riporta b/B, che puo' valere 0 (G1 della volatilita', 13/11/2026). b si ricava esattamente da b/B."""
+    p_grezzo = float(spa.pvalues[quale])
+    b = int(round(p_grezzo * repliche))
+    return pvalue_mc(b, repliche, conf)
