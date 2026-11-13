@@ -42,6 +42,9 @@ l'holdout). Controlli dell'11/11 (solo struttura, nessuna statistica sui rendime
   Francoforte) i giorni pieni sono il 95-100% e le barre ferme lo 0% **dal 2015**; nel 2012-2014 fino al 10% di barre
   ferme anche in seduta. EURUSD: 28-29% di barre ferme nel 2012-2013, 0% dal 2015. Per una varianza realizzata
   confrontabile nel tempo: **dal 2015**, e sulla giornata intera (notte compresa) solo dal 2019.
+- **Oro, argento, petrolio** (barre ferme sulle 24 ore, % per anno, stesso controllo dell'11/11): XAUUSD **0%** ogni
+  anno 2012-2026; XAGUSD 0% nel 2014-2016, **1%** nel 2017-2019, 0% dal 2020; WTI 4% (2012), 3% (2013), **19% (2014)**,
+  1% (2015), 0% (2016), 1% (2017), 0% (2018), 1% (2019), 0% dal 2020. Barre per anno 61-76 mila (2026 fino all'11/11).
 
 ### `prezzi/volatilita_mt5/` — secondo feed dal terminale MT5 (FP Markets, 11/11/2026)
 

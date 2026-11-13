@@ -33,7 +33,14 @@ non il "contenuto in piu'" di S4; nulla in git (data dell'holdout non congelata)
 `motore/core/verifiche.py` (MDE solo a due code), p-value SPA b/B che puo' valere 0, guardia dello studio H1 su
 percorsi pre-riordino che passerebbe a vuoto.
 
-**Scelte di Matteo dopo la G1** (stessa giornata): (1) HMM: **combinazione fissa** 0,5·GJR + 0,5·HMM come variante (misura il contenuto in piu' di S4; serie 91 → 127); (2) se un controllo positivo della pipeline non raggiunge l'80%, l'holdout **non si apre** per quel nodo; (3) affermazioni **per strumento** (grafo su 37 ipotesi elementari); (4) commit su un **branch nuovo**, `strumenti/volatilita`. Correzioni applicate nella pre-registrazione (§9 elenca rilievo per rilievo); `verifiche.py` accetta test a una coda. Seconda passata G1 in corso.
+**Scelte di Matteo dopo la G1** (stessa giornata): (1) HMM: **combinazione fissa** 0,5·GJR + 0,5·HMM come variante (misura il contenuto in piu' di S4; serie 91 → 127); (2) se un controllo positivo della pipeline non raggiunge l'80%, l'holdout **non si apre** per quel nodo; (3) affermazioni **per strumento** (grafo su 37 ipotesi elementari); (4) commit su un **branch nuovo**, `strumenti/volatilita`. Correzioni applicate nella pre-registrazione (§9 elenca rilievo per rilievo); `verifiche.py` accetta test a una coda.
+
+**Seconda passata G1: BLOCCA** (5 bloccanti, 8 riserve), quasi tutti nei controlli della pipeline: il negativo IGARCH
+con ω > 0 non era un processo nullo (errore del suggerimento della prima passata, dichiarato dal gatekeeper), la soglia
+dell'80% misurava il nodo invece della coppia, il controllo sui dati veri passava per costruzione, mancavano il negativo
+dell'HMM e la dimensione del test mensile del premio, il riciclo fra nodi divergeva da S2 (corretto conformandosi a S2,
+nessuna decisione nuova). Tutto corretto lo stesso giorno; nuove primitive in `verifiche.py` (procedura grafica per
+nodi, p-value dello SPA, MDE con t di Student). Terza passata in corso.
 
 ---
 
