@@ -327,3 +327,38 @@ def test_procedura_grafica_intervallo_a_ogni_passo():
     assert out["rifiutate"]["N"] == []
     with pytest.raises(ValueError):
         procedura_grafica_nodi({"N": {}, "M": {"x": 0.001}}, {"N": 0.01, "M": 0.01})
+
+
+def _perdite_sintetiche(seed=0, n=500):
+    rng = np.random.default_rng(seed)
+    bench = rng.normal(1.0, 0.2, n)
+    buono = bench - 0.06 + rng.normal(0, 0.2, n)        # vantaggio netto, rumore moderato
+    rumoroso = bench + rng.normal(0, 3.0, n)            # nessun vantaggio, rumore enorme
+    return bench, buono, rumoroso
+
+
+def test_spa_studentizzato_con_un_modello_coincide_con_arch():
+    from arch.bootstrap import SPA
+    from motore.core.verifiche import spa_studentizzato
+    bench, buono, _ = _perdite_sintetiche()
+    a = SPA(bench, buono[:, None], reps=2000, seed=7); a.compute()
+    s = spa_studentizzato(bench, buono[:, None], reps=2000, seed=7)
+    assert abs(a.pvalues["consistent"] - s.pvalues["consistent"]) < 1e-12
+
+
+def test_spa_studentizzato_non_perde_il_modello_buono_accanto_a_uno_rumoroso():
+    """G1 della volatilita' (13/11/2026): con arch il modello rumoroso fa salire il p; studentizzato no."""
+    from arch.bootstrap import SPA
+    from motore.core.verifiche import spa_studentizzato
+    bench, buono, rumoroso = _perdite_sintetiche()
+    modelli = np.column_stack([buono, rumoroso])
+    grezzo = SPA(bench, modelli, reps=2000, seed=7); grezzo.compute()
+    stud = spa_studentizzato(bench, modelli, reps=2000, seed=7)
+    assert stud.pvalues["consistent"] < 0.01
+    assert grezzo.pvalues["consistent"] > stud.pvalues["consistent"]
+
+
+def test_stepm_studentizzato_trova_il_modello_buono():
+    from motore.core.verifiche import stepm_studentizzato
+    bench, buono, rumoroso = _perdite_sintetiche()
+    assert stepm_studentizzato(bench, np.column_stack([buono, rumoroso]), size=0.05, reps=2000, seed=7) == [0]

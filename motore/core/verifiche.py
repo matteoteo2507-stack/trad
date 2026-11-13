@@ -609,3 +609,60 @@ def pvalue_spa(spa, repliche: int, conf: float = 0.95, quale: str = "consistent"
     p_grezzo = float(spa.pvalues[quale])
     b = int(round(p_grezzo * repliche))
     return pvalue_mc(b, repliche, conf)
+
+
+def varianza_lungo_periodo_sb(d: np.ndarray, block_size: int) -> np.ndarray:
+    """Varianza di lungo periodo di ogni colonna di `d` con il nucleo del bootstrap stazionario (p = 1/blocco).
+
+    E' lo stesso stimatore di `arch.bootstrap.SPA._compute_variance` con `nested=False` (arch 8.0.0), riscritto qui
+    perche' lo SPA di arch **non** lo usa per studentizzare la statistica (G1 della volatilita', 13/11/2026)."""
+    d = np.asarray(d, dtype=float)
+    if d.ndim == 1:
+        d = d[:, None]
+    t = d.shape[0]
+    q = 1.0 / block_size
+    dm = d - d.mean(axis=0)
+    var = np.sum(dm ** 2, axis=0) / t
+    for i in range(1, t):
+        kappa = (1.0 - i / t) * (1 - q) ** i + (i / t) * (1 - q) ** (t - i)
+        var = var + 2 * kappa * np.sum(dm[: t - i] * dm[i:], axis=0) / t
+    return var
+
+
+def _ingresso_studentizzato(perdite_benchmark, perdite_modelli, block_size):
+    pb = np.asarray(perdite_benchmark, dtype=float).reshape(-1)
+    pm = np.asarray(perdite_modelli, dtype=float)
+    if pm.ndim == 1:
+        pm = pm[:, None]
+    bs = int(np.sqrt(pb.shape[0])) if block_size is None else int(block_size)
+    d = pb[:, None] - pm                                  # convenzione di arch: positivo = il modello perde meno
+    omega = np.sqrt(varianza_lungo_periodo_sb(d, bs))
+    if np.any(omega <= 0) or not np.all(np.isfinite(omega)):
+        raise ValueError("varianza di lungo periodo nulla o non finita: differenziale costante?")
+    return np.zeros(pb.shape[0]), -d / omega, bs
+
+
+def spa_studentizzato(perdite_benchmark, perdite_modelli, block_size=None, reps=1000, seed=None):
+    """SPA di Hansen (2005) **studentizzato**: statistica max_k sqrt(n) d_k / omega_k.
+
+    `arch.bootstrap.SPA` 8.0.0 confronta il massimo delle medie grezze e usa le varianze solo per la ricentratura
+    `consistent`: un modello rumoroso e inutile nasconde un modello buono (G1 della volatilita', 13/11/2026). Qui si
+    divide ogni differenziale per la sua deviazione di lungo periodo (stesso nucleo di arch) e si passa ad arch
+    `benchmark = 0`, `models = -d_k / omega_k`: le varianze riscalate valgono ~1 e la soglia `consistent` resta coerente.
+    Restituisce l'oggetto SPA di arch gia' calcolato: il p-value si legge con `pvalue_spa(spa, reps)`."""
+    from arch.bootstrap import SPA
+    b0, m, bs = _ingresso_studentizzato(perdite_benchmark, perdite_modelli, block_size)
+    spa = SPA(b0, m, block_size=bs, reps=reps, bootstrap="stationary", nested=False, seed=seed)
+    spa.compute()
+    return spa
+
+
+def stepm_studentizzato(perdite_benchmark, perdite_modelli, size, block_size=None, reps=1000, seed=None):
+    """StepM di Romano-Wolf sullo stesso ingresso studentizzato di `spa_studentizzato`.
+
+    Restituisce gli indici (colonne di `perdite_modelli`) dei modelli che battono il benchmark al livello `size`."""
+    from arch.bootstrap import StepM
+    b0, m, bs = _ingresso_studentizzato(perdite_benchmark, perdite_modelli, block_size)
+    st = StepM(b0, m, size=size, block_size=bs, reps=reps, bootstrap="stationary", nested=False, seed=seed)
+    st.compute()
+    return sorted(int(i) for i in np.asarray(st.superior_models).reshape(-1))
