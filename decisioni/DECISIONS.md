@@ -45,7 +45,9 @@ nodi, p-value dello SPA, MDE con t di Student).
 **Terza passata G1: BLOCCA** (3 bloccanti, 5 riserve; procedura grafica valida). Due bloccanti tecnici corretti (il
 controllo sui dati veri ora guarda la variante iniettata con lo StepM; RUSSELL escluso da quel controllo, criterio 5 su
 8). Il terzo era una regola non decisa: **Matteo sceglie che la quota di un nodo uscito prima dell'apertura resti
-riservata** a un test su dati forward, conforme a H4, invece di passare agli altri nodi. Quarta passata in corso.
+riservata** a un test su dati forward, conforme a H4, invece di passare agli altri nodi.
+
+**Quarta passata G1: BLOCCA** con **un solo** bloccante: lo SPA di `arch` 8.0.0 non studentizza (verificato da Claude sul sorgente; caso di prova: modello buono p 0,000 da solo, 0,301 con accanto un modello rumoroso, 0,000 studentizzato). Corretto con `spa_studentizzato`/`stepm_studentizzato` in `motore/core/verifiche.py`; il claim del referto del 10/11 su arch e' corretto. Il gatekeeper: "riparato questo, non trovo altri bloccanti". Le 5 riserve sono chiuse nel testo. Quinta passata di conferma in corso; poi il testo va all'approvazione di Matteo.
 
 ---
 

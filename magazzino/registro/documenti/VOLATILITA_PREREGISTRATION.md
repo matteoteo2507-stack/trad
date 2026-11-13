@@ -156,8 +156,11 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
 
 - **Perdita primaria**: QLIKE = log(f) + v/f (f previsione riscalata, v bersaglio, entrambi in %²); secondaria MSE
   sulla varianza (descrittiva).
-- **Test per coppia** (nodi GARCH e HMM): SPA di Hansen (p-value `consistent`) delle varianti del nodo contro il
-  benchmark, bootstrap stazionario, blocco √T, **100.000 ripetizioni** (`repliche_per_distinguere`: ne servono 44.193
+- **Test per coppia** (nodi GARCH e HMM): SPA di Hansen **studentizzato** (p-value `consistent`) delle varianti del
+  nodo contro il benchmark, con `spa_studentizzato` di `motore/core/verifiche.py` (commit `7170515`); **non** con il
+  parametro `studentize` di `arch`, che nella versione 8.0.0 non cambia la statistica (quarta G1: con arch un modello
+  buono passa da p = 0,000 a 0,301 se gli si affianca un modello rumoroso; studentizzato resta a 0,000). Ogni StepM
+  (descrittivi e §7.6) passa da `stepm_studentizzato`, sullo stesso ingresso. Bootstrap stazionario, blocco √T, **100.000 ripetizioni** (`repliche_per_distinguere`: ne servono 44.193
   alla prima soglia del GARCH e 88.446 a quella dell'HMM perche' l'intervallo del p-value sia largo un quarto della
   soglia), seme 20261113. p-value = (b+1)/(B+1) con `pvalue_spa` (che passa da `pvalue_mc`), riportato con `low`/`high`. Ogni SPA del
   verdetto gira su **4 semi dichiarati** (20261113-20261116) e si sommano superamenti e ripetizioni (400.000 in tutto);
@@ -212,8 +215,9 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
    - **HMM**: processo GJR (ω = 0,02, α = 0,03, γ = 0,10, β = 0,90), riscalato come sopra, per il quale il GJR e' il
      previsore esatto; le quattro varianti dell'HMM contro il GJR. Disegno ridotto dichiarato: **200 repliche, 3 serie,
      h = 1, 3 partenze, ristima ogni 60 giorni**. Criterio: il nodo, con la procedura grafica sulle 3 coppie del disegno
-     ridotto alla quota del nodo (prima soglia 1,25%/3, piu' larga di quella vera: il controllo e' quindi piu' severo),
-     rifiuta in non piu' del 2,5% delle repliche (il doppio di 1,25%). Limite dichiarato: con 200 repliche distingue male una dimensione del 2,5% da una del 5%; serve
+     ridotto alla quota del nodo, rifiuta in non piu' del 2,5% delle repliche (il doppio di 1,25%). E' un controllo
+     **diverso** da quello vero, non piu' severo: mantiene l'errore del nodo all'1,25%, ma prova la dimensione per
+     coppia a 1,25%/3, non nella coda vera (1,25%/18 = 0,069%). Limite dichiarato: con 200 repliche distingue male una dimensione del 2,5% da una del 5%; serve
      a trovare guasti grossi (per esempio la studentizzazione su differenziali piccoli e correlati delle combinazioni).
    - **Premio**: dimensione del **test primario**. Bootstrap a blocchi della serie giornaliera del premio di sviluppo
      riportata a media zero, blocchi di **21** e di **63** giorni, 2.000 repliche ciascuno. Ogni serie ricampionata e'
@@ -248,8 +252,13 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
    delle varianti vere): lo **StepM** alla soglia vera della coppia (2,5%/18) deve **identificare la variante iniettata**.
    **RUSSELL e' escluso** (bloccante 2 della terza G1: ha circa 570 giorni di sviluppo con previsioni, non 1.000).
    Criterio: la variante iniettata e' identificata su **almeno 5 strumenti su 8** (con potenza vera dell'80% per
-   strumento succede con probabilita' 0,94, con il 50% con probabilita' 0,36). Stesso schema per l'HMM: variante
-   iniettata sul GJR, nello SPA con le quattro varianti, StepM a 1,25%/18, almeno 5 su 8.
+   strumento succede con probabilita' 0,94, con il 50% con probabilita' 0,36, **se gli strumenti fossero
+   indipendenti**: quattro indici USA e il DAX sono correlati, quindi il conteggio e' piu' disperso e il criterio
+   distingue meno di quanto dicono questi numeri). StepM con **100.000 ripetizioni**, seme 20261117. Stesso schema per
+   l'HMM: variante iniettata sul GJR, nello SPA con le quattro varianti, StepM a 1,25%/18, almeno 5 su 8. Nei controlli
+   simulati (§7.2, §7.5) lo SPA usa 10.000 ripetizioni: alla soglia di 0,139% il quantile e' stimato da circa 14
+   valori, quindi la decisione della singola replica e' rumorosa; la frequenza su 200-1.000 repliche lo media, ed e'
+   un limite dichiarato.
 7. **Conseguenze, scritte ora** (riserva 5 della seconda G1):
 
    | Controllo che fallisce | Cosa succede |
@@ -262,7 +271,8 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
    altri nodi. All'apertura la procedura grafica gira solo sui nodi rimasti, con le loro quote iniziali e il riciclo
    fra loro (S2: il riciclo e' dopo un rifiuto, non dopo un'uscita). Il nodo uscito si puo' testare dopo, una volta
    sola, su **dati forward successivi all'apertura**, con la sua quota iniziale (2,5% o 1,25%), in un'aggiunta datata
-   scritta prima di raccogliere quei dati e dopo aver corretto la causa dell'uscita; l'errore della famiglia resta al
+   scritta prima di raccogliere quei dati e dopo aver corretto la causa dell'uscita, che fissa **prima** la lunghezza
+   della finestra forward, l'MDE e i controlli (senza lunghezza fissata il test si fermerebbe quando conviene); l'errore della famiglia resta al
    5%. Un ridisegno dopo il passo 3 conta trial (C1) ed e' post-esito. Se esce ogni nodo, l'holdout resta sigillato.
 8. Revisione G1 del gatekeeper sulle aggiunte, poi **apertura unica** dell'holdout (H4) per i nodi rimasti.
 
@@ -270,7 +280,9 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
 
 Tutto l'errore di famiglia (5%) e' assegnato al round 1. Le rifiniture qui sotto sono quindi **esplorative**, salvo una
 pre-registrazione nuova su **dati forward** successivi all'apertura con una quota fissata allora (P3, per esempio
-α·6/(π²k²) alla k-esima): (a) distribuzione t di Student (nodo GARCH); (b) finestra di 1.500 giorni (GARCH e HMM);
+α·6/(π²k²) alla k-esima). Quella quota puo' venire **solo** dalla quota riservata di un nodo uscito (§7.7) e non
+ancora spesa: cosi' l'errore della famiglia resta al 5%. Andare oltre il 5% richiede una decisione di Matteo in
+`DECISIONS.md`. Le rifiniture: (a) distribuzione t di Student (nodo GARCH); (b) finestra di 1.500 giorni (GARCH e HMM);
 (c) GARCH a regimi di Markov (Ardia et al. 2018), nel **nodo HMM**, se esiste un'implementazione Python verificata.
 Mai sull'holdout. Qualunque altra modifica e' post-esito ed esplorativa (P1).
 
@@ -327,6 +339,17 @@ trattati:
 | R3 σ e rapporto effetto/MDE | §7.5: σ per strumento, rapporto scritto prima di far girare i controlli |
 | R4 soglie del negativo dell'HMM, serie del premio | §7.2: procedura grafica sulle 3 coppie (piu' severa); serie lunghe quanto l'holdout sul suo calendario, senza valori |
 | R5 iterazioni dei controlli | §7.7: aggiunte datate; cambi di disegno nelle deviazioni |
+
+**Quarta passata (13/11): BLOCCA**, 1 bloccante e 5 riserve; "riparato questo, non trovo altri bloccanti" (gatekeeper).
+
+| Rilievo | Correzione |
+|---|---|
+| B1 lo SPA di `arch` 8.0.0 non studentizza | §6: `spa_studentizzato` e `stepm_studentizzato` (commit `7170515`, verificato sul sorgente e con un caso di prova) |
+| R1 5 su 8 assume indipendenza | §7.6: dichiarato accanto ai numeri |
+| R2 ripetizioni dello StepM | §7.6: 100.000 e seme 20261117 sui dati veri; limite dichiarato nei controlli simulati |
+| R3 errore oltre il 5% nei round 2-3 | §8: quota solo dalla riserva di un nodo uscito, oltre il 5% decide Matteo |
+| R4 test forward del nodo uscito | §7.7: lunghezza, MDE e controlli fissati prima |
+| R5 "piu' severo" | §7.2: "un controllo diverso", con la ragione |
 
 ## 10. Deviazioni (P5)
 

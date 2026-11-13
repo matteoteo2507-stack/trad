@@ -551,7 +551,10 @@ aprirne una.
 - **G4 Test**: un candidato, Diebold-Mariano con correzione HLN ed errori HAC (o Giacomini-White); piu' candidati,
   **SPA** (p-value `consistent`) contro il benchmark, **StepM** per sapere quali lo battono, **MCS** (statistica di
   range, livello dichiarato) per scegliere, preferendo il piu' semplice. Bootstrap stazionario, almeno 1.000
-  ripetizioni (5.000 vicino alla soglia), seme fisso, blocco √T con una prova di sensibilita'. Libreria `arch`.
+  ripetizioni (5.000 vicino alla soglia), seme fisso, blocco √T con una prova di sensibilita'. Libreria `arch`, ma
+  SPA e StepM **studentizzati** con `spa_studentizzato` e `stepm_studentizzato` di `motore/core/verifiche.py`: in
+  `arch` 8.0.0 il parametro `studentize` non cambia la statistica, e un modello rumoroso nasconde quello buono
+  (verificato il 13/11 sul sorgente). Per piu' ipotesi con quote: `procedura_grafica_nodi`; p-value con `pvalue_spa`.
 - **G5** Mincer-Zarnowitz solo come diagnostica, in livelli, con errori HAC; mai in logaritmi per un verdetto.
 - **G6 Potenza prima**: l'MDE sul differenziale di QLIKE si stima sui dati di sviluppo prima di aprire l'holdout; un
   mancato rifiuto si scrive "non dimostrato, MDE = ...".
