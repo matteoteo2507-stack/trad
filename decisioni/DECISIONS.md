@@ -11,6 +11,104 @@
 
 ---
 
+## 2026-11-13 — Volatilita': varianti decise, pre-registrazione in **BOZZA**, prima passata G1 **BLOCCA**; 0 trial
+
+Decisioni di Matteo per la [pre-registrazione](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md):
+- **GARCH**: varianti GARCH(1,1), GJR(1,1,1), EGARCH(1,1,1) contro EWMA 0,94 (approvate).
+- **HMM**: varianza a regimi di Markov con 2 e 3 regimi; il benchmark lo sceglie Claude "conforme alle decisioni
+  prese": **GJR**, perche' S4 chiede il contenuto in piu' della probabilita' filtrata a parita' d'informazione
+  (rendimenti giornalieri). Scelta di un LLM, dichiarata (Checklist 5).
+- **Premio di volatilita' a 30 giorni** (strada a): e' la definizione del VIX, non un orizzonte di trading; non viola
+  il massimo di 5 giorni.
+- Dati: VIX aggiornato al 2026-11-12 (sovrainsieme esatto del file vecchio); nel WTI Dukascopy salti di rollover alla
+  riapertura (16 il giorno 19 del mese nel 2015-2024, +29% il 19/04/2020), esclusi per costruzione dalla definizione del
+  giorno a 24 ore.
+
+**Prima passata G1 del gatekeeper: BLOCCA** (6 bloccanti, 7 riserve; nessun dato toccato). Bloccanti: scala del
+bersaglio e giorni esclusi non definiti, unita' del premio sbagliate di 10⁴; manca un test d'invarianza al futuro
+nel codice (statsmodels predice coi lisciati per default); fattore dell'MDE 2,80 sbagliato per test a una coda con
+Holm (3,83 GARCH, 4,04 HMM, 3,08 premio) e 5.000 ripetizioni insufficienti alla soglia di Holm; controllo positivo
+senza soglia, negativo IGARCH degenere, premio senza controllo di dimensione; il test dell'HMM e' una corsa fra modelli,
+non il "contenuto in piu'" di S4; nulla in git (data dell'holdout non congelata). Debito di protocollo trovato:
+`motore/core/verifiche.py` (MDE solo a due code), p-value SPA b/B che puo' valere 0, guardia dello studio H1 su
+percorsi pre-riordino che passerebbe a vuoto. Correzioni in corso; le scelte aperte sono di Matteo.
+
+---
+
+## 2026-11-11 — Gate degli strumenti **adottato** (Matteo); errore di famiglia diviso 2,5 / 1,25 / 1,25; holdout di **due anni**; 0 trial
+
+Matteo conferma le regole proposte nel [referto del 10/11](../magazzino/registro/referti/gate_strumenti_volatilita_2026-11-10.md)
+(sezione "Regole proposte": gate G1-G9, holdout H1-H6, conteggio C1-C5, varianti post-esito P1-P5, sottofamiglie S1-S6).
+Da proposte diventano regole; i claim della letteratura nel referto restano in quarantena.
+- **Famiglia volatilita'**: errore di famiglia 5% a una coda, diviso prima di ogni test: **2,5% GARCH, 1,25% HMM,
+  1,25% premio di volatilita'**, con riciclo in parti uguali dopo un rifiuto (S2).
+- **Holdout**: blocco finale di calendario **di due anni**, comune a tutti gli strumenti; la data d'inizio si fissa
+  nella pre-registrazione di famiglia, **dopo** aver riallineato le date di fine dei file (il 10/11 SPX500, NAS100 ed
+  EURUSD finivano a luglio 2026, DAX e oro a ottobre).
+- **Futures a 1 minuto dei soci** (oro GC, S&P ES, Nasdaq NQ, petrolio CL, argento SI, Russell 2000, Dow, euro 6E):
+  verificato l'11/11 che nel repo **non ci sono** (ci sono solo futures giornalieri di commodity minori da pysystemtrade
+  e i CFD). Entrano solo **prima** della pre-registrazione di famiglia. ➡️ **Arrivati e controllati l'11/11**, ora in
+  `motore/data/prezzi/futures_1m/` (fuori da git); esito in [motore/data/README](../motore/data/README.md):
+  - **un anno solo** (2025-11-13 → 2026-11-09/11), quindi stanno **per intero dentro il blocco di holdout** di due
+    anni. Per la volatilita' servono come conferma su strumenti nuovi e per il confronto fra varianza realizzata dei
+    future e dei CFD che i soci operano, non come storia di stima;
+  - contengono il **flusso degli ordini lato scambi** (volume aggressivo in acquisto e vendita, delta, grandi ordini),
+    non il book: sblocca in parte la microstruttura (backlog §I4), con un anno di dati e la potenza da calcolare prima;
+  - **6E con i prezzi arrotondati** (inutilizzabili), serie **non aggiustate** ai cambi di contratto (verificato su ES,
+    NQ, GC); fonte, licenza e significato dei "grandi ordini" da chiarire con i soci;
+  - i controlli hanno guardato solo prezzi e volumi per la qualita' (scalini di rollover, precisione): **nessuna
+    perdita di previsione calcolata**, l'holdout resta chiuso.
+- **Architettura fatta lo stesso giorno**: regole in vigore in
+  [STRATEGY_LIFECYCLE §8ter](../motore/metodo/STRATEGY_LIFECYCLE.md), binario `strumenti` nel contatore (con
+  verifica di quote, benchmark e varianti esplorative), Checklist 10 del gatekeeper, `mappa/` aggiornata
+  (`_modifiche.md`, `da_rivedere`). Prossimo passo: la pre-registrazione della famiglia volatilita'.
+- **Scelte per la pre-registrazione (Matteo, stessa giornata):** orizzonte di previsione **al massimo 5 giorni** (22
+  "impossibile"); strumenti = quelli che permettono **i test piu' completi**. Dati riallineati: MT5 (FP Markets) ha
+  solo ~17 mesi di M5 sugli indici (da giugno 2025) e non copre l'holdout, quindi la serie di lavoro resta **una sola
+  fonte**, Dukascopy M5 dal 2012 su 9 strumenti (`magazzino/registro/codice/volatilita/scarica_dukascopy.py`), e MT5
+  e' esportato come **secondo feed** di confronto (`esporta_mt5.py`, ora del server). Libreria `arch` 8.0.0
+  installata. Le **varianti di ogni sottofamiglia non erano ancora decise** (fissati solo benchmark, finestra mobile,
+  ristima settimanale, gaussiana, vincoli dell'HMM): proposta in sessione, decide Matteo.
+
+---
+
+## 2026-11-10 — Strumenti: **ricerca il piu' generale possibile**, un ordine unico che parte dalla **volatilita'**; derivati solo come teoria; 0 trial
+
+Decisioni di Matteo, dopo la rassegna delle famiglie chiuse con la definizione di strumento
+([04 §0](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)). Nessuna famiglia aperta o chiusa,
+contatore non toccato.
+
+- **Ambito: la ricerca sugli strumenti e' generale**, su ogni applicazione possibile. Non si ritaglia sul perimetro
+  attuale dei soci: a loro spetta valutare se, con i loro mezzi, lo strumento e' applicabile (Matteo: ritagliarla
+  sarebbe overfitting sul destinatario). Resta fermo il metodo di misura: ogni test dichiara prima la proprieta' e il
+  benchmark.
+- **Ordine unico, senza distinguere fra vecchio e nuovo**: [backlog §I](BACKLOG_RICERCA.md). Si parte dalla
+  **volatilita'**: e' il campo con piu' lavoro fattibile coi dati in casa.
+- **Black-Scholes, Heston, SABR: solo teoria.** Validarli richiede prezzi di opzioni, che non abbiamo. Cambia in parte
+  la decisione del 15/09 sul gruppo 2 di Quant Guild ("scaricare, non distillare ora"): i video su questi modelli si
+  distillano come teoria. Il premio di volatilita' (VIX contro volatilita' realizzata) e' misurabile, e sta nel gruppo
+  della volatilita'.
+- **Orderflow e volumetria: correzione dello stato.** I dati sono acquistabili gia' oggi; non si comprano perche' i
+  dati si pagano coi payout della prop (voce 2026-11-07), per tutte le categorie, non solo per l'orderflow. La teoria
+  si studia adesso, il test arriva coi dati. Supera il "mai, realisticamente" della riga G7 del backlog.
+- **Regressione lineare: in tutti e due i sensi.** Come metro di misura (per esempio Mincer-Zarnowitz per giudicare
+  una previsione) va nel modulo 04. Come canale di regressione e' un indicatore: stima la stessa grandezza delle
+  famiglie di tendenza chiuse, quindi vale la regola "stessa grandezza = stessa famiglia" (voce 2026-10-08 (3)).
+- **Rassegna delle famiglie chiuse**: nessuna proprieta' di strumento resta da misurare, tranne
+  `motore/core/regime.py`, che e' in uso senza una misura trovata (ricerca per parola: da confermare). I livelli sono
+  gia' un verdetto da strumento (384 trial) e diventano un pacchetto negativo. Gli spiragli di strategia (ORB sul
+  NAS100, trial e motivi non ricostruibili) passano ai soci come lacune note, nel contatore unico.
+- **Regola dei trial per gli strumenti (Matteo, stessa sera): strada A.** Gli strumenti entrano nello **stesso
+  contatore**, in un binario `strumenti`, **senza quota trimestrale**: vale solo il tetto dei round (la quota non regge
+  il lavoro su scala). **Volatilita' = una famiglia**, con **sottofamiglie** (GARCH, HMM sulla volatilita', premio di
+  volatilita') valutate una per una, tenendo conto che derivano da una famiglia sola. Gate statistico al posto del
+  baseline in R, holdout e trattamento delle varianti aggiunte dopo un esito: **da una ricerca approfondita**
+  (valutazione dei modelli nella ricerca quant, allargata ad altri domini). Le modifiche di architettura (contatore,
+  gatekeeper, `mappa/`) si fanno **in un passaggio solo**, dopo la ricerca e prima del lavoro sulla volatilita'.
+  Rischio dichiarato: senza quota, il freno al numero di famiglie e' solo "stessa grandezza = stessa famiglia".
+
+---
+
 ## 2026-11-09 — Reframing di `trad`: **teoria e strumenti** per i soci, macrostruttura in **cinque parti**, definizione di strategia; 0 trial
 
 Decisioni di Matteo (sessione del 07-09/11, dopo la scansione globale del repo). Nessuna famiglia aperta o chiusa,
