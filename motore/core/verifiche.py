@@ -658,7 +658,11 @@ def spa_studentizzato(perdite_benchmark, perdite_modelli, block_size=None, reps=
 
 
 def stepm_studentizzato(perdite_benchmark, perdite_modelli, size, block_size=None, reps=1000, seed=None):
-    """StepM di Romano-Wolf sullo stesso ingresso studentizzato di `spa_studentizzato`.
+    """StepM di `arch` sullo stesso ingresso studentizzato di `spa_studentizzato`.
+
+    Non e' esattamente il Romano-Wolf originale: arch prende i valori critici dalla ricentratura `consistent` dello SPA
+    (i modelli molto peggiori del benchmark escono dal massimo), quindi e' la versione a passi dello SPA di Hsu, Hsu e
+    Kuan (2010), studentizzata. Errore di famiglia controllato asintoticamente, potenza un po' piu' alta (quinta G1).
 
     Restituisce gli indici (colonne di `perdite_modelli`) dei modelli che battono il benchmark al livello `size`."""
     from arch.bootstrap import StepM

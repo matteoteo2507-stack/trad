@@ -5,7 +5,7 @@ approvata: ""
 aggiornato: 2026-11-13
 decisione: "Matteo: gate degli strumenti e strada A (10-11/11); errore di famiglia 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita', holdout di due anni (11/11); orizzonte massimo 5 giorni, strumenti dei test piu' completi (11/11); varianti GARCH approvate, benchmark dell'HMM delegato a Claude secondo S4, premio di volatilita' a 30 giorni come definizione (13/11); dopo la prima G1: combinazione fissa nell'HMM, holdout non aperto se il controllo positivo fallisce, affermazioni per strumento, commit su branch nuovo (13/11). DECISIONS 2026-11-10, 2026-11-11, 2026-11-13"
 metrica_corrente: "nessuna: nessuna previsione calcolata"
-nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Prima e seconda passata G1: BLOCCA (13/11), correzioni in §9."
+nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Cinque passate G1 il 13/11: quattro BLOCCA corrette, la quinta PASSA CON RISERVE (riserva chiusa); attende l'approvazione di Matteo."
 ---
 
 # Pre-registrazione — Previsione della volatilita' (famiglia `volatilita`, binario `strumenti`)
@@ -160,7 +160,8 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
   nodo contro il benchmark, con `spa_studentizzato` di `motore/core/verifiche.py` (commit `7170515`); **non** con il
   parametro `studentize` di `arch`, che nella versione 8.0.0 non cambia la statistica (quarta G1: con arch un modello
   buono passa da p = 0,000 a 0,301 se gli si affianca un modello rumoroso; studentizzato resta a 0,000). Ogni StepM
-  (descrittivi e §7.6) passa da `stepm_studentizzato`, sullo stesso ingresso. Bootstrap stazionario, blocco √T, **100.000 ripetizioni** (`repliche_per_distinguere`: ne servono 44.193
+  (descrittivi e §7.6) passa da `stepm_studentizzato`, sullo stesso ingresso: e' la versione a passi dello SPA
+  (Hsu, Hsu e Kuan 2010), studentizzata, non il Romano-Wolf originale (quinta G1). Bootstrap stazionario, blocco √T, **100.000 ripetizioni** (`repliche_per_distinguere`: ne servono 44.193
   alla prima soglia del GARCH e 88.446 a quella dell'HMM perche' l'intervallo del p-value sia largo un quarto della
   soglia), seme 20261113. p-value = (b+1)/(B+1) con `pvalue_spa` (che passa da `pvalue_mc`), riportato con `low`/`high`. Ogni SPA del
   verdetto gira su **4 semi dichiarati** (20261113-20261116) e si sommano superamenti e ripetizioni (400.000 in tutto);
@@ -179,7 +180,8 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
   limite con archi epsilon della procedura di Bretz et al. (2009); l'errore e' controllato su ogni affermazione per
   strumento e orizzonte.
 - **Verdetto per coppia**: *confermato* (rifiutata), oppure *non dimostrato, MDE = ...*; mai "refutato" senza MDE.
-- **Descrittivi** (non decidono): StepM (quali varianti), MCS al 10% con statistica di range su tutti i modelli e i
+- **Descrittivi** (non decidono): StepM (quali varianti), MCS al 10% con statistica di range (l'MCS di `arch` non e'
+  stato riesaminato sulla studentizzazione: va controllato prima che un MCS serva a una scelta) su tutti i modelli e i
   riferimenti, skill rispetto a media di lungo periodo e persistenza, Mincer-Zarnowitz in livelli con errori HAC (G5),
   sensibilita' al blocco (√T/2 e 2√T), perdite senza riscalamento, premio giornaliero con Newey-West (21 ritardi),
   sottoblocco dopo il cutoff.
@@ -350,6 +352,11 @@ trattati:
 | R3 errore oltre il 5% nei round 2-3 | §8: quota solo dalla riserva di un nodo uscito, oltre il 5% decide Matteo |
 | R4 test forward del nodo uscito | §7.7: lunghezza, MDE e controlli fissati prima |
 | R5 "piu' severo" | §7.2: "un controllo diverso", con la ragione |
+
+**Quinta passata (13/11): PASSA CON RISERVE**, 0 bloccanti, 1 riserva di forma (l'etichetta dello StepM: e' la versione
+a passi dello SPA di Hsu, Hsu e Kuan 2010), corretta in `verifiche.py` e nel §6. Primitiva verificata dal gatekeeper:
+stesso nucleo di arch (scarto 0,0), ricentratura `consistent` valida sull'ingresso riscalato, statistica di Hansen 2005.
+**Il testo attende l'approvazione di Matteo.**
 
 ## 10. Deviazioni (P5)
 
