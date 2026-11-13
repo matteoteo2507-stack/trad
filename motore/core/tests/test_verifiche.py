@@ -277,3 +277,13 @@ def test_correlazione_in_drawdown_vede_il_contagio():
     r = v.correlazione_in_drawdown(x, y, soglia_dd=0.10)
     assert 20 < r["periodi_stress"] < 400
     assert r["intero_campione"] < 0.2 and r["in_drawdown"] > r["intero_campione"] + 0.15
+
+
+def test_fattore_potenza_una_coda_con_holm():
+    """G1 della volatilita' (13/11/2026): a una coda con Holm su 18 coppie il fattore non e' 2,80."""
+    from motore.core.verifiche import fattore_potenza, mde
+    assert abs(fattore_potenza() - 2.80) < 0.01                      # default invariato: due code al 5%
+    assert abs(fattore_potenza(0.025 / 18, code=1) - 3.83) < 0.01    # nodo GARCH, prima soglia di Holm
+    assert abs(fattore_potenza(0.0125 / 18, code=1) - 4.04) < 0.01   # nodo HMM
+    assert abs(fattore_potenza(0.0125, code=1) - 3.08) < 0.01        # premio di volatilita'
+    assert mde(1.0, 100, alpha=0.05, code=1) < mde(1.0, 100)         # una coda: MDE piu' stretto a pari alpha

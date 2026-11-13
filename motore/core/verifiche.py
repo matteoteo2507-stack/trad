@@ -29,12 +29,18 @@ from scipy import stats
 
 # ---- buco 2: potenza e dimensione campionaria --------------------------------------------------
 
-def fattore_potenza(alpha: float = 0.05, potenza: float = 0.80) -> float:
-    """z_{1-alpha/2} + z_{potenza}. Con alpha 0,05 e potenza 80% vale ~2,80."""
-    return float(stats.norm.ppf(1 - alpha / 2) + stats.norm.ppf(potenza))
+def fattore_potenza(alpha: float = 0.05, potenza: float = 0.80, code: int = 2) -> float:
+    """z_{1-alpha/code} + z_{potenza}. Con alpha 0,05, due code e potenza 80% vale ~2,80.
+
+    `code=1` per un test a una coda; `alpha` e' quello **dopo** la correzione per i confronti multipli (per es. la
+    prima soglia di Holm, alpha_nodo / m). Il 2,80 vale solo per due code al 5% (G1 della volatilita', 13/11/2026:
+    a una coda con Holm su 18 coppie servono 3,83 e 4,04)."""
+    if code not in (1, 2):
+        raise ValueError("code deve essere 1 o 2")
+    return float(stats.norm.ppf(1 - alpha / code) + stats.norm.ppf(potenza))
 
 
-def mde(sd: float, n: float, alpha: float = 0.05, potenza: float = 0.80) -> float:
+def mde(sd: float, n: float, alpha: float = 0.05, potenza: float = 0.80, code: int = 2) -> float:
     """Effetto minimo rilevabile su una media: fattore * sd / sqrt(n).
 
     `n` e' il numero di osservazioni **indipendenti**: con esiti raggruppati (vedi `runs_test`) va
@@ -43,17 +49,17 @@ def mde(sd: float, n: float, alpha: float = 0.05, potenza: float = 0.80) -> floa
     """
     if n <= 0 or not np.isfinite(sd):
         return float("nan")
-    return fattore_potenza(alpha, potenza) * sd / math.sqrt(n)
+    return fattore_potenza(alpha, potenza, code) * sd / math.sqrt(n)
 
 
-def n_richiesto(sd: float, effetto: float, alpha: float = 0.05, potenza: float = 0.80) -> int:
+def n_richiesto(sd: float, effetto: float, alpha: float = 0.05, potenza: float = 0.80, code: int = 2) -> int:
     """Osservazioni indipendenti per vedere `effetto`: n ~ (fattore * sd / effetto)^2.
 
     Es. (SINTESI, B22): con E = +0,04R e sd ~ 1R servono ~5.000 trade; con sd 2,7R, ~36.000.
     """
     if effetto <= 0:
         raise ValueError("effetto deve essere > 0")
-    return int(math.ceil((fattore_potenza(alpha, potenza) * sd / effetto) ** 2))
+    return int(math.ceil((fattore_potenza(alpha, potenza, code) * sd / effetto) ** 2))
 
 
 # ---- buco 37: il p-value Monte Carlo ha un errore ---------------------------------------------
