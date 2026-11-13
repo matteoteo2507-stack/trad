@@ -25,6 +25,51 @@ Era `analysis/trading-bot-eval/data/`, spostato qui il 10/11: per tipo sono dati
 (`magazzino/registro/codice/trading-bot-eval/export_mt5_spot.py`, `fetch_ohlc.py`, gli export Dukascopy). Prima di
 usarne uno: `python -m motore.core.data_checks <file>`.
 
+**Fusi verificati** (allineamento a scarto minimo del rapporto con un future, 11/11): `SPX500_M5.csv` e
+`NAS100_M5.csv` sono in **UTC**; `XAU_duka_M1_*.parquet` e' gia' in UTC con fuso dichiarato.
+
+### `prezzi/volatilita_m5/` — Dukascopy M5 della famiglia volatilita' (11/11/2026)
+
+Nove strumenti, bid, UTC senza fuso: SPX500, NAS100, DOW, RUSSELL, DAX, XAUUSD, XAGUSD, WTI, EURUSD, fino al
+2026-11-11. Script: `magazzino/registro/codice/volatilita/scarica_dukascopy.py` (stampa solo conteggi: dentro c'e'
+l'holdout). Controlli dell'11/11 (solo struttura, nessuna statistica sui rendimenti):
+- nessun duplicato, tempi ordinati; 34 barre OHLC incoerenti in NAS100, 0 negli altri;
+- **sovrainsieme esatto** dei vecchi `SPX500_M5`, `NAS100_M5`, `DAX_M5`: tutte le barre vecchie ci sono, chiusure
+  identiche;
+- inizio: RUSSELL **2018-08** (prima 0 barre), XAGUSD **2014-07**, gli altri 2012;
+- **il feed degli indici cambia natura**: 2012-2014 dal 50 all'81% di barre ferme (massimo = minimo) sulle 24 ore e
+  ~93k barre l'anno, 2015-2017 ~42-50k, dal 2018-2019 ~68k. Nella **seduta cash** (9:30-16:00 New York; DAX 9:00-17:30
+  Francoforte) i giorni pieni sono il 95-100% e le barre ferme lo 0% **dal 2015**; nel 2012-2014 fino al 10% di barre
+  ferme anche in seduta. EURUSD: 28-29% di barre ferme nel 2012-2013, 0% dal 2015. Per una varianza realizzata
+  confrontabile nel tempo: **dal 2015**, e sulla giornata intera (notte compresa) solo dal 2019.
+
+### `prezzi/volatilita_mt5/` — secondo feed dal terminale MT5 (FP Markets, 11/11/2026)
+
+US500, US100, US30, GER40, XAUUSD, XAGUSD, XTIUSD, EURUSD a M5, da giugno-luglio 2025 all'11/11/2026, colonna
+`ora_server` = **New York + 7 ore** tutto l'anno (non convertita). Script `esporta_mt5.py` nella stessa cartella del
+codice. Il terminale da' al massimo **100.000 barre** per simbolo (`maxbars`): per avere di piu' va alzato "Max bars in
+chart" nelle opzioni di MT5. Serve al confronto con Dukascopy e i futures, non come serie di lavoro.
+
+### `prezzi/futures_1m/` — futures CME a 1 minuto con il flusso degli ordini (dai soci, 11/11/2026)
+
+Otto file `<Nome>_<SIMBOLO>_1min.csv`: oro GC, S&P ES, Nasdaq NQ, Dow YM, Russell RTY, petrolio CL, argento SI,
+euro 6E. Colonne: `ora_new_york` (ora di New York, senza fuso nel testo), OHLC, `volume`, `vol_acquisti_aggressivi`,
+`vol_vendite_aggressive`, `grandi_ordini_acquisto`, `grandi_ordini_vendita`, `delta`. Fonte e licenza: **da chiarire
+con i soci**; nessun file passa in git o ad altri.
+
+Controlli dell'11/11 (script di controllo nella sessione, numeri sotto):
+- **Copertura: un anno solo**, 2025-11-13/14 → 2026-11-09 (GC, ES, NQ) o 2026-11-11 (gli altri); 338-349 mila barre
+  per file, 309-311 date. Nessun NaN, nessun duplicato (anche ai cambi d'ora), OHLC coerenti; `volume` = acquisti +
+  vendite aggressive e `delta` = acquisti - vendite nel 100% delle barre.
+- **6E: prezzi inutilizzabili**, arrotondati a 2 decimali (11 valori di chiusura distinti, 99,2% di rendimenti a 1
+  minuto nulli). Volume e flusso non sono toccati dall'arrotondamento.
+- **Serie continue NON aggiustate**: il rapporto con il CFD fa uno scalino a ogni cambio di contratto. ES e NQ: +0,74%
+  ... +0,99% il 14/12/2025, 15/03/2026, 12/06/2026 (contro 0,01% di scarto mediano giornaliero); GC: +0,70% ... +1,42% il
+  23/11, 23/01, 27/03, 27/05, 24/07. Settembre (indici) e CL, SI, YM, RTY: **non verificati** (manca un CFD
+  intraday sovrapposto). Il rendimento a cavallo del cambio va tolto **nel loader**, una volta sola.
+- Precisione: SI e CL a 0,01, ES a 0,25, NQ a 0,2 (il passo ufficiale e' 0,25), GC e RTY a 0,1, YM a 1.
+- Significato di `grandi_ordini_*` (soglia, unita'): **da chiarire con i soci**.
+
 ## Cache
 
 `motore/data/cache/` contiene i dati storici scaricati per evitare di rifare fetch ad ogni backtest.
