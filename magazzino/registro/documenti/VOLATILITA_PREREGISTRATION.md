@@ -1,11 +1,11 @@
 ---
 tipo: preregistrazione
-stato: BOZZA
-approvata: ""
+stato: APPROVATA
+approvata: "2026-11-13, Matteo in sessione, sul testo del commit 7dea1e3"
 aggiornato: 2026-11-13
 decisione: "Matteo: gate degli strumenti e strada A (10-11/11); errore di famiglia 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita', holdout di due anni (11/11); orizzonte massimo 5 giorni, strumenti dei test piu' completi (11/11); varianti GARCH approvate, benchmark dell'HMM delegato a Claude secondo S4, premio di volatilita' a 30 giorni come definizione (13/11); dopo la prima G1: combinazione fissa nell'HMM, holdout non aperto se il controllo positivo fallisce, affermazioni per strumento, commit su branch nuovo (13/11). DECISIONS 2026-11-10, 2026-11-11, 2026-11-13"
 metrica_corrente: "nessuna: nessuna previsione calcolata"
-nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Cinque passate G1 il 13/11: quattro BLOCCA corrette, la quinta PASSA CON RISERVE (riserva chiusa); attende l'approvazione di Matteo."
+nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Cinque passate G1 il 13/11: quattro BLOCCA corrette, la quinta PASSA CON RISERVE (riserva chiusa). APPROVATA da Matteo il 13/11: da qui ogni modifica di §1-§6 e' una deviazione (§10); i passi del §7 si registrano in aggiunte datate (§11)."
 ---
 
 # Pre-registrazione — Previsione della volatilita' (famiglia `volatilita`, binario `strumenti`)
@@ -363,3 +363,18 @@ stesso nucleo di arch (scarto 0,0), ricentratura `consistent` valida sull'ingres
 | Data | Cosa cambia | Perche' | Esplorativo? |
 |---|---|---|---|
 | — | — | — | — |
+
+## 11. Aggiunte datate (passi del §7)
+
+Ogni passo del §7 aggiunge qui una voce, nello stesso commit del codice che lo esegue. Le aggiunte non cambiano §1-§6:
+se un passo richiede di cambiarli, la modifica va nel §10.
+
+### 2026-11-13 — Approvazione e passo 0 (guardie)
+
+- **Approvata** da Matteo in sessione, sul testo del commit `7dea1e3` (DECISIONS 2026-11-13 (2)).
+- Guardie in [`codice/volatilita/guardie.py`](../codice/volatilita/guardie.py): percorsi protetti esistenti
+  (pre-registrazione, contatore, `codice/volatilita/`, `motore/core/`, `motore/tests/`), nessuna modifica non
+  committata, hash del commit registrato, versioni del §2 (e Python 3.12), sha256 dei dati.
+- sha256 dei nove file M5 e del VIX registrati in [`hash_dati.json`](../codice/volatilita/hash_dati.json), con la
+  dimensione in byte; il file non si riscrive (`--registra` si rifiuta se esiste). Calcolati sui byte, holdout
+  compreso: nessuna statistica sui prezzi.

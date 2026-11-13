@@ -1,0 +1,39 @@
+{
+  "nota": "sha256 dei dati della famiglia volatilita' all'approvazione della pre-registrazione (13/11/2026), §7 passo 0. Si ricalcola a ogni corsa (guardie.py).",
+  "percorsi": {
+    "SPX500": "motore/data/prezzi/volatilita_m5/SPX500_M5.csv",
+    "NAS100": "motore/data/prezzi/volatilita_m5/NAS100_M5.csv",
+    "DOW": "motore/data/prezzi/volatilita_m5/DOW_M5.csv",
+    "RUSSELL": "motore/data/prezzi/volatilita_m5/RUSSELL_M5.csv",
+    "DAX": "motore/data/prezzi/volatilita_m5/DAX_M5.csv",
+    "XAUUSD": "motore/data/prezzi/volatilita_m5/XAUUSD_M5.csv",
+    "XAGUSD": "motore/data/prezzi/volatilita_m5/XAGUSD_M5.csv",
+    "WTI": "motore/data/prezzi/volatilita_m5/WTI_M5.csv",
+    "EURUSD": "motore/data/prezzi/volatilita_m5/EURUSD_M5.csv",
+    "VIX": "motore/data/cache/free/VIX_D1.csv"
+  },
+  "byte": {
+    "SPX500": 61763121,
+    "NAS100": 63777824,
+    "DOW": 66421260,
+    "RUSSELL": 33910069,
+    "DAX": 63510701,
+    "XAUUSD": 67539036,
+    "XAGUSD": 48174589,
+    "WTI": 59487428,
+    "EURUSD": 70022670,
+    "VIX": 331470
+  },
+  "sha256": {
+    "SPX500": "341c1020262da3778487578bfac221d1d2bb6e7dc8f6d34d74f1918e7c35a429",
+    "NAS100": "36c624781a9d1fcb5405456c97b8e04ffa5587d5d33af483e676c63646e2bd5a",
+    "DOW": "8e4b9299f7624ec19fe528066ba5857fd678459dd50494846cf741596c211988",
+    "RUSSELL": "ebf0d973637e9175ca583c93f7a0b8a7056d9dbaf4ed6cd802a737b5ebae066d",
+    "DAX": "489767b755e962d3b5b12b9679f1eabab30782d465930615b06cd1563d478def",
+    "XAUUSD": "0a6a31798552d151dd9948b0698e787352b0fe3053fa722a0d650dca93e676fd",
+    "XAGUSD": "ecaaf20c70fbbc8df1f79252bd39b3f7e84f5acf52786ce8df67fab43339a07f",
+    "WTI": "9790420694214b04fa1bd2926ca83fac538f013e99484141bb05ba4932f56ce9",
+    "EURUSD": "86b2f67821aab3d2af3b8f35c181a6117845be441e501c973152fca261143112",
+    "VIX": "99bb6bae155e786248f3456c192b93de38b04e6c9d9a1b48333316b5ac1d2f5c"
+  }
+}

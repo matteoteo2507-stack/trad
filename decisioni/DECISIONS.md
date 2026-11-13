@@ -11,6 +11,17 @@
 
 ---
 
+## 2026-11-13 (2) — Volatilita': pre-registrazione **APPROVATA** (Matteo); partono i passi del §7; 0 trial
+
+Matteo approva in sessione il testo della [pre-registrazione](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md)
+del commit `7dea1e3`, dopo il riepilogo di cio' che e' verificato (dati, disegno, primitive statistiche) e di cio'
+che non lo e' (la pipeline). Stato nel contatore e nel frontmatter: **APPROVATA**. Da qui una modifica di §1-§6 e' una
+deviazione (§10). I passi del §7 (guardie, invarianza, controlli negativi, corsa di sviluppo, MDE, controlli positivi,
+controllo sui dati veri, nuova G1, apertura) si registrano uno per uno in aggiunte datate (§11) e in commit separati.
+Nessuna previsione calcolata: 0 trial.
+
+---
+
 ## 2026-11-13 — Volatilita': varianti decise, pre-registrazione in **BOZZA**, prima passata G1 **BLOCCA**; 0 trial
 
 Decisioni di Matteo per la [pre-registrazione](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md):
