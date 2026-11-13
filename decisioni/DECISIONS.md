@@ -11,6 +11,18 @@
 
 ---
 
+## 2026-11-13 (3) — Volatilita': il nodo del **premio di volatilita' esce** prima dell'apertura (regola del §7.7); 0 trial
+
+Il controllo di dimensione del §7.2 fallisce: la t a una coda all'1,25% sulle 23 origini mensili dell'holdout rifiuta
+nel 14,55% (blocchi di 21 giorni) e nel 15,95% (63 giorni) delle repliche del premio di sviluppo riportato a media
+zero, contro il massimo del 2,5%. Il codice e' corretto (con rumore gaussiano rifiuta l'1,45% e l'1,2%); la causa e' la
+coda sinistra del premio (asimmetria −8,7, curtosi in eccesso 92). Per la regola scritta prima il nodo esce e la sua
+quota dell'**1,25% resta riservata** a un test su dati forward, da pre-registrare con un test adatto a questa coda.
+**Non e' un verdetto sul premio.** Restano i nodi GARCH (2,5%) e HMM (1,25%). Dettagli e numeri:
+[pre-registrazione §11](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md).
+
+---
+
 ## 2026-11-13 (2) — Volatilita': pre-registrazione **APPROVATA** (Matteo); partono i passi del §7; 0 trial
 
 Matteo approva in sessione il testo della [pre-registrazione](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md)

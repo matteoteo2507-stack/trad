@@ -1,0 +1,26 @@
+{
+  "controllo": "dim_premio",
+  "commit": "c82683de8a3712d5f25ab912647dee77b83f2155",
+  "esito": "FALLISCE",
+  "frequenza_rifiuto": {
+    "blocco_21": 0.1455,
+    "blocco_63": 0.1595
+  },
+  "origini_mensili": 23,
+  "giorni_holdout": 479,
+  "osservazioni_sviluppo": 2358,
+  "disegno": {
+    "seme": 20261121,
+    "repliche": 2000,
+    "blocchi": [
+      21,
+      63
+    ],
+    "alfa": 0.0125,
+    "soglia_esito": 0.025,
+    "holdout": [
+      "2024-11-11",
+      "2026-10-09"
+    ]
+  }
+}

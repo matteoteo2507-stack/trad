@@ -354,6 +354,9 @@ def tabella(dati: Optional[dict] = None) -> str:
             righe.append("  - %-14s alfa %-6s trial %s + %s esplorativi  benchmark: %s"
                          % (s.get("id", "?")[:14], s.get("alfa"), s.get("trial_cumulati", 0),
                             s.get("varianti_esplorative", 0), s.get("benchmark", "?")))
+            if s.get("uscita_prima_dell_apertura"):
+                righe.append("      USCITA prima dell'apertura, quota riservata: %s"
+                             % s["uscita_prima_dell_apertura"][:90])
     righe.append("")
     righe.append(_stato_esterne(dati))
     righe.append("strumenti: nessuna quota trimestrale, solo il tetto dei round (LIFECYCLE sez.8ter); famiglie: %s"

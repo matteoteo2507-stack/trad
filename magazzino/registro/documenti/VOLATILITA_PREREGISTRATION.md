@@ -362,7 +362,7 @@ stesso nucleo di arch (scarto 0,0), ricentratura `consistent` valida sull'ingres
 
 | Data | Cosa cambia | Perche' | Esplorativo? |
 |---|---|---|---|
-| — | — | — | — |
+| 2026-11-13 | §3, strumenti a 24 ore: il blocco che apre la domenica sera e' il giorno del **lunedi'** (la parentesi "il giorno del venerdi' comincia la domenica" era scritta male) | chiarimento del testo, prima di ogni corsa sui dati veri: con l'altra lettura il blocco del 10/11/2024 sera, che e' gia' il lunedi' dell'holdout, cadrebbe nello sviluppo | no |
 
 ## 11. Aggiunte datate (passi del §7)
 
@@ -378,3 +378,65 @@ se un passo richiede di cambiarli, la modifica va nel §10.
 - sha256 dei nove file M5 e del VIX registrati in [`hash_dati.json`](../codice/volatilita/hash_dati.json), con la
   dimensione in byte; il file non si riscrive (`--registra` si rifiuta se esiste). Calcolati sui byte, holdout
   compreso: nessuna statistica sui prezzi.
+
+### 2026-11-13 — Scelte d'implementazione, dichiarate prima della corsa di sviluppo
+
+Dettagli che §3-§5 non fissavano. Nessuna perdita e nessuna previsione sui dati veri e' stata guardata quando sono
+stati scritti (i soli numeri visti sono conteggi di barre e di giorni).
+
+1. **Caricatore** ([`giorni.py`](../codice/volatilita/giorni.py)): legge le righe in ordine e si ferma alla prima con
+   ora >= domenica 2024-11-10 00:00 UTC; leggere oltre richiede `HOLDOUT_APERTO = True`, che cambia solo nel commit
+   del passo 8. Ultimo giorno di sviluppo: venerdi' 2024-11-08 per tutti.
+2. **Indici, barra d'apertura mancante**: P_ap e' l'open della prima barra della seduta. r_t resta esatto (la somma
+   telescopica non dipende da P_ap); cambia solo la divisione di v_t fra notte e seduta. Si conta (`apertura_mancante`).
+3. **Strumenti a 24 ore**: il giorno D va dalle 17:00 New York di D−1 alle 17:00 di D, e il blocco che apre la
+   domenica sera e' il **lunedi'**. La parentesi del §3 ("il giorno del venerdi' comincia la domenica") e' scritta
+   male: il chiarimento e' nel §10. Le barre fuori dalla settimana (fra venerdi' e domenica alle 17:00) si scartano:
+   dal 2015 sono 3 per XAUUSD, 2 per XAGUSD, 0 per WTI, 27 per EURUSD.
+4. **RUSSELL**: il primo giorno con dati (2018-08-08) non ha la chiusura precedente; la serie parte il 2018-08-09.
+5. **Struttura dei giorni di sviluppo** (§3, riserva 3 della G1; solo conteggi):
+
+   | Strumento | Giorni | Dal | Esclusi (< 90% delle barre) | Apertura mancante |
+   |---|---|---|---|---|
+   | SPX500, NAS100, DOW | 2.481 | 2015-01-02 | 8 | 6 |
+   | RUSSELL | 1.574 | 2018-08-09 | 8 | 6 |
+   | DAX | 2.504 | 2015-01-02 | 3 | 2 |
+   | XAUUSD | 2.545 | 2015-01-02 | 77 | — |
+   | XAGUSD | 2.544 | 2015-01-02 | 80 | — |
+   | WTI | 2.547 | 2015-01-02 | 173 | — |
+   | EURUSD | 2.566 | 2015-01-02 | 7 | — |
+
+   Negli strumenti a 24 ore gli esclusi cadono soprattutto di lunedi' (festivi USA con chiusura anticipata del CME); nel
+   WTI sono di piu' nel 2015-2019 (19-38 l'anno, poi 6-10). La giornata tipica ha 276 barre su 288 (pausa di un'ora).
+6. **Modelli** ([`modelli.py`](../codice/volatilita/modelli.py)): `arch` stima sulla sola finestra di 1.000 giorni
+   (equivale a `last_obs`) e prevede con i parametri fissati sul blocco esteso fino all'ultima origine; EWMA con
+   `EWMAVariance(0,94)` di `arch` (stessa inizializzazione dei GARCH). **EGARCH a 5 passi**: `arch` 8.0.0 non ha la
+   previsione analitica oltre il primo passo; si usa l'attesa esatta sotto la normale (`egarch_multi`, entro l'1% da
+   100.000 simulazioni di `arch` nel test). **Non convergenza**: il blocco usa i parametri del precedente, e si conta
+   (la regola S5 dell'HMM estesa ai GARCH). **HMM**: 20 stime complete da punti casuali attorno al punto di partenza
+   di `statsmodels` (spazio non vincolato, N(0, 1)), seme dipendente solo da (20261113, k, t0); si tiene la
+   verosimiglianza migliore fra le stime che convergono. **HAR**: h = 5 diretto (bersaglio la somma dei 5 giorni), una
+   previsione <= 0 diventa la media della finestra, e si conta.
+7. **Origini**: le stesse per h = 1 e h = 5 (t + 5 entro l'ultimo giorno disponibile), come chiede il §4.
+8. **Semi**: invarianza 20261118; negativo GARCH 20261119; negativo HMM 20261120; dimensione del premio 20261121; i
+   semi dello SPA di ogni replica derivano da `SeedSequence([seme del controllo, replica, serie, h])`.
+9. **Dimensione del premio**: bootstrap circolare a blocchi di lunghezza fissa (Politis e Romano 1992); 479 giorni di
+   borsa XNYS dal 2024-11-11 al 2026-10-09, 23 origini di fine mese (dal 2024-11-29 al 2026-09-30); 2.358 osservazioni
+   giornaliere del premio di sviluppo (origini con la finestra di 30 giorni prima del 2024-11-11 e senza giorni esclusi).
+
+Codice: commit `5fad489` (caricatore, modelli, pipeline, invarianza, test veloci: 9 test verdi su dati sintetici) e
+`c82683d` (controlli simulati).
+
+### 2026-11-13 — Passo 2, dimensione del premio: FALLISCE, il nodo del premio esce
+
+Corsa del commit `c82683d` ([`esiti/dim_premio.json`](../codice/volatilita/esiti/dim_premio.json)): la t a una coda
+all'1,25% sulle 23 origini mensili rifiuta nel **14,55%** delle repliche con blocchi di 21 giorni e nel **15,95%** con
+blocchi di 63 (criterio: <= 2,5% con entrambi). Il codice e' stato provato sostituendo il premio con rumore gaussiano:
+rifiuta nell'1,45% e nell'1,2% dei casi, cioe' l'1,25% atteso. La causa e' la forma della serie, non il codice: il
+premio giornaliero di sviluppo ha asimmetria −8,7 e curtosi in eccesso 92 (descrittivi di forma, non della media), e con
+23 osservazioni la t rifiuta troppo nella direzione della conferma, il rischio gia' scritto nel §7.2.
+
+**Conseguenza scritta prima** (§7.7): il nodo del premio **esce prima dell'apertura**; la sua quota (1,25%) resta
+**riservata** a un test su dati forward, con lunghezza, MDE, test e controllo di dimensione fissati prima di
+raccogliere i dati. Non e' un verdetto sul premio: dice solo che questo test, con questa coda, non controlla l'errore.
+All'apertura la procedura grafica gira sui nodi GARCH e HMM, con le quote 2,5% e 1,25%.

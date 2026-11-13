@@ -363,7 +363,8 @@
           "alfa": 0.0125,
           "benchmark": "premio nullo (VIX2 30g = RV 30g)",
           "trial_cumulati": 0,
-          "varianti_esplorative": 0
+          "varianti_esplorative": 0,
+          "uscita_prima_dell_apertura": "2026-11-13: la dimensione della t mensile fallisce (14,6% e 16,0% contro <= 2,5%, pre-registrazione §11); quota 1,25% riservata a un test forward (§7.7)"
         }
       ],
       "trial_cumulati": 0,
