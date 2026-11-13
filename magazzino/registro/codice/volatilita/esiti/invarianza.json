@@ -1,0 +1,549 @@
+{
+  "esito": "PASSA",
+  "commit": "5fad489205037ef472b31f24e3a132be78d9107e",
+  "tolleranza": 1e-10,
+  "diff_max_complessiva": 0.0,
+  "seme": 20261118,
+  "per_strumento_e_modello": {
+    "SPX500/ewma": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/gjr": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/egarch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/hmm2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/hmm3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/comb2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/comb3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/media_garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/har": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/persistenza": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "SPX500/media": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/ewma": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/gjr": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/egarch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/hmm2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/hmm3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/comb2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/comb3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/media_garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/har": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/persistenza": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "NAS100/media": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/ewma": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/gjr": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/egarch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/hmm2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/hmm3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/comb2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/comb3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/media_garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/har": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/persistenza": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DOW/media": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/ewma": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/garch": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/gjr": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/egarch": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/hmm2": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/hmm3": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/comb2": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/comb3": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/media_garch": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/har": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/persistenza": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "RUSSELL/media": {
+      "origini": 26,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/ewma": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/garch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/gjr": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/egarch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/hmm2": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/hmm3": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/comb2": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/comb3": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/media_garch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/har": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/persistenza": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "DAX/media": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/ewma": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/garch": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/gjr": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/egarch": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/hmm2": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/hmm3": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/comb2": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/comb3": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/media_garch": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/har": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/persistenza": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAUUSD/media": {
+      "origini": 29,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/ewma": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/garch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/gjr": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/egarch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/hmm2": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/hmm3": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/comb2": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/comb3": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/media_garch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/har": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/persistenza": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "XAGUSD/media": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/ewma": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/garch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/gjr": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/egarch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/hmm2": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/hmm3": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/comb2": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/comb3": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/media_garch": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/har": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/persistenza": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "WTI/media": {
+      "origini": 27,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/ewma": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/gjr": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/egarch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/hmm2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/hmm3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/comb2": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/comb3": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/media_garch": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/har": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/persistenza": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    },
+    "EURUSD/media": {
+      "origini": 28,
+      "diff_max": 0.0,
+      "fallite": []
+    }
+  }
+}

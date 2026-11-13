@@ -423,6 +423,9 @@ stati scritti (i soli numeri visti sono conteggi di barre e di giorni).
 9. **Dimensione del premio**: bootstrap circolare a blocchi di lunghezza fissa (Politis e Romano 1992); 479 giorni di
    borsa XNYS dal 2024-11-11 al 2026-10-09, 23 origini di fine mese (dal 2024-11-29 al 2026-09-30); 2.358 osservazioni
    giornaliere del premio di sviluppo (origini con la finestra di 30 giorni prima del 2024-11-11 e senza giorni esclusi).
+10. **Controlli positivi simulati (§7.5), serie**: nel GARCH le 9 serie usano ciascuna il σ di uno strumento (tutti e
+    nove); nell'HMM, che ha 3 serie, si usano i σ dei **3 strumenti col σ piu' alto** (la scelta prudente del §7.5).
+    Fissato ora, prima che la corsa di sviluppo dia i σ.
 
 Codice: commit `5fad489` (caricatore, modelli, pipeline, invarianza, test veloci: 9 test verdi su dati sintetici) e
 `c82683d` (controlli simulati).
@@ -440,3 +443,19 @@ premio giornaliero di sviluppo ha asimmetria −8,7 e curtosi in eccesso 92 (des
 **riservata** a un test su dati forward, con lunghezza, MDE, test e controllo di dimensione fissati prima di
 raccogliere i dati. Non e' un verdetto sul premio: dice solo che questo test, con questa coda, non controlla l'errore.
 All'apertura la procedura grafica gira sui nodi GARCH e HMM, con le quote 2,5% e 1,25%.
+
+### 2026-11-13 — Passo 1, invarianza al futuro: PASSA
+
+Corsa del commit `5fad489` ([`esiti/invarianza.json`](../codice/volatilita/esiti/invarianza.json), seme 20261118):
+9 strumenti × 12 serie (9 modelli e 3 riferimenti), 26-29 origini per coppia (23 di sviluppo e fino a 6 posizioni
+dell'holdout sulla serie sintetica), 2.976 confronti. **Differenza massima 0,0** contro la tolleranza di 1e-10: le
+previsioni con r e v dopo t sostituiti da rumore sono identiche bit per bit.
+
+**Controllo positivo del test** (aggiunto dopo l'esito, perche' uno zero esatto e' credibile solo se il test sa
+fallire; 0 trial, non cambia nulla di §2-§6): quattro fughe di un giorno iniettate in copie delle funzioni, sulla serie
+sintetica, devono superare la tolleranza. Stima GARCH su una finestra spostata in avanti di un giorno: differenza fino a
+1,6. Regressione HAR che include il bersaglio di t0 (cioe' v di t0 + 1): fino a 0,11. c_t con la finestra che finisce
+in t + 1: 0,36-0,46 a ogni origine. HMM con le probabilita' smussate al posto delle filtrate: 2,9e-10 su una serie GJR,
+dove i due regimi stimati quasi non si distinguono, e 0,045-4,6 su un processo a regimi veri (3 semi); senza fuga
+0,0. Tutte rilevate; le origini a meta' blocco non le vedono, com'e' giusto, perche' li' la finestra spostata arriva
+al piu' a t. Il controllo e' ora il test `test_invarianza_rileva_le_fughe` (10 test verdi).

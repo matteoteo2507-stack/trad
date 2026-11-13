@@ -144,3 +144,53 @@ def test_hmm_regimi_previsione_sensata():
     out = M.prevedi_hmm(r, 2, w=W, passo=PASSO, partenze=3)
     F = out["F"][:, 0]
     assert np.nanmean(F[225:300]) > 3 * np.nanmean(F[200:220])
+
+
+def _variante(funzione, sostituzioni):
+    """Copia di una funzione di `modelli` con una fuga iniettata (solo per il controllo positivo)."""
+    import inspect
+
+    src = inspect.getsource(funzione)
+    for a, b in sostituzioni:
+        assert a in src, a
+        src = src.replace(a, b)
+    ns = dict(vars(M))
+    exec(src, ns)
+    return ns[funzione.__name__]
+
+
+def _diff_invarianza(r, v, modelli, origini, partenze_hmm=2):
+    d = 0.0
+    for t in origini:
+        a = P.previsioni(r, v, modelli=modelli, origini=[t], partenze_hmm=partenze_hmm, w=W, passo=PASSO)["previsioni"]
+        r2, v2 = I.con_rumore(r, v, t, 9)
+        b = P.previsioni(r2, v2, modelli=modelli, origini=[t], partenze_hmm=partenze_hmm, w=W, passo=PASSO)["previsioni"]
+        d = max(d, max(float(np.max(np.abs(a[m][t] - b[m][t]))) for m in modelli))
+    return d
+
+
+def test_invarianza_rileva_le_fughe(monkeypatch):
+    """Controllo positivo del passo 1: quattro fughe di un giorno iniettate devono superare la tolleranza."""
+    import controlli as C
+
+    r, v = I.sintetica(W + 40, 5)
+    origini = (W - 1, W + 4)                                              # inizi di blocco
+    fughe = [
+        ("prevedi_arch", _variante(M.prevedi_arch, [("r[t0 - w + 1:t0 + 1], tipo)\n        with",
+                                                     "r[t0 - w + 2:t0 + 2], tipo)\n        with")]), ["gjr"]),
+        ("prevedi_har", _variante(M.prevedi_har, [("(0, y1, t0 - 1)", "(0, y1, t0)")]), ["har"]),
+        ("riscala", lambda r_, v_, w=M.W, _c=M.riscala: np.r_[_c(r_, v_, w)[1:], np.nan], ["ewma"]),
+    ]
+    for nome, f, modelli in fughe:
+        assert _diff_invarianza(r, v, modelli, origini) <= I.TOLLERANZA, nome
+        with monkeypatch.context() as mp:
+            mp.setattr(M, nome, f)
+            assert _diff_invarianza(r, v, modelli, origini) > 1e3 * I.TOLLERANZA, nome
+    rr, _ = C.simula("regimi", W + 40, np.random.default_rng(1))
+    vv = rr ** 2 + 1e-4
+    smussate = _variante(M._previsione_hmm, [("f = m.filter(params)", "f = m.smooth(params)"),
+                                             ("filtered_marginal_probabilities", "smoothed_marginal_probabilities")])
+    assert _diff_invarianza(rr, vv, ["hmm2"], (W - 1, W), 3) <= I.TOLLERANZA
+    with monkeypatch.context() as mp:
+        mp.setattr(M, "_previsione_hmm", smussate)
+        assert _diff_invarianza(rr, vv, ["hmm2"], (W - 1, W), 3) > 1e3 * I.TOLLERANZA
