@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da motore/metodo/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m motore.core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-11-04",
+  "aggiornato": "2026-11-13",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -336,6 +336,53 @@
       "nota_provenienza": "Baltussen, Da, Lammers, Martens, Journal of Financial Economics 142 (2021) 377-403, letto sul testo il 09/10; Gao, Han, Li, Zhou 2018 di seconda mano. Campione della fonte fino a 05/2020: il test e' tutto fuori campione rispetto al paper, ma in gran parte prima del cutoff del modello.",
       "motivo_chiusura": "refutata",
       "fonte_motivo": "limite alto sotto la meta' dell'effetto atteso dalla fonte (DECISIONS 2026-10-12 (2))"
+    },
+    {
+      "id": "volatilita",
+      "nome": "Previsione della volatilita' (strumento): GARCH, HMM a regimi, premio di volatilita' su 9 strumenti Dukascopy M5",
+      "binario": "strumenti",
+      "stato": "BOZZA",
+      "alfa_famiglia": 0.05,
+      "sottofamiglie": [
+        {
+          "id": "garch",
+          "alfa": 0.025,
+          "benchmark": "EWMA lambda 0,94",
+          "trial_cumulati": 0,
+          "varianti_esplorative": 0
+        },
+        {
+          "id": "hmm",
+          "alfa": 0.0125,
+          "benchmark": "GJR-GARCH(1,1,1)",
+          "trial_cumulati": 0,
+          "varianti_esplorative": 0
+        },
+        {
+          "id": "premio_vol",
+          "alfa": 0.0125,
+          "benchmark": "premio nullo (VIX2 30g = RV 30g)",
+          "trial_cumulati": 0,
+          "varianti_esplorative": 0
+        }
+      ],
+      "trial_cumulati": 0,
+      "round_rifinitura": 0,
+      "holdout_inizio": "2024-11-11",
+      "holdout_aperto": null,
+      "fonte_esterna": true,
+      "provenienza_ipotesi": "letteratura",
+      "finestra_dati_fine": "2026-11-10",
+      "nota_provenienza": "Modelli e gate dalla letteratura (Bollerslev 1986, Glosten-Jagannathan-Runkle 1993, Nelson 1991, Hamilton 1989, Patton 2011, Hansen 2005, Carr-Wu 2009): referto magazzino/registro/referti/gate_strumenti_volatilita_2026-11-10.md. Holdout 2024-11 -> 2026-11, in parte oltre il cutoff.",
+      "verdetto": "",
+      "fonti": [
+        "magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md",
+        "magazzino/registro/referti/gate_strumenti_volatilita_2026-11-10.md",
+        "motore/metodo/STRATEGY_LIFECYCLE.md",
+        "DECISIONS.md#2026-11-10",
+        "DECISIONS.md#2026-11-11"
+      ],
+      "note": "Pre-registrazione in BOZZA (13/11). Previsioni non ancora calcolate: trial 0. Trial previsti al calcolo: 54 GARCH + 36 HMM + 1 premio = 91 serie (modello x strumento x orizzonte). Nessuna quota trimestrale (binario strumenti)."
     }
   ],
   "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920.",
