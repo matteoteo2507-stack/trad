@@ -313,3 +313,17 @@ def test_procedura_grafica_ricicla_ai_nodi_alla_pari():
 def test_mde_con_t_di_student():
     from motore.core.verifiche import fattore_potenza
     assert fattore_potenza(0.0125, code=1, gl=22) > fattore_potenza(0.0125, code=1)   # 23 mesi: soglia piu' alta
+
+
+def test_procedura_grafica_intervallo_a_ogni_passo():
+    """Un p puntuale sotto la soglia ma con l'intervallo che la contiene non si rifiuta (G1 volatilita', 13/11)."""
+    import pytest
+    from motore.core.verifiche import procedura_grafica_nodi
+    pv = {"N": {"a": 0.024, "b": 0.040}}
+    # senza intervalli: soglia 0,025 -> a si'; poi 0,05 -> b si'
+    assert procedura_grafica_nodi(pv, {"N": 0.05})["rifiutate"]["N"] == ["a", "b"]
+    # a ha l'intervallo (0,020; 0,028) che contiene la soglia 0,025: non si rifiuta, e b resta alla soglia 0,025
+    out = procedura_grafica_nodi(pv, {"N": 0.05}, intervalli={"N": {"a": (0.020, 0.028), "b": (0.038, 0.042)}})
+    assert out["rifiutate"]["N"] == []
+    with pytest.raises(ValueError):
+        procedura_grafica_nodi({"N": {}, "M": {"x": 0.001}}, {"N": 0.01, "M": 0.01})

@@ -549,7 +549,7 @@ def correlazione_in_drawdown(x: pd.Series, y: pd.Series, soglia_dd: float = 0.10
 
 # ---- strumenti (LIFECYCLE §8ter): procedura grafica per nodi e p-value dello SPA (dal 2026-11-13) ----------------
 
-def procedura_grafica_nodi(pvalori: dict, alfa_nodi: dict) -> dict:
+def procedura_grafica_nodi(pvalori: dict, alfa_nodi: dict, intervalli: dict | None = None) -> dict:
     """Test multipli con Holm dentro ogni nodo e riciclo alla pari fra nodi (LIFECYCLE §8ter S2, G8).
 
     `pvalori` = {nodo: {ipotesi: p}}, `alfa_nodi` = {nodo: quota d'errore}. Dentro un nodo il peso del nodo si divide in
@@ -557,8 +557,23 @@ def procedura_grafica_nodi(pvalori: dict, alfa_nodi: dict) -> dict:
     quota passa **in parti uguali ai nodi** non esauriti, e dentro ciascuno alle ipotesi non rifiutate. E' il limite
     con archi epsilon della procedura grafica di Bretz et al. (2009): i pesi crescono soltanto, quindi la procedura
     sequenzialmente rifiutante controlla l'errore di famiglia in senso forte alla somma delle quote.
+    `intervalli` = {nodo: {ipotesi: (low, high)}}, facoltativo: l'intervallo del p-value Monte Carlo (`pvalue_spa`). Se
+    c'e', un'ipotesi si rifiuta solo se **tutto** l'intervallo sta sotto la soglia **corrente** (che sale col riciclo):
+    la regola "soglia dentro l'intervallo: non si rifiuta" vale cosi' a ogni passo (G1 della volatilita', 13/11/2026).
+    Un nodo uscito prima del test si toglie da `pvalori` e da `alfa_nodi`: un nodo vuoto e' un errore.
     Restituisce {"rifiutate": {nodo: [ipotesi]}, "soglie": {nodo: {ipotesi: soglia all'ultimo passo}}}.
     """
+    if set(pvalori) != set(alfa_nodi):
+        raise ValueError("pvalori e alfa_nodi devono avere gli stessi nodi")
+    vuoti = [n for n, h in pvalori.items() if not h]
+    if vuoti:
+        raise ValueError("nodi senza ipotesi %s: un nodo uscito va tolto, non passato vuoto" % vuoti)
+    intervalli = intervalli or {}
+
+    def sotto(n, h, p, soglia):
+        lo_hi = intervalli.get(n, {}).get(h)
+        return p <= soglia and (lo_hi is None or lo_hi[1] <= soglia)
+
     attive = {n: dict(h) for n, h in pvalori.items()}
     quota = {n: float(alfa_nodi[n]) for n in pvalori}
     rifiutate = {n: [] for n in pvalori}
@@ -572,7 +587,7 @@ def procedura_grafica_nodi(pvalori: dict, alfa_nodi: dict) -> dict:
             soglia = quota[n] / len(attive[n])
             for h, p in attive[n].items():
                 soglie[n][h] = soglia
-            da_togliere = [h for h, p in attive[n].items() if p <= soglia]
+            da_togliere = [h for h, p in attive[n].items() if sotto(n, h, p, soglia)]
             if da_togliere:
                 h = min(da_togliere, key=lambda k: attive[n][k])      # un rifiuto per passo, il p piu' piccolo
                 rifiutate[n].append(h)
