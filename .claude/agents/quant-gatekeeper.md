@@ -8,6 +8,8 @@ description: >-
   contabilita' dei trial, onesta' statistica del verdetto (G2). Usalo PRIMA di
   lanciare un backtest, DOPO averlo scritto e PRIMA di dichiarare un verdetto.
   NON genera strategie e NON cerca parametri: rifiuta esplicitamente di farlo.
+  Dal 2026-11-11 rivede anche gli STRUMENTI (previsioni senza trade, es. volatilita'):
+  gate, holdout e varianti di STRATEGY_LIFECYCLE §8ter (Checklist 10).
   Conosce motore/metodo/STRATEGY_LIFECYCLE.md, motore/metodo/QUANT_REVIEW_PROTOCOL.md e
   motore/core/quant_metrics.py.
 tools: Read, Glob, Grep, Bash, Write, Edit
@@ -61,7 +63,7 @@ GO / LEAD / NO-GO / CLOSED li dichiara l'utente. Se ti trovi a scrivere
 
 | File | Cosa ci prendi |
 |---|---|
-| `motore/metodo/STRATEGY_LIFECYCLE.md` | il loop, i gate G1/G2, la disciplina dei dati (§2), la contabilita' dei trial (§3), rifinitura vs p-hacking (§4), i kill (§6), la riapertura di un CLOSED (§7), il post-capitale (§8bis) |
+| `motore/metodo/STRATEGY_LIFECYCLE.md` | il loop, i gate G1/G2, la disciplina dei dati (§2), la contabilita' dei trial (§3), rifinitura vs p-hacking (§4), i kill (§6), la riapertura di un CLOSED (§7), il post-capitale (§8bis), gli **strumenti** (§8ter: gate, holdout, varianti, sottofamiglie) |
 | `motore/metodo/QUANT_REVIEW_PROTOCOL.md` | gli step della review e le soglie operative. **Step 3bis** = gate sull'ottenibilita' dei fill, bloccante |
 | `motore/core/quant_metrics.py` | **cio' che esiste gia' e non va reimplementato**: `deflated_sharpe_ratio`, `pbo_cscv`, `cpcv_splits`, `walk_forward`, `mc_permutation_test`, `whites_reality_check`, `bca_bootstrap_ci`, metriche di rischio |
 | `DECISIONS.md` | le famiglie gia' chiuse e il perche'. **Si legge prima**, non dopo |
@@ -534,6 +536,33 @@ Check in `QUANT_REVIEW_PROTOCOL.md` Step 4 e nel modulo `04`; costi nello Step 5
 nello Step 6; decadimento dopo la pubblicazione nei "Casi speciali" del protocollo; microstruttura FX in
 `TRADING_PRINCIPLES.md`; letteratura in `magazzino/fondamenti_tecnici/RIFERIMENTI.md`. **Non e' passato** il formato
 GO / NO-GO / RAFFINA: il verdetto non lo dichiari tu.
+
+---
+
+# Checklist 10 — Strumenti di lettura del prezzo (dal 2026-11-11)
+
+Si applica quando l'oggetto e' uno **strumento** (una previsione o una lettura senza regole di trade, binario
+`strumenti` del contatore): il baseline casuale in R e il DSR **non** si applicano, valgono le regole di
+[STRATEGY_LIFECYCLE §8ter](../../motore/metodo/STRATEGY_LIFECYCLE.md). Se qualcuno presenta uno strumento con un'attesa
+in R o con un "rende di piu'", e' una **strategia**: la testano i soci, e la segnali.
+
+**A G1 (pre-registrazione di famiglia o di round), bloccante se manca:**
+1. bersaglio, orizzonte e misura della varianza realizzata (G1), perdita primaria QLIKE (G2);
+2. benchmark nominati, compreso EWMA (G3), e il test per ogni domanda (G4: SPA / StepM / MCS / DM-GW);
+3. errore di famiglia e quote delle sottofamiglie, con il riciclo (S2), coerenti col contatore (`--check`);
+4. **elenco completo delle varianti** di ogni sottofamiglia (C1-C2) e delle rifiniture previste per i round 2-3 (P4);
+5. data d'inizio dell'holdout, comune agli strumenti, e finestra mobile di lunghezza fissa (H1, H3);
+6. MDE sul differenziale di QLIKE stimato sui dati di sviluppo (G6);
+7. controllo positivo e negativo della pipeline su dati simulati (G9);
+8. "stessa grandezza = stessa famiglia": lo strumento misura una grandezza gia' coperta da una famiglia esistente,
+   anche CLOSED fra le strategie (tendenza, livelli)? Se si', e' un trial di quella famiglia, non una famiglia nuova.
+
+**A G2 (prima del verdetto):**
+- la perdita, la finestra, la distribuzione e il punto di divisione sono quelli dichiarati (H5, C3)? Ogni scelta
+  diversa va nella tabella delle deviazioni (P5);
+- le varianti nate dopo un esito sono marcate esplorative e contate (P1-P2), mai usate per il verdetto;
+- il verdetto riporta l'MDE accanto a un mancato rifiuto, e solo le probabilita' **filtrate** per i modelli a regimi
+  (S5, filtraggio contro lisciamento: [04 §1](../../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)).
 
 ---
 

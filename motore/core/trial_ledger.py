@@ -152,7 +152,8 @@ def _usate(dati: dict, binario: str) -> list:
     Due budget separati (decisione di Matteo, 2026-10-25): `strategie` (le pre-registrazioni da fonte
     esterna di sempre) e `hub` (ipotesi che arrivano dal vault, es. geopolitica; STRATEGY_LIFECYCLE §8).
     Il binario si legge dal campo `binario` della famiglia; assente = `strategie`. I trial di entrambi
-    restano nello stesso contatore e nello stesso DSR: il budget separato regola il ritmo, non lo sconto."""
+    restano nello stesso contatore e nello stesso DSR: il budget separato regola il ritmo, non lo sconto.
+    Il terzo binario, `strumenti` (dal 2026-11-11), non ha quota: qui non si conta mai."""
     q = dati.get("trimestre_corrente")
     return [f["id"] for f in dati["famiglie"]
             if f.get("prereg_esterna_trimestre") == q and f.get("binario", "strategie") == binario]
@@ -265,9 +266,53 @@ def verifica(dati: Optional[dict] = None, registro: Optional[dict] = None) -> li
         problemi.append("prereg dall'hub %s: %d usate, budget %d - SFORATO (%s)"
                         % (q, len(hub), b.get("prereg_hub_per_trimestre", 1), ", ".join(hub)))
     for f in dati["famiglie"]:
-        if f.get("binario", "strategie") not in ("strategie", "hub"):
-            problemi.append("%-16s binario '%s' sconosciuto (ammessi: strategie, hub)" % (f["id"], f["binario"]))
+        if f.get("binario", "strategie") not in BINARI:
+            problemi.append("%-16s binario '%s' sconosciuto (ammessi: %s)" % (f["id"], f["binario"], ", ".join(BINARI)))
+        elif f.get("binario") == "strumenti":
+            problemi += _verifica_strumenti(f)
     return problemi
+
+
+# Binari del contatore. `strumenti` (dal 2026-11-11, DECISIONS 2026-11-10/11): famiglie di strumenti di lettura del
+# prezzo, senza quota trimestrale (vale solo il tetto dei round); regole in STRATEGY_LIFECYCLE §8ter.
+BINARI = ("strategie", "hub", "strumenti")
+
+
+def _verifica_strumenti(f: dict) -> list:
+    """Una famiglia di strumenti divide il suo errore fra le sottofamiglie PRIMA di ogni test (LIFECYCLE §8ter, S2).
+
+    Controlla: errore di famiglia dichiarato; ogni sottofamiglia con id, quota di errore e benchmark; somma delle
+    quote <= errore di famiglia; trial della famiglia = somma dei trial confermativi ed esplorativi delle sottofamiglie
+    (le varianti nate dopo un esito si contano anche se non danno verdetto, P2); data d'inizio dell'holdout fissata
+    prima di aprirlo (H1)."""
+    eti = "%-16s" % f["id"]
+    out = []
+    alfa = f.get("alfa_famiglia")
+    if not isinstance(alfa, (int, float)) or not 0 < alfa < 1:
+        out.append("%s strumenti: alfa_famiglia mancante o fuori da (0, 1)" % eti)
+        alfa = None
+    sotto = f.get("sottofamiglie") or []
+    if not sotto:
+        out.append("%s strumenti: nessuna sottofamiglia dichiarata (anche una sola va scritta)" % eti)
+    somma_alfa, somma_trial = 0.0, 0
+    for s in sotto:
+        sid = s.get("id", "?")
+        if not isinstance(s.get("alfa"), (int, float)) or s["alfa"] <= 0:
+            out.append("%s sottofamiglia %s senza quota di errore (alfa)" % (eti, sid))
+        else:
+            somma_alfa += s["alfa"]
+        if not s.get("benchmark"):
+            out.append("%s sottofamiglia %s senza benchmark dichiarato prima (S4)" % (eti, sid))
+        somma_trial += int(s.get("trial_cumulati") or 0) + int(s.get("varianti_esplorative") or 0)
+    if alfa is not None and somma_alfa > alfa + 1e-12:
+        out.append("%s strumenti: quote delle sottofamiglie %.4g > alfa di famiglia %.4g" % (eti, somma_alfa, alfa))
+    tc = f.get("trial_cumulati")
+    if sotto and tc is not None and tc != somma_trial:
+        out.append("%s strumenti: trial_cumulati %s ma le sottofamiglie ne sommano %d (confermativi + esplorativi)"
+                   % (eti, tc, somma_trial))
+    if f.get("holdout_aperto") and not f.get("holdout_inizio"):
+        out.append("%s strumenti: holdout aperto senza holdout_inizio dichiarato prima (H1)" % eti)
+    return out
 
 
 def _stato_esterne(dati: dict) -> str:
@@ -303,8 +348,16 @@ def tabella(dati: Optional[dict] = None) -> str:
                      % (f["id"][:16], f["stato"], mot, trial, rnd, ho[:12],
                         "si" if f.get("fonte_esterna") else "no",
                         (f.get("verdetto") or "")[:38]))
+    strum = [f for f in dati["famiglie"] if f.get("binario") == "strumenti"]
+    for f in strum:
+        for s in f.get("sottofamiglie") or []:
+            righe.append("  - %-14s alfa %-6s trial %s + %s esplorativi  benchmark: %s"
+                         % (s.get("id", "?")[:14], s.get("alfa"), s.get("trial_cumulati", 0),
+                            s.get("varianti_esplorative", 0), s.get("benchmark", "?")))
     righe.append("")
     righe.append(_stato_esterne(dati))
+    righe.append("strumenti: nessuna quota trimestrale, solo il tetto dei round (LIFECYCLE sez.8ter); famiglie: %s"
+                 % (", ".join(f["id"] for f in strum) or "nessuna"))
     nd = [f["id"] for f in dati["famiglie"]
           if f.get("provenienza_ipotesi") == "non_dichiarata"]
     if nd:

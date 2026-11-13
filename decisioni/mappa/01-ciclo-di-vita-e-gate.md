@@ -117,6 +117,14 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
 - **Quattro domande in più, non bloccanti** (gatekeeper, Checklist 9, dal 13/10): crescita geometrica e Kelly,
   Sharpe sopra 2 come campanello, regime, contributo al book. Vengono dal primo revisore, ritirato quel giorno;
   finiscono fra le riserve e non cambiano nessun gate.
+- **Strumenti** (§8ter, dall'11/11, DECISIONS 2026-11-10 e 2026-11-11): uno strumento produce una previsione,
+  non trade, quindi niente baseline in R e niente DSR. Si confronta con benchmark semplici nominati prima
+  (EWMA per la volatilita') con la perdita QLIKE sulla varianza realizzata, e con i test per molti modelli
+  (SPA, StepM, Model Confidence Set). Nel contatore e' il **binario `strumenti`**: nessuna quota a trimestre,
+  solo il tetto dei round; la famiglia divide il suo errore fra le **sottofamiglie** prima di ogni test
+  (volatilita': 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita'); le varianti nate dopo un esito si
+  contano ma restano esplorative. Holdout: un blocco finale di calendario comune, per la volatilita' di due
+  anni, aperto una volta. Il gatekeeper lo controlla con la Checklist 10.
 
 ## Come si lancia
 
@@ -147,6 +155,7 @@ con file e riga per ogni rilievo.
 | Trimestre del contatore | uguale al trimestre di calendario | campo `trimestre_corrente` di `decisioni/trial_ledger.json` contro la data di oggi (il 02/10: **Q3 invece di Q4**) | Claude |
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
 | Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `magazzino/registro/documenti/*_PREREGISTRATION.md` e le voci del ledger | Claude |
+| Ogni famiglia di strumenti ha errore di famiglia, quote e benchmark per sottofamiglia | sì | `--check` (`_verifica_strumenti`); test in `motore/core/tests/test_trial_ledger_strumenti.py` (l'11/11: 8 passano, nessuna famiglia ancora nel contatore) | Claude |
 | Ogni ipotesi arrivata dall'hub ha la scheda d'ingresso | sì | la nota di intake in `magazzino/registro/referti/` riporta P1-P6 o il punto in cui si e' fermata (il 25/10: prima prova, insider + geopolitica, fermata a P5 e alla domanda 6) | Claude |
 
 ## Come si rompe

@@ -523,6 +523,98 @@ una modifica, è una **nuova specifica** e riparte dal gate [G1].
 
 ---
 
+## 8ter. Strumenti di lettura del prezzo — gate, holdout, varianti (dal 2026-11-11)
+
+Uno **strumento** produce una lettura con una proprieta' misurabile e nessuna regola di trade
+([04 §0](../../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md)): non ha un'attesa in R, quindi il
+baseline casuale e il DSR non si applicano. Al loro posto valgono le regole sotto, adottate da Matteo l'11/11
+(DECISIONS 2026-11-10 e 2026-11-11). Le fonti di ogni regola stanno nel
+[referto del 10/11](../../magazzino/registro/referti/gate_strumenti_volatilita_2026-11-10.md); qui c'e' la versione in
+vigore. Il resto del ciclo vale come per le strategie: pre-registrazione, contatore unico, tetto di **3 round** per
+famiglia, **una** apertura dell'holdout, verdetto con l'MDE.
+
+**Nel contatore**: binario `strumenti`, **nessuna quota trimestrale**. La famiglia dichiara `alfa_famiglia` e le
+`sottofamiglie` (ognuna con `alfa`, `benchmark`, `trial_cumulati`, `varianti_esplorative`); `trial_cumulati` della
+famiglia e' la somma di confermativi ed esplorativi; `holdout_inizio` si scrive prima di aprire. `--check` lo verifica.
+Senza quota, il freno al numero di famiglie e' "stessa grandezza = stessa famiglia" (§3): si controlla **prima** di
+aprirne una.
+
+**Gate statistico**
+- **G1 Bersaglio**: la varianza all'orizzonte dichiarato, misurata con la varianza realizzata da barre a 5 minuti
+  (indici, DAX, oro da M1, futures da M1); per l'FX da barre H1, dichiarata come misura piu' rumorosa. Sessione o
+  giornata intera con la notte: si fissa nella pre-registrazione.
+- **G2 Perdita**: primaria la **QLIKE** sulla varianza, secondaria la MSE sulla varianza; le altre solo descrittive.
+  Nessun cambio di perdita dopo l'esito.
+- **G3 Benchmark nominati prima**: EWMA (λ = 0,94); media di lungo periodo e persistenza come riferimenti di skill;
+  GARCH(1,1) e HAR-RV come benchmark forti; una combinazione semplice fra i candidati. Sui dati intraday si toglie la
+  stagionalita' oraria.
+- **G4 Test**: un candidato, Diebold-Mariano con correzione HLN ed errori HAC (o Giacomini-White); piu' candidati,
+  **SPA** (p-value `consistent`) contro il benchmark, **StepM** per sapere quali lo battono, **MCS** (statistica di
+  range, livello dichiarato) per scegliere, preferendo il piu' semplice. Bootstrap stazionario, almeno 1.000
+  ripetizioni (5.000 vicino alla soglia), seme fisso, blocco √T con una prova di sensibilita'. Libreria `arch`.
+- **G5** Mincer-Zarnowitz solo come diagnostica, in livelli, con errori HAC; mai in logaritmi per un verdetto.
+- **G6 Potenza prima**: l'MDE sul differenziale di QLIKE si stima sui dati di sviluppo prima di aprire l'holdout; un
+  mancato rifiuto si scrive "non dimostrato, MDE = ...".
+- **G7 Code**, solo se lo strumento le promette: Kupiec, Christoffersen e quantile dinamico al 95% e al 97,5% (99% solo
+  descrittivo: con 250 giorni la potenza e' circa 0,24); PIT e Berkowitz; log score per i modelli a regimi.
+- **G8 Piu' strumenti**: un test per strumento con correzione di Holm sui p-value dello SPA, oppure un universo unico
+  modello × strumento con date allineate. Si dichiara quale.
+- **G9 Controllo della pipeline**: su dati simulati con processo noto, il gate deve trovare un GARCH vero quando c'e' e
+  non trovare nulla su un EWMA/IGARCH puro (controllo positivo e negativo).
+
+**Holdout**
+- **H1** Un blocco finale di calendario **comune a tutti gli strumenti**; per la volatilita' **due anni** (Matteo,
+  11/11). La data d'inizio sta nella pre-registrazione di famiglia, scritta prima di qualunque test, dopo aver
+  allineato le date di fine dei file. Uno strumento tenuto da parte e' solo una prova complementare.
+- **H2** Sviluppo a origine mobile solo prima dell'holdout; almeno h giorni fra stima e bersaglio; nell'holdout i
+  parametri si ristimano con la regola dichiarata, senza scelte nuove.
+- **H3** Finestra di stima mobile di lunghezza fissa dichiarata, ristima settimanale, gaussiana QMLE; niente finestra
+  crescente (rende il differenziale non stazionario e invalida GW e MCS).
+- **H4** **Una sola apertura** per famiglia, in cui si testano insieme tutte le sottofamiglie pronte; le sottofamiglie
+  pronte dopo usano dati forward successivi all'apertura, con l'errore rimasto.
+- **H5** Dopo l'apertura nessuna scelta (finestra, perdita, distribuzione, numero di regimi). Piu' punti di divisione
+  solo con la statistica min-p di Hansen-Timmermann, dichiarata prima: scegliere la divisione dopo porta il 5% al 15%.
+- **H6** Si dichiara prima quali regimi contiene il blocco, per leggere bene un esito "calmo".
+
+**Conteggio delle varianti**
+- **C1** Ogni variante di cui si calcolano le previsioni entra nel contatore, anche se scartata a vista.
+- **C2** Lo SPA e l'MCS di una sottofamiglia includono **tutte** le varianti pre-registrate, comprese le pessime.
+- **C3** Finestra, distribuzione e frequenza di ristima sono varianti se scelte dopo aver visto le perdite.
+- **C4** Una curva di specificazioni dichiarata prima, con un test congiunto come verdetto, conta come un test solo.
+- **C5** Correggere un bug o un look-ahead non e' una variante (§3); cambiare un parametro dopo l'esito si'.
+
+**Varianti nate dopo un esito**
+- **P1** Sono **esplorative**: niente verdetto, niente holdout, niente errore di famiglia.
+- **P2** Entrano comunque nel contatore (`varianti_esplorative`) e si riportano solo dentro la curva di tutte le
+  varianti provate.
+- **P3** Diventano confermative solo con una pre-registrazione nuova e **dati forward non visti**, con una quota
+  d'errore fissata prima (per esempio α·6/(π²k²) alla k-esima).
+- **P4** Le rifiniture dei round 2-3 si elencano, se possibile, nella pre-registrazione del round 1; quelle non
+  elencate sono post-esito.
+- **P5** Ogni deviazione dalla pre-registrazione va in una tabella con la giustificazione; una deviazione grande rende
+  esplorativo l'intero test.
+
+**Sottofamiglie**
+- **S1** La pre-registrazione di famiglia le elenca tutte. La teoria senza previsioni testate (per la volatilita':
+  Black-Scholes, Heston, SABR) resta fuori dal contatore.
+- **S2** Errore di famiglia fissato e diviso prima di ogni test, lungo un grafo con riciclo dopo un rifiuto. Volatilita':
+  **5% a una coda = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita'**, riciclo in parti uguali (Matteo, 11/11).
+- **S3** Ogni sottofamiglia e' un'ipotesi sola ("almeno una variante batte il benchmark"), con lo SPA alla sua quota.
+- **S4** I benchmark si fissano prima e non dipendono dagli esiti delle altre sottofamiglie. Volatilita': GARCH contro
+  EWMA; HMM contro GJR o HAR dichiarato, sul contenuto **in piu'** della probabilita' **filtrata**; premio di
+  volatilita': varianza realizzata sui 30 giorni di calendario successivi contro VIX², Newey-West con 21-30 ritardi o
+  dati mensili non sovrapposti.
+- **S5** HMM: solo probabilita' filtrate, parametri ristimati su finestra mobile, vincolo σ_basso < σ_alto, piu'
+  partenze casuali.
+- **S6** Una sottofamiglia proposta dopo aver visto i risultati di un'altra e' selezionata dai dati: si conta, e il
+  suo test usa dati non visti.
+
+**Cosa puo' dire il pacchetto ai soci.** "Previsione piu' accurata e calibrata" si'; "piu' profitto" no: la gestione
+per volatilita' migliora code e drawdown ma lo Sharpe solo per azioni e credito (Harvey et al. 2018), e fuori campione
+peggiora in 72 strategie su 103 (Cederburg et al. 2020). Il passaggio da strumento a strategia lo testano i soci.
+
+---
+
 ## 9. Collegamenti
 
 - [QUANT_REVIEW_PROTOCOL.md](QUANT_REVIEW_PROTOCOL.md) — come si misura (il *gate*, non la *regola di stop*).
