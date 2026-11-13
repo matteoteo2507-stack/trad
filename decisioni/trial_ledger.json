@@ -380,9 +380,10 @@
         "magazzino/registro/referti/gate_strumenti_volatilita_2026-11-10.md",
         "motore/metodo/STRATEGY_LIFECYCLE.md",
         "DECISIONS.md#2026-11-10",
-        "DECISIONS.md#2026-11-11"
+        "DECISIONS.md#2026-11-11",
+        "DECISIONS.md#2026-11-13"
       ],
-      "note": "Pre-registrazione in BOZZA (13/11). Previsioni non ancora calcolate: trial 0. Trial previsti al calcolo: 54 GARCH + 36 HMM + 1 premio = 91 serie (modello x strumento x orizzonte). Nessuna quota trimestrale (binario strumenti)."
+      "note": "Pre-registrazione in BOZZA (13/11), prima G1 BLOCCA, corretta lo stesso giorno. Previsioni non ancora calcolate: trial 0. Trial previsti al calcolo: 54 GARCH + 72 HMM (con le combinazioni fisse 0,5 GJR + 0,5 HMM) + 1 premio = 127 serie (modello x strumento x orizzonte). Affermazioni per strumento: grafo su 37 ipotesi elementari. Nessuna quota trimestrale (binario strumenti)."
     }
   ],
   "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920.",

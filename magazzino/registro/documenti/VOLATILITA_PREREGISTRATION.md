@@ -3,9 +3,9 @@ tipo: preregistrazione
 stato: BOZZA
 approvata: ""
 aggiornato: 2026-11-13
-decisione: "Matteo: gate degli strumenti e strada A (10-11/11); errore di famiglia 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita', holdout di due anni (11/11); orizzonte massimo 5 giorni, strumenti dei test piu' completi (11/11); varianti GARCH approvate, benchmark dell'HMM delegato a Claude secondo S4, premio di volatilita' a 30 giorni come definizione (13/11). DECISIONS 2026-11-10, 2026-11-11"
+decisione: "Matteo: gate degli strumenti e strada A (10-11/11); errore di famiglia 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita', holdout di due anni (11/11); orizzonte massimo 5 giorni, strumenti dei test piu' completi (11/11); varianti GARCH approvate, benchmark dell'HMM delegato a Claude secondo S4, premio di volatilita' a 30 giorni come definizione (13/11); dopo la prima G1: combinazione fissa nell'HMM, holdout non aperto se il controllo positivo fallisce, affermazioni per strumento, commit su branch nuovo (13/11). DECISIONS 2026-11-10, 2026-11-11, 2026-11-13"
 metrica_corrente: "nessuna: nessuna previsione calcolata"
-nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta."
+nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Prima passata G1: BLOCCA (13/11), correzioni in §9."
 ---
 
 # Pre-registrazione — Previsione della volatilita' (famiglia `volatilita`, binario `strumenti`)
@@ -13,7 +13,8 @@ nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): n
 Regole che questa pre-registrazione applica: [STRATEGY_LIFECYCLE §8ter](../../../motore/metodo/STRATEGY_LIFECYCLE.md)
 (sigle G, H, C, P, S). Fonti della letteratura: [referto del 10/11](../referti/gate_strumenti_volatilita_2026-11-10.md),
 claim in quarantena. Dati e controlli: [motore/data/README](../../../motore/data/README.md), sezioni `volatilita_m5`,
-`volatilita_mt5`, `futures_1m`. Famiglia nel contatore: `volatilita`.
+`volatilita_mt5`, `futures_1m`. Famiglia nel contatore: `volatilita`. Il testo della prima bozza (quello rivisto dalla
+prima passata G1) e' nel commit `a62f622`.
 
 ## 1. Cosa si misura, e cosa no
 
@@ -28,118 +29,213 @@ fuori campione. Per il premio di volatilita': la varianza implicita nel VIX supe
 non "piu' profitto" (§8ter, ultimo capoverso): il passaggio a una strategia (sizing, stop, filtri) lo testano i soci.
 
 **Stessa grandezza = stessa famiglia (Checklist 10, punto 8).** Nessuna famiglia del contatore ha misurato
-l'accuratezza di una previsione di varianza. `meanrev_vol`, il gradiente di volatilita' di `trend_momentum` e la
-"gestione per volatilita' come segnale" (backlog §H, chiusa in partenza) misurano **rendimenti** condizionati alla
-volatilita': un'altra grandezza. Se un esito di questa famiglia venisse usato per rileggere quei verdetti, sarebbe un
-trial di quelle famiglie.
+l'accuratezza di una previsione di varianza. `meanrev_vol` (rendimento di uno z-score di prezzo), il gradiente di
+volatilita' di `trend_momentum` e la "gestione per volatilita' come segnale" (backlog §H) misurano **rendimenti**: un'altra
+grandezza (verificato dalla prima G1). L'asse calmo/volatile di `motore/core/regime.py` (ATR) misura la stessa grandezza
+dell'HMM ma non e' una famiglia: un esito dell'HMM **non** lo convalida.
 
 ## 2. Dati
 
 | Strumento | File (fuori da git) | Usato da |
 |---|---|---|
-| SPX500, NAS100, DOW, RUSSELL, DAX | `motore/data/prezzi/volatilita_m5/<NOME>_M5.csv` (Dukascopy, UTC) | 2015-01-02; RUSSELL dal 2018-08-08 (prima non ci sono dati) |
+| SPX500, NAS100, DOW, RUSSELL, DAX | `motore/data/prezzi/volatilita_m5/<NOME>_M5.csv` (Dukascopy, bid, UTC) | 2015-01-02; RUSSELL dal 2018-08-08 (prima non ci sono dati) |
 | XAUUSD, XAGUSD, WTI, EURUSD | stessa cartella | 2015-01-02 |
 | VIX | `motore/data/cache/free/VIX_D1.csv` (CBOE, aggiornato al 2026-11-12) | solo premio di volatilita' |
 
-**Perche' dal 2015.** Nel 2012-2014 il feed Dukascopy degli indici ha fino al 10% di barre ferme anche in seduta, ed
-EURUSD il 28-29% sulle 24 ore; dal 2015 lo 0% (controllo dell'11/11, README dei dati). Una varianza realizzata con un
-feed che cambia natura non e' confrontabile nel tempo.
+**Perche' dal 2015.** Nel 2012-2014 il feed degli indici ha fino al 10% di barre ferme anche in seduta, EURUSD il 28-29%
+sulle 24 ore, WTI il 19% nel 2014; dal 2015 lo 0-1% per tutti e nove (controlli dell'11/11, solo struttura, README dei
+dati). Prima della corsa di sviluppo si rifa' `checklist_dati` (solo struttura) su tutti i file, con i conteggi per
+strumento in un'aggiunta datata (riserva 3 della G1).
 
-**Definizione del giorno e del bersaglio (G1).** Rendimenti logaritmici a 5 minuti, barre bid.
-- **Indici** (seduta cash: 9:30-16:00 New York; DAX 9:00-17:30 Francoforte, con l'ora legale dei rispettivi fusi):
-  varianza del giorno = **RV di seduta + rendimento notturno al quadrato** (chiusura di seduta di ieri → apertura di
-  seduta di oggi). E' la proxy della varianza da chiusura a chiusura; il rendimento giornaliero dei modelli e' da
-  chiusura di seduta a chiusura di seduta.
-- **Strumenti a 24 ore** (oro, argento, petrolio, euro): il giorno va dalla prima barra dopo la pausa delle 17:00 New
-  York alla chiusura delle 17:00. **Il rendimento a cavallo della pausa (e del fine settimana) resta fuori** sia dal
-  rendimento giornaliero dei modelli sia dal bersaglio: nel petrolio Dukascopy, che e' un CFD su futures, li' cadono i
-  salti di rollover (nel periodo di sviluppo 16 salti alla riapertura il giorno 19 del mese e il +29% del 19/04/2020,
-  controllo del 13/11, solo prezzi). La grandezza misurata e' quindi la varianza **della giornata di contrattazione**.
-- Dentro la seduta o la giornata, un rendimento a cavallo di un buco di oltre 15 minuti non entra nella RV.
-  Un giorno con meno del 90% delle barre attese e' escluso dal bersaglio (non dalla stima); il conteggio si riporta.
-- **Orizzonte h = 5**: somma delle varianze dei 5 giorni di borsa successivi. **Premio di volatilita'**: somma delle
-  varianze giornaliere dell'SPX500 nei giorni di borsa in (t, t + 30 giorni di calendario].
+**Perche' M5 Dukascopy anche per oro ed euro** (§8ter G1 chiedeva l'oro da M1 e l'FX da H1, che erano i dati in casa
+il 10/11): una sola fonte e una sola frequenza per tutti e nove riducono le differenze di rumore fra strumenti; M5 e' la
+frequenza standard della RV (Liu-Patton-Sheppard 2015). La stagionalita' oraria di G3 non si applica: tutti i modelli
+sono giornalieri.
 
-## 3. Divisione dei dati (H1-H3)
+**Versioni** (13/11): `arch` 8.0.0, `statsmodels` 0.14.6, `numpy` 2.4.4, `scipy` 1.17.1, `pandas` 3.0.2,
+`exchange_calendars` 4.13.2, Python 3.12. Il codice controlla le versioni all'avvio e si ferma se cambiano.
 
-- **Holdout**: dal **2024-11-11 al 2026-11-10** (due anni, comune a tutti gli strumenti; la fine comune dei file
-  Dukascopy e' il 2026-11-11). Ultima origine di previsione: quella il cui bersaglio finisce entro il 2026-11-10
-  (per h = 5, il 2026-11-03; per il premio, il 2026-10-09).
-- **Sviluppo**: dal 2015-01-02 al 2024-11-08. Nessun bersaglio di sviluppo cade nell'holdout: le origini di sviluppo si
-  fermano 5 giorni di borsa (30 di calendario per il premio) prima del 2024-11-11.
-- **Stima**: finestra mobile di **1.000 giorni di borsa**, lunghezza fissa (H3); prima previsione di sviluppo quando la
-  finestra e' piena (fine 2018 per quasi tutti; meta' 2022 per RUSSELL). **Ristima ogni 5 giorni di borsa**; fra una
-  ristima e l'altra il filtro va avanti coi parametri congelati. Nell'holdout la finestra scorre su dati di sviluppo e
-  di holdout passati: e' filtraggio, non lisciamento.
-- Media zero, rendimenti in percento, distribuzione **gaussiana (QMLE)**.
+## 3. Giorno, rendimenti e bersaglio (G1) — le somme tornano esatte
 
-## 4. Sottofamiglie, varianti, benchmark (S1-S5, C1-C2)
+Rendimenti logaritmici **in percento**, prezzi bid. Barre Dukascopy con l'ora d'**inizio** della barra (UTC).
 
-| Nodo | Varianti (tutte nello SPA, C2) | Benchmark (S4) | Ipotesi del nodo (S3) |
+**Indici.** Calendario di borsa `exchange_calendars`: **XNYS** per SPX500, NAS100, DOW, RUSSELL; **XETR** per il DAX
+(sedute, chiusure anticipate e festivi dal calendario, nei fusi America/New_York ed Europe/Berlin).
+- *Apertura di seduta* P_ap = `open` della barra che inizia all'apertura del calendario (9:30 New York; 9:00
+  Francoforte). *Chiusura di seduta* P_ch = `close` dell'ultima barra che inizia prima della chiusura del calendario
+  (15:55 nei giorni normali, prima nei giorni a seduta ridotta).
+- Rendimenti di seduta: il primo e' log(close/open) della prima barra, poi log(close_i/close_{i-1}) fra barre
+  consecutive della seduta, anche se fra le due manca qualche barra. La loro somma e' esattamente log(P_ch/P_ap).
+- Notte: n_t = log(P_ap,t / P_ch,t-1). **Rendimento del modello** r_t = n_t + somma di seduta = log(P_ch,t/P_ch,t-1).
+- **Bersaglio giornaliero** v_t = n_t² + somma dei quadrati dei rendimenti di seduta (proxy della varianza da chiusura
+  a chiusura).
+
+**Strumenti a 24 ore** (oro, argento, petrolio, euro). Il giorno di borsa t comincia con la prima barra che inizia
+alle 17:00 New York o dopo, e finisce con l'ultima barra che inizia prima delle 17:00 del giorno dopo (il giorno del
+venerdi' comincia la domenica). Rendimenti: log(close/open) della prima barra, poi close su close. r_t = somma = log
+(close dell'ultima barra / open della prima). v_t = somma dei quadrati. **Il rendimento a cavallo della pausa e del fine
+settimana non entra ne' in r_t ne' in v_t**: nel petrolio Dukascopy, CFD su futures, li' cadono i salti di rollover
+(nel 2015-2024 16 salti alla riapertura il giorno 19 del mese e il +29% del 19/04/2020; controllo del 13/11, solo
+prezzi). La grandezza e' la varianza della giornata di contrattazione.
+
+**Giorni esclusi** (con meno del 90% delle barre attese dal calendario o dalla griglia a 24 ore): restano nella stima
+(il loro r_t e' esatto per costruzione), ma un'**origine di previsione e' esclusa** per un orizzonte se **un qualunque
+giorno** della sua finestra di bersaglio e' escluso. Nessuna somma parziale. Si riportano i conteggi per strumento.
+
+**Orizzonti.** h = 1: bersaglio v_{t+1}. h = 5: somma di v_{t+1..t+5}. Previsione a h = 5: somma delle previsioni a
+1..5 passi del modello.
+
+**Premio di volatilita'**, in %² come tutto il resto: IV_t = VIX_t² × 30/365 (VIX in punti percentuali annui alla
+chiusura di t); RV_t = somma di v dell'SPX500 nei giorni di borsa in (t, t + 30 giorni di calendario]; premio
+p_t = IV_t − RV_t. Esempio di ordine di grandezza: VIX 20 → IV ≈ 32,9 %²; con una volatilita' giornaliera dell'1,25%
+per 21 giorni, RV ≈ 32,8 %².
+
+**Scala del bersaglio** (bloccante 1 della G1). Per Patton (2011) la QLIKE ordina bene solo con una proxy non distorta;
+se E[v] = c·E[r²] con c ≠ 1, premia chi prevede piu' alto. Regola fissata ora, **uguale per tutti i modelli e i
+benchmark**: ogni previsione si moltiplica per c_t = (somma di v)/(somma di r²) sui 1.000 giorni di borsa che finiscono
+all'origine t (solo passato, la stessa finestra della stima). Si riportano c sviluppo per strumento e, come descrittivo,
+le perdite senza riscalamento. Non si sceglie altro dopo la corsa di sviluppo.
+
+## 4. Divisione dei dati (H1-H3)
+
+- **Holdout**: dal **2024-11-11 al 2026-11-10** (due anni, comune a tutti; congelato nel commit `a62f622` del 13/11).
+  Ultima origine: quella il cui bersaglio finisce entro il 2026-11-10 (h = 5: 2026-11-03; premio: 2026-10-09).
+- **Sviluppo**: dal 2015-01-02. Nessun bersaglio di sviluppo cade nell'holdout: le origini di sviluppo si fermano
+  5 giorni di borsa (30 di calendario per il premio) prima del 2024-11-11.
+- **Stima**: finestra mobile di **1.000 giorni di borsa**, lunghezza fissa (H3); prima previsione quando la finestra e'
+  piena (fine 2018 per quasi tutti; meta' 2022 per RUSSELL). **Ristima ogni 5 giorni di borsa**; fra una ristima e
+  l'altra il filtro va avanti coi parametri congelati. Media zero, gaussiana (QMLE).
+- **Solo filtraggio** (bloccante 2): con `arch`, stima con `last_obs` = giorno dopo l'origine e previsione dall'origine;
+  con `statsmodels` solo `filtered_marginal_probabilities`, **mai** `predict` coi valori di default (che usa i
+  lisciati) ne' `smoothed_marginal_probabilities`. Lo garantisce il test d'invarianza del §7.
+- **Regimi nel blocco di holdout** (H6, dichiarati dalla cronologia pubblica, senza calcoli sui file): elezioni USA
+  (novembre 2024), shock dei dazi USA (aprile 2025), conflitto USA-Iran nel 2026 (nota di geopolitica dell'hub). Il
+  blocco non e' "calmo" per costruzione.
+- **Contaminazione** (Checklist 5): circa l'80% dell'holdout (2024-11 → 2026-05) precede il cutoff del modello
+  (2026-05-31), e il benchmark dell'HMM l'ha scelto un LLM. Rischio basso (il GJR e' la scelta di default della
+  letteratura), dichiarato; il sottoblocco 2026-06-01 → 2026-11-10 si riporta a parte, descrittivo. Il premio positivo
+  e' un risultato famoso (Carr-Wu 2009): confermarlo porta poca informazione nuova.
+
+## 5. Sottofamiglie, varianti, benchmark (S1-S5, C1-C2)
+
+| Nodo | Varianti (tutte nello SPA, C2) | Benchmark (S4) | Ipotesi elementari |
 |---|---|---|---|
-| **GARCH** | GARCH(1,1), GJR-GARCH(1,1,1), EGARCH(1,1,1) — libreria `arch` 8.0.0 | **EWMA, λ = 0,94** (RiskMetrics, zero parametri) | almeno una variante ha QLIKE media piu' bassa di EWMA |
-| **HMM** | varianza a regimi di Markov sui rendimenti giornalieri, **2** e **3** regimi (`statsmodels` `MarkovRegression`, `switching_variance=True`, senza costante); previsione = somma su regimi della probabilita' **filtrata** propagata × varianza del regime | **GJR-GARCH(1,1,1)** sugli stessi rendimenti | almeno una variante ha QLIKE media piu' bassa del GJR |
-| **Premio di volatilita'** | uno: varianza implicita a 30 giorni = (VIX/100)² × 30/365, in unita' di varianza giornaliera, contro la varianza realizzata dei 30 giorni di calendario successivi (§2) | premio nullo | media del premio > 0 |
+| **GARCH** | GARCH(1,1), GJR-GARCH(1,1,1), EGARCH(1,1,1) — `arch` | **EWMA, λ = 0,94** (RiskMetrics, zero parametri) | 18: una per (strumento, orizzonte): "almeno una variante ha QLIKE media piu' bassa di EWMA" |
+| **HMM** | varianza a regimi di Markov sui rendimenti giornalieri con **2** e **3** regimi (`statsmodels` `MarkovRegression`, `switching_variance=True`, senza costante; previsione = probabilita' filtrata propagata con la matrice di transizione × varianza del regime); **combinazioni fisse 0,5·GJR + 0,5·HMM** con 2 e con 3 regimi | **GJR-GARCH(1,1,1)** sugli stessi rendimenti | 18: "almeno una variante ha QLIKE media piu' bassa del GJR" |
+| **Premio di volatilita'** | uno (§3) | premio nullo | 1: "media del premio > 0" |
 
-- **Perche' GJR per l'HMM** (S4: "contenuto in piu' della probabilita' filtrata"): l'HMM usa i rendimenti
-  giornalieri, come il GJR. Contro HAR, che usa la RV intraday, perderebbe per l'informazione in meno, non per i regimi.
-  Il benchmark e' fissato qui e non dipende dall'esito del nodo GARCH.
-- **HMM (S5)**: regimi ordinati per varianza crescente a ogni stima (σ₁ < σ₂ < σ₃), 20 partenze casuali con seme fisso,
-  si tiene la verosimiglianza migliore; una stima che non converge usa i parametri della stima precedente, e si conta.
-- **Premio di volatilita' a 30 giorni** (Matteo, 13/11): e' la definizione del VIX, non un orizzonte di trading, quindi
-  non viola il massimo di 5 giorni. Solo SPX500 (l'unico indice con una volatilita' implicita nei dati).
+- **Perche' GJR e perche' la combinazione** (S4, "contenuto in piu' della probabilita' filtrata"): l'HMM usa i
+  rendimenti giornalieri come il GJR, quindi il confronto e' a parita' d'informazione (contro HAR perderebbe per
+  l'informazione intraday che non ha). Un HMM a varianza costante per regime puo' pero' contenere informazione utile e
+  perdere lo stesso la gara; la combinazione a peso fisso 0,5 misura il contenuto in piu' nel senso di Giacomini-White
+  (Matteo, 13/11, bloccante 5). Un mancato rifiuto vale per entrambe le domande, con l'MDE.
+- **HMM (S5)**: regimi ordinati per varianza crescente a ogni stima, 20 partenze casuali con seme fisso, si tiene la
+  verosimiglianza migliore; una stima che non converge usa i parametri della precedente, e si conta.
+- **Premio a 30 giorni** (Matteo, 13/11): e' la definizione del VIX, non un orizzonte di trading. Solo SPX500.
 - **Fuori dal contatore** (S1): Black-Scholes, Heston, SABR (solo teoria).
-- **Solo descrittivi** (nessun verdetto): HAR-RV di Corsi sulla RV, GARCH(1,1) come riferimento forte (G3), la media
-  delle tre varianti GARCH, la media di lungo periodo (varianza della finestra) e la persistenza (varianza di ieri)
-  come riferimenti di skill.
+- **Riferimenti, non varianti** (riserva 5): HAR-RV di Corsi sulla RV, GARCH(1,1) come riferimento forte (G3), la media
+  delle tre varianti GARCH, la media di lungo periodo (varianza della finestra), la persistenza (varianza di ieri).
+  Entrano solo nei descrittivi (MCS, skill). **Nessuno di loro puo' diventare lo strumento consegnato a partire da
+  questo holdout**: se HAR vince l'MCS, e' un risultato esplorativo (P1), da confermare su dati forward.
 
-**Contabilita' (C1).** Serie di previsione = modello × strumento × orizzonte: GARCH 3 × 9 × 2 = **54**, HMM 2 × 9 × 2 =
-**36**, premio **1**. Totale **91**, contati nel contatore quando le previsioni vengono calcolate (all'approvazione il
-contatore resta a 0).
+**Contabilita' (C1).** Serie = modello × strumento × orizzonte: GARCH 3 × 9 × 2 = **54**, HMM 4 × 9 × 2 = **72**,
+premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono calcolate.
 
-## 5. Gate statistico (G2, G4, G8) e verdetto
+## 6. Gate statistico e verdetto (G2, G4, G8)
 
-- **Perdita primaria**: QLIKE = log(h) + RV/h sulla varianza (h previsione, RV bersaglio); secondaria MSE sulla
-  varianza (descrittiva).
-- **Test per nodo GARCH e HMM**: per ogni coppia (strumento, orizzonte) uno **SPA di Hansen** (p-value `consistent`)
-  delle varianti contro il benchmark, bootstrap stazionario, **5.000** ripetizioni, blocco √T, seme 20261113 (`arch.
-  bootstrap.SPA`). Le 18 p-value del nodo si correggono con **Holm** (G8). Il nodo **rifiuta** se almeno una p
-  corretta e' sotto la quota d'errore del nodo; si riporta su quali coppie.
-- **Test del premio**: t a una coda sulla media del premio giornaliero (osservazioni sovrapposte), errori di
-  **Newey-West con 21 ritardi**; robustezza descrittiva su osservazioni mensili non sovrapposte.
-- **Errore di famiglia 5% a una coda, grafo con riciclo (S2)**: GARCH 2,5%, HMM 1,25%, premio 1,25%. Se un nodo
-  rifiuta, la sua quota si divide in parti uguali fra i nodi non ancora rifiutati, che si ritestano alla quota nuova
-  (procedura grafica di Bretz et al. 2009).
-- **Verdetto per nodo**: *confermato* (rifiuta), oppure *non dimostrato, MDE = ...* (G6). Mai "refutato" senza MDE.
-- **Descrittivi** (non decidono): StepM (quali varianti battono il benchmark), MCS al 10% con statistica di range su
-  tutti i modelli del §4 compresi i riferimenti, skill rispetto a media di lungo periodo e persistenza, Mincer-Zarnowitz
-  in livelli con errori HAC (G5), sensibilita' al blocco del bootstrap (√T/2 e 2√T).
+- **Perdita primaria**: QLIKE = log(f) + v/f (f previsione riscalata, v bersaglio, entrambi in %²); secondaria MSE
+  sulla varianza (descrittiva).
+- **Test per coppia** (nodi GARCH e HMM): SPA di Hansen (p-value `consistent`) delle varianti del nodo contro il
+  benchmark, bootstrap stazionario, blocco √T, **100.000 ripetizioni** (`repliche_per_distinguere`: ne servono 44.193
+  alla prima soglia del GARCH e 88.446 a quella dell'HMM perche' l'intervallo del p-value sia largo un quarto della
+  soglia), seme 20261113. p-value = (b+1)/(B+1) con `pvalue_mc`, riportato con `low`/`high`. Se la soglia di una
+  decisione cade **dentro** l'intervallo del p-value: si ripete su 3 semi in piu' (`ripeti_su_semi`) e si decide
+  sulla mediana; se resta dentro, **non si rifiuta**.
+- **Test del premio** (bloccante 4): **t a una coda su osservazioni mensili non sovrapposte** (l'ultimo giorno di borsa
+  di ogni mese dell'holdout come origine, circa 23 osservazioni), n − 1 gradi di liberta'. Le osservazioni giornaliere
+  sovrapposte con Newey-West restano descrittive.
+- **Affermazioni per strumento** (Matteo, 13/11, riserva 4): procedura grafica (Bretz et al. 2009) sulle **37 ipotesi
+  elementari**. Pesi iniziali: ogni coppia del GARCH 2,5%/18, ogni coppia dell'HMM 1,25%/18, il premio 1,25%. Un'ipotesi
+  rifiutata passa il suo peso in parti uguali alle ipotesi non rifiutate **dello stesso nodo**; quando tutte le ipotesi
+  di un nodo sono rifiutate, il peso del nodo passa in parti uguali alle ipotesi non rifiutate degli altri nodi. Si
+  itera finche' non si rifiuta piu' nulla. E' Holm dentro il nodo con il riciclo fra nodi di S2; l'errore e' controllato
+  su ogni affermazione per strumento e orizzonte.
+- **Verdetto per coppia**: *confermato* (rifiutata), oppure *non dimostrato, MDE = ...*; mai "refutato" senza MDE.
+- **Descrittivi** (non decidono): StepM (quali varianti), MCS al 10% con statistica di range su tutti i modelli e i
+  riferimenti, skill rispetto a media di lungo periodo e persistenza, Mincer-Zarnowitz in livelli con errori HAC (G5),
+  sensibilita' al blocco (√T/2 e 2√T), perdite senza riscalamento, premio giornaliero con Newey-West (21 ritardi),
+  sottoblocco dopo il cutoff.
 - **G7 (code)**: non si applica: lo strumento non promette quantili.
 - **Confronti complementari nell'holdout** (non decidono, H1): RV dei futures CME a 1 minuto (`futures_1m`, dal
-  2025-11) e del feed MT5 (`volatilita_mt5`, dal 2025-06) contro la RV Dukascopy, sugli stessi giorni; i salti di
-  rollover dei futures si tolgono nel loader.
+  2025-11; salti di rollover tolti nel loader) e del feed MT5 (`volatilita_mt5`, dal 2025-06) contro la RV Dukascopy.
 
-## 6. Prima dell'apertura (G6, G9)
+## 7. Prima dell'apertura — nell'ordine, ogni passo in un'aggiunta datata e in un commit
 
-Nell'ordine, ognuno scritto in un'aggiunta datata a questo documento **prima** di aprire l'holdout:
-1. **Controllo della pipeline (G9)**, su dati simulati: 200 repliche di 9 serie lunghe quanto i dati veri.
-   *Negativo*: processo EWMA/IGARCH (λ = 0,94); il nodo GARCH non deve rifiutare piu' del **doppio** della sua quota
-   (5% delle repliche), altrimenti la pipeline e' rotta e si blocca. *Positivo*: processo GJR (ω = 0,02, α = 0,03,
-   γ = 0,10, β = 0,90) con bersaglio = varianza vera × rumore lognormale tarato sulla RV; si riporta la frequenza di
-   rifiuto con 500 giorni di holdout. Stesso schema per l'HMM (processo a regimi contro GJR puro).
-2. **Corsa di sviluppo** (2018/2022 → 2024-11-08): perdite di tutte le serie, solo descrittive. **Dopo averla vista
-   non si cambia nulla** di §2-§5: una modifica e' una variante post-esito (P1-P3), esplorativa.
-3. **MDE (G6)** per ogni nodo, dai dati di sviluppo: MDE = 2,80 × σ_HAC del differenziale di QLIKE (migliore variante
-   contro benchmark) / √N, con N = giorni di holdout; per il premio, dalla serie di sviluppo del premio.
-4. Revisione G1 del gatekeeper sull'aggiunta, poi **apertura unica** dell'holdout (H4) per i tre nodi insieme.
+0. **Guardie** (bloccante 6): prima di ogni corsa lo script verifica che questa pre-registrazione, il contatore, il
+   codice della famiglia (`magazzino/registro/codice/volatilita/`), `motore/core/` e `motore/tests/` **esistano** e non
+   abbiano modifiche non committate, e registra l'hash del commit. Un percorso inesistente ferma la corsa (la guardia
+   dello studio H1 punta a percorsi di prima del riordino e passerebbe a vuoto: non si copia).
+1. **Test d'invarianza al futuro** (bloccante 2), in `motore/tests` o accanto al codice, **bloccante**: per ogni
+   modello (EWMA, GARCH, GJR, EGARCH, HMM 2 e 3, combinazioni, HAR) e per 20 origini a caso, la previsione all'origine
+   t calcolata sulla serie vera e sulla stessa serie con i dati dopo t sostituiti da rumore deve essere identica
+   (tolleranza 1e-10).
+2. **Controllo negativo della pipeline** (G9): processo IGARCH (λ = 0,94) con **ω = 0,0005 %²** (evita la deriva verso
+   zero della varianza, −0,0032 di log-varianza al giorno con ω = 0); 9 serie lunghe 1.500 giorni (1.000 di stima +
+   500 di valutazione); **1.000 repliche**. Il nodo GARCH (Holm sulle 9 coppie a h = 1) non deve rifiutare in piu' del
+   **5%** delle repliche (il doppio della sua quota); altrimenti la pipeline e' rotta e si blocca. Disegno ridotto,
+   dichiarato: ristima ogni 20 giorni, 10.000 ripetizioni dello SPA.
+3. **Controllo positivo della pipeline** (G9): processo GJR (ω = 0,02, α = 0,03, γ = 0,10, β = 0,90), bersaglio =
+   varianza vera × rumore lognormale con la dispersione di log(v) − log(r² atteso) misurata sui dati di sviluppo; stesso
+   disegno; **200 repliche**. Si riporta prima la differenza di QLIKE attesa con questi parametri. Soglia: il nodo
+   GARCH rifiuta in **almeno l'80%** delle repliche. Per l'HMM: processo a 2 regimi di varianza (0,5 e 2,0 %²,
+   probabilita' di restare 0,98 e 0,95), contro GJR; disegno ridotto: **50 repliche, 3 serie, 3 partenze, ristima ogni
+   60 giorni**; stessa soglia dell'80%. Per il premio: controllo di dimensione con bootstrap a blocchi (21 giorni) del
+   premio di sviluppo riportato a media zero, 2.000 repliche: rifiuto al massimo nel 2,5% (il doppio di 1,25%).
+   **Se un controllo positivo non raggiunge l'80%** (Matteo, 13/11): l'holdout **non si apre** per quel nodo; il nodo
+   esce prima dell'apertura e il suo peso va agli altri nodi, scritto prima di aprire. Se nessun nodo e' pronto,
+   l'holdout resta sigillato e si ripensa il disegno.
+4. **Corsa di sviluppo**: perdite di tutte le serie, solo descrittive. **Dopo averla vista non si cambia nulla** di
+   §2-§6: una modifica e' una variante post-esito (P1-P3), esplorativa.
+5. **Controllo positivo sui dati veri** (bloccante 6): sugli ultimi 500 giorni di sviluppo di ogni strumento, una
+   variante iniettata f = EWMA^(1−w) · v^w (che conosce il bersaglio), con w tarato perche' il guadagno di QLIKE sia
+   pari all'MDE del §7.6; lo SPA a h = 1 deve rifiutare su **almeno 6 strumenti su 9**, altrimenti la pipeline sui dati
+   veri non vede un effetto della taglia dichiarata e si blocca.
+6. **MDE per coppia** (G6, bloccante 3): MDE = `mde(sd, n_eff, alpha=..., code=1)` con l'α della **prima soglia** della
+   coppia (2,5%/18: fattore 3,83; 1,25%/18: fattore 4,04), sd = deviazione HAC del differenziale di QLIKE (migliore
+   variante contro benchmark) dai dati di sviluppo, con Newey-West a max(h − 1, 4) ritardi, e n_eff = giorni di
+   holdout. Premio: fattore della t a una coda all'1,25% con n − 1 gradi di liberta', sd mensile di sviluppo, n = mesi
+   di holdout.
+7. Revisione G1 del gatekeeper sulle aggiunte, poi **apertura unica** dell'holdout (H4) per i nodi pronti.
 
-## 7. Rifiniture previste per i round 2-3 (P4)
+## 8. Rifiniture previste per i round 2-3 (P4) e quota d'errore
 
-Solo se il round 1 lo giustifica, e **mai sull'holdout**: su dati forward successivi all'apertura (H4, P3).
-(a) distribuzione t di Student; (b) finestra di 1.500 giorni; (c) GARCH a regimi di Markov (Ardia et al. 2018), se
-esiste un'implementazione Python verificata. Qualunque altra modifica e' post-esito ed esplorativa (P1).
+Tutto l'errore di famiglia (5%) e' assegnato al round 1. Le rifiniture qui sotto sono quindi **esplorative**, salvo una
+pre-registrazione nuova su **dati forward** successivi all'apertura con una quota fissata allora (P3, per esempio
+α·6/(π²k²) alla k-esima): (a) distribuzione t di Student (nodo GARCH); (b) finestra di 1.500 giorni (GARCH e HMM);
+(c) GARCH a regimi di Markov (Ardia et al. 2018), nel **nodo HMM**, se esiste un'implementazione Python verificata.
+Mai sull'holdout. Qualunque altra modifica e' post-esito ed esplorativa (P1).
 
-## 8. Deviazioni (P5)
+## 9. Revisione G1
+
+**Prima passata (13/11): BLOCCA**, 6 bloccanti e 7 riserve (DECISIONS 2026-11-13). Come sono stati trattati:
+
+| Rilievo | Correzione |
+|---|---|
+| B1 scala, giorni esclusi, unita' | §3: apertura e chiusura dal calendario, somme esatte, regola delle origini escluse, unita' in %², riscalamento con c solo passato fissato ora |
+| B2 look-ahead nel codice | §4 (solo filtrati, `last_obs`) e §7.1 test d'invarianza bloccante |
+| B3 MDE e ripetizioni | §6 (100.000 ripetizioni, (b+1)/(B+1), regola sulla soglia dentro l'intervallo), §7.6 (MDE per coppia a una coda); `verifiche.py` accetta `code=1` (commit `761481f`) |
+| B4 controlli | §7.2-7.3: soglia dell'80%, ω > 0, 1.000 repliche nel negativo, disegni ridotti dichiarati, controllo di dimensione del premio; test primario del premio mensile non sovrapposto |
+| B5 HMM e S4 | §5: combinazioni fisse 0,5·GJR + 0,5·HMM (Matteo), 127 serie |
+| B6 congelamento e storia | commit `889204f`, `b026899`, `db354ec`, `a62f622` sul branch `strumenti/volatilita`; guardie §7.0; versioni §2; controllo positivo sui dati veri §7.5 |
+| R1 regimi dell'holdout | §4, dalla cronologia pubblica |
+| R2 M5 per oro ed euro | §2, scelta motivata; stagionalita' oraria non applicabile |
+| R3 qualita' di XAU, XAG, WTI | §2: numeri dal 2015 e `checklist_dati` prima della corsa |
+| R4 livello delle affermazioni | §6: grafo su 37 ipotesi elementari (Matteo: per strumento) |
+| R5 riferimenti | §5: non varianti, non consegnabili da questo holdout |
+| R6 quota per i round 2-3 | §8: esplorativi salvo pre-registrazione forward con quota nuova; MS-GARCH nel nodo HMM |
+| R7 decisioni del 13/11 e contaminazione | voce DECISIONS 2026-11-13; §4 contaminazione |
+
+## 10. Deviazioni (P5)
 
 | Data | Cosa cambia | Perche' | Esplorativo? |
 |---|---|---|---|
