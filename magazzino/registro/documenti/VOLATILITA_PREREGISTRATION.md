@@ -159,9 +159,11 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
 - **Test per coppia** (nodi GARCH e HMM): SPA di Hansen (p-value `consistent`) delle varianti del nodo contro il
   benchmark, bootstrap stazionario, blocco √T, **100.000 ripetizioni** (`repliche_per_distinguere`: ne servono 44.193
   alla prima soglia del GARCH e 88.446 a quella dell'HMM perche' l'intervallo del p-value sia largo un quarto della
-  soglia), seme 20261113. p-value = (b+1)/(B+1) con `pvalue_spa` (che passa da `pvalue_mc`), riportato con `low`/`high`. Se la soglia di una
-  decisione cade **dentro** l'intervallo del p-value: si ripete su 3 semi in piu' (`ripeti_su_semi`) e si decide
-  sulla mediana; se resta dentro, **non si rifiuta**.
+  soglia), seme 20261113. p-value = (b+1)/(B+1) con `pvalue_spa` (che passa da `pvalue_mc`), riportato con `low`/`high`. Ogni SPA del
+  verdetto gira su **4 semi dichiarati** (20261113-20261116) e si sommano superamenti e ripetizioni (400.000 in tutto);
+  p-value e intervallo entrano in `procedura_grafica_nodi` con l'argomento `intervalli` (commit `bcc7b4b`): un'ipotesi si
+  rifiuta solo se **tutto l'intervallo** sta sotto la soglia **corrente**, a ogni passo, anche dopo che il riciclo l'ha
+  alzata. Un nodo uscito prima dell'apertura si toglie dalla procedura (passarlo vuoto e' un errore).
 - **Test del premio** (bloccante 4): **t a una coda su osservazioni mensili non sovrapposte** (l'ultimo giorno di borsa
   di ogni mese dell'holdout come origine, circa 23 osservazioni), n − 1 gradi di liberta'. Le osservazioni giornaliere
   sovrapposte con Newey-West restano descrittive.
@@ -205,15 +207,19 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
      9 serie da 1.500 giorni (1.000 di stima + 500 di valutazione), **h = 1 e h = 5**, **1.000 repliche**; disegno
      ridotto dichiarato: ristima ogni 20 giorni, 10.000 ripetizioni dello SPA. Criterio: il nodo (procedura grafica
      sulle 18 coppie con le soglie vere) rifiuta in **non piu' del 5%** delle repliche (il doppio della quota). Con
-     1.000 repliche il controllo distingue una dimensione vera del 2,5% da una del 5%.
+     1.000 repliche il controllo passa nel 54% dei casi se la dimensione vera e' il 5%, e distingue il 2,5% da circa il
+     6,5% (con quella dimensione passa nel 2,8% dei casi; calcolo del gatekeeper, terza G1).
    - **HMM**: processo GJR (ω = 0,02, α = 0,03, γ = 0,10, β = 0,90), riscalato come sopra, per il quale il GJR e' il
      previsore esatto; le quattro varianti dell'HMM contro il GJR. Disegno ridotto dichiarato: **200 repliche, 3 serie,
-     h = 1, 3 partenze, ristima ogni 60 giorni**. Criterio: rifiuto del nodo in non piu' del 2,5% delle repliche (il
-     doppio di 1,25%). Limite dichiarato: con 200 repliche distingue male una dimensione del 2,5% da una del 5%; serve
+     h = 1, 3 partenze, ristima ogni 60 giorni**. Criterio: il nodo, con la procedura grafica sulle 3 coppie del disegno
+     ridotto alla quota del nodo (prima soglia 1,25%/3, piu' larga di quella vera: il controllo e' quindi piu' severo),
+     rifiuta in non piu' del 2,5% delle repliche (il doppio di 1,25%). Limite dichiarato: con 200 repliche distingue male una dimensione del 2,5% da una del 5%; serve
      a trovare guasti grossi (per esempio la studentizzazione su differenziali piccoli e correlati delle combinazioni).
    - **Premio**: dimensione del **test primario**. Bootstrap a blocchi della serie giornaliera del premio di sviluppo
-     riportata a media zero, blocchi di **21** e di **63** giorni, 2.000 repliche ciascuno; da ogni serie ricampionata
-     si estraggono circa 23 origini mensili (ultimo giorno di borsa del mese) e si applica la t a una coda.
+     riportata a media zero, blocchi di **21** e di **63** giorni, 2.000 repliche ciascuno. Ogni serie ricampionata e'
+     lunga quanto le origini del premio nell'holdout (giorni di borsa XNYS dal 2024-11-11 al 2026-10-09) e si mette su
+     quelle date del calendario, **senza i loro valori**; le origini mensili sono gli ultimi giorni di borsa del mese di
+     quel calendario (circa 23), e si applica la t a una coda.
      Criterio: rifiuto in non piu' del 2,5% delle repliche, con entrambi i blocchi (il premio ha una coda sinistra
      lunga: con 23 osservazioni la t puo' rifiutare troppo nella direzione della conferma).
 3. **Corsa di sviluppo**: perdite di tutte le serie, solo descrittive. **Dopo averla vista non si cambia nulla** di
@@ -223,7 +229,10 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
    contro benchmark) dai dati di sviluppo, Newey-West con max(h − 1, 4) ritardi, n_eff = giorni di holdout. Premio:
    `mde(sd_mensile, n, alpha=0,0125, code=1, gl=n − 1)`, n = mesi di holdout.
 5. **Controlli positivi simulati**. Rumore del bersaglio: σ = deviazione standard di log(v_t / (c_t·f_t^GJR)) nei dati di
-   sviluppo (limite alto del rumore della proxy, perche' contiene anche l'errore del modello: scelta prudente).
+   sviluppo, **per strumento** (limite alto del rumore della proxy, perche' contiene anche l'errore del modello: scelta
+   prudente, che fa uscire piu' nodi). **Prima di far girare** questi controlli si scrive, per ogni nodo, il rapporto
+   fra l'effetto del processo simulato (differenza di QLIKE attesa, parametri fissati qui) e l'MDE simulato: se
+   l'effetto sta sotto l'MDE, il nodo esce **per la scelta dei parametri**, non per un guasto della pipeline, e lo si dice.
    - **GARCH**: processo GJR come sopra, stesso disegno del negativo, **200 repliche**. Si dichiara prima la differenza
      di QLIKE attesa con questi parametri, accanto all'MDE del passo 4.
    - **HMM**: processo a 2 regimi di varianza (0,5 e 2,0 %², probabilita' di restare 0,98 e 0,95), contro GJR; disegno
@@ -234,21 +243,27 @@ premio **1**. Totale **127**, contati nel contatore quando le previsioni vengono
 6. **Controllo positivo sui dati veri** (bloccante 3 della seconda G1). Variante iniettata
    f_t = (c_t · EWMA_t)^(1 − w) · v_bersaglio^w (conosce il bersaglio). **w si tara sui 500 giorni di sviluppo che
    precedono gli ultimi 500**, perche' il guadagno di QLIKE sia pari all'MDE del passo 4, e **si prova sugli ultimi 500**
-   (dati diversi dalla taratura). La variante entra nello SPA **insieme** alle tre varianti vere, contro EWMA, h = 1, per
-   ogni strumento. Criterio: rifiuto su **almeno 6 strumenti su 9** (con potenza vera dell'80% per strumento succede con
-   probabilita' 0,91, con il 50% con probabilita' 0,25). Stesso schema per l'HMM: variante iniettata sul GJR, nello SPA
-   con le quattro varianti.
+   (dati diversi dalla taratura). La variante entra nello SPA **insieme** alle tre varianti vere (diluizione realistica),
+   contro EWMA, h = 1, ma il criterio guarda **lei sola** (bloccante 1 della terza G1: uno SPA puo' rifiutare per merito
+   delle varianti vere): lo **StepM** alla soglia vera della coppia (2,5%/18) deve **identificare la variante iniettata**.
+   **RUSSELL e' escluso** (bloccante 2 della terza G1: ha circa 570 giorni di sviluppo con previsioni, non 1.000).
+   Criterio: la variante iniettata e' identificata su **almeno 5 strumenti su 8** (con potenza vera dell'80% per
+   strumento succede con probabilita' 0,94, con il 50% con probabilita' 0,36). Stesso schema per l'HMM: variante
+   iniettata sul GJR, nello SPA con le quattro varianti, StepM a 1,25%/18, almeno 5 su 8.
 7. **Conseguenze, scritte ora** (riserva 5 della seconda G1):
 
    | Controllo che fallisce | Cosa succede |
    |---|---|
-   | invarianza (1) o un negativo (2, GARCH o HMM) | la pipeline ha un guasto: si cerca e si corregge (correzione gratuita, C5) e si rifanno i passi 1-2; la corsa di sviluppo non parte prima |
+   | invarianza (1) o un negativo (2, GARCH o HMM) | la pipeline ha un guasto: si cerca e si corregge (correzione gratuita, C5) e si rifanno i passi 1-2, ogni iterazione in un'aggiunta datata; un cambio di disegno che non e' un guasto (blocco, ripetizioni) va nelle deviazioni del §10, anche se gratuito; la corsa di sviluppo non parte prima |
    | dimensione del premio (2) | il nodo del premio **esce prima dell'apertura** |
    | positivo simulato (5) o sui dati veri (6) | il nodo **esce prima dell'apertura** (Matteo, 13/11) |
 
-   Un nodo uscito: la sua quota va **in parti uguali ai nodi rimasti** (S2), scritto prima di aprire; non gli resta
-   errore per un test confermativo su dati forward (servirebbe una pre-registrazione nuova con una quota nuova, P3); un
-   ridisegno dopo il passo 3 conta trial (C1) ed e' post-esito. Se esce ogni nodo, l'holdout resta sigillato.
+   **Un nodo uscito tiene la sua quota, riservata** (Matteo, 13/11, conforme a H4: "con l'errore rimasto"): non va agli
+   altri nodi. All'apertura la procedura grafica gira solo sui nodi rimasti, con le loro quote iniziali e il riciclo
+   fra loro (S2: il riciclo e' dopo un rifiuto, non dopo un'uscita). Il nodo uscito si puo' testare dopo, una volta
+   sola, su **dati forward successivi all'apertura**, con la sua quota iniziale (2,5% o 1,25%), in un'aggiunta datata
+   scritta prima di raccogliere quei dati e dopo aver corretto la causa dell'uscita; l'errore della famiglia resta al
+   5%. Un ridisegno dopo il passo 3 conta trial (C1) ed e' post-esito. Se esce ogni nodo, l'holdout resta sigillato.
 8. Revisione G1 del gatekeeper sulle aggiunte, poi **apertura unica** dell'holdout (H4) per i nodi rimasti.
 
 ## 8. Rifiniture previste per i round 2-3 (P4) e quota d'errore
@@ -298,6 +313,20 @@ trattati:
 | R7 numeri di XAU, XAG, WTI | README dei dati, dall'11/11 |
 | R8 selezione delle origini | §3: abs(r) dei giorni esclusi contro la mediana |
 | Debito: procedura grafica, p-value dello SPA, MDE con t | `motore/core/verifiche.py`: `procedura_grafica_nodi`, `pvalue_spa`, `gl` in `mde` (con test) |
+
+**Terza passata (13/11): BLOCCA**, 3 bloccanti e 5 riserve (procedura grafica giudicata valida). Come sono stati
+trattati:
+
+| Rilievo | Correzione |
+|---|---|
+| B1 lo SPA del controllo sui dati veri puo' rifiutare per le varianti vere | §7.6: criterio sulla variante iniettata identificata dallo StepM alla soglia vera |
+| B2 RUSSELL senza i 1.000 giorni | §7.6: RUSSELL escluso, almeno 5 su 8 (0,94 / 0,36) |
+| B3 quota del nodo uscito contro H4 | §7.7: quota **riservata** per un test forward (Matteo, 13/11; DECISIONS 2026-11-13) |
+| R1 intervallo del p-value a ogni passo, nodi vuoti | §6: 4 semi sommati, `intervalli` nella primitiva (commit `bcc7b4b`, test) |
+| R2 frase sul controllo negativo | §7.2 corretta (54% di passaggio al 5%, distingue 2,5% da 6,5%) |
+| R3 σ e rapporto effetto/MDE | §7.5: σ per strumento, rapporto scritto prima di far girare i controlli |
+| R4 soglie del negativo dell'HMM, serie del premio | §7.2: procedura grafica sulle 3 coppie (piu' severa); serie lunghe quanto l'holdout sul suo calendario, senza valori |
+| R5 iterazioni dei controlli | §7.7: aggiunte datate; cambi di disegno nelle deviazioni |
 
 ## 10. Deviazioni (P5)
 

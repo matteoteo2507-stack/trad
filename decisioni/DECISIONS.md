@@ -40,7 +40,12 @@ con ω > 0 non era un processo nullo (errore del suggerimento della prima passat
 dell'80% misurava il nodo invece della coppia, il controllo sui dati veri passava per costruzione, mancavano il negativo
 dell'HMM e la dimensione del test mensile del premio, il riciclo fra nodi divergeva da S2 (corretto conformandosi a S2,
 nessuna decisione nuova). Tutto corretto lo stesso giorno; nuove primitive in `verifiche.py` (procedura grafica per
-nodi, p-value dello SPA, MDE con t di Student). Terza passata in corso.
+nodi, p-value dello SPA, MDE con t di Student).
+
+**Terza passata G1: BLOCCA** (3 bloccanti, 5 riserve; procedura grafica valida). Due bloccanti tecnici corretti (il
+controllo sui dati veri ora guarda la variante iniettata con lo StepM; RUSSELL escluso da quel controllo, criterio 5 su
+8). Il terzo era una regola non decisa: **Matteo sceglie che la quota di un nodo uscito prima dell'apertura resti
+riservata** a un test su dati forward, conforme a H4, invece di passare agli altri nodi. Quarta passata in corso.
 
 ---
 
