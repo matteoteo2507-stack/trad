@@ -19,7 +19,8 @@ from pathlib import Path
 import numpy as np
 
 QUI = Path(__file__).resolve().parent
-sys.path.insert(0, str(QUI))
+ROOT = next(p for p in QUI.parents if (p / "pyproject.toml").exists())
+sys.path[:0] = [str(QUI), str(ROOT)]          # ROOT: `motore` (verifiche, mde) lanciando lo script direttamente
 
 import giorni as G  # noqa: E402
 import pipeline as P  # noqa: E402
