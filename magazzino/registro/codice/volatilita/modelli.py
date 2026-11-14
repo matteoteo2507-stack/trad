@@ -75,15 +75,16 @@ def egarch_multi(s1: np.ndarray, omega: float, alpha: float, gamma: float, beta:
     """E[sigma²_{t+k}] per k = 1..h di un EGARCH(1,1,1) di arch con innovazioni normali, dato sigma²_{t+1} = s1.
 
     ln s²_{t+k} = omega·sum_j beta^j + beta^(k-1)·ln s²_{t+1} + sum_j beta^j (alpha(|z|-c) + gamma z), j = 0..k-2;
-    E[exp(a|z| + b z)] = exp((a+b)²/2)·Phi(a+b) + exp((a-b)²/2)·Phi(a-b)."""
+    E[exp(a|z| + b z)] = exp((a+b)²/2)·Phi(a+b) + exp((a-b)²/2)·Phi(a-b), calcolata in logaritmi (con |a ± b| grande
+    exp(x²/2)·Phi(x) e' finito, ma i due fattori separati danno inf·0 = NaN)."""
     s1 = np.asarray(s1, float)
     out = np.empty((len(s1), h))
     out[:, 0] = s1
     for k in range(2, h + 1):
         bj = beta ** np.arange(k - 1)
         a, b = bj * alpha, bj * gamma
-        e = np.exp((a + b) ** 2 / 2) * norm.cdf(a + b) + np.exp((a - b) ** 2 / 2) * norm.cdf(a - b)
-        log_cost = omega * bj.sum() - C * a.sum() + np.log(e).sum()
+        log_e = np.logaddexp((a + b) ** 2 / 2 + norm.logcdf(a + b), (a - b) ** 2 / 2 + norm.logcdf(a - b))
+        log_cost = omega * bj.sum() - C * a.sum() + log_e.sum()
         out[:, k - 1] = np.exp(log_cost + beta ** (k - 1) * np.log(s1))
     return out
 
@@ -107,11 +108,16 @@ def prevedi_arch(r: np.ndarray, tipo: str, w: int = W, passo: int = PASSO, h: in
     def stima(t0):
         if tipo == "ewma":
             return np.zeros(0)
-        am = _modello_arch(r[t0 - w + 1:t0 + 1], tipo)
+        y = r[t0 - w + 1:t0 + 1]
+        am = _modello_arch(y, tipo)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             res = am.fit(disp="off")
-        if res.convergence_flag != 0 or not np.all(np.isfinite(res.params)):
+            # falsa convergenza: l'ottimizzatore dichiara successo in un punto peggiore della sua partenza (EGARCH,
+            # neg_garch replica 17: alfa -15, gamma -65, verosimiglianza 6.390 sotto la partenza). Conta come non
+            # convergenza (parametri del blocco precedente).
+            ll_partenza = _modello_arch(y, tipo).fix(am.volatility.starting_values(y)).loglikelihood
+        if res.convergence_flag != 0 or not np.all(np.isfinite(res.params)) or res.loglikelihood < ll_partenza:
             return None
         return np.asarray(res.params)
 

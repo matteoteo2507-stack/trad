@@ -459,3 +459,30 @@ in t + 1: 0,36-0,46 a ogni origine. HMM con le probabilita' smussate al posto de
 dove i due regimi stimati quasi non si distinguono, e 0,045-4,6 su un processo a regimi veri (3 semi); senza fuga
 0,0. Tutte rilevate; le origini a meta' blocco non le vedono, com'e' giusto, perche' li' la finestra spostata arriva
 al piu' a t. Il controllo e' ora il test `test_invarianza_rileva_le_fughe` (10 test verdi).
+
+### 2026-11-14 — Passo 2, negativo GARCH: guasto della pipeline (falsa convergenza dell'EGARCH), corretto; si rifanno i passi 1-2
+
+- **Prima corsa** (commit `a14d10c`): ferma all'avvio, i processi figli non trovavano `motore` (lanciando lo script sul
+  percorso c'e' solo la sua cartella; i test passavano perche' pytest aggiunge la radice). Corretto nel commit
+  `3bb26de`; nessuna replica calcolata.
+- **Seconda corsa** (commit `3bb26de`): ferma dopo 16 repliche su 1.000 (0 rifiuti del nodo), perche' lo SPA
+  studentizzato ha rifiutato un differenziale con varianza di lungo periodo non finita. Causa: replica 17, serie 7,
+  blocco 1279: `arch` dichiara convergente la stima EGARCH (flag 0, parametri finiti) con α = −15,05 e γ = −65,25 e
+  log-verosimiglianza −8.327, **6.390 sotto il punto da cui parte l'ottimizzatore** (coi parametri del blocco precedente
+  −3.052; ripartendo da quelli, −1.918,6). Previsione a un passo 1,3·10⁶; a 5 passi `egarch_multi` calcolava
+  inf·0 = NaN. La regola di non convergenza (scelta 6) leggeva solo il flag, e i due blocchi successivi, non
+  convergenti, ereditavano quei parametri.
+- **Correzioni** (guasto, C5, 0 trial; non cambiano §1-§6): (a) una stima con verosimiglianza **minore di quella del
+  suo punto di partenza** (`volatility.starting_values`, da cui parte `arch` con media zero e errori normali) conta come
+  non convergenza: parametri del blocco precedente, e si conta, come nella scelta 6; (b) `egarch_multi` in logaritmi
+  (`norm.logcdf`, `logaddexp`): stesso valore dove prima era finito (scarto relativo < 1e-12 nel test), mai NaN (con
+  a + b molto negativo il valore vero e' finito e prima veniva NaN). Sulla serie della replica 17 il criterio scatta
+  solo al blocco 1279: tutte le altre stime GARCH, GJR ed EGARCH migliorano la partenza di almeno 4,9.
+- **Osservazione** (non e' un guasto e non si cambia): coi parametri di ripiego (β = 0,9998, α < 0) il filtro EGARCH
+  dipende molto dall'inizio della finestra: in 1279 prevede 0,80 partendo dal giorno 260 e circa 1.300 partendo dal
+  280, perche' con varianza alta |z| e' piccolo e −α·c la spinge ancora in alto. E' il modello sotto la regola S5; in un
+  controllo negativo puo' solo far perdere l'EGARCH.
+- Test: 12 verdi (nuovi `test_egarch_multi_finito_con_parametri_estremi` e
+  `test_falsa_convergenza_conta_come_non_convergenza`; il controllo delle fughe punta alla nuova riga di `prevedi_arch`).
+- Per il §7.7 si rifanno i passi 1 e 2 (negativi GARCH e HMM) sul commit di questa voce; le 16 repliche gia' fatte si
+  scartano. La dimensione del premio non usa i modelli e non si rifa'.

@@ -95,6 +95,39 @@ def test_egarch_multi_contro_simulazione():
     assert np.max(np.abs(an / sim - 1)) < 0.01
 
 
+def test_egarch_multi_finito_con_parametri_estremi():
+    """exp(x²/2)·Phi(x) e' finito anche con x molto negativo: la formula in logaritmi non da' NaN (prima: inf·0)."""
+    from scipy.stats import norm
+
+    out = M.egarch_multi(np.array([1.0]), 0.0, -20.0, -20.0, 0.5)         # a + b = -40: prima NaN, vero valore finito
+    assert np.all(np.isfinite(out)) and np.all(out > 0)
+    out = M.egarch_multi(np.array([1.3e6]), -0.22, -15.05, -65.25, 0.95)  # attesa vera oltre il float: inf, non NaN
+    assert not np.any(np.isnan(out))
+    par = (0.02, 0.15, -0.10, 0.95)                                       # valori ordinari: stessa formula di prima
+    k = np.arange(4)
+    a, b = 0.95 ** k * 0.15, 0.95 ** k * -0.10
+    e = np.exp((a + b) ** 2 / 2) * norm.cdf(a + b) + np.exp((a - b) ** 2 / 2) * norm.cdf(a - b)
+    attesa = np.exp(0.02 * (0.95 ** k).sum() - M.C * a.sum() + np.log(e).sum() + 0.95 ** 4 * np.log(1.7))
+    assert abs(M.egarch_multi(np.array([1.7]), *par)[0, 4] / attesa - 1) < 1e-12
+
+
+def test_falsa_convergenza_conta_come_non_convergenza():
+    """neg_garch, replica 17, serie 7: al blocco 1279 arch dichiara convergenza con alfa -15, gamma -65 e una
+    verosimiglianza 6.390 sotto la partenza. Deve contare come non convergenza e dare previsioni finite. (Coi parametri
+    del blocco precedente, beta 0,9998 e alfa < 0, il filtro EGARCH dipende molto dall'inizio della finestra e la
+    previsione resta alta, circa 1.300: e' il comportamento del modello sotto la regola S5, non un guasto.)"""
+    import controlli as C
+
+    d = C.DISEGNI["neg_garch"]
+    figlio = np.random.SeedSequence([d["seme"], 17]).spawn(d["serie"])[7]
+    r, _ = C.simula("igarch", C.N_SERIE_GIORNI, np.random.default_rng(figlio))
+    r = r / np.sqrt(_[-C.VALUTAZIONE:].mean())
+    out = M.prevedi_arch(r, "egarch", passo=20, origini=[1279])
+    assert out["non_convergenze"] >= 1
+    assert np.all(np.isfinite(out["F"][1279]))
+    assert abs(out["parametri"][0][1][1]) < 1                              # alfa ordinario, non -15
+
+
 def test_bersagli_esclusi():
     v = np.arange(1.0, 11.0)
     esc = np.zeros(10, bool)
@@ -176,8 +209,8 @@ def test_invarianza_rileva_le_fughe(monkeypatch):
     r, v = I.sintetica(W + 40, 5)
     origini = (W - 1, W + 4)                                              # inizi di blocco
     fughe = [
-        ("prevedi_arch", _variante(M.prevedi_arch, [("r[t0 - w + 1:t0 + 1], tipo)\n        with",
-                                                     "r[t0 - w + 2:t0 + 2], tipo)\n        with")]), ["gjr"]),
+        ("prevedi_arch", _variante(M.prevedi_arch, [("y = r[t0 - w + 1:t0 + 1]", "y = r[t0 - w + 2:t0 + 2]")]),
+         ["gjr"]),
         ("prevedi_har", _variante(M.prevedi_har, [("(0, y1, t0 - 1)", "(0, y1, t0)")]), ["har"]),
         ("riscala", lambda r_, v_, w=M.W, _c=M.riscala: np.r_[_c(r_, v_, w)[1:], np.nan], ["ewma"]),
     ]
