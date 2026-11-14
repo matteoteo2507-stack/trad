@@ -486,3 +486,9 @@ al piu' a t. Il controllo e' ora il test `test_invarianza_rileva_le_fughe` (10 t
   `test_falsa_convergenza_conta_come_non_convergenza`; il controllo delle fughe punta alla nuova riga di `prevedi_arch`).
 - Per il §7.7 si rifanno i passi 1 e 2 (negativi GARCH e HMM) sul commit di questa voce; le 16 repliche gia' fatte si
   scartano. La dimensione del premio non usa i modelli e non si rifa'.
+
+### 2026-11-14 — Passo 1 rifatto dopo la correzione: PASSA
+
+Corsa del commit `c8a31b0` ([`esiti/invarianza.json`](../codice/volatilita/esiti/invarianza.json), seme 20261118, stesse
+origini del 13/11): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di
+1e-10, nessuna origine fallita.
