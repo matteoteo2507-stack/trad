@@ -70,7 +70,8 @@ def _esegui(args):
         out = M.prevedi_arch(r, m, origini=t0s)
     par = {"t0_%d" % t0: p for t0, p in out["parametri"]}
     tmp = _file(nome, m, j).with_suffix(".tmp.npz")
-    np.savez(tmp, F=out["F"], non_convergenze=out["non_convergenze"], **par)
+    np.savez(tmp, F=out["F"], non_convergenze=out["non_convergenze"],
+             ripartenze=out.get("ripartenze_primo_blocco", 0), **par)
     os.replace(tmp, _file(nome, m, j))
     return nome, m, j, time.time() - t
 
@@ -80,15 +81,16 @@ def unisci(nome: str) -> dict:
     d = G.carica(nome)
     r, v = d["r"].to_numpy(), d["v"].to_numpy()
     n = len(r)
-    grezze, nc = {}, {}
+    grezze, nc, rp = {}, {}, {}
     for m in MODELLI_STIMATI:
         F = np.full((n, M.H), np.nan)
-        nc[m] = 0
+        nc[m], rp[m] = 0, 0
         for f in sorted(CACHE.glob("%s_%s_*.npz" % (nome, m))):
             z = np.load(f)
             ok = np.isfinite(z["F"][:, 0])
             F[ok] = z["F"][ok]
             nc[m] += int(z["non_convergenze"])
+            rp[m] += int(z["ripartenze"])
         grezze[m] = F
     c = M.riscala(r, v)
     due = {m: np.column_stack([M.somma_orizzonte(F, 1), M.somma_orizzonte(F, 5)]) for m, F in grezze.items()}
@@ -101,7 +103,7 @@ def unisci(nome: str) -> dict:
     finali["persistenza"] = np.column_stack([M.somma_orizzonte(M.prevedi_persistenza(v), h) for h in P.ORIZZONTI])
     finali["media"] = np.column_stack([M.somma_orizzonte(M.prevedi_media(v), h) for h in P.ORIZZONTI])
     senza_c = {m: due[m] for m in P.SCALA_RENDIMENTI}
-    return {"dati": d, "previsioni": finali, "senza_c": senza_c, "c": c, "non_convergenze": nc,
+    return {"dati": d, "previsioni": finali, "senza_c": senza_c, "c": c, "non_convergenze": nc, "ripartenze_primo_blocco": rp,
             "har_corrette": har["corrette"]}
 
 

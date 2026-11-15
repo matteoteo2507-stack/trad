@@ -128,6 +128,54 @@ def test_falsa_convergenza_conta_come_non_convergenza():
     assert abs(out["parametri"][0][1][1]) < 1                              # alfa ordinario, non -15
 
 
+def _serie_neg_garch(k, i):
+    import controlli as C
+
+    d = C.DISEGNI["neg_garch"]
+    figlio = np.random.SeedSequence([d["seme"], k]).spawn(d["serie"])[i]
+    r, s2 = C.simula("igarch", C.N_SERIE_GIORNI, np.random.default_rng(figlio))
+    return C.riscala_valutazione(r, s2)[0]
+
+
+@pytest.mark.parametrize("k, i, tipo", [(76, 5, "garch"), (66, 7, "egarch")])
+def test_primo_blocco_non_convergente_riparte(k, i, tipo):
+    """neg_garch del 14/11: la prima stima non converge (flag 4) e non c'e' un blocco precedente. Le ripartenze di
+    riserva trovano una stima che converge e batte la partenza di arch; prima: RuntimeError."""
+    out = M.prevedi_arch(_serie_neg_garch(k, i), tipo, passo=20, origini=[M.W - 1])
+    assert out["ripartenze_primo_blocco"] == 1 and out["non_convergenze"] == 0
+    assert np.all(np.isfinite(out["F"][M.W - 1])) and out["F"][M.W - 1, 0] < 10
+
+
+def test_replica_in_errore_rende_il_controllo_guasto(monkeypatch):
+    import controlli as C
+
+    def rotta(*a, **k):
+        raise RuntimeError("prova")
+
+    monkeypatch.setattr(C, "replica", rotta)
+    riga = C._compito(("neg_garch", 3, C.DISEGNI["neg_garch"], None))
+    assert riga["replica"] == 3 and "RuntimeError: prova" in riga["errore"]
+    buona = {"replica": 0, "rifiuta_nodo": False, "rifiuti_coppia_soglia_vera": {"a": False}}
+    assert C.esito_controllo([buona], 0.05)["esito"] == "PASSA"
+    assert C.esito_controllo([dict(buona, rifiuta_nodo=True)], 0.05)["esito"] == "FALLISCE"
+    e = C.esito_controllo([buona, riga], 0.05)
+    assert e["esito"] == "GUASTO" and e["repliche_in_errore"] == 1 and "frequenza_rifiuto_nodo" not in e
+
+
+def test_diario_di_un_altro_commit_non_si_riusa(tmp_path):
+    import json
+
+    import controlli as C
+
+    diario = tmp_path / "neg_garch.jsonl"
+    diario.write_text(json.dumps({"replica": 0, "commit": "aaaaaaa1"}) + "\n" + json.dumps({"replica": 1}) + "\n",
+                      encoding="utf-8")
+    assert C.carica_diario(diario, "bbbbbbb2") == {}
+    assert not diario.exists() and (tmp_path / "neg_garch.aaaaaaa-senza_c.jsonl").exists()
+    diario.write_text(json.dumps({"replica": 4, "commit": "bbbbbbb2"}) + "\n", encoding="utf-8")
+    assert list(C.carica_diario(diario, "bbbbbbb2")) == [4]
+
+
 def test_bersagli_esclusi():
     v = np.arange(1.0, 11.0)
     esc = np.zeros(10, bool)

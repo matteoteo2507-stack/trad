@@ -100,26 +100,56 @@ def _modello_arch(y, tipo):
     return arch_model(y, mean="Zero", vol=vol, p=1, o=o, q=1, dist="normal", rescale=False)
 
 
+RIPARTENZE_PRIMO_BLOCCO = 20
+
+
+def _partenze_riserva(sv: np.ndarray, tipo: str, t0: int, n: int):
+    """Partenze perturbate attorno a quella di `arch` (sv·exp(0,2·N(0,1))), seme fisso legato solo a t0 (nessun dato):
+    positive e con persistenza < 0,999 per GARCH e GJR, beta <= 0,995 per l'EGARCH."""
+    rng = np.random.default_rng([SEME_HMM, t0, ("garch", "gjr", "egarch").index(tipo)])
+    for _ in range(n):
+        s = sv * np.exp(0.2 * rng.standard_normal(len(sv)))
+        if tipo == "egarch":
+            s[-1] = min(s[-1], 0.995)
+        else:
+            s = np.clip(s, 1e-6, None)
+            pers = s[1] + (s[2] / 2 if tipo == "gjr" else 0) + s[-1]
+            if pers >= 0.999:
+                s[1:] *= 0.99 / pers
+        yield s
+
+
 def prevedi_arch(r: np.ndarray, tipo: str, w: int = W, passo: int = PASSO, h: int = H, origini=None) -> dict:
     """tipo in {ewma, garch, gjr, egarch}."""
     n = len(r)
     F = np.full((n, h), np.nan)
+    ripartenze = [0]
 
     def stima(t0):
         if tipo == "ewma":
             return np.zeros(0)
         y = r[t0 - w + 1:t0 + 1]
         am = _modello_arch(y, tipo)
+        sv = am.volatility.starting_values(y)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            res = am.fit(disp="off")
             # falsa convergenza: l'ottimizzatore dichiara successo in un punto peggiore della sua partenza (EGARCH,
             # neg_garch replica 17: alfa -15, gamma -65, verosimiglianza 6.390 sotto la partenza). Conta come non
             # convergenza (parametri del blocco precedente).
-            ll_partenza = _modello_arch(y, tipo).fix(am.volatility.starting_values(y)).loglikelihood
-        if res.convergence_flag != 0 or not np.all(np.isfinite(res.params)) or res.loglikelihood < ll_partenza:
-            return None
-        return np.asarray(res.params)
+            ll_partenza = _modello_arch(y, tipo).fix(sv).loglikelihood
+            buona = lambda res: (res.convergence_flag == 0 and np.all(np.isfinite(res.params))
+                                 and res.loglikelihood >= ll_partenza)
+            res = am.fit(disp="off")
+            if buona(res):
+                return np.asarray(res.params)
+            if t0 - passo >= w - 1:
+                return None                               # ripiego sul blocco precedente (S5)
+            # primo blocco, senza un precedente (neg_garch repliche 66 e 76): ripartenze di riserva, si tiene la
+            # migliore che converge e batte la partenza di arch; se nessuna, None (errore visibile in _Parametri)
+            ripartenze[0] += 1
+            ok = [x for x in (am.fit(disp="off", starting_values=s)
+                              for s in _partenze_riserva(sv, tipo, t0, RIPARTENZE_PRIMO_BLOCCO)) if buona(x)]
+        return np.asarray(max(ok, key=lambda x: x.loglikelihood).params) if ok else None
 
     par_di = _Parametri(stima, w, passo)
     parametri = []
@@ -133,7 +163,8 @@ def prevedi_arch(r: np.ndarray, tipo: str, w: int = W, passo: int = PASSO, h: in
             F[t0:t1 + 1] = egarch_multi(s1, om, al, ga, be, h)
         else:
             F[t0:t1 + 1] = res.forecast(horizon=h, start=w - 1, reindex=False).variance.to_numpy()
-    return {"F": F, "non_convergenze": par_di.non_conv, "parametri": parametri}
+    return {"F": F, "non_convergenze": par_di.non_conv, "ripartenze_primo_blocco": ripartenze[0],
+            "parametri": parametri}
 
 
 # ----------------------------------------------------------------------------------------------------------- HMM

@@ -58,7 +58,8 @@ def main():
         b, valide = perdite_valide(u)
         riga = {"giorni": len(v), "origini_valide": {"h%d" % h: int(len(t)) for h, t in valide.items()},
                 "c_medio": float(np.nanmean(u["c"][S.origini_valutazione(len(v))])),
-                "non_convergenze": u["non_convergenze"], "har_corrette": u["har_corrette"]}
+                "non_convergenze": u["non_convergenze"],
+                "ripartenze_primo_blocco": u["ripartenze_primo_blocco"], "har_corrette": u["har_corrette"]}
         esc = d["escluso"].to_numpy()
         med = float(np.median(np.abs(r)))
         riga["esclusi_abs_r_su_mediana"] = {"mediana_esclusi": float(np.median(np.abs(r[esc])) / med) if esc.any() else None,

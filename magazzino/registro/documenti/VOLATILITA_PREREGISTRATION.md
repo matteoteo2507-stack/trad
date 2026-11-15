@@ -492,3 +492,26 @@ al piu' a t. Il controllo e' ora il test `test_invarianza_rileva_le_fughe` (10 t
 Corsa del commit `c8a31b0` ([`esiti/invarianza.json`](../codice/volatilita/esiti/invarianza.json), seme 20261118, stesse
 origini del 13/11): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di
 1e-10, nessuna origine fallita.
+
+### 2026-11-14 — Passo 2, negativo GARCH: seconda fermata (primo blocco senza precedente), corretto; si rifanno i passi 1-2
+
+- **Terza corsa** (commit `305eed7`): ferma dopo 64 repliche su 1.000 (0 rifiuti del nodo) con `prima stima non
+  convergente in t0=999`. Due casi: replica 76, serie 5, GARCH (flag 4 di SLSQP, "Inequality constraints
+  incompatible", verosimiglianza +11,9 sulla partenza) e replica 66, serie 7, EGARCH (flag 4, −1,07·10⁸). La regola S5
+  estesa ai GARCH (scelta 6) usa i parametri del blocco precedente, che il **primo blocco** non ha: un caso senza
+  regola, che fermava la corsa.
+- **Regola** (Matteo, 14/11: si corregge il caso osservato e nient'altro; guasto, C5, 0 trial; non cambia §1-§6): solo
+  quando fallisce la **prima** stima di una serie, 20 ripartenze di riserva attorno alla partenza di `arch`
+  (sv·exp(0,2·N(0,1)), seme fisso legato solo a t0; GARCH e GJR positivi e con persistenza < 0,999, EGARCH con
+  β <= 0,995); si tiene la stima con verosimiglianza piu' alta fra quelle che convergono e battono la partenza di
+  `arch`; se nessuna, la corsa si ferma con un errore visibile. Gli altri blocchi restano col ripiego sul precedente.
+  Le ripartenze si contano (`ripartenze_primo_blocco`, anche nella corsa di sviluppo). Sui due casi: GARCH 20 buone su
+  20, la migliore +27,8 sulla partenza (0,0015; 0,039; 0,961); EGARCH 10 su 20, 4 falsi successi scartati dal
+  criterio della voce precedente, la migliore +25,7.
+- **Processo** (Matteo, 14/11: il ciclo d'errore si accorcia, non si anticipano gli scenari): (a) una replica che va
+  in errore non ferma piu' la corsa, diventa una riga con l'errore, e alla fine il controllo e' **GUASTO** (mai letto
+  come "non rifiuta", uscita 1); (b) ogni riga del diario porta il commit e la ripresa usa solo le righe dello stesso
+  commit (un diario di un altro commit si sposta da parte). Per (b) le 64 repliche del `305eed7` si rifanno.
+- Test: 16 verdi (nuovi: ripartenze al primo blocco sui due casi, replica in errore → GUASTO, diario di un altro
+  commit non riusato).
+- Per il §7.7 si rifanno i passi 1 e 2 (negativi GARCH e HMM) sul commit di questa voce.

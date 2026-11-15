@@ -12,7 +12,9 @@ Negativi (passo 2), prima della corsa di sviluppo:
 
 Bersaglio simulato = varianza vera × exp(sigma·eps − sigma²/2), sigma = 0,6 nei negativi. La pipeline e' quella vera
 (`pipeline.previsioni`, c_t compreso). Ogni replica ha un seme derivato da (seme del controllo, replica) e si scrive
-subito in `motore/data/cache/volatilita/<controllo>.jsonl`: una corsa interrotta riprende dalle repliche mancanti.
+subito in `motore/data/cache/volatilita/<controllo>.jsonl`, col commit: una corsa interrotta riprende dalle repliche
+mancanti dello stesso commit (un diario di un altro commit si sposta da parte). Una replica in errore non ferma la
+corsa; alla fine il controllo e' GUASTO (uscita 1).
 
 Uso: python magazzino/registro/codice/volatilita/controlli.py neg_garch|neg_hmm|dim_premio [--processi 8] [--repliche N]
 """
@@ -134,39 +136,72 @@ def replica(nome: str, k: int, disegno: dict, sigma_serie=None) -> dict:
 
 
 def _compito(args):
+    """Una replica. Un'eccezione non ferma la corsa: diventa una riga con `errore` (14/11: due guasti scoperti uno per
+    corsa, ore ciascuno); alla fine un solo errore rende il controllo GUASTO, mai un "non rifiuta"."""
+    import traceback
+
     nome, k, disegno, sigma_serie = args
     t0 = time.time()
-    out = replica(nome, k, disegno, sigma_serie)
+    try:
+        out = replica(nome, k, disegno, sigma_serie)
+    except Exception as e:                                                   # noqa: BLE001
+        out = {"replica": k, "errore": "%s: %s" % (type(e).__name__, e),
+               "dove": traceback.format_exc().strip().splitlines()[-3:]}
     out["secondi"] = round(time.time() - t0, 1)
     return out
+
+
+def carica_diario(diario: Path, commit: str | None) -> dict:
+    """Repliche gia' fatte **con lo stesso commit**. Righe di un altro commit (o senza commit): il diario si sposta da
+    parte (`<nome>.<commit>.jsonl`) e si riparte da zero, cosi' codice vecchio e nuovo non si mescolano mai."""
+    if not diario.exists():
+        return {}
+    righe = [json.loads(x) for x in diario.read_text(encoding="utf-8").splitlines() if x.strip()]
+    altri = {x.get("commit") for x in righe} - {commit}
+    if altri:
+        etichetta = "-".join(sorted((c or "senza_commit")[:7] for c in altri))
+        dest = diario.with_name("%s.%s.jsonl" % (diario.stem, etichetta))
+        os.replace(diario, dest)
+        print("diario di un altro commit spostato in %s; si riparte da zero" % dest.name, flush=True)
+        return {}
+    return {x["replica"]: x for x in righe}
+
+
+def esito_controllo(righe: list, soglia_esito: float) -> dict:
+    """PASSA / FALLISCE dalla frequenza di rifiuto del nodo; GUASTO se anche una sola replica e' in errore."""
+    errori = [x for x in righe if "errore" in x]
+    if errori:
+        return {"esito": "GUASTO", "repliche_in_errore": len(errori),
+                "errori": [{"replica": x["replica"], "errore": x["errore"], "dove": x.get("dove")} for x in errori]}
+    freq_nodo = float(np.mean([x["rifiuta_nodo"] for x in righe]))
+    freq_coppia = float(np.mean([np.mean(list(x["rifiuti_coppia_soglia_vera"].values())) for x in righe]))
+    return {"esito": "PASSA" if freq_nodo <= soglia_esito else "FALLISCE", "frequenza_rifiuto_nodo": freq_nodo,
+            "frequenza_media_rifiuto_coppia_soglia_vera": freq_coppia}
 
 
 def esegui(nome: str, disegno: dict, processi: int, repliche: int | None = None, sigma_serie=None,
            commit: str | None = None) -> dict:
     CACHE.mkdir(parents=True, exist_ok=True)
     diario = CACHE / ("%s.jsonl" % nome)
-    fatte = {}
-    if diario.exists():
-        for riga in diario.read_text(encoding="utf-8").splitlines():
-            x = json.loads(riga)
-            fatte[x["replica"]] = x
+    fatte = carica_diario(diario, commit)
     n = disegno["repliche"] if repliche is None else repliche
     mancanti = [k for k in range(n) if k not in fatte]
     print("%s: %d repliche, %d gia' fatte, %d processi" % (nome, n, n - len(mancanti), processi), flush=True)
     with Pool(processi) as pool, open(diario, "a", encoding="utf-8", newline="\n") as f:
         for j, out in enumerate(pool.imap_unordered(_compito, [(nome, k, disegno, sigma_serie) for k in mancanti]), 1):
+            out["commit"] = commit
             f.write(json.dumps(out) + "\n")
             f.flush()
             fatte[out["replica"]] = out
+            if "errore" in out:
+                print("ERRORE replica %d: %s" % (out["replica"], out["errore"]), flush=True)
             if j % 10 == 0:
-                tot = sum(x["rifiuta_nodo"] for x in fatte.values())
-                print("%d/%d  rifiuti del nodo finora %d su %d  (%.0fs)" % (j, len(mancanti), tot, len(fatte),
-                                                                           out["secondi"]), flush=True)
+                tot = sum(x.get("rifiuta_nodo", False) for x in fatte.values())
+                err = sum("errore" in x for x in fatte.values())
+                print("%d/%d  rifiuti del nodo finora %d su %d, errori %d  (%.0fs)" % (
+                    j, len(mancanti), tot, len(fatte), err, out["secondi"]), flush=True)
     righe = [fatte[k] for k in range(n)]
-    freq_nodo = float(np.mean([x["rifiuta_nodo"] for x in righe]))
-    freq_coppia = float(np.mean([np.mean(list(x["rifiuti_coppia_soglia_vera"].values())) for x in righe]))
-    return {"controllo": nome, "commit": commit, "repliche": n, "frequenza_rifiuto_nodo": freq_nodo,
-            "frequenza_media_rifiuto_coppia_soglia_vera": freq_coppia,
+    return {"controllo": nome, "commit": commit, "repliche": n, **esito_controllo(righe, disegno["soglia_esito"]),
             "disegno": {k: v for k, v in disegno.items() if k != "kw"}}
 
 
@@ -247,10 +282,11 @@ def main():
     else:
         d = DISEGNI[nome]
         out = esegui(nome, d, processi, repliche, commit=controllo["commit"])
-        out["esito"] = "PASSA" if out["frequenza_rifiuto_nodo"] <= d["soglia_esito"] else "FALLISCE"
     if repliche is None:
         _scrivi(nome, out)
     print(json.dumps(out, indent=2))
+    if out.get("esito") == "GUASTO":
+        sys.exit(1)
 
 
 if __name__ == "__main__":
