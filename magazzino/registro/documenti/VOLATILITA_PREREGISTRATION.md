@@ -542,3 +542,10 @@ nessuna origine fallita. Le ripartenze al primo blocco non cambiano l'invarianza
 - Test: 18 verdi (nuovo: le due finestre si stimano in scala, la stima batte la partenza di oltre 100 con beta > 0,95,
   conversione esatta entro 1e-6).
 - Per il §7.7 si rifanno i passi 1 e 2 sul commit di questa voce; il diario del `c351ba8` si sposta da parte.
+
+### 2026-11-15 — Passo 1 rifatto sul commit della voce precedente: PASSA
+
+Corsa del commit `242e1a6` ([`esiti/invarianza.json`](../codice/volatilita/esiti/invarianza.json), seme 20261118, stesse
+origini): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di 1e-10,
+nessuna origine fallita. La stima in scala dell'EGARCH non cambia l'invarianza al futuro. Il passo 2 (`neg_garch` da
+zero, poi `neg_hmm`) parte nella sessione successiva, sul commit di questa voce.
