@@ -522,3 +522,23 @@ Corsa del commit `2fea870` ([`esiti/invarianza.json`](../codice/volatilita/esiti
 origini): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di 1e-10,
 nessuna origine fallita. Le ripartenze al primo blocco non cambiano l'invarianza al futuro. Segue il passo 2 da zero
 (il diario del `305eed7` si sposta da parte, regola (b) della voce precedente).
+
+### 2026-11-15 — Passo 2, negativo GARCH: GUASTO (2 repliche su 1.000, EGARCH a varianza enorme), corretto; si rifanno i passi 1-2
+
+- **Quarta corsa** (commit `c351ba8`, prima col processo nuovo): arrivata in fondo, esito **GUASTO**. 998 repliche
+  calcolate, 7 rifiuti del nodo (0,7%, soglia 5%), che non si leggono come esito: 2 repliche in errore, la 281 (serie 7)
+  e la 838 (serie 2), entrambe `prima stima non convergente in t0=999` sull'EGARCH, ripartenze di riserva comprese.
+- **Causa**: `arch` 8.0.0 limita omega dell'EGARCH a ln(media y²) ± ln(10.000). Nelle due finestre la media di y² e'
+  oltre 10.000 (deviazione standard 249 e 168 al giorno, una serie IGARCH con omega = 0 che deriva), il limite
+  inferiore diventa positivo (1,83 e 1,04) ed esclude la stima, che ha omega ~ 0 e beta ~ 1 (Nelder-Mead senza limiti:
+  +291,5 e +300,2 di verosimiglianza sulla partenza di `arch`). Fuori dal limite e' anche la partenza di `arch`
+  ((1 − beta)·ln v): tutte le stime finivano sul bordo, 131,9 e 7,2 sotto la partenza, e il criterio di falsa
+  convergenza del 14/11 le scartava giustamente. Sui dati reali (rendimenti in %) servirebbe una deviazione standard
+  giornaliera sopra il 100%.
+- **Regola** (caso osservato, guasto, C5, 0 trial; non cambia §1-§6): se la media di y² della finestra supera 10.000,
+  l'EGARCH si stima su y/s con s = √(media y²) della stessa finestra e omega si riporta sulla scala di y
+  (omega_y = omega_x + 2(1 − beta)·ln s, esatta: la verosimiglianza differisce di n·ln s). Le due repliche rifatte col
+  codice nuovo arrivano in fondo, nessun rifiuto del nodo.
+- Test: 18 verdi (nuovo: le due finestre si stimano in scala, la stima batte la partenza di oltre 100 con beta > 0,95,
+  conversione esatta entro 1e-6).
+- Per il §7.7 si rifanno i passi 1 e 2 sul commit di questa voce; il diario del `c351ba8` si sposta da parte.

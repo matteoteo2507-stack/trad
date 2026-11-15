@@ -146,6 +146,25 @@ def test_primo_blocco_non_convergente_riparte(k, i, tipo):
     assert np.all(np.isfinite(out["F"][M.W - 1])) and out["F"][M.W - 1, 0] < 10
 
 
+@pytest.mark.parametrize("k, i", [(281, 7), (838, 2)])
+def test_egarch_varianza_enorme_si_stima_in_scala(k, i):
+    """neg_garch del 15/11: media di y² oltre 10.000, il limite di arch su omega escludeva la stima (beta ~ 1) e anche
+    la partenza; tutte le stime finivano sul bordo, peggiori della partenza; prima: RuntimeError al primo blocco.
+    Stimata su y/s, la stima batte la partenza di arch sulla scala di y e la conversione di omega e' esatta."""
+    r = _serie_neg_garch(k, i)
+    y = r[:M.W]
+    out = M.prevedi_arch(r, "egarch", passo=20, origini=[M.W - 1])
+    assert out["non_convergenze"] == 0
+    par = out["parametri"][0][1]
+    ll = lambda p: M._modello_arch(y, "egarch").fix(p).loglikelihood
+    sv = M._modello_arch(y, "egarch").volatility.starting_values(y)
+    assert ll(par) > ll(sv) + 100 and par[-1] > 0.95
+    s = np.sqrt(np.mean(y ** 2))
+    p_x = par.copy(); p_x[0] -= 2 * (1 - par[-1]) * np.log(s)
+    assert abs(ll(par) - (M._modello_arch(y / s, "egarch").fix(p_x).loglikelihood - M.W * np.log(s))) < 1e-6
+    assert np.all(np.isfinite(out["F"][M.W - 1]))
+
+
 def test_replica_in_errore_rende_il_controllo_guasto(monkeypatch):
     import controlli as C
 

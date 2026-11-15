@@ -129,6 +129,13 @@ def prevedi_arch(r: np.ndarray, tipo: str, w: int = W, passo: int = PASSO, h: in
         if tipo == "ewma":
             return np.zeros(0)
         y = r[t0 - w + 1:t0 + 1]
+        # EGARCH: arch limita omega a ln(media y²) ± ln(10.000); con media y² > 10.000 (neg_garch repliche 281 e 838,
+        # deviazione standard giornaliera oltre il 100%) il limite esclude omega <= 0, dove sta la stima (beta ~ 1), e
+        # anche la partenza di arch. Si stima su y/s (s dalla sola finestra) e si riporta omega sulla scala di y.
+        ln_s = 0.0
+        if tipo == "egarch" and np.mean(y ** 2) > 10000.0:
+            ln_s = 0.5 * np.log(np.mean(y ** 2))
+            y = y / np.exp(ln_s)
         am = _modello_arch(y, tipo)
         sv = am.volatility.starting_values(y)
         with warnings.catch_warnings():
@@ -139,9 +146,14 @@ def prevedi_arch(r: np.ndarray, tipo: str, w: int = W, passo: int = PASSO, h: in
             ll_partenza = _modello_arch(y, tipo).fix(sv).loglikelihood
             buona = lambda res: (res.convergence_flag == 0 and np.all(np.isfinite(res.params))
                                  and res.loglikelihood >= ll_partenza)
+            def in_scala(p):                              # omega_y = omega_x + 2(1 - beta) ln s (EGARCH)
+                p = np.array(p, float)
+                p[0] += 2.0 * (1.0 - p[-1]) * ln_s
+                return p
+
             res = am.fit(disp="off")
             if buona(res):
-                return np.asarray(res.params)
+                return in_scala(res.params)
             if t0 - passo >= w - 1:
                 return None                               # ripiego sul blocco precedente (S5)
             # primo blocco, senza un precedente (neg_garch repliche 66 e 76): ripartenze di riserva, si tiene la
@@ -149,7 +161,7 @@ def prevedi_arch(r: np.ndarray, tipo: str, w: int = W, passo: int = PASSO, h: in
             ripartenze[0] += 1
             ok = [x for x in (am.fit(disp="off", starting_values=s)
                               for s in _partenze_riserva(sv, tipo, t0, RIPARTENZE_PRIMO_BLOCCO)) if buona(x)]
-        return np.asarray(max(ok, key=lambda x: x.loglikelihood).params) if ok else None
+        return in_scala(max(ok, key=lambda x: x.loglikelihood).params) if ok else None
 
     par_di = _Parametri(stima, w, passo)
     parametri = []
