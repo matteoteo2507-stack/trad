@@ -515,3 +515,10 @@ origini del 13/11): 108 coppie strumento × modello, 2.976 confronti, **differen
 - Test: 16 verdi (nuovi: ripartenze al primo blocco sui due casi, replica in errore → GUASTO, diario di un altro
   commit non riusato).
 - Per il §7.7 si rifanno i passi 1 e 2 (negativi GARCH e HMM) sul commit di questa voce.
+
+### 2026-11-15 — Passo 1 rifatto sul commit della voce precedente: PASSA
+
+Corsa del commit `2fea870` ([`esiti/invarianza.json`](../codice/volatilita/esiti/invarianza.json), seme 20261118, stesse
+origini): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di 1e-10,
+nessuna origine fallita. Le ripartenze al primo blocco non cambiano l'invarianza al futuro. Segue il passo 2 da zero
+(il diario del `305eed7` si sposta da parte, regola (b) della voce precedente).
