@@ -165,6 +165,20 @@ def test_egarch_varianza_enorme_si_stima_in_scala(k, i):
     assert np.all(np.isfinite(out["F"][M.W - 1]))
 
 
+def test_hmm_primo_blocco_non_convergente_riparte():
+    """neg_hmm del 16/11 (replica 5, serie 2): con 3 partenze l'HMM a 3 regimi non converge al primo blocco (limite di
+    iterazioni) e non c'e' un blocco precedente; le partenze di riserva convergono; prima: RuntimeError."""
+    import controlli as C
+
+    d = C.DISEGNI["neg_hmm"]
+    figlio = np.random.SeedSequence([d["seme"], 5]).spawn(d["serie"])[2]
+    r, s2 = C.simula("gjr", C.N_SERIE_GIORNI, np.random.default_rng(figlio))
+    r = C.riscala_valutazione(r, s2)[0]
+    out = M.prevedi_hmm(r, 3, passo=60, partenze=3, origini=[M.W - 1])
+    assert out["ripartenze_primo_blocco"] == 1 and out["non_convergenze"] == 0
+    assert np.all(np.isfinite(out["F"][M.W - 1]))
+
+
 def test_replica_in_errore_rende_il_controllo_guasto(monkeypatch):
     import controlli as C
 

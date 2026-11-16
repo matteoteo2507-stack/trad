@@ -557,3 +557,22 @@ omega = 0, 9 serie × 1.500 giorni, h = 1 e 5, 1.000 repliche, ristima ogni 20 g
 ripetizioni, quota del nodo 2,5%): **il nodo rifiuta in 8 repliche su 1.000 (0,8%)**, contro la soglia del 5%;
 frequenza media di rifiuto di una coppia alla soglia vera 0,07%; **nessuna replica in errore**. Il controllo e' molto
 conservativo, come atteso sotto un nullo in cui il benchmark e' il modello vero. Segue il negativo HMM sullo stesso commit.
+
+### 2026-11-16 — Passo 2, negativo HMM: GUASTO (12 repliche su 200, HMM a 3 regimi al primo blocco), corretto; si rifanno i passi 1-2
+
+- **Corsa** (commit `ded188e`; processo GJR, 3 serie, h = 1, 200 repliche, 3 partenze, ristima ogni 60 giorni, quota del
+  nodo 1,25%): arrivata in fondo, esito **GUASTO**. 188 repliche calcolate, 0 rifiuti del nodo (che non si leggono come
+  esito); 12 repliche in errore (5, 15, 50, 66, 68, 99, 173, 176, 179, 181, 185, 186), tutte `prima stima non
+  convergente in t0=999`.
+- **Causa** (diagnosi sulle repliche 5, 15, 50): l'HMM a 3 regimi al primo blocco; con le 3 partenze del disegno del
+  negativo (lo sviluppo ne usa 20) tutte finiscono al limite di iterazioni di statsmodels senza convergere, e il primo
+  blocco non ha un precedente su cui ripiegare (lo stesso buco di regola dei GARCH del 14/11). Con 20 partenze le tre
+  convergono.
+- **Regola** (caso osservato, guasto, C5, 0 trial; non cambia §1-§6): come per i GARCH, solo quando nessuna partenza
+  converge alla **prima** stima di una serie, 20 partenze di riserva con un seme a parte ([seme, k, t0, 1]); se nessuna
+  converge la corsa registra l'errore. Le ripartenze si contano (`ripartenze_primo_blocco`, ora anche per l'HMM nella
+  corsa di sviluppo).
+- Le 12 repliche rifatte col codice nuovo arrivano tutte in fondo, nessun rifiuto del nodo. Test: 19 verdi (nuovo:
+  replica 5, serie 2, hmm3 riparte al primo blocco).
+- Per il §7.7 si rifanno i passi 1 e 2 (negativi GARCH e HMM) sul commit di questa voce; i diari del `ded188e` si
+  spostano da parte da soli.

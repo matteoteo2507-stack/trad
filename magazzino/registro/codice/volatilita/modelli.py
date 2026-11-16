@@ -221,14 +221,26 @@ def prevedi_hmm(r: np.ndarray, k: int, w: int = W, passo: int = PASSO, h: int = 
                 seme: int = SEME_HMM, origini=None) -> dict:
     n = len(r)
     F = np.full((n, h), np.nan)
-    par_di = _Parametri(lambda t0: _stima_hmm(r[t0 - w + 1:t0 + 1], k, partenze,
-                                              np.random.default_rng([seme, k, t0])), w, passo)
+    ripartenze = [0]
+
+    def stima(t0):
+        y = r[t0 - w + 1:t0 + 1]
+        par = _stima_hmm(y, k, partenze, np.random.default_rng([seme, k, t0]))
+        if par is None and t0 - passo < w - 1:
+            # primo blocco senza precedente (neg_hmm del 16/11, 3 partenze: tutte al limite di iterazioni, hmm3):
+            # partenze di riserva con un seme a parte, come per i GARCH; se nessuna, errore visibile in _Parametri
+            ripartenze[0] += 1
+            par = _stima_hmm(y, k, RIPARTENZE_PRIMO_BLOCCO, np.random.default_rng([seme, k, t0, 1]))
+        return par
+
+    par_di = _Parametri(stima, w, passo)
     parametri = []
     for t0, t1 in blocchi(n, w, passo, origini):
         par = par_di(t0)
         parametri.append((t0, par))
         F[t0:t1 + 1] = _previsione_hmm(r[t0 - w + 1:t1 + 1], par, k, w - 1, h)
-    return {"F": F, "non_convergenze": par_di.non_conv, "parametri": parametri}
+    return {"F": F, "non_convergenze": par_di.non_conv, "ripartenze_primo_blocco": ripartenze[0],
+            "parametri": parametri}
 
 
 # ------------------------------------------------------------------------------------------------ riferimenti
