@@ -1,0 +1,25 @@
+{
+  "controllo": "neg_garch",
+  "commit": "ad2e529674fd6c4bb92296f26c4e9a6f40a5e13e",
+  "repliche": 1000,
+  "esito": "PASSA",
+  "frequenza_rifiuto_nodo": 0.008,
+  "frequenza_media_rifiuto_coppia_soglia_vera": 0.0006666666666666668,
+  "disegno": {
+    "seme": 20261119,
+    "repliche": 1000,
+    "processo": "igarch",
+    "serie": 9,
+    "orizzonti": [
+      1,
+      5
+    ],
+    "passo": 20,
+    "partenze": null,
+    "reps_spa": 10000,
+    "nodo": "garch",
+    "alfa": 0.025,
+    "soglia_esito": 0.05,
+    "sigma": 0.6
+  }
+}

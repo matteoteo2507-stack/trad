@@ -549,3 +549,11 @@ Corsa del commit `242e1a6` ([`esiti/invarianza.json`](../codice/volatilita/esiti
 origini): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di 1e-10,
 nessuna origine fallita. La stima in scala dell'EGARCH non cambia l'invarianza al futuro. Il passo 2 (`neg_garch` da
 zero, poi `neg_hmm`) parte nella sessione successiva, sul commit di questa voce.
+
+### 2026-11-16 — Passo 2, negativo GARCH: PASSA
+
+Corsa del commit `ad2e529` ([`esiti/neg_garch.json`](../codice/volatilita/esiti/neg_garch.json); processo IGARCH con
+omega = 0, 9 serie × 1.500 giorni, h = 1 e 5, 1.000 repliche, ristima ogni 20 giorni, SPA studentizzato a 10.000
+ripetizioni, quota del nodo 2,5%): **il nodo rifiuta in 8 repliche su 1.000 (0,8%)**, contro la soglia del 5%;
+frequenza media di rifiuto di una coppia alla soglia vera 0,07%; **nessuna replica in errore**. Il controllo e' molto
+conservativo, come atteso sotto un nullo in cui il benchmark e' il modello vero. Segue il negativo HMM sullo stesso commit.
