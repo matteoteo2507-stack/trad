@@ -576,3 +576,10 @@ conservativo, come atteso sotto un nullo in cui il benchmark e' il modello vero.
   replica 5, serie 2, hmm3 riparte al primo blocco).
 - Per il §7.7 si rifanno i passi 1 e 2 (negativi GARCH e HMM) sul commit di questa voce; i diari del `ded188e` si
   spostano da parte da soli.
+
+### 2026-11-17 — Passo 1 rifatto sul commit della voce precedente: PASSA
+
+Corsa del commit `04212d2` ([`esiti/invarianza.json`](../codice/volatilita/esiti/invarianza.json), seme 20261118, stesse
+origini): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di 1e-10,
+nessuna origine fallita. Le partenze di riserva dell'HMM al primo blocco non cambiano l'invarianza al futuro. Segue il
+passo 2 da zero (negativo GARCH, poi HMM) sul commit di questa voce.
