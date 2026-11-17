@@ -583,3 +583,10 @@ Corsa del commit `04212d2` ([`esiti/invarianza.json`](../codice/volatilita/esiti
 origini): 108 coppie strumento × modello, 2.976 confronti, **differenza massima 0,0** contro la tolleranza di 1e-10,
 nessuna origine fallita. Le partenze di riserva dell'HMM al primo blocco non cambiano l'invarianza al futuro. Segue il
 passo 2 da zero (negativo GARCH, poi HMM) sul commit di questa voce.
+
+### 2026-11-17 — Passo 2, negativo GARCH rifatto: PASSA
+
+Corsa del commit `864f4a8` ([`esiti/neg_garch.json`](../codice/volatilita/esiti/neg_garch.json), stesso disegno della
+voce del 16/11): **il nodo rifiuta in 8 repliche su 1.000 (0,8%)** contro la soglia del 5%; frequenza media di rifiuto
+di una coppia alla soglia vera 0,07%; **nessuna replica in errore**. Identico alla corsa del `ad2e529`, come atteso: la
+correzione del 16/11 tocca solo l'HMM, che il nodo GARCH non usa. Segue il negativo HMM sullo stesso commit.

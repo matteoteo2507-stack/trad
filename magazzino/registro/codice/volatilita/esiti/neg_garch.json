@@ -1,6 +1,6 @@
 {
   "controllo": "neg_garch",
-  "commit": "ad2e529674fd6c4bb92296f26c4e9a6f40a5e13e",
+  "commit": "864f4a82ca224203ba11778b875a182fdaddad63",
   "repliche": 1000,
   "esito": "PASSA",
   "frequenza_rifiuto_nodo": 0.008,
