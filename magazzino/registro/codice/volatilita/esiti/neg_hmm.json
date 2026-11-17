@@ -1,0 +1,24 @@
+{
+  "controllo": "neg_hmm",
+  "commit": "6d557769b1b9999bda0f4275035209dab5c034d8",
+  "repliche": 200,
+  "esito": "PASSA",
+  "frequenza_rifiuto_nodo": 0.0,
+  "frequenza_media_rifiuto_coppia_soglia_vera": 0.0,
+  "disegno": {
+    "seme": 20261120,
+    "repliche": 200,
+    "processo": "gjr",
+    "serie": 3,
+    "orizzonti": [
+      1
+    ],
+    "passo": 60,
+    "partenze": 3,
+    "reps_spa": 10000,
+    "nodo": "hmm",
+    "alfa": 0.0125,
+    "soglia_esito": 0.025,
+    "sigma": 0.6
+  }
+}

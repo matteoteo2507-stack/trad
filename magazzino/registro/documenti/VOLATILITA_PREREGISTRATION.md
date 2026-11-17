@@ -590,3 +590,11 @@ Corsa del commit `864f4a8` ([`esiti/neg_garch.json`](../codice/volatilita/esiti/
 voce del 16/11): **il nodo rifiuta in 8 repliche su 1.000 (0,8%)** contro la soglia del 5%; frequenza media di rifiuto
 di una coppia alla soglia vera 0,07%; **nessuna replica in errore**. Identico alla corsa del `ad2e529`, come atteso: la
 correzione del 16/11 tocca solo l'HMM, che il nodo GARCH non usa. Segue il negativo HMM sullo stesso commit.
+
+### 2026-11-17 — Passo 2, negativo HMM rifatto: PASSA
+
+Corsa del commit `6d55776` ([`esiti/neg_hmm.json`](../codice/volatilita/esiti/neg_hmm.json), stesso disegno della voce
+del 16/11: processo GJR, 3 serie, h = 1, 200 repliche, 3 partenze, ristima ogni 60 giorni, quota del nodo 1,25%): **il
+nodo rifiuta in 0 repliche su 200 (0,0%)** contro la soglia del 2,5%; nessuna coppia rifiuta alla soglia vera;
+**nessuna replica in errore** (le 12 del 16/11 comprese). Con il passo 1 (`864f4a8`) e il negativo GARCH (`6d55776`)
+i passi 1-2 del §7 sono chiusi sul codice corrente: segue la corsa di sviluppo (passo 3).
