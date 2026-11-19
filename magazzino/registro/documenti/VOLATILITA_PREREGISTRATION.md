@@ -668,3 +668,23 @@ positivi; h = 5 nel rapporto effetto/MDE del GARCH).
    intervallo al 95% a cluster sulla replica, la stessa con l'intervallo, frequenze per coppia, frequenza del nodo (per
    l'HMM e' la procedura sulle 3 coppie del controllo a 1,25%, non il nodo vero di 18), previsioni portate alla soglia.
    Semi: positivo GARCH 20261122, positivo HMM 20261123, rapporto effetto/MDE 20261124.
+
+### 2026-11-19 — Passo 5: rapporto effetto/MDE, scritto prima dei positivi
+
+Riepilogo dello sviluppo rifatto sul commit `0d53ba1` (soglia della QLIKE): **identico** a quello di `c6c050c` salvo il
+commit, **0 previsioni** portate alla soglia (commit `95fc5a5`). Rapporto effetto/MDE sul commit `95fc5a5`
+([`esiti/rapporto_effetto_mde.json`](../codice/volatilita/esiti/rapporto_effetto_mde.json); regola e parametri nella
+voce precedente):
+
+- **GARCH** (oracolo, limite superiore in media; soglia effettiva 13/10.001): effetto 0,029-0,032 di QLIKE per coppia,
+  MDE simulato 0,029-0,042, rapporto fra **0,69** (σ dell'SPX500, h = 1) e **1,04** (σ dell'EURUSD, h = 5); potenza
+  attesa fra 36% e 84%, **media 64,6%** contro il criterio dell'80%. Sotto l'80% le coppie col σ degli indici (σ 0,63-0,77:
+  36-70%), intorno all'80% quelle di metalli, WTI ed EURUSD (σ 0,54-0,57: 76-84%).
+- **HMM** (approssimazione; soglia effettiva 6/10.001): effetto 0,010-0,011, MDE simulato 0,034-0,036, rapporto fra
+  **0,26** e **0,33**; potenza attesa 1,5-3,0%, **media 2,1%**.
+- **Lettura** (regola della voce precedente, scritta prima): l'effetto dei processi simulati sta sotto l'MDE in entrambi
+  i nodi; se i positivi falliscono, il nodo esce **per la scelta dei parametri** (fissati il 13/11), non per un guasto
+  della pipeline. Se il GARCH passasse, sarebbe con un oracolo sotto l'80%: un campanello da indagare prima di
+  leggerlo come PASSA. I parametri dei processi non si cambiano (§7.7). Se escono entrambi i nodi, l'holdout resta
+  sigillato e ogni nodo tiene la sua quota per un test forward (§7.7).
+- Le corse: `pos_garch` e `pos_hmm` sul commit di questa voce, 4 processi ciascuna, in parallelo.
