@@ -77,5 +77,24 @@ def bersagli(v: np.ndarray, escluso: np.ndarray) -> np.ndarray:
     return out
 
 
+F_MINIMA = 1e-100
+
+
+def sotto_soglia(f: np.ndarray) -> int:
+    """Previsioni che la QLIKE porta a F_MINIMA (0 <= f < 1e-100): si contano come gli altri ripieghi. Una previsione
+    negativa o non finita e' un guasto (nessun modello sotto test puo' produrla): errore, mai una perdita silenziosa."""
+    f = np.asarray(f, float)
+    if not np.all(np.isfinite(f)) or np.any(f < 0):
+        raise ValueError("previsione negativa o non finita (%d non finite, %d negative)"
+                         % (int(np.sum(~np.isfinite(f))), int(np.sum(f < 0))))
+    return int(np.sum(f < F_MINIMA))
+
+
 def qlike(f: np.ndarray, v: np.ndarray) -> np.ndarray:
+    """QLIKE = log f + v/f. Deviazione del 19/11 (pre-registrazione §10): una previsione 0 <= f < F_MINIMA vale
+    F_MINIMA (con f -> 0 la perdita sarebbe infinita e lo SPA si fermerebbe; con 1e-100 e v <= ~1e4 la perdita resta
+    sotto 1e104 e il suo quadrato sotto 1e208) e si conta con `sotto_soglia`; f negativa o non finita e' un errore.
+    Nessuna previsione dello sviluppo (minimo 1,1e-46) ne' dei negativi validi scende sotto la soglia."""
+    sotto_soglia(f)
+    f = np.maximum(np.asarray(f, float), F_MINIMA)
     return np.log(f) + v / f

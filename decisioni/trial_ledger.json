@@ -383,7 +383,8 @@
         "DECISIONS.md#2026-11-10",
         "DECISIONS.md#2026-11-11",
         "DECISIONS.md#2026-11-13",
-        "DECISIONS.md#2026-11-19"
+        "DECISIONS.md#2026-11-19",
+        "DECISIONS.md#2026-11-19 (2)"
       ],
       "note": "Pre-registrazione APPROVATA da Matteo il 13/11 dopo cinque passate G1 (la quinta PASSA CON RISERVE, 0 bloccanti); in corso i passi del §7 prima dell'apertura. Trial contati alla corsa di sviluppo (Matteo, 19/11; commit delle previsioni 86fcdae): 54 GARCH + 72 HMM (con le combinazioni fisse 0,5 GJR + 0,5 HMM) = 126 serie (modello x strumento x orizzonte). Il premio (1 serie) non e' calcolato: il suo nodo e' uscito il 13/11 e conta solo se un test forward lo calcola. Affermazioni per strumento: grafo su 37 ipotesi elementari. Nessuna quota trimestrale (binario strumenti)."
     }

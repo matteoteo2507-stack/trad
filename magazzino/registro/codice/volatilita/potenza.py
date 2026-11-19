@@ -67,12 +67,28 @@ def sigma_rumore(v: np.ndarray, f_gjr_scalato: np.ndarray, validi: np.ndarray) -
     return float(np.std(x, ddof=1))
 
 
-def effetto_simulato(nodo: str, sigma: float, n_lungo: int = 400_000, seme: int = 20261124) -> dict:
-    """Effetto atteso e sd del differenziale di QLIKE per i positivi simulati, con i parametri del processo.
+SEME_EFFETTO = 20261124
+N_LUNGO = 400_000
+N_VALUTAZIONE_POSITIVI = 495          # origini valutate in ogni serie dei controlli simulati (controlli.replica)
+REPS_SPA_POSITIVI = 10_000
+
+
+def soglia_effettiva(alfa: float, reps: int = REPS_SPA_POSITIVI) -> float:
+    """Soglia vera di un test Monte Carlo che rifiuta se (b+1)/(B+1) <= alfa: rifiuta per b <= b_max, quindi alfa
+    effettivo (b_max + 1)/(B + 1) (2,5%/18 a 10.000: 13/10.001; 1,25%/18: 6/10.001)."""
+    b_max = int(np.floor(alfa * (reps + 1) + 1e-9)) - 1
+    return (b_max + 1) / (reps + 1)
+
+
+def effetto_simulato(nodo: str, sigma: float, n_lungo: int = N_LUNGO, seme: int = SEME_EFFETTO) -> dict:
+    """Effetto atteso e sd HAC del differenziale di QLIKE per i positivi simulati, con i parametri del processo, per
+    orizzonte (`{"h1": ..., "h5": ...}`; l'HMM solo h = 1, come il suo positivo).
 
     GARCH: processo GJR (0,02; 0,03; 0,10; 0,90); EWMA contro la varianza vera del GJR (oracolo: limite superiore
-    dell'effetto, perche' nel controllo il GJR e' stimato). HMM: processo a 2 regimi (0,5 e 2,0; resta 0,98 e 0,95);
-    GJR con i parametri pseudo-veri (stimato sulla meta' iniziale della serie lunga) contro il filtro vero a 2 regimi."""
+    dell'effetto **in media**, perche' nel controllo il GJR e' stimato). h = 5: all'origine t, GJR esatto a 5 passi
+    (persistenza 0,98 verso la varianza di lungo periodo 1) contro 5 volte l'EWMA; bersaglio la somma dei 5 giorni.
+    HMM: processo a 2 regimi (0,5 e 2,0; resta 0,98 e 0,95); GJR con i parametri pseudo-veri (stimato sulla meta'
+    iniziale della serie lunga) contro il filtro vero a 2 regimi: un'approssimazione, di segno indeterminato."""
     import controlli as C
     from arch import arch_model
 
@@ -104,19 +120,42 @@ def effetto_simulato(nodo: str, sigma: float, n_lungo: int = 400_000, seme: int 
         r, s2, f_buono, f_bench = r[meta:], s2[meta:], f_buono[meta:], f_bench[meta:]
     v = C.bersaglio_simulato(s2, sigma, rng)
     d = P.qlike(f_bench, v) - P.qlike(f_buono, v)
-    return {"effetto": float(d.mean()), "sd_hac": sd_newey_west(d, 4)}
+    out = {"h1": {"effetto": float(d.mean()), "sd_hac": sd_newey_west(d, 4)}}
+    if nodo == "garch":
+        phi, lungo = 0.03 + 0.10 / 2 + 0.90, 0.02 / (1 - (0.03 + 0.10 / 2 + 0.90))
+        n = len(v)
+        o = np.arange(0, n - 6)                                     # origine o: giorni o+1 .. o+5
+        buono5 = sum(lungo + phi ** k * (s2[o + 1] - lungo) for k in range(5))
+        bench5 = 5 * f_bench[o + 1]
+        cs = np.r_[0.0, np.cumsum(v)]
+        v5 = cs[o + 6] - cs[o + 1]
+        d5 = P.qlike(bench5, v5) - P.qlike(buono5, v5)
+        out["h5"] = {"effetto": float(d5.mean()), "sd_hac": sd_newey_west(d5, max(5 - 1, 4))}
+    return out
 
 
-def rapporto_effetto_mde(nodo: str, sigmi: list, n_valutazione: int = 496) -> dict:
+def rapporto_effetto_mde(nodo: str, sigmi: list, n_valutazione: int = N_VALUTAZIONE_POSITIVI) -> dict:
+    """Per ogni coppia del positivo (sigma × h): effetto, MDE simulato e potenza attesa Φ(√n·e/sd − z_α) con la soglia
+    effettiva della regola del p puntuale (Matteo, 19/11); la media della potenza attesa si confronta con l'80%."""
+    from scipy.stats import norm
+
     from motore.core.verifiche import mde
 
+    alfa = soglia_effettiva(QUOTE[nodo] / N_COPPIE)
     righe = []
     for s in sigmi:
-        e = effetto_simulato(nodo, s)
-        m = mde(e["sd_hac"], n_valutazione, alpha=QUOTE[nodo] / N_COPPIE, code=1)
-        righe.append({"sigma": s, "effetto": e["effetto"], "sd_hac": e["sd_hac"], "mde_simulato": m,
-                      "rapporto": e["effetto"] / m})
-    return {"nodo": nodo, "per_serie": righe, "rapporto_minimo": min(x["rapporto"] for x in righe)}
+        for h, e in effetto_simulato(nodo, s).items():
+            m = mde(e["sd_hac"], n_valutazione, alpha=alfa, code=1)
+            pot = float(norm.cdf(np.sqrt(n_valutazione) * e["effetto"] / e["sd_hac"] - norm.ppf(1 - alfa)))
+            righe.append({"sigma": s, "h": h, "effetto": e["effetto"], "sd_hac": e["sd_hac"], "mde_simulato": m,
+                          "rapporto": e["effetto"] / m, "potenza_attesa": pot})
+    return {"nodo": nodo, "alfa_soglia_vera": QUOTE[nodo] / N_COPPIE, "alfa_effettivo": alfa,
+            "reps_spa": REPS_SPA_POSITIVI, "n": n_valutazione, "seme": SEME_EFFETTO, "n_lungo": N_LUNGO,
+            "ritardi_hac": "max(h - 1, 4)", "per_coppia": righe,
+            "potenza_attesa_media": float(np.mean([x["potenza_attesa"] for x in righe])),
+            "rapporto_minimo": min(x["rapporto"] for x in righe),
+            "lettura": ("GARCH: oracolo, limite superiore in media" if nodo == "garch"
+                        else "HMM: approssimazione, segno dello scarto indeterminato")}
 
 
 def tara_w(f_base: np.ndarray, v: np.ndarray, guadagno: float) -> float:
@@ -131,3 +170,26 @@ def tara_w(f_base: np.ndarray, v: np.ndarray, guadagno: float) -> float:
         mid = (lo + hi) / 2
         lo, hi = (mid, hi) if g(mid) < guadagno else (lo, mid)
     return (lo + hi) / 2
+
+
+def main():
+    """Passo 5, **prima** dei positivi: rapporto effetto/MDE per nodo con i sigma dei positivi, in
+    `esiti/rapporto_effetto_mde.json`. Uso: python magazzino/registro/codice/volatilita/potenza.py"""
+    import json
+    import os
+
+    import controlli as C                              # mette anche la radice del repo sul percorso (`motore`)
+    import guardie
+
+    controllo = guardie.verifica()
+    out = {"commit": controllo["commit"],
+           "garch": rapporto_effetto_mde("garch", C.sigmi_positivi("pos_garch")),
+           "hmm": rapporto_effetto_mde("hmm", C.sigmi_positivi("pos_hmm"))}
+    tmp = C.ESITI / "rapporto_effetto_mde.json.tmp"
+    tmp.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8", newline="\n")
+    os.replace(tmp, C.ESITI / "rapporto_effetto_mde.json")
+    print(json.dumps(out, indent=2))
+
+
+if __name__ == "__main__":
+    main()

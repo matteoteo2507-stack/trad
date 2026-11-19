@@ -35,10 +35,8 @@ def perdite_valide(u: dict):
     t = S.origini_valutazione(len(v))
     out = {}
     for j, h in enumerate(P.ORIZZONTI):
-        ok = np.isfinite(b[t, j])
-        for m, F in u["previsioni"].items():
-            ok &= np.isfinite(F[t, j]) & (F[t, j] > 0)
-        out[h] = t[ok]
+        out[h] = t[np.isfinite(b[t, j])]          # solo il bersaglio sceglie le origini; una previsione non valida e'
+                                                  # un errore di `P.qlike` (19/11; prima un filtro, 0 origini scartate)
     return b, out
 
 
@@ -64,9 +62,10 @@ def main():
         med = float(np.median(np.abs(r)))
         riga["esclusi_abs_r_su_mediana"] = {"mediana_esclusi": float(np.median(np.abs(r[esc])) / med) if esc.any() else None,
                                             "quota_esclusi_sopra_q90": float(np.mean(np.abs(r[esc]) > np.quantile(np.abs(r), 0.9))) if esc.any() else None}
-        riga["qlike"], riga["qlike_senza_c"], riga["mse"] = {}, {}, {}
+        riga["qlike"], riga["qlike_senza_c"], riga["mse"], riga["sotto_soglia"] = {}, {}, {}, {}
         for j, h in enumerate(P.ORIZZONTI):
             t = valide[h]
+            riga["sotto_soglia"]["h%d" % h] = {m: P.sotto_soglia(F[t, j]) for m, F in u["previsioni"].items()}
             riga["qlike"]["h%d" % h] = {m: float(P.qlike(F[t, j], b[t, j]).mean()) for m, F in u["previsioni"].items()}
             riga["qlike_senza_c"]["h%d" % h] = {m: float(P.qlike(F[t, j], b[t, j]).mean()) for m, F in u["senza_c"].items()}
             riga["mse"]["h%d" % h] = {m: float(np.mean((F[t, j] - b[t, j]) ** 2)) for m, F in u["previsioni"].items()}

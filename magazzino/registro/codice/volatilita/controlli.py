@@ -16,7 +16,11 @@ subito in `motore/data/cache/volatilita/<controllo>.jsonl`, col commit: una cors
 mancanti dello stesso commit (un diario di un altro commit si sposta da parte). Una replica in errore non ferma la
 corsa; alla fine il controllo e' GUASTO (uscita 1).
 
-Uso: python magazzino/registro/codice/volatilita/controlli.py neg_garch|neg_hmm|dim_premio [--processi 8] [--repliche N]
+Positivi (passo 5): `pos_garch` (processo GJR, disegno del negativo GARCH, 200 repliche) e `pos_hmm` (2 regimi, 50
+repliche, 3 serie); sigma del rumore per strumento dalla corsa di sviluppo. Passano se il rifiuto medio per coppia alla
+soglia vera e' almeno l'80%.
+
+Uso: python magazzino/registro/codice/volatilita/controlli.py neg_garch|neg_hmm|pos_garch|pos_hmm|dim_premio [--processi 8] [--repliche N]
 """
 from __future__ import annotations
 
@@ -46,6 +50,12 @@ DISEGNI = {
                       partenze=None, reps_spa=10_000, nodo="garch", alfa=0.025, soglia_esito=0.05, sigma=0.6),
     "neg_hmm": dict(seme=20261120, repliche=200, processo="gjr", serie=3, orizzonti=(1,), passo=60,
                     partenze=3, reps_spa=10_000, nodo="hmm", alfa=0.0125, soglia_esito=0.025, sigma=0.6),
+    # positivi (§7.5): sigma per serie da esiti/sviluppo.json (scelta 10 del §11); PASSA se il rifiuto medio per coppia
+    # alla soglia vera e' almeno l'80%
+    "pos_garch": dict(seme=20261122, repliche=200, processo="gjr", serie=9, orizzonti=(1, 5), passo=20,
+                      partenze=None, reps_spa=10_000, nodo="garch", alfa=0.025, soglia_esito=0.80, positivo=True),
+    "pos_hmm": dict(seme=20261123, repliche=50, processo="regimi", serie=3, orizzonti=(1,), passo=60,
+                    partenze=3, reps_spa=10_000, nodo="hmm", alfa=0.0125, soglia_esito=0.80, positivo=True),
 }
 PREMIO = dict(seme=20261121, repliche=2000, blocchi=(21, 63), alfa=0.0125, soglia_esito=0.025,
               holdout=("2024-11-11", "2026-10-09"))
@@ -103,7 +113,7 @@ def replica(nome: str, k: int, disegno: dict, sigma_serie=None) -> dict:
     figli = ss.spawn(disegno["serie"])
     bench = P.BENCHMARK[disegno["nodo"]]
     varianti = list(P.VARIANTI[disegno["nodo"]])
-    pv, iv, perdite_medie = {}, {}, {}
+    pv, iv, perdite_medie, sotto = {}, {}, {}, {}
     for i, figlio in enumerate(figli):
         rng = np.random.default_rng(figlio)
         r, s2 = simula(disegno["processo"], N_SERIE_GIORNI, rng, **disegno.get("kw", {}))
@@ -118,12 +128,13 @@ def replica(nome: str, k: int, disegno: dict, sigma_serie=None) -> dict:
         for j, h in enumerate(P.ORIZZONTI):
             if h not in disegno["orizzonti"]:
                 continue
+            chiave = "s%d_h%d" % (i, h)
+            sotto[chiave] = {m: P.sotto_soglia(out[m][t, j]) for m in [bench] + varianti}
             lb = P.qlike(out[bench][t, j], b[t, j])
             lm = np.column_stack([P.qlike(out[m][t, j], b[t, j]) for m in varianti])
             seme_spa = int(np.random.SeedSequence([disegno["seme"], k, i, h]).generate_state(1)[0])
             spa = spa_studentizzato(lb, lm, reps=disegno["reps_spa"], seed=seme_spa)
             p = pvalue_spa(spa, disegno["reps_spa"])
-            chiave = "s%d_h%d" % (i, h)
             pv[chiave], iv[chiave] = p["p"], (p["low"], p["high"])
             perdite_medie[chiave] = [float(lb.mean() - lm[:, q].mean()) for q in range(lm.shape[1])]
     nodo = disegno["nodo"]
@@ -131,8 +142,9 @@ def replica(nome: str, k: int, disegno: dict, sigma_serie=None) -> dict:
     soglia_coppia = disegno["alfa"] / 18                                   # prima soglia vera della coppia
     return {"replica": k, "p": pv, "intervalli": iv, "rifiutate": proc["rifiutate"][nodo],
             "rifiuta_nodo": bool(proc["rifiutate"][nodo]),
-            "rifiuti_coppia_soglia_vera": {c: bool(iv[c][1] <= soglia_coppia) for c in pv},
-            "guadagno_qlike_medio": perdite_medie}
+            "rifiuti_coppia_soglia_vera": {c: bool(iv[c][1] <= soglia_coppia) for c in pv},          # intervallo
+            "rifiuti_coppia_p_puntuale": {c: bool(pv[c] <= soglia_coppia) for c in pv},             # (b+1)/(B+1)
+            "guadagno_qlike_medio": perdite_medie, "sotto_soglia": sotto}
 
 
 def _compito(args):
@@ -167,16 +179,35 @@ def carica_diario(diario: Path, commit: str | None) -> dict:
     return {x["replica"]: x for x in righe}
 
 
-def esito_controllo(righe: list, soglia_esito: float) -> dict:
-    """PASSA / FALLISCE dalla frequenza di rifiuto del nodo; GUASTO se anche una sola replica e' in errore."""
+def esito_controllo(righe: list, soglia_esito: float, positivo: bool = False) -> dict:
+    """Negativi: PASSA se la frequenza di rifiuto del nodo e' <= soglia. Positivi: PASSA se la frequenza media di rifiuto
+    per coppia alla soglia vera e' >= soglia (§7.5). GUASTO se anche una sola replica e' in errore."""
     errori = [x for x in righe if "errore" in x]
     if errori:
         return {"esito": "GUASTO", "repliche_in_errore": len(errori),
                 "errori": [{"replica": x["replica"], "errore": x["errore"], "dove": x.get("dove")} for x in errori]}
     freq_nodo = float(np.mean([x["rifiuta_nodo"] for x in righe]))
     freq_coppia = float(np.mean([np.mean(list(x["rifiuti_coppia_soglia_vera"].values())) for x in righe]))
-    return {"esito": "PASSA" if freq_nodo <= soglia_esito else "FALLISCE", "frequenza_rifiuto_nodo": freq_nodo,
-            "frequenza_media_rifiuto_coppia_soglia_vera": freq_coppia}
+    if not positivo:
+        return {"esito": "PASSA" if freq_nodo <= soglia_esito else "FALLISCE", "frequenza_rifiuto_nodo": freq_nodo,
+                "frequenza_media_rifiuto_coppia_soglia_vera": freq_coppia}
+    # positivi (Matteo, 19/11): decide il p puntuale (b+1)/(B+1) <= soglia vera, che a 10.000 ripetizioni riproduce la
+    # soglia effettiva del test a 400.000; la lettura con l'intervallo si riporta accanto, senza decidere
+    per_replica = np.array([np.mean(list(x["rifiuti_coppia_p_puntuale"].values())) for x in righe])
+    freq = float(per_replica.mean())
+    se = float(per_replica.std(ddof=1) / np.sqrt(len(per_replica))) if len(per_replica) > 1 else float("nan")
+    coppie = sorted(righe[0]["rifiuti_coppia_p_puntuale"])
+    return {"esito": "PASSA" if freq >= soglia_esito else "FALLISCE",
+            "frequenza_media_rifiuto_coppia_p_puntuale": freq,
+            "intervallo_95_cluster_replica": [freq - 1.96 * se, freq + 1.96 * se],
+            "frequenza_media_rifiuto_coppia_intervallo": freq_coppia,
+            "frequenza_per_coppia_p_puntuale": {c: float(np.mean([x["rifiuti_coppia_p_puntuale"][c] for x in righe]))
+                                                for c in coppie},
+            "frequenza_rifiuto_nodo": freq_nodo,
+            "nota_nodo": "procedura grafica sulle coppie del controllo con la quota del nodo e l'intervallo (nell'HMM: "
+                         "3 coppie a 1,25%, non il nodo vero di 18)",
+            "previsioni_sotto_soglia": int(sum(n for x in righe for d in x.get("sotto_soglia", {}).values()
+                                              for n in d.values()))}
 
 
 def esegui(nome: str, disegno: dict, processi: int, repliche: int | None = None, sigma_serie=None,
@@ -201,8 +232,19 @@ def esegui(nome: str, disegno: dict, processi: int, repliche: int | None = None,
                 print("%d/%d  rifiuti del nodo finora %d su %d, errori %d  (%.0fs)" % (
                     j, len(mancanti), tot, len(fatte), err, out["secondi"]), flush=True)
     righe = [fatte[k] for k in range(n)]
-    return {"controllo": nome, "commit": commit, "repliche": n, **esito_controllo(righe, disegno["soglia_esito"]),
-            "disegno": {k: v for k, v in disegno.items() if k != "kw"}}
+    return {"controllo": nome, "commit": commit, "repliche": n,
+            **esito_controllo(righe, disegno["soglia_esito"], disegno.get("positivo", False)),
+            "disegno": {k: v for k, v in disegno.items() if k != "kw"},
+            "sigma_serie": None if sigma_serie is None else [float(x) for x in sigma_serie]}
+
+
+def sigmi_positivi(nome: str) -> list:
+    """sigma del rumore per serie (§7.5, scelta 10 del §11): GARCH i 9 strumenti nell'ordine di G.STRUMENTI; HMM i 3
+    strumenti col sigma piu' alto, in ordine decrescente."""
+    sigma = json.loads((ESITI / "sviluppo.json").read_text(encoding="utf-8"))["sigma_rumore"]
+    if DISEGNI[nome]["nodo"] == "garch":
+        return [sigma[s] for s in G.STRUMENTI]
+    return sorted(sigma.values(), reverse=True)[:DISEGNI[nome]["serie"]]
 
 
 # ------------------------------------------------------------------------------------------------ premio
@@ -281,7 +323,8 @@ def main():
         out = dimensione_premio(controllo["commit"])
     else:
         d = DISEGNI[nome]
-        out = esegui(nome, d, processi, repliche, commit=controllo["commit"])
+        sigma_serie = sigmi_positivi(nome) if d.get("positivo") else None
+        out = esegui(nome, d, processi, repliche, sigma_serie=sigma_serie, commit=controllo["commit"])
     if repliche is None:
         _scrivi(nome, out)
     print(json.dumps(out, indent=2))

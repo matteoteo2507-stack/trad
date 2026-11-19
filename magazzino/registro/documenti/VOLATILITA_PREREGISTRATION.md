@@ -363,6 +363,7 @@ stesso nucleo di arch (scarto 0,0), ricentratura `consistent` valida sull'ingres
 | Data | Cosa cambia | Perche' | Esplorativo? |
 |---|---|---|---|
 | 2026-11-13 | §3, strumenti a 24 ore: il blocco che apre la domenica sera e' il giorno del **lunedi'** (la parentesi "il giorno del venerdi' comincia la domenica" era scritta male) | chiarimento del testo, prima di ogni corsa sui dati veri: con l'altra lettura il blocco del 10/11/2024 sera, che e' gia' il lunedi' dell'holdout, cadrebbe nello sviluppo | no |
+| 2026-11-19 | §6, QLIKE: una previsione 0 <= f < 1e-100 vale 1e-100 e si conta per modello, strumento e orizzonte (`pipeline.sotto_soglia`); una previsione negativa o non finita e' un errore (GUASTO). Il filtro delle origini con previsione <= 0 o non finita di `riassumi.py` si toglie (sullo sviluppo ha scartato 0 origini) | le previsioni EGARCH dei blocchi di ripiego S5 arrivano a 1,1e-46 (XAUUSD, XAGUSD, EURUSD; §11 del 19/11): con f = 0 la perdita e' infinita e lo SPA si ferma, come il 14/11; con 1e-100 e v dell'ordine di 1e4 il quadrato della perdita resta sotto ~1e208. **Contrasta con la lettera del §7.3** (modifica del §6 dopo la corsa di sviluppo): Matteo la accetta come deviazione non esplorativa (DECISIONS 2026-11-19 (2)) perche' (i) l'avrebbe fatta con qualunque esito, il motivo e' il campo numerico e non quale modello vince; (ii) e' l'identita' su ogni numero gia' calcolato (sviluppo: minimo 1,1e-46, 216 medie identiche; negativi: argomento sui diari nel §11; l'invarianza non usa la QLIKE); (iii) non puo' favorire un rifiuto: i benchmark non si avvicinano alla soglia e una variante portata alla soglia perde di ~1e97 o piu' al giorno | no |
 
 ## 11. Aggiunte datate (passi del §7)
 
@@ -632,3 +633,38 @@ i passi 1-2 del §7 sono chiusi sul codice corrente: segue la corsa di sviluppo 
   piu' grande di quello osservato finora. σ del rumore per i positivi simulati (§7.5): fra 0,54 (XAGUSD) e 0,77 (SPX500).
 - Segue il **passo 5** (controlli positivi simulati), da fare con Matteo: prima delle corse si scrive, per nodo, il
   rapporto fra l'effetto del processo simulato e l'MDE.
+
+### 2026-11-19 — Passo 5, prima delle corse: soglia della QLIKE, regola di rifiuto dei positivi, lettura scritta ora
+
+Revisione del gatekeeper sul codice dei positivi e sulla soglia (19/11): **BLOCCA** con 4 bloccanti, tutti chiusi qui
+(conteggio della soglia ed errore su previsioni negative; classificazione come deviazione; regola di rifiuto dei
+positivi; h = 5 nel rapporto effetto/MDE del GARCH).
+
+1. **Soglia della QLIKE**: deviazione del §10 (Matteo, 19/11), non una correzione di guasto, quindi i passi 1-2 **non
+   si rifanno** (la regola del §7.7 vale per i guasti). Il riepilogo dello sviluppo si rifa' sul commit di questa voce e
+   deve uscire identico salvo `commit` e il nuovo conteggio `sotto_soglia`. Negativi invariati per costruzione: nei
+   diari validi il guadagno medio piu' negativo e' −5,3·10²⁴ (`neg_garch`, commit `864f4a8`) e −0,57 (`neg_hmm`,
+   `6d55776`), mentre una previsione sotto 1e-100 (con bersagli simulati >= ~1e-3) darebbe una perdita > ~1e97 in un
+   giorno e una media sotto ~−1e94; i due esiti restano legati a quei commit. Lo script dell'apertura riportera' le
+   previsioni portate alla soglia.
+2. **Regola di rifiuto per coppia nei positivi** (Matteo, 19/11): decide il **p puntuale** (b+1)/(B+1) <= soglia vera, a
+   10.000 ripetizioni dello SPA. Rifiuta per b <= 12 (GARCH, soglia effettiva 13/10.001 = 0,130% contro 0,139%) e
+   b <= 5 (HMM, 6/10.001 = 0,060% contro 0,069%): riproduce quasi la soglia effettiva del test vero a 400.000 ripetizioni
+   con l'intervallo (~0,127% e ~0,061%, calcolo del gatekeeper). La regola precedente (tutto l'intervallo sotto la
+   soglia) provava una soglia 2 volte piu' severa nel GARCH e 4-7 volte nell'HMM; la sua lettura si riporta accanto,
+   senza decidere. I negativi passano con entrambe (col p puntuale 1,4% e 0%, ricalcolati dal gatekeeper dai diari).
+3. **Rapporto effetto/MDE**: `potenza.py` (seme 20261124, serie lunga 400.000 giorni, n = 495 origini come nelle
+   repliche, Newey-West max(h − 1, 4) ritardi, soglia effettiva del punto 2), per ogni coppia σ × h (GARCH h = 1 e 5,
+   HMM h = 1): effetto, MDE simulato, rapporto e potenza attesa Φ(√n·e/sd − z_α), con la media. Il GARCH e' un limite
+   superiore in media (oracolo contro un GJR stimato); l'HMM un'approssimazione di segno indeterminato. I numeri vanno
+   nella voce successiva, prima delle corse.
+4. **Lettura, scritta ora**: i positivi girano qualunque sia il rapporto. Se un positivo fallisce con potenza attesa
+   media sotto l'80%, il nodo esce **per la scelta dei parametri**; se fallisce con potenza attesa >= 80% esce lo stesso
+   (§7.7) e prima di ogni test forward si cerca un guasto; se il GARCH passa con potenza attesa dell'oracolo sotto
+   l'80%, e' un campanello: si indaga prima di leggerlo come PASSA. I parametri dei processi simulati **non si cambiano**
+   dopo aver visto il rapporto (ridisegno post-esito, conta trial, §7.7). Con 50 repliche × 3 coppie l'HMM ha un errore
+   standard di ~3 punti: 0,78 e 0,82 non si distinguono, ma il criterio resta quello pre-registrato.
+5. **Esito riportato** (`esiti/pos_garch.json`, `esiti/pos_hmm.json`): frequenza media per coppia col p puntuale e
+   intervallo al 95% a cluster sulla replica, la stessa con l'intervallo, frequenze per coppia, frequenza del nodo (per
+   l'HMM e' la procedura sulle 3 coppie del controllo a 1,25%, non il nodo vero di 18), previsioni portate alla soglia.
+   Semi: positivo GARCH 20261122, positivo HMM 20261123, rapporto effetto/MDE 20261124.

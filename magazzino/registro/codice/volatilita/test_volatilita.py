@@ -209,6 +209,52 @@ def test_diario_di_un_altro_commit_non_si_riusa(tmp_path):
     assert list(C.carica_diario(diario, "bbbbbbb2")) == [4]
 
 
+def test_qlike_soglia_minima():
+    """19/11: una previsione che scende a 0 (EGARCH coi parametri di ripiego) non rende la perdita infinita; sopra la
+    soglia il valore e' quello di prima, e il quadrato della perdita resta finito (lo SPA ne calcola la varianza)."""
+    f = np.array([0.0, 1e-120, 1.1e-46, 1e-3, 1.0, 50.0])
+    v = np.full(len(f), 7386.5)                                    # bersaglio massimo dello sviluppo
+    q = P.qlike(f, v)
+    assert np.all(np.isfinite(q)) and np.all(np.isfinite(q ** 2)) and np.isfinite(np.sum(q ** 2))
+    sopra = f >= P.F_MINIMA
+    assert np.array_equal(q[sopra], np.log(f[sopra]) + v[sopra] / f[sopra])
+    assert q[0] == q[1] == np.log(P.F_MINIMA) + v[0] / P.F_MINIMA
+    assert P.sotto_soglia(f) == 2
+    for rotta in ([1.0, -1e-30], [1.0, np.nan], [np.inf, 1.0]):             # guasto: errore, mai una perdita
+        with pytest.raises(ValueError):
+            P.qlike(np.array(rotta), np.ones(2))
+
+
+def test_esito_dei_positivi_e_sigmi():
+    import controlli as C
+
+    def riga(k, puntuale, intervallo):
+        return {"replica": k, "rifiuta_nodo": any(intervallo),
+                "rifiuti_coppia_p_puntuale": {"s%d" % i: x for i, x in enumerate(puntuale)},
+                "rifiuti_coppia_soglia_vera": {"s%d" % i: x for i, x in enumerate(intervallo)},
+                "sotto_soglia": {"s0": {"egarch": k % 3 == 0}}}
+    # decide il p puntuale (Matteo, 19/11): 87,5% puntuale con 37,5% d'intervallo -> PASSA
+    buone = [riga(k, [True, True, True, k % 2 == 0], [True, False, False, k % 2 == 0]) for k in range(10)]
+    scarse = [riga(k, [True, False, False, k % 2 == 0], [True, True, True, True]) for k in range(10)]
+    e = C.esito_controllo(buone, 0.80, positivo=True)
+    assert e["esito"] == "PASSA" and e["frequenza_media_rifiuto_coppia_intervallo"] == 0.375
+    assert e["previsioni_sotto_soglia"] == 4 and e["frequenza_per_coppia_p_puntuale"]["s3"] == 0.5
+    assert C.esito_controllo(scarse, 0.80, positivo=True)["esito"] == "FALLISCE"
+    assert C.esito_controllo(buone, 0.05)["esito"] == "FALLISCE"                   # stesso diario letto da negativo
+    if (C.ESITI / "sviluppo.json").exists():
+        g, h = C.sigmi_positivi("pos_garch"), C.sigmi_positivi("pos_hmm")
+        assert len(g) == 9 and len(h) == 3 and h == sorted(g, reverse=True)[:3]
+
+
+def test_effetto_simulato_due_orizzonti_e_soglia_effettiva():
+    import potenza as Q
+
+    assert Q.soglia_effettiva(0.025 / 18) == 13 / 10_001 and Q.soglia_effettiva(0.0125 / 18) == 6 / 10_001
+    e = Q.effetto_simulato("garch", 0.6, n_lungo=20_000)
+    assert set(e) == {"h1", "h5"} and all(x["effetto"] > 0 and np.isfinite(x["sd_hac"]) for x in e.values())
+    assert set(Q.effetto_simulato("hmm", 0.6, n_lungo=20_000)) == {"h1"}
+
+
 def test_bersagli_esclusi():
     v = np.arange(1.0, 11.0)
     esc = np.zeros(10, bool)

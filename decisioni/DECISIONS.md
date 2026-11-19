@@ -11,6 +11,20 @@
 
 ---
 
+## 2026-11-19 (2) — Volatilita': soglia minima della QLIKE come **deviazione dichiarata** e p puntuale nei positivi; 0 trial
+
+Due scelte di Matteo prima del passo 5, dopo la revisione del gatekeeper (BLOCCA, 4 bloccanti chiusi).
+(1) Una previsione 0 <= f < 1e-100 vale 1e-100 nella QLIKE, e si conta; una previsione negativa o non finita e' un
+errore. Motivo: l'EGARCH dei blocchi di ripiego prevede fino a 1,1e-46, e a f = 0 lo SPA si fermerebbe all'apertura.
+E' un'**eccezione alla lettera del §7.3** (nessuna modifica del §6 dopo la corsa di sviluppo), accettata come deviazione
+non esplorativa (§10) perche' sarebbe stata fatta con qualunque esito, e' identica su ogni numero gia' calcolato
+(sviluppo e negativi) e non puo' favorire un rifiuto. Non e' una correzione di guasto: i passi 1-2 e la corsa di
+sviluppo non si rifanno. (2) Nei controlli positivi una coppia rifiuta se il **p puntuale** (b+1)/(B+1) dello SPA a
+10.000 ripetizioni e' sotto la soglia vera: riproduce la soglia effettiva del test a 400.000, mentre la regola
+dell'intervallo provava una soglia 2-7 volte piu' severa. Dettagli: [pre-registrazione §10 e §11](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md).
+
+---
+
 ## 2026-11-19 — Volatilita': corsa di sviluppo e MDE (passi 3-4 del §7); **126 trial** contati alla corsa di sviluppo
 
 Matteo sceglie di contare i trial **ora**, al calcolo delle previsioni di sviluppo, come dice il §5 ("contati nel
