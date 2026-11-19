@@ -1,5 +1,5 @@
 {
-  "commit": "86fcdaed8c73b337896caa5e25bd44e61673d571",
+  "commit": "0d53ba1ee1c394414204ce9bd2b422a2ad17bfca",
   "commit_previsioni": "86fcdaed8c73b337896caa5e25bd44e61673d571",
   "strumenti": {
     "SPX500": {
@@ -112,6 +112,36 @@
           "har": 1543.5847297332123,
           "persistenza": 700.1900075353943,
           "media": 697.2500065859956
+        }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
         }
       }
     },
@@ -226,6 +256,36 @@
           "persistenza": 626.9730143351032,
           "media": 647.9857317650396
         }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        }
       }
     },
     "DOW": {
@@ -338,6 +398,36 @@
           "har": 1506.966994638485,
           "persistenza": 670.8454163070096,
           "media": 723.5655451569797
+        }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
         }
       }
     },
@@ -452,6 +542,36 @@
           "persistenza": 170.65100438807082,
           "media": 116.1578891332729
         }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        }
       }
     },
     "DAX": {
@@ -564,6 +684,36 @@
           "har": 196.48715621734837,
           "persistenza": 214.35346465949544,
           "media": 303.2942368623933
+        }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
         }
       }
     },
@@ -678,6 +828,36 @@
           "persistenza": 24.925371046020498,
           "media": 27.510618067275715
         }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        }
       }
     },
     "XAGUSD": {
@@ -790,6 +970,36 @@
           "har": 707.3461845962794,
           "persistenza": 1100.9410806406556,
           "media": 810.7586852495377
+        }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
         }
       }
     },
@@ -904,6 +1114,36 @@
           "persistenza": 776446.85217882,
           "media": 209035.5665377116
         }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        }
       }
     },
     "EURUSD": {
@@ -1016,6 +1256,36 @@
           "har": 0.46299158807328616,
           "persistenza": 0.6801688670857545,
           "media": 1.065792901817598
+        }
+      },
+      "sotto_soglia": {
+        "h1": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
+        },
+        "h5": {
+          "ewma": 0,
+          "garch": 0,
+          "gjr": 0,
+          "egarch": 0,
+          "hmm2": 0,
+          "hmm3": 0,
+          "comb2": 0,
+          "comb3": 0,
+          "media_garch": 0,
+          "har": 0,
+          "persistenza": 0,
+          "media": 0
         }
       }
     }
