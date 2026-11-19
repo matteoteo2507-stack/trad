@@ -2,9 +2,9 @@
 tipo: preregistrazione
 stato: APPROVATA
 approvata: "2026-11-13, Matteo in sessione, sul testo del commit 7dea1e3"
-aggiornato: 2026-11-13
+aggiornato: 2026-11-19
 decisione: "Matteo: gate degli strumenti e strada A (10-11/11); errore di famiglia 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita', holdout di due anni (11/11); orizzonte massimo 5 giorni, strumenti dei test piu' completi (11/11); varianti GARCH approvate, benchmark dell'HMM delegato a Claude secondo S4, premio di volatilita' a 30 giorni come definizione (13/11); dopo la prima G1: combinazione fissa nell'HMM, holdout non aperto se il controllo positivo fallisce, affermazioni per strumento, commit su branch nuovo (13/11). DECISIONS 2026-11-10, 2026-11-11, 2026-11-13"
-metrica_corrente: "nessuna: nessuna previsione calcolata"
+metrica_corrente: "previsioni di sviluppo calcolate (commit 86fcdae, 19/11), solo descrittive; nessun calcolo sull'holdout"
 nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Cinque passate G1 il 13/11: quattro BLOCCA corrette, la quinta PASSA CON RISERVE (riserva chiusa). APPROVATA da Matteo il 13/11: da qui ogni modifica di §1-§6 e' una deviazione (§10); i passi del §7 si registrano in aggiunte datate (§11)."
 ---
 
@@ -598,3 +598,37 @@ del 16/11: processo GJR, 3 serie, h = 1, 200 repliche, 3 partenze, ristima ogni 
 nodo rifiuta in 0 repliche su 200 (0,0%)** contro la soglia del 2,5%; nessuna coppia rifiuta alla soglia vera;
 **nessuna replica in errore** (le 12 del 16/11 comprese). Con il passo 1 (`864f4a8`) e il negativo GARCH (`6d55776`)
 i passi 1-2 del §7 sono chiusi sul codice corrente: segue la corsa di sviluppo (passo 3).
+
+### 2026-11-19 — Passi 3-4: corsa di sviluppo (0 errori) e MDE per coppia; 126 trial contati
+
+- **Corsa di sviluppo** (passo 3, [`sviluppo.py`](../codice/volatilita/sviluppo.py), commit `86fcdae`, partita sui tre
+  esiti PASSA del 17/11): 361 compiti (strumento × modello × gruppo di blocchi), **0 errori**. Interrotta il 18/11 a
+  250 compiti salvati per la chiusura della sessione e ripresa il 19/11 **sullo stesso commit** (la ripresa salta i
+  compiti gia' salvati; con un altro commit la cache andava rifatta). Riepilogo (passo 4,
+  [`riassumi.py`](../codice/volatilita/riassumi.py), stesso commit) in
+  [`esiti/sviluppo.json`](../codice/volatilita/esiti/sviluppo.json).
+- **Contatore**: 126 trial (54 GARCH, 72 HMM), contati ora per scelta di Matteo (19/11, DECISIONS 2026-11-19); il
+  premio, uscito il 13/11, non ha previsioni e non si conta.
+- **Diagnostica.** Non convergenze (regola S5, parametri del blocco precedente): EGARCH 9 su XAUUSD, 20 su XAGUSD, 18 su
+  EURUSD; GJR 2 su EURUSD; nessuna altrove, nessuna negli HMM. Ripartenze al primo blocco: 1 (EGARCH, XAGUSD). HAR
+  corrette: 12 SPX500, 12 NAS100, 16 DOW, 1 DAX, 5 WTI. c_t medio fra 0,955 (NAS100) e 1,265 (WTI). Previsioni del test
+  d'invarianza (blocchi ristretti) contro la corsa completa: differenza massima **0,0**.
+- **Osservazione sull'EGARCH** (non e' un guasto e non si cambia, §7.3): su XAUUSD, XAGUSD ed EURUSD la QLIKE media
+  dell'EGARCH esplode (h = 1: 5,8·10¹⁷, 6,0·10³², 2,9·10⁴¹; mediane 0,073, 0,071, 0,081). **Tutte** le origini con
+  QLIKE > 100 (13, 11, 15) cadono in blocchi di ripiego, con parametri a α < 0 e β fra 0,989 e 0,9995: un rendimento
+  grande abbassa la varianza e la previsione crolla (minimi 1,7·10⁻²¹, 9,3·10⁻³⁷, 1,1·10⁻⁴⁶). E' il meccanismo gia'
+  visto il 14/11 nel negativo GARCH: il modello sotto la regola S5, che puo' solo far perdere l'EGARCH. Sporca anche
+  la media delle tre varianti GARCH, che e' un riferimento descrittivo e non entra nel test. **Punto aperto per
+  Matteo**, non una regola nuova (il caso osservato e' finito): se nell'holdout una previsione scendesse a 0 in
+  virgola mobile, la QLIKE sarebbe infinita e lo SPA del nodo GARCH si fermerebbe come il 14/11.
+- **Descrittivi** (QLIKE, dati di sviluppo; nessuna conseguenza sul disegno). Nodo GARCH: la variante migliore batte
+  l'EWMA sugli indici (h = 1: 0,054-0,081 su SPX500, NAS100, DOW, DAX; 0,008 sul RUSSELL) e perde su XAUUSD, XAGUSD,
+  EURUSD (0,025-0,053) e sul WTI a h = 5. Nodo HMM: la variante migliore (quasi sempre la combinazione con 3 regimi)
+  non batte il GJR di piu' di 0,011 in nessuna coppia. L'HAR, riferimento, e' il migliore su XAUUSD e XAGUSD ai due orizzonti e su EURUSD a h = 1.
+- **MDE per coppia** (passo 4, α della prima soglia, n_eff = giorni di holdout 496-517): GARCH fra 0,064 (RUSSELL) e
+  0,168 (XAGUSD h = 5), HMM fra 0,027 (RUSSELL) e 0,139. Il guadagno di sviluppo della variante migliore sta sotto
+  l'MDE in **tutte le 36 coppie**: rapporto massimo 0,64 nel GARCH (NAS100 h = 1), 0,10 nell'HMM. E' un descrittivo
+  sullo sviluppo, non una previsione dell'holdout, ma dice che con questi MDE il test vede solo un vantaggio
+  piu' grande di quello osservato finora. σ del rumore per i positivi simulati (§7.5): fra 0,54 (XAGUSD) e 0,77 (SPX500).
+- Segue il **passo 5** (controlli positivi simulati), da fare con Matteo: prima delle corse si scrive, per nodo, il
+  rapporto fra l'effetto del processo simulato e l'MDE.

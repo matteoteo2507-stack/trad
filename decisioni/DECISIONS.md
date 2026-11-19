@@ -11,6 +11,20 @@
 
 ---
 
+## 2026-11-19 — Volatilita': corsa di sviluppo e MDE (passi 3-4 del §7); **126 trial** contati alla corsa di sviluppo
+
+Matteo sceglie di contare i trial **ora**, al calcolo delle previsioni di sviluppo, come dice il §5 ("contati nel
+contatore quando le previsioni vengono calcolate"), e non all'apertura. Le serie calcolate sono **126**: 54 GARCH
+(3 varianti × 9 strumenti × 2 orizzonti) e 72 HMM (4 varianti × 9 × 2). Il premio (1 serie del totale di 127 del §5)
+**non si conta**: il suo nodo e' uscito il 13/11 e le sue previsioni non sono calcolate; conta solo se un test forward
+lo calcolera'. Corsa di sviluppo sul commit `86fcdae`, 0 errori; i numeri (perdite, MDE per coppia, ripieghi
+dell'EGARCH) stanno nella [pre-registrazione §11](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md) e in
+[`esiti/sviluppo.json`](../magazzino/registro/codice/volatilita/esiti/sviluppo.json). Per il §7.3 dopo questa corsa
+non si cambia nulla di §2-§6. Il passo 5 (controlli positivi, con il rapporto effetto/MDE scritto prima) si fa con
+Matteo.
+
+---
+
 ## 2026-11-13 (3) — Volatilita': il nodo del **premio di volatilita' esce** prima dell'apertura (regola del §7.7); 0 trial
 
 Il controllo di dimensione del §7.2 fallisce: la t a una coda all'1,25% sulle 23 origini mensili dell'holdout rifiuta
