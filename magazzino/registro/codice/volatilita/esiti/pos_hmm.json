@@ -1,0 +1,41 @@
+{
+  "controllo": "pos_hmm",
+  "commit": "5dcee68ddc242435b6e1066291e307aba108581e",
+  "repliche": 50,
+  "esito": "FALLISCE",
+  "frequenza_media_rifiuto_coppia_p_puntuale": 0.02,
+  "intervallo_95_cluster_replica": [
+    -0.002165438562470777,
+    0.04216543856247078
+  ],
+  "frequenza_media_rifiuto_coppia_intervallo": 0.006666666666666666,
+  "frequenza_per_coppia_p_puntuale": {
+    "s0_h1": 0.0,
+    "s1_h1": 0.02,
+    "s2_h1": 0.04
+  },
+  "frequenza_rifiuto_nodo": 0.2,
+  "nota_nodo": "procedura grafica sulle coppie del controllo con la quota del nodo e l'intervallo (nell'HMM: 3 coppie a 1,25%, non il nodo vero di 18)",
+  "previsioni_sotto_soglia": 0,
+  "disegno": {
+    "seme": 20261123,
+    "repliche": 50,
+    "processo": "regimi",
+    "serie": 3,
+    "orizzonti": [
+      1
+    ],
+    "passo": 60,
+    "partenze": 3,
+    "reps_spa": 10000,
+    "nodo": "hmm",
+    "alfa": 0.0125,
+    "soglia_esito": 0.8,
+    "positivo": true
+  },
+  "sigma_serie": [
+    0.7744551601406513,
+    0.7472971794206911,
+    0.7069455490184019
+  ]
+}

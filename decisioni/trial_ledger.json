@@ -1,6 +1,6 @@
 {
   "_nota": "Contatore trial PERSISTENTE richiesto da motore/metodo/STRATEGY_LIFECYCLE.md §3. Si legge e si verifica con `python -m motore.core.trial_ledger`. Ogni voce cita la FONTE nel repo: un numero senza fonte e' un numero inventato, e qui e' un errore bloccante. Ricostruito il 2026-09-19 dalle pre-registrazioni e da DECISIONS.md (debito E6/E2 del backlog).",
-  "aggiornato": "2026-11-19",
+  "aggiornato": "2026-11-20",
   "budget": {
     "round_rifinitura_per_famiglia": 3,
     "prereg_esterne_per_trimestre": 3,
@@ -349,14 +349,16 @@
           "alfa": 0.025,
           "benchmark": "EWMA lambda 0,94",
           "trial_cumulati": 54,
-          "varianti_esplorative": 0
+          "varianti_esplorative": 0,
+          "uscita_prima_dell_apertura": "2026-11-20: il controllo positivo simulato fallisce (rifiuto medio per coppia 18,9% contro >= 80%, potenza attesa dell'oracolo 64,6%), uscita per la scelta dei parametri, pre-registrazione §11; quota 2,5% riservata a un test forward (§7.7)"
         },
         {
           "id": "hmm",
           "alfa": 0.0125,
           "benchmark": "GJR-GARCH(1,1,1)",
           "trial_cumulati": 72,
-          "varianti_esplorative": 0
+          "varianti_esplorative": 0,
+          "uscita_prima_dell_apertura": "2026-11-20: il controllo positivo simulato fallisce (rifiuto medio per coppia 2,0% contro >= 80%, potenza attesa 2,1%), uscita per la scelta dei parametri, pre-registrazione §11; quota 1,25% riservata a un test forward (§7.7)"
         },
         {
           "id": "premio_vol",
@@ -384,9 +386,10 @@
         "DECISIONS.md#2026-11-11",
         "DECISIONS.md#2026-11-13",
         "DECISIONS.md#2026-11-19",
-        "DECISIONS.md#2026-11-19 (2)"
+        "DECISIONS.md#2026-11-19 (2)",
+        "DECISIONS.md#2026-11-20"
       ],
-      "note": "Pre-registrazione APPROVATA da Matteo il 13/11 dopo cinque passate G1 (la quinta PASSA CON RISERVE, 0 bloccanti); in corso i passi del §7 prima dell'apertura. Trial contati alla corsa di sviluppo (Matteo, 19/11; commit delle previsioni 86fcdae): 54 GARCH + 72 HMM (con le combinazioni fisse 0,5 GJR + 0,5 HMM) = 126 serie (modello x strumento x orizzonte). Il premio (1 serie) non e' calcolato: il suo nodo e' uscito il 13/11 e conta solo se un test forward lo calcola. Affermazioni per strumento: grafo su 37 ipotesi elementari. Nessuna quota trimestrale (binario strumenti)."
+      "note": "Pre-registrazione APPROVATA da Matteo il 13/11 dopo cinque passate G1 (la quinta PASSA CON RISERVE, 0 bloccanti); in corso i passi del §7 prima dell'apertura. Trial contati alla corsa di sviluppo (Matteo, 19/11; commit delle previsioni 86fcdae): 54 GARCH + 72 HMM (con le combinazioni fisse 0,5 GJR + 0,5 HMM) = 126 serie (modello x strumento x orizzonte). Il premio (1 serie) non e' calcolato: il suo nodo e' uscito il 13/11 e conta solo se un test forward lo calcola. Affermazioni per strumento: grafo su 37 ipotesi elementari. Nessuna quota trimestrale (binario strumenti). Passo 5 (20/11): escono anche i nodi GARCH e HMM; con il premio escono tutti i nodi e l'holdout resta sigillato; stato della famiglia da decidere (Matteo)."
     }
   ],
   "_nota_cutoff": "Contaminazione da knowledge cutoff (debito E4). Un'ipotesi PROPOSTA da un LLM su dati precedenti al cutoff non e' una predizione indipendente: puo' essere memoria. Il campo `provenienza_ipotesi` la dichiara. Valori: umana_esterna (fonte datata e citabile) | utente | letteratura | llm | non_dichiarata. `finestra_dati_fine` dice se il test cade prima del cutoff. Evidenza esterna: Profit Mirage, arXiv 2510.07920.",

@@ -11,6 +11,20 @@
 
 ---
 
+## 2026-11-20 — Volatilita': i controlli positivi falliscono, **escono i nodi GARCH e HMM**; con il premio escono tutti i nodi, **l'holdout resta sigillato**; 126 trial
+
+Passo 5 del §7, commit `5dcee68`, 0 errori. Il test riconosce il vantaggio simulato, coppia per coppia, nel **18,9%**
+dei casi per il GARCH (processo GJR, 200 repliche) e nel **2,0%** per l'HMM (2 regimi, 50 repliche), contro l'**80%**
+richiesto. La potenza attesa scritta prima delle corse era 64,6% (GARCH, limite superiore) e 2,1% (HMM). Per la regola
+del §7.7 i due nodi escono **per la scelta dei parametri** dei processi simulati, non per un guasto; tengono le loro
+quote (2,5% e 1,25%) per un test su dati forward successivi, da pre-registrare prima di raccogliere i dati. Il premio
+era uscito il 13/11: non resta nessun nodo e **l'holdout (dal 2024-11-11) resta sigillato**, mai aperto. **Non e' un
+verdetto sui modelli**: con due anni di holdout e 18 ipotesi per nodo il test non vede vantaggi di questa taglia
+strumento per strumento. Lo stato della famiglia e il seguito (test forward, disegno con meno ipotesi, pacchetto
+EWMA per i soci) li decide Matteo. Dettagli: [pre-registrazione §11](../magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md).
+
+---
+
 ## 2026-11-19 (2) — Volatilita': soglia minima della QLIKE come **deviazione dichiarata** e p puntuale nei positivi; 0 trial
 
 Due scelte di Matteo prima del passo 5, dopo la revisione del gatekeeper (BLOCCA, 4 bloccanti chiusi).

@@ -2,9 +2,9 @@
 tipo: preregistrazione
 stato: APPROVATA
 approvata: "2026-11-13, Matteo in sessione, sul testo del commit 7dea1e3"
-aggiornato: 2026-11-19
+aggiornato: 2026-11-20
 decisione: "Matteo: gate degli strumenti e strada A (10-11/11); errore di famiglia 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita', holdout di due anni (11/11); orizzonte massimo 5 giorni, strumenti dei test piu' completi (11/11); varianti GARCH approvate, benchmark dell'HMM delegato a Claude secondo S4, premio di volatilita' a 30 giorni come definizione (13/11); dopo la prima G1: combinazione fissa nell'HMM, holdout non aperto se il controllo positivo fallisce, affermazioni per strumento, commit su branch nuovo (13/11). DECISIONS 2026-11-10, 2026-11-11, 2026-11-13"
-metrica_corrente: "previsioni di sviluppo calcolate (commit 86fcdae, 19/11), solo descrittive; nessun calcolo sull'holdout"
+metrica_corrente: "passo 5 (20/11): i positivi GARCH e HMM falliscono, entrambi i nodi escono per la scelta dei parametri; con il premio uscito il 13/11 l'holdout resta sigillato"
 nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Cinque passate G1 il 13/11: quattro BLOCCA corrette, la quinta PASSA CON RISERVE (riserva chiusa). APPROVATA da Matteo il 13/11: da qui ogni modifica di §1-§6 e' una deviazione (§10); i passi del §7 si registrano in aggiunte datate (§11)."
 ---
 
@@ -688,3 +688,30 @@ voce precedente):
   leggerlo come PASSA. I parametri dei processi non si cambiano (§7.7). Se escono entrambi i nodi, l'holdout resta
   sigillato e ogni nodo tiene la sua quota per un test forward (§7.7).
 - Le corse: `pos_garch` e `pos_hmm` sul commit di questa voce, 4 processi ciascuna, in parallelo.
+
+### 2026-11-20 — Passo 5, controlli positivi simulati: FALLISCONO entrambi; i nodi GARCH e HMM escono, l'holdout resta sigillato
+
+Corse del commit `5dcee68` (le repliche del 19/11 interrotte con la sessione si sono riprese sullo stesso commit il
+20/11: 90 su 200 e 16 su 50). **0 repliche in errore, 0 previsioni portate alla soglia della QLIKE.**
+
+- **GARCH** ([`esiti/pos_garch.json`](../codice/volatilita/esiti/pos_garch.json), processo GJR, 200 repliche, 18 coppie):
+  rifiuto medio per coppia col p puntuale **18,9%** (intervallo al 95% a cluster sulla replica 17,3-20,5%) contro il
+  criterio dell'**80%**: **FALLISCE**. Con l'intervallo 14,0%. Per coppia dal 9% (σ dell'SPX500, h = 1) al 30,5%
+  (σ di XAGUSD, h = 1): piu' rumore, meno potenza. Il nodo (procedura sulle 18 coppie) rifiuta nell'84% delle repliche:
+  un vantaggio di questa taglia su tutti gli strumenti si vedrebbe quasi sempre **da qualche parte**, ma il criterio
+  pre-registrato chiede di vederlo **coppia per coppia**.
+- **HMM** ([`esiti/pos_hmm.json`](../codice/volatilita/esiti/pos_hmm.json), 2 regimi, 50 repliche, 3 coppie): rifiuto
+  medio per coppia **2,0%** (0-4,2%) contro l'80%: **FALLISCE**. Con l'intervallo 0,7%; procedura sulle 3 coppie 20%.
+- **Lettura** (scritta il 19/11 prima delle corse): la potenza attesa era 64,6% (GARCH, oracolo, limite superiore) e
+  2,1% (HMM, approssimazione), entrambe sotto l'80%: i due nodi escono **per la scelta dei parametri** dei processi
+  simulati (fissati il 13/11), non per un guasto della pipeline. L'HMM osservato coincide con l'atteso (2,0% contro
+  2,1%); il GARCH osservato (18,9%) sta molto sotto il limite superiore (64,6%), come ci si aspetta passando
+  dall'oracolo al GJR stimato su 1.000 giorni, allo SPA su tre varianti e alla riscalatura c_t: la ricerca di un guasto
+  e' prevista solo per un fallimento con potenza attesa >= 80%.
+- **Conseguenze** (§7.7, scritte prima): il nodo GARCH (2,5%) e il nodo HMM (1,25%) **escono prima dell'apertura** e
+  tengono la quota, riservata; con il premio uscito il 13/11 escono **tutti i nodi**, quindi **l'holdout resta
+  sigillato** (dal 2024-11-11, mai aperto). Ogni nodo si puo' testare una volta sola su dati forward successivi,
+  con la sua quota, in un'aggiunta datata scritta prima di raccogliere quei dati che fissi lunghezza della finestra,
+  MDE e controlli. Non e' un verdetto sui modelli: dice che con due anni di holdout e 18 ipotesi per nodo il test non
+  vede, coppia per coppia, vantaggi della taglia simulata. I passi 6-8 non si fanno. Trial: 126, invariati (le
+  previsioni di sviluppo sono state calcolate). Lo stato della famiglia lo decide Matteo.

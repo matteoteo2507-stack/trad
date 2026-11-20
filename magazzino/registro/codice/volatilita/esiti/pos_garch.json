@@ -1,0 +1,63 @@
+{
+  "controllo": "pos_garch",
+  "commit": "5dcee68ddc242435b6e1066291e307aba108581e",
+  "repliche": 200,
+  "esito": "FALLISCE",
+  "frequenza_media_rifiuto_coppia_p_puntuale": 0.18944444444444447,
+  "intervallo_95_cluster_replica": [
+    0.17341600029738066,
+    0.20547288859150828
+  ],
+  "frequenza_media_rifiuto_coppia_intervallo": 0.14,
+  "frequenza_per_coppia_p_puntuale": {
+    "s0_h1": 0.09,
+    "s0_h5": 0.1,
+    "s1_h1": 0.15,
+    "s1_h5": 0.12,
+    "s2_h1": 0.12,
+    "s2_h5": 0.13,
+    "s3_h1": 0.23,
+    "s3_h5": 0.195,
+    "s4_h1": 0.125,
+    "s4_h5": 0.105,
+    "s5_h1": 0.26,
+    "s5_h5": 0.215,
+    "s6_h1": 0.305,
+    "s6_h5": 0.21,
+    "s7_h1": 0.3,
+    "s7_h5": 0.225,
+    "s8_h1": 0.295,
+    "s8_h5": 0.235
+  },
+  "frequenza_rifiuto_nodo": 0.84,
+  "nota_nodo": "procedura grafica sulle coppie del controllo con la quota del nodo e l'intervallo (nell'HMM: 3 coppie a 1,25%, non il nodo vero di 18)",
+  "previsioni_sotto_soglia": 0,
+  "disegno": {
+    "seme": 20261122,
+    "repliche": 200,
+    "processo": "gjr",
+    "serie": 9,
+    "orizzonti": [
+      1,
+      5
+    ],
+    "passo": 20,
+    "partenze": null,
+    "reps_spa": 10000,
+    "nodo": "garch",
+    "alfa": 0.025,
+    "soglia_esito": 0.8,
+    "positivo": true
+  },
+  "sigma_serie": [
+    0.7744551601406513,
+    0.700385556237997,
+    0.7472971794206911,
+    0.6298023700082603,
+    0.7069455490184019,
+    0.5677229349981333,
+    0.5387612274600752,
+    0.5589812623948685,
+    0.5446297362528029
+  ]
+}
