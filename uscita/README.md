@@ -22,8 +22,8 @@ Una cartella per strumento, una sottocartella per versione: `uscita/<strumento>/
 
 - Al massimo **5 versioni** per strumento; alla quinta lo strumento si chiude o si riformula da capo.
 - Una versione **resta in `uscita/` finche' e' quella in uso** dai soci, che la prendono da GitHub su `main`.
-  Quando esce la successiva si cancella: git la conserva, e la riga della tabella Consegne registra il commit da
-  cui recuperarla (Matteo, 20/11; DECISIONS 2026-11-20 (2)).
+  Quando esce la successiva si cancella: git la conserva, e la colonna "Commit" della tabella Consegne registra
+  l'ultimo commit di `main` che la contiene, da cui recuperarla (Matteo, 20/11; DECISIONS 2026-11-20 (2)).
 - Una *correzione* e' gratis. Una *modifica dopo l'esito* conta come **trial** nel contatore unico, e i dati dei soci
   che l'hanno motivata non sono piu' indipendenti per giudicarla.
 - Cio' che torna dai soci (esiti, problemi) si registra in `DECISIONS.md`.
@@ -35,9 +35,9 @@ pubblico).
 
 ## Consegne
 
-| Strumento | Versione | Data | Tipo | A chi (ruolo) | Ritorno |
-|---|---|---|---|---|---|
-| [`volatilita_ewma`](volatilita_ewma/v1/report.md) | v1 | 2026-11-20 | prima consegna (0 trial) | tutti i soci | nessuno |
+| Strumento | Versione | Data | Tipo | A chi (ruolo) | Ritorno | Commit (alla cancellazione) |
+|---|---|---|---|---|---|---|
+| [`volatilita_ewma`](volatilita_ewma/v1/report.md) | v1 | 2026-11-20 | prima consegna (0 trial) | tutti i soci | nessuno | in uso |
 
 **Regola sui dati futuri della volatilita'** ([report v1](volatilita_ewma/v1/report.md), punto 2): **non attiva**.
 Parte il giorno della pre-registrazione del ridisegno della famiglia, che si scrive qui.

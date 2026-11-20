@@ -1,6 +1,6 @@
 ---
 tipo: referto
-stato: "BLOCCA (4 bloccanti, 7 riserve): revisione del gatekeeper prima della consegna, 20/11/2026"
+stato: "seconda passata (commit abb830e): PASSA CON NOTE, 0 bloccanti, 4 note; prima passata BLOCCA (4 bloccanti, 7 riserve), 20/11/2026"
 aggiornato: 2026-11-20
 oggetto: "uscita/volatilita_ewma/v1/ (report.md, volatilita_ewma.py, test_volatilita_ewma.py), non ancora committati, branch strumenti/volatilita su e0fa9f7"
 misure: "nessun dato di prezzo caricato. Numeri ricalcolati da magazzino/registro/codice/volatilita/esiti/sviluppo.json (commit 0d53ba1), pos_garch.json e pos_hmm.json (commit 5dcee68); prove del codice su serie sintetiche; date delle prime previsioni dal calendario exchange_calendars 4.13.2"
@@ -174,3 +174,79 @@ DEBITO DI PROTOCOLLO
 - B4 si chiude in due righe del report.
 - Dopo le correzioni basta una seconda passata sul solo report e sulla voce DECISIONS; il codice non va rivisto
   salvo R5 (ii).
+
+## Seconda passata (20/11/2026, commit `abb830e`, branch `strumenti/volatilita`)
+
+Solo sulle correzioni: commit `00a36b8` (codice, test, `verifica_pacchetto.py`) e `abb830e` (DECISIONS 2026-11-20 (2),
+contatore, pre-registrazione §11, `uscita/README.md`, report, mappa). Nessun dato di prezzo caricato: lo scarto 0 si
+legge da `esiti/pacchetto_ewma_v1.json`, non e' rifatto.
+
+```
+VERDETTO DEL GUARDIANO: PASSA CON NOTE
+
+BLOCCANTI (0)
+
+STATO DEI BLOCCANTI DELLA PRIMA PASSATA
+  B1 chiuso. DECISIONS 2026-11-20 (2) contiene le decisioni (a)-(e), la regola, la contabilita' e la correzione di
+     B2; riga nella tabella Consegne; nota e fonti del contatore aggiornate (--check: uscita 0); aggiunta datata nel
+     §11 e metrica_corrente della pre-registrazione ("nessuna apertura prevista"); mappa e _modifiche (da_rivedere).
+  B2 chiuso. Matteo sceglie i dati futuri, successivi alla pre-registrazione del ridisegno, come dicono §7.7, §8 e
+     P3; il report non promette piu' l'holdout (report.md:93-94). Una fonte nuova acquistata e' una deviazione da P3
+     da valutare ogni volta col gatekeeper: vedi N3.
+  B3 chiuso. Report.md:93-103 e DECISIONS: ambito (ogni canale, comprese le impressioni), test di strategia col solo
+     verdetto aggregato, violazione decisa prima (registro in DECISIONS delle coppie, non del numero; le coppie
+     escono dal test), chi registra (Matteo), durata (dalla data della pre-registrazione alla fine del test),
+     elenco di cio' che e' gia' stato ricevuto nella pre-registrazione. Spostare l'inizio alla data della
+     pre-registrazione e' coerente con B2: prima di quella data i dati non sono dati del test.
+  B4 chiuso. Report.md:37-44: l'EWMA non esce perche' e' la migliore (1 coppia su 18); confronti completi (11/18
+     contro GJR, GARCH, media GARCH, comb3; 10/18 contro l'HAR); tabella con l'HAR e la colonna "la piu' bassa",
+     9 righe su 9 coincidono con sviluppo.json; WTI h1 nella frase sul GJR (report.md:47).
+
+STATO DELLE RISERVE DELLA PRIMA PASSATA
+  R1 chiusa: 9-23% per coppia sui sigma degli indici (pos_garch.json, s0-s4) e circa 17% per l'SPX500 h1 (report.md:49-52).
+  R2 chiusa: bersaglio(v, h) somma v[t+1..t+h], provato da test_bersaglio_allineato; uso corretto nel report.md:159-162.
+  R3 chiusa: limite sui giorni a 24 ore (report.md:122-125) e "vale per i dati costruiti come in trad" (:178).
+  R4 chiusa: verifica_pacchetto.py, esito sul commit 00a36b8: scarto relativo massimo 0,0 su 9 strumenti, EWMA e
+     GJR, h1 e h5, 12.732 origini (somma ricontrollata); 10 ripieghi GJR sull'EURUSD = 2 blocchi non convergenti
+     di sviluppo.json × 5 origini. Il codice del pacchetto non cambia fra 00a36b8 e abb830e (cambia solo il report):
+     la verifica vale per il codice consegnato. Lo script legge i dati col caricatore giorni.py, fermo al 2024-11-10.
+  R5 chiusa: riscaldamento < 75 e' un errore (volatilita_ewma.py:56-57); controlli su v in qlike e riscala; c_t NaN
+     con denominatore 0; la riga di comando si ferma con <= 100 rendimenti; canale dei limiti di arch nel docstring.
+  R6 chiusa: versioni provate (report.md:132-133, docstring).
+  R7 chiusa: metrica_corrente e §11 della pre-registrazione, nota del contatore.
+
+NOTE (4) — nessuna blocca la consegna
+  N1 [fonte] report.md:6, frontmatter: "fonte: ... (DECISIONS 2026-11-20)". La voce che decide la consegna e' la
+     2026-11-20 (2), come gia' a report.md:29 e :94.
+  N2 [registro delle consegne] uscita/README.md:24-26 dice che la riga della tabella Consegne registra il commit
+     da cui recuperare una versione cancellata, ma la tabella (:38-40) non ha la colonna del commit. Va aggiunta,
+     col commit che arriva su main, prima che la v2 cancelli la v1.
+  N3 [fonte nuova di dati] DECISIONS 2026-11-20 (2) ammette come deviazione da P3 "una fonte nuova di dati mai
+     visti (strumenti o periodi mai toccati)". Il periodo 2024-11-11 → 2026-11-10 non e' mai stato toccato dalla
+     pipeline: un feed acquistato su quel periodo (per esempio i futures CME) riaprirebbe da un'altra porta lo
+     stesso blocco che la voce dichiara "sigillato senza uso", e sul quale la regola per i soci oggi non vale (i
+     loro ritorni su quel periodo arrivano liberamente fino alla pre-registrazione). Alla prima valutazione di una
+     fonte nuova va detto se quel periodo conta come "mai toccato"; se si', le informazioni ricevute nel frattempo
+     sul periodo entrano nell'elenco della pre-registrazione, e la contaminazione da cutoff (circa l'80% del blocco
+     precede il 2026-05-31, pre-registrazione §4) va dichiarata come nel §4.
+  N4 [codice] bersaglio() usa una somma cumulata: un solo v mancante rende NaN tutte le righe successive, e
+     "tolte le righe NaN" (report.md:161) le scarta senza avviso. qlike non tace (rifiuta i NaN), ma chi filtra
+     prima perde dati senza saperlo. Basta una riga nel docstring o un controllo su v.
+
+VERIFICATO E A POSTO (seconda passata)
+  - tabella h1 con HAR e "la piu' bassa": 54 valori, 9 etichette, coincidono con sviluppo.json (commit 0d53ba1)
+  - frase su h5 (report.md:85-86): persistenza solo sul WTI, HAR su oro e argento fra i non indici, EWMA la piu' bassa sull'EURUSD
+  - prime origini nel report.md:65 = prima_origine di pacchetto_ewma_v1.json (EURUSD 2018-11-05, indici USA 2018-12-20, RUSSELL 2022-07-29)
+  - 9 test verdi (rilanciati qui); contatore --check uscita 0; cumulato 126 invariato
+  - nessun nome di socio, chat, orario, numero di conto o dato grezzo nei file del pacchetto e nel README d'uscita
+  - "selezione post-esito GJR sugli indici, 10 serie gia' contate, 0 trial" coerente in DECISIONS, contatore, §11 e report
+
+ESECUZIONE
+  - non applicabile (binario strumenti, nessun ordine)
+
+CONTABILITA'
+  - trial della consegna: 0 · cumulato famiglia: 126 · round: 0 di 3 (il ridisegno portera' a 1)
+  - holdout della famiglia: sigillato, senza uso (DECISIONS 2026-11-20 (2)); holdout_aperto = null
+  - budget pre-registrazioni: binario strumenti, nessuna quota trimestrale
+  - registro prop-lab coerente col contatore: si'
+```

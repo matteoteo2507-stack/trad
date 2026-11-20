@@ -101,3 +101,5 @@ def test_bersaglio_allineato():
     v = np.array([1.0, 2.0, 3.0, 4.0])
     assert np.allclose(V.bersaglio(v, 1), [2.0, 3.0, 4.0, np.nan], equal_nan=True)
     assert np.allclose(V.bersaglio(v, 2), [5.0, 7.0, np.nan, np.nan], equal_nan=True)
+    w = np.array([1.0, np.nan, 3.0, 4.0, 5.0, 6.0])  # un giorno mancante tocca solo le finestre che lo contengono
+    assert np.allclose(V.bersaglio(w, 1), [np.nan, 3.0, 4.0, 5.0, 6.0, np.nan], equal_nan=True)

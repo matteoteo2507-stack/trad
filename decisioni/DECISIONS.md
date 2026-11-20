@@ -47,6 +47,8 @@ impressioni; un test di strategia sullo strumento si registra col solo verdetto 
 stesso, Matteo registra qui quali strumenti e orizzonti tocca (non il numero), e quelle coppie escono dal test. La
 pre-registrazione del ridisegno elenca le informazioni gia' ricevute sui suoi dati.
 
+**Periodo sigillato e fonti nuove** (nota N3 del gatekeeper). Se una fonte nuova, anche acquistata, copre il blocco 2024-11-11 → 2026-11-10, alla prima valutazione si dichiara se quel periodo conta come "mai toccato" (la pipeline non l'ha mai letto, ma e' gia' passato e i soci possono riportarne risultati fino alla pre-registrazione). Se si', le informazioni ricevute nel frattempo entrano nell'elenco della pre-registrazione e si dichiara la contaminazione da conoscenza del periodo.
+
 ---
 
 ## 2026-11-20 — Volatilita': i controlli positivi falliscono, **escono i nodi GARCH e HMM**; con il premio escono tutti i nodi, **l'holdout resta sigillato**; 126 trial

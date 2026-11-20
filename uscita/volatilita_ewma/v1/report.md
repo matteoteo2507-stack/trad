@@ -3,7 +3,7 @@ strumento: volatilita_ewma
 versione: 1
 tipo: prima consegna
 data: 2026-11-20
-fonte: trad, famiglia volatilita (DECISIONS 2026-11-20)
+fonte: trad, famiglia volatilita (DECISIONS 2026-11-20 e 2026-11-20 (2))
 ---
 
 # volatilita_ewma v1 — previsione della varianza di domani e dei prossimi 5 giorni
@@ -158,7 +158,7 @@ l'anno, circa il 19% annuo. La riga t si usa **dopo la chiusura di t**: e' la pr
 **Con una varianza realizzata intraday** `v` (somma dei quadrati dei rendimenti a 5 minuti, piu' la notte per gli
 indici), sullo stesso calendario di `r`: `c = V.riscala(r, v)` e poi `previsione * c`. Per misurare, la previsione
 della riga t va confrontata coi giorni **successivi**: `V.qlike(f, V.bersaglio(v, 1))` per `h1`,
-`V.qlike(f, V.bersaglio(v, 5))` per `h5` (tolte le righe NaN). Confrontarla con `v` dello stesso giorno premia chi copia
+`V.qlike(f, V.bersaglio(v, 5))` per `h5` (tolte le righe NaN: sono la fine dei dati e le finestre che toccano un giorno con `v` mancante). Confrontarla con `v` dello stesso giorno premia chi copia
 oggi.
 
 **Insieme ad altri strumenti.** Lo strumento dice *quanto* si muove il prezzo, non *dove*. Usi tipici da testare:
@@ -175,7 +175,8 @@ uguaglianza con `arch`, riscalamento, QLIKE, bersaglio allineato, controlli degl
 fra le previsioni del pacchetto e quelle di `trad` (prima di c_t) e' **0** per l'EWMA e per il GJR, a entrambi gli
 orizzonti; il GJR ripiega sui parametri precedenti in 10 origini dell'EURUSD, come in `trad`
 ([`esiti/pacchetto_ewma_v1.json`](../../../magazzino/registro/codice/volatilita/esiti/pacchetto_ewma_v1.json), script
-`verifica_pacchetto.py`, 20/11/2026, commit `00a36b8`). Vale per i dati costruiti come in `trad` (punto 3, giorni a 24
+`verifica_pacchetto.py`, 20/11/2026, commit `00a36b8`; dopo, nel codice e' cambiata solo `bersaglio`, che non entra
+nelle previsioni). Vale per i dati costruiti come in `trad` (punto 3, giorni a 24
 ore).
 
 **Il ciclo di ritorno** ([uscita/README.md](../../README.md)): al massimo 5 versioni. Una **correzione** (un bug,

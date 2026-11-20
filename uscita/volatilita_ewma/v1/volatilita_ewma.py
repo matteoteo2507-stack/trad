@@ -99,14 +99,11 @@ def riscala(r: np.ndarray, v: np.ndarray, w: int = W) -> np.ndarray:
 
 
 def bersaglio(v: np.ndarray, h: int) -> np.ndarray:
-    """Il bersaglio della riga t: somma di v[t+1 .. t+h] (NaN dove la finestra esce dai dati). La previsione della
-    riga t si confronta con questo, mai con v[t]: senza lo spostamento il confronto premia chi copia oggi."""
-    v = np.asarray(v, float)
-    cs = np.cumsum(np.r_[0.0, v])
-    out = np.full(len(v), np.nan)
-    t = np.arange(len(v) - h)
-    out[t] = cs[t + 1 + h] - cs[t + 1]
-    return out
+    """Il bersaglio della riga t: somma di v[t+1 .. t+h]. NaN dove la finestra esce dai dati o contiene un v mancante
+    (solo le righe la cui finestra tocca quel giorno, nessuna somma parziale). La previsione della riga t si confronta
+    con questo, mai con v[t]: senza lo spostamento il confronto premia chi copia oggi."""
+    s = pd.Series(np.asarray(v, float)).rolling(h, min_periods=h).sum().shift(-h)
+    return s.to_numpy()
 
 
 def qlike(f: np.ndarray, v: np.ndarray) -> np.ndarray:
