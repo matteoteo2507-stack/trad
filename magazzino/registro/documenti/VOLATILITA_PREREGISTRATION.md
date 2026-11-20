@@ -4,7 +4,7 @@ stato: APPROVATA
 approvata: "2026-11-13, Matteo in sessione, sul testo del commit 7dea1e3"
 aggiornato: 2026-11-20
 decisione: "Matteo: gate degli strumenti e strada A (10-11/11); errore di famiglia 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita', holdout di due anni (11/11); orizzonte massimo 5 giorni, strumenti dei test piu' completi (11/11); varianti GARCH approvate, benchmark dell'HMM delegato a Claude secondo S4, premio di volatilita' a 30 giorni come definizione (13/11); dopo la prima G1: combinazione fissa nell'HMM, holdout non aperto se il controllo positivo fallisce, affermazioni per strumento, commit su branch nuovo (13/11). DECISIONS 2026-11-10, 2026-11-11, 2026-11-13"
-metrica_corrente: "passo 5 (20/11): i positivi GARCH e HMM falliscono, entrambi i nodi escono per la scelta dei parametri; con il premio uscito il 13/11 l'holdout resta sigillato"
+metrica_corrente: "passo 5 (20/11): i positivi GARCH e HMM falliscono, entrambi i nodi escono per la scelta dei parametri; con il premio uscito il 13/11 l'holdout resta sigillato. Famiglia in ridisegno su dati futuri, nessuna apertura prevista da questa pre-registrazione (DECISIONS 2026-11-20 (2))"
 nota: "Famiglia di STRUMENTI (binario `strumenti`, STRATEGY_LIFECYCLE §8ter): niente trade, niente R, niente DSR. Verdetto sul blocco di holdout 2024-11-11 -> 2026-11-10, aperto una volta. Cinque passate G1 il 13/11: quattro BLOCCA corrette, la quinta PASSA CON RISERVE (riserva chiusa). APPROVATA da Matteo il 13/11: da qui ogni modifica di §1-§6 e' una deviazione (§10); i passi del §7 si registrano in aggiunte datate (§11)."
 ---
 
@@ -715,3 +715,18 @@ Corse del commit `5dcee68` (le repliche del 19/11 interrotte con la sessione si 
   MDE e controlli. Non e' un verdetto sui modelli: dice che con due anni di holdout e 18 ipotesi per nodo il test non
   vede, coppia per coppia, vantaggi della taglia simulata. I passi 6-8 non si fanno. Trial: 126, invariati (le
   previsioni di sviluppo sono state calcolate). Lo stato della famiglia lo decide Matteo.
+
+### 2026-11-20 — Dopo il passo 5: famiglia in ridisegno, nessuna apertura prevista da questa pre-registrazione
+
+Decisioni di Matteo ([DECISIONS 2026-11-20 (2)](../../../decisioni/DECISIONS.md)). Lo stato resta **APPROVATA**, ma
+questa pre-registrazione **non prevede piu' nessuna apertura**: il passo 8 non e' eseguibile e l'holdout dal
+2024-11-11 resta sigillato senza uso. Il seguito e' un ridisegno con meno ipotesi, in una pre-registrazione nuova della
+stessa famiglia (C1, un round: 0 → 1 di 3), testato su **dati futuri** successivi alla sua data come dicono il §7.7 e
+il §8; una fonte nuova di dati mai visti, anche acquistata, si valuta a ogni pre-registrazione come deviazione
+dichiarata da P3. Le quote vengono solo dalle riserve dei nodi usciti; la famiglia resta al 5%.
+
+La scelta "GJR sugli indici" esce ai soci come opzione esplorativa nel pacchetto
+[`uscita/volatilita_ewma/v1`](../../../uscita/volatilita_ewma/v1/report.md): e' una selezione dopo l'esito (S6,
+P1-P2), 10 serie gia' contate fra le 54 GARCH, nessun trial in piu'. Il codice del pacchetto riproduce `modelli.py` sui
+nove strumenti di sviluppo ([`esiti/pacchetto_ewma_v1.json`](../codice/volatilita/esiti/pacchetto_ewma_v1.json),
+script `verifica_pacchetto.py`). Trial: 126, invariati.

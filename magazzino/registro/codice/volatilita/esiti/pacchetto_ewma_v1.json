@@ -1,0 +1,150 @@
+{
+ "commit": "00a36b838cee94441e2f375824f274ed110767bd",
+ "scarto_max_complessivo": 0.0,
+ "strumenti": {
+  "SPX500": {
+   "giorni": 2481,
+   "prima_origine": "2018-12-20",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1482,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1482,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "NAS100": {
+   "giorni": 2481,
+   "prima_origine": "2018-12-20",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1482,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1482,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "DOW": {
+   "giorni": 2481,
+   "prima_origine": "2018-12-20",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1482,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1482,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "RUSSELL": {
+   "giorni": 1574,
+   "prima_origine": "2022-07-29",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 575,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 575,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "DAX": {
+   "giorni": 2504,
+   "prima_origine": "2018-12-10",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1505,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1505,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "XAUUSD": {
+   "giorni": 2545,
+   "prima_origine": "2018-11-14",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1546,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1546,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "XAGUSD": {
+   "giorni": 2544,
+   "prima_origine": "2018-11-15",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1545,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1545,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "WTI": {
+   "giorni": 2547,
+   "prima_origine": "2018-11-12",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1548,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1548,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 0
+   }
+  },
+  "EURUSD": {
+   "giorni": 2566,
+   "prima_origine": "2018-11-05",
+   "ultimo_giorno": "2024-11-08",
+   "ewma": {
+    "origini": 1567,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0
+   },
+   "gjr": {
+    "origini": 1567,
+    "scarto_max_h1": 0.0,
+    "scarto_max_h5": 0.0,
+    "ripieghi_pacchetto": 10
+   }
+  }
+ }
+}

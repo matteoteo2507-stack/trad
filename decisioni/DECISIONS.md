@@ -11,6 +11,44 @@
 
 ---
 
+## 2026-11-20 (2) — Volatilita': famiglia **in ridisegno** su dati futuri; primo pacchetto d'uscita **`volatilita_ewma` v1** per i soci; 0 trial
+
+Decisioni di Matteo dopo il passo 5 (voce sotto), con la revisione del gatekeeper sul pacchetto
+([referto](../magazzino/registro/referti/uscita_volatilita_ewma_v1_2026-11-20.md)).
+
+**Stato e seguito.** Lo stato nel contatore resta **APPROVATA**, con la nota "in ridisegno": questa pre-registrazione
+non prevede piu' nessuna apertura (il passo 8 non e' eseguibile) e l'holdout dal 2024-11-11 resta sigillato senza uso.
+Il seguito e' un **ridisegno con meno ipotesi** (per esempio gli indici come domanda unica: il nodo GARCH simulato, letto come
+"almeno una coppia su 18", rifiutava nell'84% delle repliche, `esiti/pos_garch.json`): una pre-registrazione nuova della stessa famiglia, che conta ogni serie nuova (C1),
+consuma un round (0 → 1 di 3) e usa quote prese solo dalle riserve dei nodi usciti, con la famiglia al 5%.
+**Su quali dati** (Matteo): su **dati futuri**, successivi alla pre-registrazione del ridisegno, come dicono il §7.7 e
+il §8 della pre-registrazione e P3 del LIFECYCLE §8ter; "in assenza di fonti nuove di dati, anche pagate, vale solo dati
+futuri: tenere sempre in considerazione l'opzione di dati acquistabili che a noi mancano". Una fonte nuova di dati mai
+visti (strumenti o periodi mai toccati) si valuta quindi a ogni pre-registrazione del ridisegno, col gatekeeper, come
+deviazione dichiarata da P3 (che chiede dati forward). Correzione: in sessione Claude aveva proposto l'holdout
+sigillato come dati non visti per il ridisegno; contraddiceva le regole (bloccante B2 del gatekeeper).
+
+**Pacchetto per i soci** ([`uscita/volatilita_ewma/v1/`](../uscita/volatilita_ewma/v1/report.md), primo pacchetto
+d'uscita, regole in [uscita/README.md](../uscita/README.md)): EWMA λ = 0,94 come strumento, GJR sugli indici come
+opzione **esplorativa**. Nessuna proprieta' dimostrata: l'EWMA era il benchmark, e nello sviluppo e' la previsione
+migliore in 1 coppia su 18; esce perche' e' lo standard dichiarato prima e non ha parametri stimati. Il GJR sugli
+indici e' una **selezione dopo l'esito** (S6, P1-P2): 10 serie gia' contate fra le 54 GARCH, **nessun trial in piu'**,
+confermabile solo su dati non visti (P3); annotata nel contatore. La consegna e' a **0 trial**: il codice ricalcola serie
+esistenti, e riproduce `modelli.py` sui nove strumenti di sviluppo
+([`esiti/pacchetto_ewma_v1.json`](../magazzino/registro/codice/volatilita/esiti/pacchetto_ewma_v1.json)).
+Il pacchetto **resta in `uscita/` finche' e' la versione in uso** e si cancella all'arrivo della v2 (git lo conserva,
+la tabella Consegne registra il commit). I soci lo prendono da GitHub su `main`: il merge lo fa Claude in locale, il
+push Matteo.
+
+**Regola sui dati futuri per i soci** (nel report, punto 2). Parte solo il giorno della pre-registrazione del
+ridisegno, scritto nella tabella Consegne, e dura fino alla fine del test che quella fissa. In quel periodo: nessun
+risultato **per modello** sui dati del test riportato a `trad` in nessun canale (repo, chat, voce), comprese le
+impressioni; un test di strategia sullo strumento si registra col solo verdetto aggregato. Se un confronto arriva lo
+stesso, Matteo registra qui quali strumenti e orizzonti tocca (non il numero), e quelle coppie escono dal test. La
+pre-registrazione del ridisegno elenca le informazioni gia' ricevute sui suoi dati.
+
+---
+
 ## 2026-11-20 — Volatilita': i controlli positivi falliscono, **escono i nodi GARCH e HMM**; con il premio escono tutti i nodi, **l'holdout resta sigillato**; 126 trial
 
 Passo 5 del §7, commit `5dcee68`, 0 errori. Il test riconosce il vantaggio simulato, coppia per coppia, nel **18,9%**

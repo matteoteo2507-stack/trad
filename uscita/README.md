@@ -4,7 +4,7 @@ Quinta macro del repo (DECISIONS 2026-11-09). Qui sta cio' che `trad` **consegna
 prezzo che l'analisi da quant ha trovato applicabile coi nostri mezzi. Cos'e' uno strumento e cosa lo distingue da una
 strategia: [04_quant_metodologia §0](../magazzino/fondamenti_tecnici/04_quant_metodologia/principles.md).
 
-La cartella resta anche vuota finche' non esce il primo pacchetto, come `decisioni/Da distillare/`.
+Il primo pacchetto e' uscito il 20/11/2026 (`volatilita_ewma/v1`).
 
 ## Com'e' fatto un pacchetto
 
@@ -21,6 +21,9 @@ Una cartella per strumento, una sottocartella per versione: `uscita/<strumento>/
 ## Il ciclo di ritorno
 
 - Al massimo **5 versioni** per strumento; alla quinta lo strumento si chiude o si riformula da capo.
+- Una versione **resta in `uscita/` finche' e' quella in uso** dai soci, che la prendono da GitHub su `main`.
+  Quando esce la successiva si cancella: git la conserva, e la riga della tabella Consegne registra il commit da
+  cui recuperarla (Matteo, 20/11; DECISIONS 2026-11-20 (2)).
 - Una *correzione* e' gratis. Una *modifica dopo l'esito* conta come **trial** nel contatore unico, e i dati dei soci
   che l'hanno motivata non sono piu' indipendenti per giudicarla.
 - Cio' che torna dai soci (esiti, problemi) si registra in `DECISIONS.md`.
@@ -34,5 +37,7 @@ pubblico).
 
 | Strumento | Versione | Data | Tipo | A chi (ruolo) | Ritorno |
 |---|---|---|---|---|---|
+| [`volatilita_ewma`](volatilita_ewma/v1/report.md) | v1 | 2026-11-20 | prima consegna (0 trial) | tutti i soci | nessuno |
 
-Nessuna consegna al 09/11/2026.
+**Regola sui dati futuri della volatilita'** ([report v1](volatilita_ewma/v1/report.md), punto 2): **non attiva**.
+Parte il giorno della pre-registrazione del ridisegno della famiglia, che si scrive qui.
