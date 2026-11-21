@@ -11,6 +11,26 @@
 
 ---
 
+## 2026-11-21 (9) — I3: il controllo **N2 gira prima della potenza**, fissato per intero ora; requisiti del codice; 0 trial
+
+**Quinta passata del gatekeeper sul passo 2 (commit `980a839`): BLOCCA**, 1 bloccante: N2 (la misura e' distorta dalle
+quotazioni non sincrone?) era configurato al passo 3, quindi girava dopo la dispersione HAC, e il "ritorno gratuito al
+passo 2" dopo un suo rifiuto era in realta' un cambio dopo un'uscita (punto 3 di P6 del §8ter). Il gatekeeper lo
+attribuisce in parte alla sua riserva precedente.
+
+**Decisione presa insieme**: **N2 gira dopo il controllo di struttura e prima della potenza**, fissato ora per intero
+([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md) §9): volatilita' costanti (l'EWMA e'
+esatta), attesa della matrice misurata con la ricorsione EWMA 0,94, prezzi fermi e mancanti per strumento e per anno dai
+conteggi dello sviluppo; EWMA contro costante e persistenza; Diebold-Mariano a una coda al 5% con HLN e HAC; 500
+repliche; rifiuto se la quota supera il limite alto dell'intervallo binomiale al 95% (circa 6,9%). Se rifiuta si torna
+al passo 2 a 0 trial; dopo il passo 3 N2 si ripete sui candidati, con conseguenze scritte prima. Riserve applicate: un
+solo elenco delle scelte rinviate; conseguenze del G9 prima di qualunque configurazione; guardia "nessun canale" (media,
+segno e perdite non escono da nessuna parte, nemmeno in cache); fine dei dati al 2026-11-10 nello scarico e nel loader.
+I **requisiti del commit (1)** elencati dal gatekeeper (guardie, versioni, sha256, uscite ammesse, test sintetici) sono
+nel referto.
+
+---
+
 ## 2026-11-21 (8) — P6 del §8ter **precisato**: prime scelte dopo un'uscita e guardie fra le protezioni; I3 passo 2: zeri, ordine del G9; 0 trial
 
 **Quarta passata del gatekeeper sul passo 2 (commit `2885c53`): BLOCCA**, 1 bloccante, in parte dovuto al testo di P6 che
