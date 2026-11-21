@@ -11,6 +11,40 @@
 
 ---
 
+## 2026-11-21 (5) — I3 passo 2: misura intraday, perdita di **Stein**, benchmark **EWMA 0,94**, fattore di scala; gli 8 strumenti nuovi **si spendono per I3**; 0 trial
+
+Passo 2 di I3 ([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md)). Classe: nessuna (misura
+di rischio). Prima bozza (commit `5ad5b98`) bloccata dal gatekeeper: **4 bloccanti** (scala del bersaglio: con la
+diagonale ≠ 1 la Stein premia correlazioni sbagliate; dati letti per la potenza prima di congelare le scelte; controllo
+G9 mancante; dichiarazione falsa "I3 non calcola statistiche di volatilita'") e 8 riserve, applicati nel referto.
+
+**Decisioni di Matteo** (fra opzioni proposte da Claude, tutte le raccomandate):
+1. **Bersaglio**: matrice di correlazione dei rendimenti a 15 minuti nella **seduta USA** (9:30-16:00 New York), orizzonte
+   **1 e 5 giorni**, sugli M5 Dukascopy.
+2. **Perdita di Stein** (QLIKE multivariata), Frobenius solo come lettura; fonti in quarantena, da verificare sul testo
+   prima della corsa della potenza.
+3. **Benchmark del verdetto: EWMA 0,94** delle matrici realizzate; riferimenti costante (1.000 sedute) e persistenza;
+   DCC(1,1) come benchmark forte.
+4. **Blocco 2024-11-11 → 2026-11-10 degli M5 letto da I3, dichiarandolo**: una fonte comprata in futuro che lo copra non
+   conta piu' come mai toccata (impegno che va oltre la nota N3 del 2026-11-20 (2), preso da Matteo).
+5. **Fattore di scala** per strumento come c_t della volatilita' (1.000 sedute, solo passato), dentro l'ingresso fisso.
+6. **Ingresso fisso**: EWMA 0,94 della varianza realizzata **nella stessa seduta** del bersaglio; marginale **gaussiana**.
+7. **Gli 8 strumenti gratuiti** (BUND, USTBOND, USDJPY, GBPUSD, AUDUSD, COPPER, NATGAS, BTCUSD) **si spendono per I3**:
+   perdono in modo irreversibile lo stato di "mai visti" per la calibrazione dell'EWMA del ridisegno della volatilita'.
+   Universo: 17 strumenti in 8 classi (16 se il DAX non passa il controllo di struttura). Nella domanda Claude aveva
+   scritto per errore "13 classi in piu'": il conto giusto, corretto subito dopo, e' da 5 a 8 classi.
+8. **Potenza: solo la dispersione** (deviazione HAC del differenziale EWMA − costante, senza media ne' segno), dopo il
+   commit di tutte le scelte e la verifica delle fonti; 0 trial.
+9. **Controllo G9**: negativo con la ricorsione EWMA esatta, positivo **DCC con parametri stimati sullo sviluppo**; il
+   rapporto effetto/MDE si scrive prima di contare qualunque trial.
+
+Debito emerso (dal gatekeeper): il §8ter non dice che tutto cio' che usa l'MDE si congela prima di calcolarlo, non ha
+una regola sulla scala di un bersaglio standardizzato (c_t vive solo nella pre-registrazione della volatilita'), non
+definisce l'unita' di conto per una previsione di matrice, e non prevede che la perdita stessa contenga diagnostiche
+della famiglia d'origine dell'ingresso fisso.
+
+---
+
 ## 2026-11-21 (4) — `trend_momentum`: i round **restano 2 di 3**; parte il passo 2 di I3; 0 trial
 
 Matteo chiude il punto aperto della voce 2026-11-21 (decisione 3): anche con `tsmom` famiglia distinta, i round di `trend_momentum` restano **2 di 3**, come nel contatore da agosto (la pre-registrazione del playground contava TSMOM come round 1; la scelta prudente resta). Annotati contatore e pre-registrazione. Il passo 2 di I3 parte (proprieta', bersaglio, perdita, benchmark, potenza).
