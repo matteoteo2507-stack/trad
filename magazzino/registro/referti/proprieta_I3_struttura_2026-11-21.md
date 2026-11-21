@@ -54,8 +54,10 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   giorni mancanti, e si riporta per anno e per strumento quanti giorni esclude (controllo di selezione, come la
   volatilita': per ogni giorno escluso si riporta il rendimento assoluto della seduta contro la mediana, per vedere se le
   esclusioni coincidono con i giorni estremi).
-- **Quotazioni ferme**: un rendimento a 15 minuti esattamente nullo si conta; uno strumento-giorno con piu' del 25% di
-  rendimenti nulli conta come mancante (un prezzo fermo spinge la correlazione verso zero). La quota per strumento e per
+- **Quotazioni ferme**: un rendimento a 15 minuti **osservato** ed esattamente nullo si conta; uno strumento-giorno con
+  piu' del 25% di rendimenti nulli **fra quelli osservati** conta come mancante (un rendimento mancante, che vale zero
+  solo nei prodotti, non e' un rendimento nullo: la quota si conta prima di mettere gli zeri, cosi' un buco non pesa due
+  volte) (un prezzo fermo spinge la correlazione verso zero). La quota per strumento e per
   anno si misura nel controllo di struttura, prima di ogni statistica.
 - **Rollover** dei CFD su futures (BUND, USTBOND, COPPER, NATGAS, WTI): il rendimento a 15 minuti che attraversa
   l'ora di un cambio di contratto si toglie **nel loader**, una volta sola, con le date del calendario del fornitore.
@@ -72,7 +74,7 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   tutti).
 - **Calendario**: XNYS di `exchange_calendars`, versione registrata nelle guardie (come la volatilita').
 - **Controllo di struttura**: conteggi su sviluppo e blocco (le probabilita' di prezzo fermo per il G9 si prendono
-  **solo dallo sviluppo**); il controllo di selezione (rendimento assoluto dei giorni
+  **solo dallo sviluppo**, sui soli rendimenti osservati, separate dalle probabilita' di rendimento mancante); il controllo di selezione (rendimento assoluto dei giorni
   esclusi contro la mediana) **solo sullo sviluppo**.
 - **Orizzonte 5**: un'origine si esclude se uno dei 5 giorni e' escluso (come la volatilita').
 
@@ -215,8 +217,12 @@ fattore di scala, correzione di Bartlett, rendimento mancante = zero), con due i
   previsore esatto" vale solo se la misura simulata non ha Epps residuo: se ne ha, un rifiuto del negativo misura la
   distorsione della misura, e va letto cosi'.
 
-**Ordine**: il DCC si stima e il G9 gira **solo dopo il commit di candidati, sottofamiglie e quote** (passo 3); i
-parametri stimati non si riportano prima. Il rapporto effetto/MDE dice quanto un DCC realistico batte l'EWMA: e' la
+**Ordine**: **N2 si calcola e si legge per primo, da solo**: e' tarato solo su conteggi (probabilita' di mancante e di
+prezzo fermo dello sviluppo), quindi un ritorno al passo 2 dopo N2 ricade nel punto 2 di P6 del §8ter (deviazione, 0
+trial). Poi, **solo dopo il commit di candidati, sottofamiglie e quote** (passo 3), si stimano GJR e DCC e girano N1 e il
+positivo; i parametri stimati non si riportano prima. Le conseguenze delle altre uscite (positivo sotto l'80%; N1 e N2
+che rifiutano insieme, dove prevale N2; G9 da rifare sul bersaglio alternativo dopo un passaggio) si scrivono al passo 3,
+prima che N1 e il positivo girino. Il rapporto effetto/MDE dice quanto un DCC realistico batte l'EWMA: e' la
 stessa informazione che il §10 tiene nascosta.
 - **negativo, in due configurazioni** (ogni rifiuto ha una sola causa e una conseguenza scritta ora):
   - **N1**: marginali GJR (l'EWMA sbaglia la scala) e quotazioni **sincrone**. Se rifiuta oltre la soglia, si passa al
@@ -269,15 +275,26 @@ saranno fissate.
 VOLATILITA_PREREGISTRATION §5); condizioni: la finestra della costante e' fissata ora (500 sedute), e la costante non
 puo' diventare lo strumento consegnato a partire da questi dati.
 
-## Statuto delle decisioni (Matteo, 21/11; corretto dalla terza passata)
+## Statuto delle decisioni (Matteo, 21/11; corretto dalla terza e dalla quarta passata)
 
 Le scelte di **misura e di disegno** di questo referto sono **prese insieme da Matteo e Claude**, con un margine d'errore
-dichiarato: sono rivedibili, e il costo di un cambio segue **P6** (LIFECYCLE §8ter): gratis prima del commit di
+dichiarato: sono rivedibili, e il costo di un cambio segue **P6 del §8ter** (LIFECYCLE): gratis prima del commit di
 congelamento se nessun dato gia' visto le riguarda (qui pesano gia' le correlazioni di A1 e i risultati della
-volatilita' sugli stessi M5, §8); deviazione P5 dopo il commit o dopo soli conteggi; dopo perdite o differenziali (anche
-la deviazione HAC del §10 e il rapporto effetto/MDE del §9) solo i cambi elencati prima, cioe' il passaggio al bersaglio
-alternativo (§4) e la lunghezza dell'holdout; dopo l'holdout nessuno. Le **regole di protezione** (holdout, blocco
-sigillato, dati futuri della volatilita') e i **verdetti** non sono scelte e non stanno sotto lo statuto.
+volatilita' sugli stessi M5, §8); deviazione P5 dopo il commit o dopo soli conteggi (compreso N2, §9); dopo perdite o
+differenziali (la deviazione HAC del §10, il rapporto effetto/MDE e N1 del §9) solo i cambi elencati prima, cioe' il
+passaggio al bersaglio alternativo (§4) e la lunghezza dell'holdout; dopo l'holdout nessuno.
+
+**Scelte rinviate in modo esplicito** (decisione del 21/11, DECISIONS (5)): candidati, sottofamiglie, quote, unita' di
+conto, holdout, repliche del G9 e P4 si fanno al passo 3 **dopo la sola dispersione HAC** del §10. Restano confermative
+solo se, oltre a quella dispersione e ai conteggi, **nessun'altra informazione** su perdite o differenziali e' stata
+vista; altrimenti vale il punto 3 di P6.
+
+**Regole di protezione** (non sono scelte e non stanno sotto lo statuto; cambiano solo col §7 o con una decisione di
+metodo di Matteo che dichiari cosa ha visto): l'holdout e il blocco sigillato; i dati futuri della volatilita'; la
+guardia che impedisce di stampare **media e segno** del differenziale e quella **"nessuna seduta oltre il 2024-11-08"**
+per la potenza (§10); il **non riportare la diagonale** (§4); gli impegni del §8 (una fonte comprata che copra il blocco
+non conta come mai toccata; gli 8 strumenti non sono piu' "mai visti" per la volatilita'); il vincolo che **la costante
+non diventa lo strumento consegnato** a partire da questi dati (§10). I verdetti, quando ci saranno, idem.
 
 ## Decisioni del 21/11 (passo 2), prese insieme
 
@@ -289,7 +306,12 @@ bersaglio; marginale **gaussiana**. Dopo la seconda passata del gatekeeper: il l
 fisse di **500 sedute**; rollover senza calendario **alla riapertura serale**; le regole di misura del §3 proposte da
 Claude (Bartlett su tutta la matrice, 90% dei rendimenti, chiusure anticipate escluse, 25% di rendimenti nulli, soglia
 del 10% per lo strumento, DAX, prezzi) adottate insieme. Restano al passo 3: candidati, sottofamiglie, quote, unita' di conto, holdout,
-repliche del G9, P4.
+repliche del G9, P4; inoltre, prima che N1 e il positivo girino: la verosimiglianza del DCC sul bersaglio alternativo
+(oggi usa i rendimenti standardizzati, che quel bersaglio toglie); in N2 le probabilita' di mancante e di prezzo fermo
+**per strumento e per anno**, generando anche i mancanti (con mancante = zero e prezzi fermi la correlazione misurata si
+attenua di circa √((1−p_i)(1−p_j)), e se le quote cambiano negli anni EWMA e DCC seguono l'attenuazione e la costante no:
+un vantaggio sulla qualita' dei dati, non sulla dinamica); nel §2 una frase su cosa dira' il pacchetto se il vantaggio
+coincide con quegli anni.
 
 ## Revisione del gatekeeper
 
@@ -315,4 +337,11 @@ R1 matrice semidefinita con buchi → §3 (mancante = zero); R2 regola di passag
 bersaglio alternativo definito, P4 nel negativo); R3 parametri GJR e ristima del DCC → §9; R4 riscaldamento → §4, §6,
 §10; R5 pause dentro W → §3.
 
-*(quarta passata: da compilare)*
+**Quarta passata (commit `2885c53`): BLOCCA**, 1 bloccante, 5 riserve. Bloccante: le scelte del passo 3 fatte dopo la
+dispersione HAC non erano regolate da P6, e la guardia su media e segno non era una protezione (via: togliere la guardia
+come deviazione, leggere il segno, scegliere i candidati) → P6 del §8ter precisato (prime scelte dopo un'uscita, guardie
+fra le protezioni), statuto con scelte rinviate e protezioni elencate (DECISIONS (8)). Riserve: R-a zeri contati due
+volte → §3; R-b N2 per primo e da solo → §9 (le altre conseguenze al passo 3); R-c DCC sul bersaglio alternativo e R-d
+mancanti che cambiano negli anni → passo 3, prima del G9; R-e nome P6 → citato come "P6 del §8ter".
+
+*(quinta passata: da compilare)*

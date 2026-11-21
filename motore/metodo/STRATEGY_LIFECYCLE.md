@@ -686,10 +686,15 @@ Chi legge un blocco sigillato di B lo dichiara prima di leggerlo.
   fatta con qualunque esito?"). 0 trial se la risposta e' si'; non rende esplorativo il test.
   (3) Dopo perdite o differenziali sui dati reali, comprese le dispersioni e le simulazioni calibrate sui dati reali
   (G9): ammessi solo i cambi **elencati prima** come condizionati a quell'uscita; ogni altro cambio e' una **variante
-  contata** (C1, C3) ed **esplorativa** (P1-P3): niente verdetto, niente holdout.
+  contata** (C1, C3) ed **esplorativa** (P1-P3): niente verdetto, niente holdout. Vale anche per le scelte fatte **per la
+  prima volta** dopo quell'uscita, salvo quelle che il referto del passo 2 rinvia in modo esplicito a dopo un'uscita
+  dichiarata (per I3: le scelte del passo 3 dopo la sola dispersione HAC).
   (4) Dopo l'apertura dell'holdout: nessuna scelta (H5).
-  **Regole di protezione** (holdout, sigilli, dati futuri, decorrenze, budget) e **verdetti** non sono scelte: cambiano
-  solo con il §7 o con una decisione di metodo di Matteo che dichiari cosa ha visto.
+  **Regole di protezione** (holdout, sigilli, dati futuri, decorrenze, budget, e le **guardie che nascondono un
+  risultato**, come "non stampare media e segno" o "non riportare la diagonale") e **verdetti** non sono scelte:
+  cambiano solo con il §7 o con una decisione di metodo di Matteo che dichiari cosa ha visto. *(Testo precisato il
+  21/11 dopo la quarta passata del gatekeeper sul passo 2 di I3: le prime scelte dopo un'uscita e le guardie; DECISIONS
+  2026-11-21 (8). Si cita come "P6 del §8ter": la sigla P6 indica anche un campo della scheda d'ingresso dall'hub, §8.)*
 
 **Sottofamiglie**
 - **S1** La pre-registrazione di famiglia le elenca tutte. La teoria senza previsioni testate (per la volatilita':

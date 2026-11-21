@@ -11,6 +11,26 @@
 
 ---
 
+## 2026-11-21 (8) — P6 del §8ter **precisato**: prime scelte dopo un'uscita e guardie fra le protezioni; I3 passo 2: zeri, ordine del G9; 0 trial
+
+**Quarta passata del gatekeeper sul passo 2 (commit `2885c53`): BLOCCA**, 1 bloccante, in parte dovuto al testo di P6 che
+il gatekeeper stesso aveva proposto: P6 non regolava le scelte fatte **per la prima volta** dopo un'uscita (le scelte del
+passo 3 dopo la dispersione HAC), e la guardia "non stampare media e segno" non era fra le protezioni. Via aperta:
+togliere la guardia come deviazione a 0 trial, leggere il segno, scegliere i candidati con verdetto confermativo.
+
+**Correzione** (chiude il buco, non aggiunge liberta'; tocca il testo di P6 confermato da Matteo in (7), che puo'
+rivederla): P6 punto 3 vale anche per le scelte fatte per la prima volta dopo un'uscita, salvo quelle rinviate in modo
+esplicito dal referto del passo 2 (per I3: il passo 3 dopo la sola dispersione HAC, e solo se nient'altro su perdite o
+differenziali e' stato visto); le **guardie che nascondono un risultato** sono regole di protezione. Nel
+[referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md) le protezioni di I3 sono elencate (guardie
+del §10, diagonale non riportata, impegni del §8, la costante che non diventa lo strumento consegnato). Riserve: zeri
+contati sui soli rendimenti osservati; **N2 del G9 si calcola e si legge per primo e da solo** (tarato su soli
+conteggi); conseguenze delle altre uscite del G9, DCC sul bersaglio alternativo e mancanti per anno in N2 al passo 3,
+prima che N1 e il positivo girino. P6 si cita come "P6 del §8ter" (la sigla P6 e' anche un campo della scheda dall'hub).
+Debito (decide Matteo): la Checklist 10 a G2 cita P5 ma non P6.
+
+---
+
 ## 2026-11-21 (7) — **P6 "costo di un cambio"** nel LIFECYCLE; statuto ristretto a misura e disegno; I3 passo 2: matrice, G9, riscaldamento, pause; 0 trial
 
 **Terza passata del gatekeeper sul passo 2 (commit `c84fa77`): BLOCCA**, 1 bloccante: lo statuto della voce (6), come

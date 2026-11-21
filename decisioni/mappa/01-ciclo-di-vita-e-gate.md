@@ -152,8 +152,9 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   - *P6, costo di un cambio* (§8ter, DECISIONS 2026-11-21 (7)): le scelte di misura e di disegno sono prese insieme e
     rivedibili; cambiarle e' gratis prima del commit di congelamento (se nessun dato gia' visto le riguarda), una
     deviazione dichiarata dopo il commit o dopo soli conteggi, una variante contata ed esplorativa dopo perdite o
-    differenziali (salvo i cambi previsti prima), vietato dopo l'holdout. Regole di protezione e verdetti non sono
-    scelte. *Come si rompe*: se un cambio dopo le perdite viene scritto come "deviazione", il verdetto resta
+    differenziali (salvo i cambi previsti prima), vietato dopo l'holdout. Vale anche per le scelte fatte per la prima
+    volta dopo un'uscita, salvo quelle rinviate in modo esplicito dal referto del passo 2. Regole di protezione (anche
+    le guardie che nascondono un risultato) e verdetti non sono scelte. *Come si rompe*: se un cambio dopo le perdite viene scritto come "deviazione", il verdetto resta
     confermativo senza esserlo; il gatekeeper lo controlla con la tabella delle deviazioni.
   *Come si rompe*: se una grandezza viene assegnata male nel contatore, la tabella mostra un quadro falso: il campo
   aiuta, ma il controllo si fa anche nei documenti, dove una grandezza puo' comparire come uso senza essere una famiglia.
