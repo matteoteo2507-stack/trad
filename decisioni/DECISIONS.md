@@ -11,6 +11,12 @@
 
 ---
 
+## 2026-11-21 (4) — `trend_momentum`: i round **restano 2 di 3**; parte il passo 2 di I3; 0 trial
+
+Matteo chiude il punto aperto della voce 2026-11-21 (decisione 3): anche con `tsmom` famiglia distinta, i round di `trend_momentum` restano **2 di 3**, come nel contatore da agosto (la pre-registrazione del playground contava TSMOM come round 1; la scelta prudente resta). Annotati contatore e pre-registrazione. Il passo 2 di I3 parte (proprieta', bersaglio, perdita, benchmark, potenza).
+
+---
+
 ## 2026-11-21 (3) — Contatore: **parentela obbligatoria**, `segnale_esterno` come etichetta, grandezze = **domanda primaria**; grandezze composte "contano e procedono"; 0 trial
 
 La revisione del gatekeeper sulle correzioni della voce sotto (commit `9161e86`) **BLOCCA**: 2 bloccanti, 11 riserve.
