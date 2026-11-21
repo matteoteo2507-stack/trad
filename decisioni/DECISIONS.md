@@ -11,6 +11,40 @@
 
 ---
 
+## 2026-11-21 (3) — Contatore: **parentela obbligatoria**, `segnale_esterno` come etichetta, grandezze = **domanda primaria**; grandezze composte "contano e procedono"; 0 trial
+
+La revisione del gatekeeper sulle correzioni della voce sotto (commit `9161e86`) **BLOCCA**: 2 bloccanti, 11 riserve.
+Corretti: **B1** `livelli` dichiarava solo `livelli`, ma la v2 ha testato POC/VAH/VAL e VWAP (addendum v2 della
+pre-registrazione): ora anche `volume`, prima di I4; **B2** "G4-G9 valgono senza cambiamenti" era falso per un
+bersaglio diverso dalla varianza: §8ter dice ora come si leggono G6 (MDE sulla perdita decisa al passo 2), G7 (solo se
+lo strumento promette le code) e G9 (processo simulato noto per quel bersaglio), e la Checklist 10 punti 6-7 lo segue.
+Riserve di forma corrette: nome `dipendenza_rendimenti` con le esclusioni nel modulo 10 §2; regola dei dati futuri per
+`trad` con decorrenza e conseguenze, come per i soci; esito "riapertura" al passo 1; Checklist 10 punto 9; citazione di
+`tsmom` (audit A5); conteggi dei test; duplicati nelle grandezze.
+
+**Decisioni di Matteo sulle quattro riserve che chiedevano una regola.**
+1. **Parentela obbligatoria** (R1): una famiglia non CLOSED che condivide una grandezza con un'altra dichiara nel
+   contatore `parentela` (`riapertura`, §7a, o `parente`) con la fonte; senza, `--check` fallisce. Le famiglie CLOSED
+   storiche sono esenti. Il §7a ("il binario strumenti non e' una porta laterale") ora e' fatto rispettare dal codice.
+2. **`segnale_esterno` e' un'etichetta** (R3), non una grandezza: segnali copiati da terzi (mentore, Forex Gump); non
+   conta fra le grandezze condivise ed e' vietata ai binari `strumenti` e `hub`.
+3. **`grandezze` = domanda primaria** (R4): le grandezze lette dalle regole primarie e dal bersaglio; filtri e ingressi
+   fissi nelle note. Aggiunte: `volatilita` a `trend_momentum` (il gradiente di volatilita' era la domanda primaria
+   della Q2) e `livelli` a `opening_range` (retest del livello rotto). Di conseguenza `volatilita` dichiara la parentela
+   con `trend_momentum` (tipo `parente`: la pre-registrazione della volatilita' §1 l'aveva gia' giudicata un altro
+   bersaglio).
+4. **Grandezze composte** (R6): un confronto che cambia entrambe le parti (per esempio correlazione e volatilita')
+   **conta in tutte e due le famiglie e procede** nella famiglia che lo pre-registra, anche se l'altra e' CLOSED o in
+   ridisegno (scelta di Matteo, contro la raccomandazione di Claude di farlo passare solo per le vie dell'altra
+   famiglia). Restano i vincoli sui dati dell'altra famiglia: il suo holdout, i dati futuri di un ridisegno, il §7a sulla
+   storia gia' vista. **Tensione aperta, da rivedere al rituale**: un confronto composto aggiunge trial a una famiglia
+   CLOSED senza passare dal §7 (evidenza esterna, quota, round).
+
+Test del contatore: 33 nei quattro file, passano; `--check`: nessun problema. `decisioni/mappa/` (01) e `_modifiche.md`
+aggiornati, `da_rivedere`.
+
+---
+
 ## 2026-11-21 (2) — I3 Struttura fra asset: **si apre** sulla dipendenza fra rendimenti; **debiti di protocollo corretti** prima del passo 2; 0 trial
 
 Passo 1 di I3 ([controllo delle grandezze](../magazzino/registro/referti/grandezze_I3_struttura_2026-11-21.md), commit
@@ -30,7 +64,7 @@ Passo 1 di I3 ([controllo delle grandezze](../magazzino/registro/referti/grandez
 
 **Debiti corretti prima di procedere** (Matteo: "li correggerei prima di procedere"), dai controlli di I2 e I3:
 - **contatore**: campo `grandezze` per ogni famiglia, verificato da `--check`, con le grandezze coperte da piu' famiglie
-  in tabella (`motore/core/trial_ledger.py`, test nuovi; 40 test del contatore passano);
+  in tabella (`motore/core/trial_ledger.py`, test nuovi; passano i 26 test dei quattro file del contatore e i 14 di `motore/prop-lab/tests/test_core.py`);
 - **LIFECYCLE §3**: "stessa grandezza" letta per ingresso e per bersaglio (se divergono decide Matteo) e regola delle
   **grandezze composte** (ingresso fisso);
 - **LIFECYCLE §7a** (scelta di Matteo): una famiglia CLOSED fra le strategie riproposta come **strumento** resta una

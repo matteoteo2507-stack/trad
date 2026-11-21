@@ -14,7 +14,7 @@
     {
       "id": "livelli",
       "nome": "Ricerca livelli (reazione vs random)",
-      "grandezze": ["livelli"],
+      "grandezze": ["livelli", "volume"],
       "stato": "CLOSED",
       "trial_cumulati": 384,
       "round_rifinitura": 3,
@@ -60,7 +60,7 @@
     {
       "id": "opening_range",
       "nome": "Opening-Range Breakout + retest (ORB)",
-      "grandezze": ["tendenza", "tempo"],
+      "grandezze": ["tendenza", "tempo", "livelli"],
       "stato": "CLOSED",
       "trial_cumulati": null,
       "trial_cumulati_minimo_documentato": 2,
@@ -168,7 +168,7 @@
     {
       "id": "trend_momentum",
       "nome": "Trend following / playground (Donchian + gradiente di volatilita')",
-      "grandezze": ["tendenza"],
+      "grandezze": ["tendenza", "volatilita"],
       "stato": "CLOSED",
       "trial_cumulati": null,
       "round_rifinitura": 2,
@@ -355,6 +355,7 @@
       "id": "volatilita",
       "nome": "Previsione della volatilita' (strumento): GARCH, HMM a regimi, premio di volatilita' su 9 strumenti Dukascopy M5",
       "grandezze": ["volatilita"],
+      "parentela": [{"famiglia": "trend_momentum", "tipo": "parente", "fonte": "magazzino/registro/documenti/VOLATILITA_PREREGISTRATION.md sez.1 (il gradiente di volatilita' di trend_momentum misura rendimenti: altro bersaglio); DECISIONS 2026-11-21 (3)"}],
       "binario": "strumenti",
       "stato": "APPROVATA",
       "alfa_famiglia": 0.05,

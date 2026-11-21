@@ -38,7 +38,7 @@ from math import sqrt
 from typing import Optional
 
 __all__ = ["load", "famiglia", "futility_sharpe", "verifica", "tabella", "MOTIVI_CHIUSURA", "GRANDEZZE",
-           "grandezze_condivise"]
+           "NON_GRANDEZZE", "grandezze_condivise"]
 
 ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 LEDGER = os.path.join(ROOT, "decisioni", "trial_ledger.json")
@@ -47,11 +47,16 @@ Z95 = 1.6448536269514722          # Phi^-1(0.95)
 GAMMA = 0.5772156649              # Eulero-Mascheroni
 # Perche' una famiglia e' chiusa (LIFECYCLE §5, DECISIONS 2026-11-04). None = le fonti non lo dicono.
 MOTIVI_CHIUSURA = ("refutata", "potenza", "criterio", "metodo")
-# Grandezze misurate da una famiglia (LIFECYCLE §3, "stessa grandezza = stessa famiglia"; DECISIONS 2026-11-21 (2)).
-# Le sei del modulo 10 §2, il tempo come condizionamento, la dipendenza fra asset (I3) e i segnali copiati da terzi,
-# che non leggono una grandezza ma eseguono la decisione di un altro.
+# Grandezze della DOMANDA PRIMARIA di una famiglia: lette dalle sue regole primarie e dal suo bersaglio; filtri e
+# ingressi fissi vanno nelle note (LIFECYCLE §3; DECISIONS 2026-11-21 (2) e (3)). Le sei del modulo 10 §2, il tempo
+# come condizionamento e la dipendenza fra i rendimenti contemporanei (I3).
 GRANDEZZE = ("tendenza", "spostamento_media", "volatilita", "volume", "livelli", "candela", "tempo",
-             "dipendenza_fra_asset", "segnale_esterno")
+             "dipendenza_rendimenti", "segnale_esterno")
+# Etichetta, non grandezza (DECISIONS 2026-11-21 (3)): la famiglia esegue la decisione di un terzo (segnali copiati).
+# Non conta fra le grandezze condivise (due fonti diverse non sono la stessa famiglia) ed e' vietata per i binari
+# `strumenti` e `hub`, perche' non diventi una via per sfuggire al controllo.
+NON_GRANDEZZE = ("segnale_esterno",)
+TIPI_PARENTELA = ("riapertura", "parente")
 
 
 def load(path: str = LEDGER) -> dict:
@@ -267,6 +272,10 @@ def verifica(dati: Optional[dict] = None, registro: Optional[dict] = None) -> li
             if ignote:
                 problemi.append("%s grandezza sconosciuta %s (ammesse: %s; una nuova si decide in DECISIONS)"
                                 % (eti, ignote, ", ".join(GRANDEZZE)))
+            if f.get("binario") in ("strumenti", "hub") and any(g in NON_GRANDEZZE for g in gr):
+                problemi.append("%s binario %s con l'etichetta %s: e' riservata ai segnali copiati da terzi"
+                                % (eti, f["binario"], "/".join(NON_GRANDEZZE)))
+        problemi += _verifica_parentela(f, eti, dati)
         problemi += _contaminazione(f, eti, b.get("llm_knowledge_cutoff"))
 
     # quota di pre-registrazioni del trimestre: due budget separati (strategie esterne, hub)
@@ -330,6 +339,38 @@ def _verifica_strumenti(f: dict) -> list:
     return out
 
 
+def _verifica_parentela(f: dict, eti: str, dati: dict) -> list:
+    """Una famiglia non CLOSED che condivide una grandezza con un'altra deve dichiarare la relazione (DECISIONS
+    2026-11-21 (3), LIFECYCLE §3 e §7a): voce `parentela` = [{"famiglia", "tipo": riapertura|parente, "fonte"}], con la
+    fonte in DECISIONS o in una pre-registrazione. Senza, `--check` fallisce: e' cosi' che il binario `strumenti` non
+    diventa una porta laterale per una famiglia chiusa. Le famiglie CLOSED (le storiche) ne sono esenti."""
+    out = []
+    par = f.get("parentela") or []
+    ids = {x["id"] for x in dati["famiglie"]}
+    dichiarate = set()
+    for p in par:
+        if p.get("famiglia") not in ids:
+            out.append("%s parentela con '%s': famiglia inesistente nel contatore" % (eti, p.get("famiglia")))
+        if p.get("tipo") not in TIPI_PARENTELA:
+            out.append("%s parentela con %s: tipo '%s' (ammessi: %s)"
+                       % (eti, p.get("famiglia"), p.get("tipo"), ", ".join(TIPI_PARENTELA)))
+        if not p.get("fonte"):
+            out.append("%s parentela con %s senza fonte (DECISIONS o pre-registrazione)" % (eti, p.get("famiglia")))
+        dichiarate.add(p.get("famiglia"))
+    if f.get("stato") == "CLOSED":
+        return out
+    mie = {g for g in f.get("grandezze") or [] if g not in NON_GRANDEZZE}
+    for g, fam in sorted(grandezze_condivise(dati).items()):
+        if g not in mie:
+            continue
+        for altra in fam:
+            if altra != f["id"] and altra not in dichiarate:
+                out.append("%s condivide '%s' con %s senza parentela dichiarata: riapertura (sez.7a) o parente con "
+                           "fonte in DECISIONS" % (eti, g, altra))
+                dichiarate.add(altra)
+    return out
+
+
 def grandezze_condivise(dati: dict) -> dict:
     """{grandezza: [id, ...]} per le grandezze dichiarate da piu' di una famiglia.
 
@@ -339,7 +380,9 @@ def grandezze_condivise(dati: dict) -> dict:
     riapertura (LIFECYCLE §7a)."""
     per = {}
     for f in dati["famiglie"]:
-        for g in f.get("grandezze") or []:
+        for g in dict.fromkeys(f.get("grandezze") or []):      # una grandezza ripetuta conta una volta
+            if g in NON_GRANDEZZE:                              # i segnali copiati non sono una grandezza comune
+                continue
             per.setdefault(g, []).append(f["id"])
     return {g: ids for g, ids in per.items() if len(ids) > 1}
 
