@@ -25,7 +25,8 @@ Riserve di forma corrette: nome `dipendenza_rendimenti` con le esclusioni nel mo
 **Decisioni di Matteo sulle quattro riserve che chiedevano una regola.**
 1. **Parentela obbligatoria** (R1): una famiglia non CLOSED che condivide una grandezza con un'altra dichiara nel
    contatore `parentela` (`riapertura`, §7a, o `parente`) con la fonte; senza, `--check` fallisce. Le famiglie CLOSED
-   storiche sono esenti. Il §7a ("il binario strumenti non e' una porta laterale") ora e' fatto rispettare dal codice.
+   storiche sono esenti. ⚠️ *Corretto dalla seconda passata (sotto):* ~~`riapertura` fra i tipi; "il §7a ora e' fatto
+   rispettare dal codice"~~ ➡️ verso un'altra voce esiste solo `parente`; una riapertura si fa sulla stessa voce.
 2. **`segnale_esterno` e' un'etichetta** (R3), non una grandezza: segnali copiati da terzi (mentore, Forex Gump); non
    conta fra le grandezze condivise ed e' vietata ai binari `strumenti` e `hub`.
 3. **`grandezze` = domanda primaria** (R4): le grandezze lette dalle regole primarie e dal bersaglio; filtri e ingressi
@@ -42,6 +43,29 @@ Riserve di forma corrette: nome `dipendenza_rendimenti` con le esclusioni nel mo
 
 Test del contatore: 33 nei quattro file, passano; `--check`: nessun problema. `decisioni/mappa/` (01) e `_modifiche.md`
 aggiornati, `da_rivedere`.
+
+**Seconda passata del gatekeeper (commit `ba9bc96`): BLOCCA**, 1 bloccante, 7 riserve; B1, B2 e le riserve R2-R5,
+R7-R11 della prima passata risultano chiusi. Il bloccante: il codice accettava una famiglia **nuova** dichiarata
+`riapertura` di una famiglia chiusa (un test lo dava per giusto), cioe' la porta laterale vietata dal §7a: trial non
+sommati, nessuna quota, binario cambiato. Errore di Claude. Corretto applicando il §7a, senza regole nuove:
+- `parentela` verso un'altra voce ammette solo `parente`; `riapertura` verso un altro id e' un errore (una riapertura si
+  fa sulla stessa voce); il test ora si aspetta l'errore;
+- esenti solo le 14 famiglie CLOSED al 21/11 (`ESENTI_PARENTELA`): una famiglia nuova che si chiude conserva l'obbligo;
+- errore per parentela verso se stessa, verso una famiglia senza grandezze comuni, con fonte che non nomina DECISIONS o
+  una pre-registrazione, o malformata (prima andava in crash);
+- **cosa il codice controlla davvero**: che la relazione sia dichiarata e coerente. **Non** vede la storia: che una
+  riapertura resti sulla stessa voce e non cambi binario lo controlla il gatekeeper (debito sotto);
+- LIFECYCLE §7: rimando all'eccezione delle grandezze composte (R6), da rivedere al rituale.
+
+**Punti aperti della scelta R6** (si applicano a mano finche' Matteo non decide): dove si registra il trial che conta
+anche nella famiglia CLOSED (nessun tipo di parentela lo rappresenta), se consuma un round di quella famiglia
+(`trend_momentum` e' a 2 di 3), quale conteggio di trial usa il DSR della famiglia che pre-registra.
+
+**Debito di protocollo**: il contatore non registra le riaperture (data, fonte del §7, binario d'origine) e non verifica
+che il binario non cambi; il "conta in tutte e due" di R6 non ha rappresentazione nel contatore. Correzioni di forma:
+la voce (2) riportava "40 test", che erano 26 del contatore piu' 14 di prop-lab (corretta lo stesso giorno); la riga di
+`_modifiche.md` del primo commit riporta il nome del valore di allora. Test dopo la correzione: 37 nei quattro file del
+contatore e 14 di prop-lab, passano; `--check`: nessun problema.
 
 ---
 

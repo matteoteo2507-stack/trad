@@ -32,10 +32,11 @@ def test_grandezza_sconosciuta_e_un_problema():
 
 
 def test_due_famiglie_sulla_stessa_grandezza_non_sono_un_errore_ma_si_vedono():
-    dati = _dati([_fam("tsmom", ["tendenza"]), _fam("trend", ["tendenza"]), _fam("lv", ["livelli"])])
+    """Famiglie storiche (esenti dal 21/11) sulla stessa grandezza: annotazione in tabella, non errore."""
+    dati = _dati([_fam("tsmom", ["tendenza"]), _fam("trend_momentum", ["tendenza"]), _fam("lv", ["livelli"])])
     assert verifica(dati, registro={}) == []
-    assert grandezze_condivise(dati) == {"tendenza": ["tsmom", "trend"]}
-    assert "tendenza" in tabella(dati) and "tsmom, trend" in tabella(dati)
+    assert grandezze_condivise(dati) == {"tendenza": ["tsmom", "trend_momentum"]}
+    assert "tendenza" in tabella(dati) and "tsmom, trend_momentum" in tabella(dati)
 
 
 def test_una_grandezza_ripetuta_non_rende_una_famiglia_condivisa_con_se_stessa():
@@ -66,16 +67,47 @@ def test_famiglia_aperta_sulla_grandezza_di_una_chiusa_senza_parentela_fallisce(
     assert any("senza parentela dichiarata" in p and "tsmom" in p for p in verifica(dati, registro={}))
 
 
-def test_parentela_dichiarata_con_fonte_passa():
-    par = [{"famiglia": "tsmom", "tipo": "riapertura", "fonte": "DECISIONS 2099-01-01"}]
+def test_famiglia_parente_con_fonte_passa():
+    par = [{"famiglia": "tsmom", "tipo": "parente", "fonte": "DECISIONS 2099-01-01"}]
     dati = _dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)])
     assert verifica(dati, registro={}) == []
 
 
-def test_parentela_senza_fonte_o_con_tipo_ignoto_fallisce():
-    par = [{"famiglia": "tsmom", "tipo": "cugina"}]
+def test_riapertura_da_un_altra_voce_e_la_porta_laterale_e_fallisce():
+    """G1 del 21/11, bloccante: una famiglia nuova sul binario strumenti che si dichiara 'riapertura' di tsmom (strategie,
+    CLOSED) non somma i trial, non consuma quota ne' round e cambia binario. Per il §7a la riapertura si fa sulla voce
+    di tsmom."""
+    par = [{"famiglia": "tsmom", "tipo": "riapertura", "fonte": "DECISIONS 2099-01-01"}]
     probl = verifica(_dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)]), registro={})
-    assert any("senza fonte" in p for p in probl) and any("tipo 'cugina'" in p for p in probl)
+    assert any("STESSA voce" in p for p in probl)
+
+
+def test_parentela_senza_fonte_o_con_tipo_ignoto_fallisce():
+    par = [{"famiglia": "tsmom", "tipo": "cugina", "fonte": "x"}]
+    probl = verifica(_dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)]), registro={})
+    assert any("deve nominare DECISIONS" in p for p in probl) and any("tipo 'cugina'" in p for p in probl)
+
+
+def test_parentela_verso_se_stessa_o_senza_grandezze_comuni_fallisce():
+    fonte = "DECISIONS 2099-01-01"
+    se = [{"famiglia": "nuova", "tipo": "parente", "fonte": fonte}]
+    assert any("verso se stessa" in p for p in verifica(_dati([_nuova(["volume"], parentela=se)]), registro={}))
+    lontana = [{"famiglia": "lv", "tipo": "parente", "fonte": fonte}]
+    probl = verifica(_dati([_fam("lv", ["livelli"]), _nuova(["volume"], parentela=lontana)]), registro={})
+    assert any("non condivide nessuna grandezza" in p for p in probl)
+
+
+def test_parentela_malformata_da_un_messaggio_e_non_un_crash():
+    probl = verifica(_dati([_nuova(["volume"], parentela={"famiglia": "x"})]), registro={})
+    assert any("parentela malformata" in p for p in probl)
+
+
+def test_una_famiglia_nuova_che_si_chiude_conserva_l_obbligo():
+    """Solo le famiglie CLOSED al 21/11 sono esenti: chiudersi non cancella la relazione dichiarata."""
+    f = _nuova(["tendenza"])
+    f.update(stato="CLOSED", motivo_chiusura="potenza")
+    probl = verifica(_dati([_fam("tsmom", ["tendenza"]), f]), registro={})
+    assert any("senza parentela dichiarata" in p for p in probl)
 
 
 def test_segnale_esterno_non_e_una_grandezza_condivisa_ed_e_vietato_agli_strumenti():

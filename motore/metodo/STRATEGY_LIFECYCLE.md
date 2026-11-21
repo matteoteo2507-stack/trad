@@ -129,9 +129,13 @@ ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 >
 > **Nel contatore** (DECISIONS 2026-11-21 (3)). Ogni famiglia dichiara nel campo `grandezze` le grandezze della sua
 > **domanda primaria**: quelle lette dalle regole primarie e dal bersaglio; filtri e ingressi fissi vanno nelle note.
-> Una famiglia non CLOSED che condivide una grandezza con un'altra dichiara la relazione nel campo `parentela`
-> (`riapertura`, §7a, oppure `parente`, famiglia distinta per bersaglio o per meccanismo), con la fonte in DECISIONS o in
-> una pre-registrazione: senza, `--check` fallisce. Le famiglie CLOSED storiche sono esenti. `segnale_esterno` (segnali
+> Una famiglia che condivide una grandezza con un'altra o e' una **riapertura** di quella, e allora si fa sulla **stessa
+> voce** del contatore (§7a: trial sommati, quota del binario d'origine, un round, binario invariato), o e' una famiglia
+> **parente** (distinta per bersaglio o per meccanismo) e lo dichiara nel campo `parentela` (tipo `parente`) con la
+> fonte in DECISIONS o in una pre-registrazione: senza, `--check` fallisce, e `riapertura` verso un'altra voce e' un
+> errore. Esenti le 14 famiglie CLOSED al 21/11 (`ESENTI_PARENTELA` nel codice); una famiglia nuova che poi si chiude
+> conserva l'obbligo. Il codice non vede la storia: che una riapertura non cambi binario lo controlla il gatekeeper.
+> `segnale_esterno` (segnali
 > copiati da terzi) e' un'**etichetta**, non una grandezza: non conta fra le grandezze condivise ed e' vietata ai binari
 > `strumenti` e `hub`.
 >
@@ -339,6 +343,12 @@ Si riapre **solo** con **evidenza esterna nuova**:
 
 Un indicatore diverso che misura la **stessa grandezza** non e' evidenza esterna nuova: appartiene alla stessa famiglia
 (§3, dal 2026-10-08). Lo stesso vale per un'altra ipotesi tratta dalla **stessa teoria** (§3, dal 2026-10-25).
+
+⚠️ **Eccezione decisa da Matteo il 2026-11-21, da rivedere al rituale**: un confronto di **grandezze composte** che
+cambia entrambe le parti conta anche nella famiglia CLOSED e procede nella famiglia che lo pre-registra, senza §7 (§3,
+"Grandezze composte"; restano i vincoli sui dati della famiglia chiusa). Non e' una riapertura: dove si registra quel
+trial, se consuma un round della famiglia chiusa e quale conteggio usa il DSR non sono ancora scritti e si decidono a
+mano (DECISIONS 2026-11-21 (3)).
 
 Qualunque altra riapertura è il bias di conferma che si ripresenta col cappello. *Precedente
 vincolante: la ricerca livelli è CHIUSA — non riproporre "testiamo i livelli".*

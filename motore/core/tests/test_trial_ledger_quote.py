@@ -4,7 +4,14 @@ Decisioni di Matteo del 2026-10-25 (DECISIONS 2026-10-25 (8)): l'hub ha un budge
 trimestre, che non tocca quello delle strategie; un'idea scritta con l'LLM su dati prima del cutoff non
 e' una predizione indipendente. Nessun dato vero: registri sintetici.
 """
+import itertools
+
 from motore.core.trial_ledger import verifica, _contaminazione
+
+# Una grandezza diversa per ogni famiglia sintetica: questi test misurano le quote, non la parentela
+# (le famiglie sintetiche non sono fra le esenti del 21/11).
+_GR = itertools.cycle(("tendenza", "spostamento_media", "volume", "livelli", "candela", "tempo",
+                       "dipendenza_rendimenti"))
 
 BUDGET = {"round_rifinitura_per_famiglia": 3, "prereg_esterne_per_trimestre": 3,
           "prereg_esterne_per_trimestre_soglia_allarme": 2, "prereg_hub_per_trimestre": 1,
@@ -12,7 +19,7 @@ BUDGET = {"round_rifinitura_per_famiglia": 3, "prereg_esterne_per_trimestre": 3,
 
 
 def _fam(fid, binario=None, q="2026-Q4"):
-    f = {"id": fid, "stato": "CLOSED", "motivo_chiusura": "potenza", "round_rifinitura": 0, "fonti": ["x"], "grandezze": ["tendenza"],
+    f = {"id": fid, "stato": "CLOSED", "motivo_chiusura": "potenza", "round_rifinitura": 0, "fonti": ["x"], "grandezze": [next(_GR)],
          "prereg_esterna_trimestre": q, "provenienza_ipotesi": "umana_esterna",
          "finestra_dati_fine": "2026-10-01"}
     if binario:

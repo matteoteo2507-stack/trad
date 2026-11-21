@@ -56,7 +56,15 @@ GRANDEZZE = ("tendenza", "spostamento_media", "volatilita", "volume", "livelli",
 # Non conta fra le grandezze condivise (due fonti diverse non sono la stessa famiglia) ed e' vietata per i binari
 # `strumenti` e `hub`, perche' non diventi una via per sfuggire al controllo.
 NON_GRANDEZZE = ("segnale_esterno",)
-TIPI_PARENTELA = ("riapertura", "parente")
+# Verso un'ALTRA famiglia esiste solo `parente` (famiglia distinta per bersaglio o meccanismo, con la fonte). Una
+# riapertura non e' una parentela: per il §7a si fa sulla STESSA voce del contatore (trial sommati, quota del binario
+# d'origine, un round, binario invariato), quindi `riapertura` verso un altro id e' un errore (G1 del 21/11, B1).
+TIPI_PARENTELA = ("parente",)
+# Le famiglie CLOSED alla data della regola (DECISIONS 2026-11-21 (3)): esenti dall'obbligo di parentela. Ogni altra
+# famiglia, anche se poi si chiude, conserva l'obbligo (la relazione dichiarata non si perde alla chiusura).
+ESENTI_PARENTELA = ("livelli", "nxt", "opening_range", "tsmom", "meanrev_vol", "seasonality_tom", "round_grid",
+                    "trend_momentum", "meanrev_kichev", "mentor_signals", "london_breakout", "forexgump_signals",
+                    "mr_indici_rsi2", "momentum_ultima_mezzora")
 
 
 def load(path: str = LEDGER) -> dict:
@@ -340,33 +348,49 @@ def _verifica_strumenti(f: dict) -> list:
 
 
 def _verifica_parentela(f: dict, eti: str, dati: dict) -> list:
-    """Una famiglia non CLOSED che condivide una grandezza con un'altra deve dichiarare la relazione (DECISIONS
-    2026-11-21 (3), LIFECYCLE §3 e §7a): voce `parentela` = [{"famiglia", "tipo": riapertura|parente, "fonte"}], con la
-    fonte in DECISIONS o in una pre-registrazione. Senza, `--check` fallisce: e' cosi' che il binario `strumenti` non
-    diventa una porta laterale per una famiglia chiusa. Le famiglie CLOSED (le storiche) ne sono esenti."""
+    """Una famiglia che condivide una grandezza con un'altra dichiara la relazione (DECISIONS 2026-11-21 (3), LIFECYCLE
+    §3 e §7a): voce `parentela` = [{"famiglia", "tipo": "parente", "fonte"}], con la fonte in DECISIONS o in una
+    pre-registrazione. Senza, `--check` fallisce. Cosa controlla davvero: che la relazione sia dichiarata, verso una
+    famiglia esistente e diversa che condivide almeno una grandezza, con una fonte che nomina DECISIONS o una
+    pre-registrazione. NON puo' controllare che una riapertura sia fatta sulla stessa voce senza cambiare binario: non
+    c'e' storia nel contatore (debito, DECISIONS 2026-11-21 (3)). Esenti le famiglie in ESENTI_PARENTELA."""
     out = []
-    par = f.get("parentela") or []
+    par = f.get("parentela")
+    if par is None:
+        par = []
+    if not isinstance(par, list) or not all(isinstance(p, dict) for p in par):
+        return ["%s parentela malformata: serve una lista di {famiglia, tipo, fonte}" % eti]
     ids = {x["id"] for x in dati["famiglie"]}
+    gr_di = {x["id"]: {g for g in x.get("grandezze") or [] if g not in NON_GRANDEZZE} for x in dati["famiglie"]}
+    mie = gr_di.get(f["id"], set())
     dichiarate = set()
     for p in par:
-        if p.get("famiglia") not in ids:
-            out.append("%s parentela con '%s': famiglia inesistente nel contatore" % (eti, p.get("famiglia")))
-        if p.get("tipo") not in TIPI_PARENTELA:
+        altra = p.get("famiglia")
+        if altra == f["id"]:
+            out.append("%s parentela verso se stessa" % eti)
+        elif altra not in ids:
+            out.append("%s parentela con '%s': famiglia inesistente nel contatore" % (eti, altra))
+        elif not (mie & gr_di[altra]):
+            out.append("%s parentela con %s, che non condivide nessuna grandezza" % (eti, altra))
+        if p.get("tipo") == "riapertura":
+            out.append("%s 'riapertura' di %s da un'altra voce: per il sez.7a una riapertura si fa sulla STESSA voce "
+                       "(trial sommati, quota del binario d'origine, un round, binario invariato)" % (eti, altra))
+        elif p.get("tipo") not in TIPI_PARENTELA:
             out.append("%s parentela con %s: tipo '%s' (ammessi: %s)"
-                       % (eti, p.get("famiglia"), p.get("tipo"), ", ".join(TIPI_PARENTELA)))
-        if not p.get("fonte"):
-            out.append("%s parentela con %s senza fonte (DECISIONS o pre-registrazione)" % (eti, p.get("famiglia")))
-        dichiarate.add(p.get("famiglia"))
-    if f.get("stato") == "CLOSED":
+                       % (eti, altra, p.get("tipo"), ", ".join(TIPI_PARENTELA)))
+        fonte = str(p.get("fonte") or "")
+        if "DECISIONS" not in fonte and "PREREGISTRATION" not in fonte:
+            out.append("%s parentela con %s: la fonte deve nominare DECISIONS o una pre-registrazione" % (eti, altra))
+        dichiarate.add(altra)
+    if f["id"] in ESENTI_PARENTELA:
         return out
-    mie = {g for g in f.get("grandezze") or [] if g not in NON_GRANDEZZE}
     for g, fam in sorted(grandezze_condivise(dati).items()):
         if g not in mie:
             continue
         for altra in fam:
             if altra != f["id"] and altra not in dichiarate:
-                out.append("%s condivide '%s' con %s senza parentela dichiarata: riapertura (sez.7a) o parente con "
-                           "fonte in DECISIONS" % (eti, g, altra))
+                out.append("%s condivide '%s' con %s senza parentela dichiarata: o e' una riapertura (sez.7a, sulla "
+                           "voce di %s) o una famiglia parente con fonte in DECISIONS" % (eti, g, altra, altra))
                 dichiarate.add(altra)
     return out
 

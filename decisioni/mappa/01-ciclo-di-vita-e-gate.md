@@ -138,8 +138,10 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   - *Riapertura come strumento* (§7a): una famiglia CLOSED fra le strategie non cambia binario; resta una riapertura,
     con quota del binario d'origine e un round.
   - *Campi `grandezze` e `parentela` nel contatore* (DECISIONS 2026-11-21 (3)): ogni famiglia dichiara le grandezze
-    della sua **domanda primaria** (filtri e ingressi fissi nelle note); una famiglia non CLOSED che ne condivide una
-    con un'altra deve dichiarare la `parentela` (riapertura o parente) con la fonte, altrimenti `--check` fallisce.
+    della sua **domanda primaria** (filtri e ingressi fissi nelle note); una famiglia che ne condivide una con un'altra
+    o e' una riapertura, e allora si fa sulla stessa voce (§7a), o dichiara la `parentela` di tipo `parente` con la
+    fonte, altrimenti `--check` fallisce. Esenti solo le 14 famiglie CLOSED al 21/11. Il codice non vede la storia: che
+    una riapertura non cambi binario lo controlla il gatekeeper.
     `segnale_esterno` e' un'etichetta per i segnali copiati, fuori dalla tabella delle grandezze condivise e vietata
     agli strumenti e all'hub. Primo caso: `volatilita` dichiara la parentela con `trend_momentum` (gradiente di
     volatilita', altro bersaglio).

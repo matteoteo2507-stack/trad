@@ -566,7 +566,11 @@ in R o con un "rende di piu'", e' una **strategia**: la testano i soci, e la seg
    `parentela` del contatore, verificati da `--check`, e la tabella delle grandezze condivise
    (`python -m motore.core.trial_ledger`) aiutano, ma il controllo si fa anche nei
    documenti: la correlazione o la tendenza possono comparire come **uso** senza essere una famiglia. Una famiglia
-   CLOSED riproposta come strumento e' una **riapertura** (§7a: quota del binario d'origine, un round);
+   CLOSED riproposta come strumento e' una **riapertura** (§7a: sulla stessa voce del contatore, quota del binario
+   d'origine, un round, binario invariato): `parentela` verso un'altra voce ammette solo `parente`, e il codice non
+   vede la storia, quindi il binario invariato lo controlli tu (confronta col diff del contatore). Un confronto di
+   grandezze composte che tocca una famiglia CLOSED segue l'eccezione del §7 (decisa il 21/11): segnala dove e come
+   e' stato contato;
 9. ingresso fisso preso da un'altra famiglia (§8ter, "Ingresso fisso da un'altra famiglia"): dichiarato prima di ogni
    dato; se l'altra famiglia e' in ridisegno su dati futuri, dalla sua pre-registrazione nessun risultato per modello
    (diagnostiche dell'ingresso fisso) sui dati del suo test, quelle gia' calcolate su dati precedenti dichiarate alla
