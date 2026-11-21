@@ -157,8 +157,11 @@ Caveat: un motore veloce rende facilissimo il look-ahead e l'overfitting su grig
 **Definizione**: stimare statistiche di **persistenza, autocorrelazione, matrici di transizione o
 Information Coefficient (IC)** da **finestre/return sovrapposti** gonfia artificialmente il segnale.
 Due finestre rolling consecutive da N barre condividono N−1 barre: la sovrapposizione **fabbrica
-persistenza** (diagonale della transizione, autocorrelazione, significatività dell'IC) che nei dati
-non c'è. È il cugino del look-ahead/overfitting per le serie autocorrelate.
+persistenza** (diagonale della transizione, autocorrelazione, significatività dell'IC) anche quando i
+rendimenti sottostanti non ne hanno. La persistenza misurata così è **meccanica**: non dice nulla
+contro un nullo ingenuo, ma resta testabile contro un nullo con **la stessa sovrapposizione** (correzione
+del 2026-11-21, revisione del gatekeeper sul controllo di I2). È il cugino del look-ahead/overfitting
+per le serie autocorrelate.
 
 Esempi:
 - **Matrice di transizione di regime (Markov)**: etichettare i regimi da rolling return a 20 giorni

@@ -3,7 +3,7 @@ from motore.core.trial_ledger import verifica
 
 
 def _dati(**fam):
-    f = {"id": "x", "stato": "LEAD", "fonti": ["DECISIONS.md"], "provenienza_ipotesi": "utente"}
+    f = {"id": "x", "stato": "LEAD", "fonti": ["DECISIONS.md"], "provenienza_ipotesi": "utente", "grandezze": ["tendenza"]}
     f.update(fam)
     return {"budget": {"round_rifinitura_per_famiglia": 3, "prereg_esterne_per_trimestre": 3},
             "trimestre_corrente": "2026-Q4", "famiglie": [f]}

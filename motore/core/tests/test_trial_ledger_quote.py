@@ -12,7 +12,7 @@ BUDGET = {"round_rifinitura_per_famiglia": 3, "prereg_esterne_per_trimestre": 3,
 
 
 def _fam(fid, binario=None, q="2026-Q4"):
-    f = {"id": fid, "stato": "CLOSED", "motivo_chiusura": "potenza", "round_rifinitura": 0, "fonti": ["x"],
+    f = {"id": fid, "stato": "CLOSED", "motivo_chiusura": "potenza", "round_rifinitura": 0, "fonti": ["x"], "grandezze": ["tendenza"],
          "prereg_esterna_trimestre": q, "provenienza_ipotesi": "umana_esterna",
          "finestra_dati_fine": "2026-10-01"}
     if binario:

@@ -148,7 +148,14 @@ volatilita' (`volatilita`).
   varianza (varianza realizzata, QLIKE, EWMA). Per un bersaglio di correlazione perdita e benchmark vanno **decisi da
   Matteo** al passo 2, non scoperti alla G1.
 
-## Debito di protocollo emerso (non corretto qui)
+## Decisioni di Matteo (21/11)
+
+**D1 si'** (I3 si apre), **D2 si'** (ingresso fisso EWMA 0,94), **D3 si'** (classe "nessuna" per una misura di rischio).
+Il debito sotto e' stato **corretto il 21/11, prima del passo 2** (DECISIONS 2026-11-21 (2)): 1 → §8ter "Bersaglio
+diverso dalla varianza"; 2 → LIFECYCLE §3 e modulo 10 §2; 3 → campo `grandezze` del contatore; 4 → §8ter procedura in
+tre passi; 5 → §8ter "Ingresso fisso da un'altra famiglia"; 6 → §3 "Grandezze composte".
+
+## Debito di protocollo emerso
 
 1. §8ter G1-G3 non hanno un gate per un bersaglio diverso dalla varianza.
 2. Il criterio del bersaglio non e' nel testo del LIFECYCLE §3 ne' del modulo 10 §2; se I3 si apre, al modulo 10 §2

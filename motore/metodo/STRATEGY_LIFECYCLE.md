@@ -114,6 +114,26 @@ ogni giro. Si dichiara nella pre-registrazione e si aggiorna nel report.
 | Aggiunta di un **filtro** | **Sì** — ed è il più pericoloso (vedi §4) |
 | **Nuova ipotesi** con razionale economico indipendente | **Sì**, ma apre una **nuova pre-registrazione** |
 
+> **Come si legge "stessa grandezza"** (dal 2026-11-21, DECISIONS 2026-11-21 e 2026-11-21 (2)). Due letture, da fare
+> entrambe prima di aprire una famiglia:
+> - **ingresso**: cosa legge l'indicatore dal prezzo (le sei grandezze del
+>   [modulo 10 §2](../../magazzino/fondamenti_tecnici/10_indicatori_tecnici/principles.md), il tempo, la dipendenza fra
+>   asset); e' la lettura della regola dell'08/10;
+> - **bersaglio**: cosa prevede lo strumento. Stesso bersaglio con un'altra perdita = variante della stessa famiglia
+>   (per la direzione, "lo stato Bull persiste" e "il segno passato guadagna" prevedono entrambi il rendimento futuro);
+>   bersaglio diverso = grandezza diversa (la volatilita' prevista come varianza, contro le strategie che la usavano per
+>   un rendimento).
+>
+> Se le due letture concordano si applica l'esito; se divergono **decide Matteo** in DECISIONS (primo caso: la forza
+> dell'ADX, rimasta tendenza il 21/11). Ogni famiglia dichiara le sue grandezze nel contatore (campo `grandezze`, che
+> `--check` verifica); la tabella del contatore mostra le grandezze coperte da piu' famiglie.
+>
+> **Grandezze composte.** Quando il bersaglio e' prodotto di due grandezze (covarianza = correlazione × volatilita' ×
+> volatilita'), un confronto appartiene alla famiglia della parte che cambia: se tutte le previsioni confrontate,
+> benchmark compreso, usano **lo stesso ingresso fisso** per una parte e differiscono solo nell'altra, e' un trial della
+> famiglia dell'altra; se differiscono in entrambe, conta in tutte e due. L'ingresso fisso si dichiara prima di ogni
+> dato e non e' una variante (primo caso: I3, volatilita' EWMA 0,94 come ingresso fisso, DECISIONS 2026-11-21 (2)).
+
 > **Regola di futilità (stop matematico).** Dato il numero cumulato di trial, esiste uno Sharpe
 > minimo sotto il quale il DSR non può essere significativo. Se il **migliore** risultato osservato
 > su tutte le varianti è sotto quella soglia, continuare a iterare è **matematicamente inutile**:
@@ -320,6 +340,10 @@ Quando il §7 e' soddisfatto, la riapertura:
 - **somma** i suoi trial a quelli gia' spesi: il contatore non riparte da zero, e il DSR usa il cumulato;
 - **consuma una quota** del trimestre, quella del suo binario (strategie o hub);
 - **non puo' validarsi sui dati che hanno generato l'idea**: i dati gia' guardati restano dati di scoperta.
+- **non cambia binario** (Matteo, 21/11): una famiglia CLOSED del binario strategie o hub riproposta come
+  **strumento** (§8ter) resta la stessa famiglia e una riapertura. Servono il §7 e la quota del binario d'origine, e si
+  consuma un round; il binario `strumenti`, che non ha quota, non e' una via d'ingresso per le famiglie chiuse. Il
+  controllo e' quello del §3 sulle grandezze (DECISIONS 2026-11-21 (2)).
 
 ### 7b. Forward di una famiglia CLOSED (dal 2026-11-04)
 
@@ -538,6 +562,31 @@ famiglia, **una** apertura dell'holdout, verdetto con l'MDE.
 famiglia e' la somma di confermativi ed esplorativi; `holdout_inizio` si scrive prima di aprire. `--check` lo verifica.
 Senza quota, il freno al numero di famiglie e' "stessa grandezza = stessa famiglia" (§3): si controlla **prima** di
 aprirne una.
+
+**Procedura per una famiglia di strumenti** (dal 2026-11-21; i primi casi sono I2 e I3 del backlog §I). Fra un passo
+e l'altro decide Matteo; ogni passo finisce con un referto, una revisione del gatekeeper e un commit.
+1. **Controllo delle grandezze** (§3, Checklist 10 punto 8), prima di qualunque dato: candidato per candidato, la
+   grandezza per ingresso e per bersaglio, le famiglie esistenti, le misure gia' calcolate sulla stessa grandezza
+   (dati gia' visti). Esito: famiglia nuova, trial di una famiglia esistente, o fuori perimetro.
+2. **Proprieta' e potenza**, prima di ogni dato: la **classe** si dichiara, e per una misura di rischio vale "nessuna"
+   (come la volatilita', modulo 10 §2); "chi paga" e limite all'arbitraggio (modulo 09) si cercano solo per una
+   sottofamiglia di **premio**. Poi bersaglio, perdita e benchmark (sotto, "Bersaglio diverso dalla varianza"), l'MDE
+   coi dati in casa e i dati acquistabili che mancano (regola d'acquisto, backlog §G).
+3. **Bozza di pre-registrazione** e passate G1 del gatekeeper, fino all'approvazione di Matteo. Nessun test prima.
+
+**Bersaglio diverso dalla varianza** (dal 2026-11-21). G1-G3 sotto sono scritti per la volatilita'. Per una famiglia
+con un altro bersaglio (per esempio la correlazione, I3), **Matteo decide al passo 2, prima della bozza**: la misura
+realizzata del bersaglio, la perdita primaria e i benchmark. Restano fissi i principi di G1-G3: misura realizzata col
+proxy meno rumoroso disponibile; perdita primaria che ordina i modelli come il bersaglio vero quando il proxy e'
+rumoroso ma non distorto (per la varianza QLIKE e MSE, Patton 2011); benchmark semplici nominati prima, compreso uno
+senza parametri stimati. G4-G9, holdout, conteggio, varianti e sottofamiglie valgono senza cambiamenti.
+
+**Ingresso fisso da un'altra famiglia** (Matteo, 21/11). Una famiglia che usa come ingresso fisso l'uscita di
+un'altra famiglia (§3, grandezze composte) non riporta risultati per modello dell'altra famiglia sui dati del suo test.
+Se l'altra e' in ridisegno su dati futuri (come `volatilita`, DECISIONS 2026-11-20 (2)), la regola dei dati futuri
+vale anche per `trad`, non solo per i soci: le diagnostiche dell'ingresso fisso (calibrazione, residui, livello della
+varianza) non si riportano, oppure si dichiarano alla pre-registrazione del ridisegno fra le informazioni gia' ricevute.
+Chi legge un blocco sigillato dell'altra famiglia lo dichiara prima di leggerlo.
 
 **Gate statistico**
 - **G1 Bersaglio**: la varianza all'orizzonte dichiarato, misurata con la varianza realizzata da barre a 5 minuti

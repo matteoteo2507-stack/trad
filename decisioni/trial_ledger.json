@@ -14,6 +14,7 @@
     {
       "id": "livelli",
       "nome": "Ricerca livelli (reazione vs random)",
+      "grandezze": ["livelli"],
       "stato": "CLOSED",
       "trial_cumulati": 384,
       "round_rifinitura": 3,
@@ -36,6 +37,7 @@
     {
       "id": "nxt",
       "nome": "NXT / Fibonacci (continuazione + fade)",
+      "grandezze": ["livelli"],
       "stato": "CLOSED",
       "trial_cumulati": 2,
       "trial_budget": 3,
@@ -58,6 +60,7 @@
     {
       "id": "opening_range",
       "nome": "Opening-Range Breakout + retest (ORB)",
+      "grandezze": ["tendenza", "tempo"],
       "stato": "CLOSED",
       "trial_cumulati": null,
       "trial_cumulati_minimo_documentato": 2,
@@ -80,6 +83,7 @@
     {
       "id": "tsmom",
       "nome": "TSMOM multi-asset",
+      "grandezze": ["tendenza"],
       "stato": "CLOSED",
       "trial_cumulati": 8,
       "round_rifinitura": 1,
@@ -101,6 +105,7 @@
     {
       "id": "meanrev_vol",
       "nome": "Mean-reversion su volatilita' (z-score)",
+      "grandezze": ["spostamento_media"],
       "stato": "CLOSED",
       "trial_cumulati": 6,
       "round_rifinitura": 1,
@@ -120,6 +125,7 @@
     {
       "id": "seasonality_tom",
       "nome": "Stagionalita' Turn-of-Month",
+      "grandezze": ["tempo"],
       "stato": "CLOSED",
       "trial_cumulati": 4,
       "round_rifinitura": 1,
@@ -139,6 +145,7 @@
     {
       "id": "round_grid",
       "nome": "Griglia a numero tondo .80/.20 (Nasdaq)",
+      "grandezze": ["livelli"],
       "stato": "CLOSED",
       "trial_cumulati": 1,
       "trial_budget": 3,
@@ -161,6 +168,7 @@
     {
       "id": "trend_momentum",
       "nome": "Trend following / playground (Donchian + gradiente di volatilita')",
+      "grandezze": ["tendenza"],
       "stato": "CLOSED",
       "trial_cumulati": null,
       "round_rifinitura": 2,
@@ -187,6 +195,7 @@
     {
       "id": "meanrev_kichev",
       "nome": "Mean reversion Kichev (code, B1)",
+      "grandezze": ["spostamento_media"],
       "stato": "CLOSED",
       "trial_cumulati": 0,
       "round_rifinitura": 0,
@@ -207,6 +216,7 @@
     {
       "id": "mentor_signals",
       "nome": "Segnali mentore XAUUSD (copier)",
+      "grandezze": ["segnale_esterno"],
       "stato": "CLOSED",
       "trial_cumulati": 1,
       "round_rifinitura": 0,
@@ -233,6 +243,7 @@
     {
       "id": "london_breakout",
       "nome": "London Breakout",
+      "grandezze": ["tendenza", "tempo"],
       "stato": "CLOSED",
       "trial_cumulati": null,
       "round_rifinitura": 1,
@@ -254,6 +265,7 @@
     {
       "id": "forexgump_signals",
       "nome": "Forex Gump GOLD VIP — segnale copiato in ritardo",
+      "grandezze": ["segnale_esterno"],
       "stato": "CLOSED",
       "trial_cumulati": 1,
       "trial_budget": 1,
@@ -282,6 +294,7 @@
     {
       "id": "mr_indici_rsi2",
       "nome": "RSI(2) di Connors su SPX500/NAS100 giornalieri (candidato A)",
+      "grandezze": ["spostamento_media"],
       "stato": "CLOSED",
       "trial_cumulati": 1,
       "trial_budget": 1,
@@ -310,6 +323,7 @@
     {
       "id": "momentum_ultima_mezzora",
       "nome": "Momentum dell'ultima mezz'ora da coperture di gamma (backlog H1): posizione proporzionale con tetto su indici azionari",
+      "grandezze": ["tempo", "tendenza"],
       "stato": "CLOSED",
       "trial_cumulati": 1,
       "trial_budget": 1,
@@ -340,6 +354,7 @@
     {
       "id": "volatilita",
       "nome": "Previsione della volatilita' (strumento): GARCH, HMM a regimi, premio di volatilita' su 9 strumenti Dukascopy M5",
+      "grandezze": ["volatilita"],
       "binario": "strumenti",
       "stato": "APPROVATA",
       "alfa_famiglia": 0.05,

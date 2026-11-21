@@ -124,7 +124,11 @@ restano distinte; i round di `trend_momentum` restano 2 di 3 finche' non si deci
   consumati, dati fino al 2026-08-14 considerati visti. Lo stesso nodo c'e' nella grandezza 2 (`meanrev_vol`,
   `meanrev_kichev`, `mr_indici_rsi2`).
 
-## Debito di protocollo emerso (non corretto qui)
+## Debito di protocollo emerso
+
+**Corretto il 21/11** (DECISIONS 2026-11-21 (2)): 1 → campo `grandezze` del contatore; 2 → LIFECYCLE §7a (riapertura
+come strumento: quota del binario d'origine, scelta di Matteo); 3 → modulo 10 §2 e §9; 4 → modulo 04 §7; 5 → nota nel
+blueprint Markov.
 
 1. Il contatore non ha un campo grandezza o parentela: `--check` non vede due id sulla stessa grandezza (D3).
 2. Il §7a non dice cosa succede se una famiglia CLOSED del binario strategie viene riaperta come **strumento**, binario

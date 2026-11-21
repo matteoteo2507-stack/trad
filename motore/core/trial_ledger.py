@@ -37,7 +37,8 @@ from pathlib import Path
 from math import sqrt
 from typing import Optional
 
-__all__ = ["load", "famiglia", "futility_sharpe", "verifica", "tabella", "MOTIVI_CHIUSURA"]
+__all__ = ["load", "famiglia", "futility_sharpe", "verifica", "tabella", "MOTIVI_CHIUSURA", "GRANDEZZE",
+           "grandezze_condivise"]
 
 ROOT = next(str(p) for p in Path(__file__).resolve().parents if (p / "pyproject.toml").exists())
 LEDGER = os.path.join(ROOT, "decisioni", "trial_ledger.json")
@@ -46,6 +47,11 @@ Z95 = 1.6448536269514722          # Phi^-1(0.95)
 GAMMA = 0.5772156649              # Eulero-Mascheroni
 # Perche' una famiglia e' chiusa (LIFECYCLE §5, DECISIONS 2026-11-04). None = le fonti non lo dicono.
 MOTIVI_CHIUSURA = ("refutata", "potenza", "criterio", "metodo")
+# Grandezze misurate da una famiglia (LIFECYCLE §3, "stessa grandezza = stessa famiglia"; DECISIONS 2026-11-21 (2)).
+# Le sei del modulo 10 §2, il tempo come condizionamento, la dipendenza fra asset (I3) e i segnali copiati da terzi,
+# che non leggono una grandezza ma eseguono la decisione di un altro.
+GRANDEZZE = ("tendenza", "spostamento_media", "volatilita", "volume", "livelli", "candela", "tempo",
+             "dipendenza_fra_asset", "segnale_esterno")
 
 
 def load(path: str = LEDGER) -> dict:
@@ -252,6 +258,15 @@ def verifica(dati: Optional[dict] = None, registro: Optional[dict] = None) -> li
                 problemi.append("%s motivo_chiusura '%s' sconosciuto" % (eti, f["motivo_chiusura"]))
         elif f.get("motivo_chiusura") is not None:
             problemi.append("%s ha un motivo_chiusura ma non e' CLOSED" % eti)
+        gr = f.get("grandezze")
+        if not gr:
+            problemi.append("%s grandezze non dichiarate: senza, 'stessa grandezza = stessa famiglia' non si "
+                            "controlla (ammesse: %s)" % (eti, ", ".join(GRANDEZZE)))
+        else:
+            ignote = [g for g in gr if g not in GRANDEZZE]
+            if ignote:
+                problemi.append("%s grandezza sconosciuta %s (ammesse: %s; una nuova si decide in DECISIONS)"
+                                % (eti, ignote, ", ".join(GRANDEZZE)))
         problemi += _contaminazione(f, eti, b.get("llm_knowledge_cutoff"))
 
     # quota di pre-registrazioni del trimestre: due budget separati (strategie esterne, hub)
@@ -315,6 +330,20 @@ def _verifica_strumenti(f: dict) -> list:
     return out
 
 
+def grandezze_condivise(dati: dict) -> dict:
+    """{grandezza: [id, ...]} per le grandezze dichiarate da piu' di una famiglia.
+
+    Non e' un errore: le famiglie nate prima della regola del 2026-10-08 (3) restano come sono, e Matteo puo' tenerne
+    due sulla stessa grandezza (DECISIONS 2026-11-21 (3): `tsmom` e `trend_momentum`). Serve a vedere, prima di aprire
+    una famiglia, quali esistono gia' sulla stessa grandezza; una famiglia CLOSED riproposta come strumento resta una
+    riapertura (LIFECYCLE §7a)."""
+    per = {}
+    for f in dati["famiglie"]:
+        for g in f.get("grandezze") or []:
+            per.setdefault(g, []).append(f["id"])
+    return {g: ids for g, ids in per.items() if len(ids) > 1}
+
+
 def _stato_esterne(dati: dict) -> str:
     q = dati.get("trimestre_corrente")
     usate = _usate(dati, "strategie")
@@ -361,6 +390,11 @@ def tabella(dati: Optional[dict] = None) -> str:
     righe.append(_stato_esterne(dati))
     righe.append("strumenti: nessuna quota trimestrale, solo il tetto dei round (LIFECYCLE sez.8ter); famiglie: %s"
                  % (", ".join(f["id"] for f in strum) or "nessuna"))
+    cond = grandezze_condivise(dati)
+    if cond:
+        righe.append("grandezze con piu' famiglie (LIFECYCLE sez.3; prima di aprirne una, una riapertura e' sez.7a):")
+        for g in sorted(cond):
+            righe.append("  %-20s %s" % (g, ", ".join(cond[g])))
     nd = [f["id"] for f in dati["famiglie"]
           if f.get("provenienza_ipotesi") == "non_dichiarata"]
     if nd:

@@ -125,6 +125,22 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   (volatilita': 5% = 2,5% GARCH + 1,25% HMM + 1,25% premio di volatilita'); le varianti nate dopo un esito si
   contano ma restano esplorative. Holdout: un blocco finale di calendario comune, per la volatilita' di due
   anni, aperto una volta. Il gatekeeper lo controlla con la Checklist 10.
+  **Dal 21/11** (DECISIONS 2026-11-21 (2), dopo i controlli di I2 e I3):
+  - *Procedura in tre passi* (§8ter): (1) controllo delle grandezze prima di ogni dato; (2) proprieta', bersaglio,
+    perdita, benchmark e potenza, con la classe dichiarata ("nessuna" per una misura di rischio; "chi paga" solo per
+    un premio); (3) bozza di pre-registrazione e G1. Fra un passo e l'altro decide Matteo.
+  - *"Stessa grandezza" in due letture* (§3): per **ingresso** (cosa legge l'indicatore) e per **bersaglio** (cosa
+    prevede); se divergono decide Matteo. *Grandezze composte*: un confronto appartiene alla famiglia della parte che
+    cambia, con l'altra parte come **ingresso fisso** dichiarato prima (covarianza = correlazione × volatilita').
+  - *Bersaglio diverso dalla varianza*: misura, perdita e benchmark li decide Matteo al passo 2; restano i principi di G1-G3.
+  - *Ingresso fisso da un'altra famiglia*: nessun risultato per modello dell'altra famiglia sui dati del suo test;
+    se e' in ridisegno su dati futuri, la regola dei dati futuri vale anche per `trad`.
+  - *Riapertura come strumento* (§7a): una famiglia CLOSED fra le strategie non cambia binario; resta una riapertura,
+    con quota del binario d'origine e un round.
+  - *Campo `grandezze` nel contatore*: ogni famiglia lo dichiara; `--check` lo verifica e la tabella mostra le
+    grandezze coperte da piu' famiglie.
+  *Come si rompe*: se una grandezza viene assegnata male nel contatore, la tabella mostra un quadro falso: il campo
+  aiuta, ma il controllo si fa anche nei documenti, dove una grandezza puo' comparire come uso senza essere una famiglia.
 
 ## Come si lancia
 
@@ -156,6 +172,7 @@ con file e riga per ogni rilievo.
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
 | Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `magazzino/registro/documenti/*_PREREGISTRATION.md` e le voci del ledger | Claude |
 | Ogni famiglia di strumenti ha errore di famiglia, quote e benchmark per sottofamiglia | sì | `--check` (`_verifica_strumenti`); test in `motore/core/tests/test_trial_ledger_strumenti.py` (l'11/11: 8 passano, nessuna famiglia ancora nel contatore) | Claude |
+| Ogni famiglia dichiara le sue grandezze | sì | `--check` (campo `grandezze`); test in `motore/core/tests/test_trial_ledger_grandezze.py` (il 21/11: 15 famiglie su 15, 40 test del contatore passano) | Claude |
 | Ogni ipotesi arrivata dall'hub ha la scheda d'ingresso | sì | la nota di intake in `magazzino/registro/referti/` riporta P1-P6 o il punto in cui si e' fermata (il 25/10: prima prova, insider + geopolitica, fermata a P5 e alla domanda 6) | Claude |
 
 ## Come si rompe

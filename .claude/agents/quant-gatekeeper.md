@@ -547,8 +547,11 @@ Si applica quando l'oggetto e' uno **strumento** (una previsione o una lettura s
 in R o con un "rende di piu'", e' una **strategia**: la testano i soci, e la segnali.
 
 **A G1 (pre-registrazione di famiglia o di round), bloccante se manca:**
-1. bersaglio, orizzonte e misura della varianza realizzata (G1), perdita primaria QLIKE (G2);
-2. benchmark nominati, compreso EWMA (G3), e il test per ogni domanda (G4: SPA / StepM / MCS / DM-GW);
+1. bersaglio, orizzonte e misura della varianza realizzata (G1), perdita primaria QLIKE (G2). **Se il bersaglio non
+   e' la varianza** (per esempio la correlazione, I3): misura realizzata, perdita primaria e benchmark decisi da Matteo
+   al passo 2, con i principi di G1-G3 (§8ter, "Bersaglio diverso dalla varianza"); mancano = bloccante;
+2. benchmark nominati, compreso EWMA per la varianza o un benchmark senza parametri stimati per un altro bersaglio
+   (G3), e il test per ogni domanda (G4: SPA / StepM / MCS / DM-GW);
 3. errore di famiglia e quote delle sottofamiglie, con il riciclo (S2), coerenti col contatore (`--check`);
 4. **elenco completo delle varianti** di ogni sottofamiglia (C1-C2) e delle rifiniture previste per i round 2-3 (P4);
 5. data d'inizio dell'holdout, comune agli strumenti, e finestra mobile di lunghezza fissa (H1, H3);
@@ -556,6 +559,14 @@ in R o con un "rende di piu'", e' una **strategia**: la testano i soci, e la seg
 7. controllo positivo e negativo della pipeline su dati simulati (G9);
 8. "stessa grandezza = stessa famiglia": lo strumento misura una grandezza gia' coperta da una famiglia esistente,
    anche CLOSED fra le strategie (tendenza, livelli)? Se si', e' un trial di quella famiglia, non una famiglia nuova.
+   Si legge per **ingresso** e per **bersaglio** (LIFECYCLE §3, dal 2026-11-21): se le due letture divergono decide
+   Matteo. Le grandezze composte seguono la regola dell'ingresso fisso (§3). Il campo `grandezze` del contatore e la
+   tabella delle grandezze condivise (`python -m motore.core.trial_ledger`) aiutano, ma il controllo si fa anche nei
+   documenti: la correlazione o la tendenza possono comparire come **uso** senza essere una famiglia. Una famiglia
+   CLOSED riproposta come strumento e' una **riapertura** (§7a: quota del binario d'origine, un round);
+9. ingresso fisso preso da un'altra famiglia (§8ter, "Ingresso fisso da un'altra famiglia"): dichiarato prima di ogni
+   dato; nessun risultato per modello dell'altra famiglia sui dati del suo test; blocchi sigillati dichiarati prima di
+   leggerli.
 
 **A G2 (prima del verdetto):**
 - la perdita, la finestra, la distribuzione e il punto di divisione sono quelli dichiarati (H5, C3)? Ogni scelta

@@ -49,6 +49,12 @@ Costanti: `STATES = ["Bear", "Sideways", "Bull"]` (indici 0,1,2).
 Layer Hidden Markov che *inferisce* i regimi dai rendimenti grezzi senza etichettatura manuale.
 
 - **`fit_hmm(returns, n_components=3, random_state=42)`** — import **lazy** di `hmmlearn` (se fallisce ritorna `(None, None)` → degrade pulito). `GaussianHMM(covariance_type="diag", n_iter=200)`, `.fit(X)` (Baum-Welch) + `.predict(X)` (Viterbi). Ordina gli stati per media dei rendimenti → Bear/Sideways/Bull.
+- ⚠️ **Non usabile come strumento cosi' com'e'** (nota del 2026-11-21, controllo di I2): `.fit(X)` + `.predict(X)` su
+  tutto il campione e' **lisciamento**, cioe' ogni stato usa anche i rendimenti successivi (look-ahead). Le regole
+  degli strumenti ammettono solo probabilita' **filtrate**, con parametri ristimati su finestra mobile
+  ([STRATEGY_LIFECYCLE §8ter](../../../motore/metodo/STRATEGY_LIFECYCLE.md), S5). Stati ordinati per media o per
+  varianza: tendenza o `volatilita`, famiglie esistenti
+  ([controllo I2](../../registro/referti/grandezze_I2_regimi_2026-11-20.md)).
 - **Caveat della fonte**: Baum-Welch trova **massimi locali**; in produzione fittare con più `random_state` e tenere il miglior log-likelihood.
 - **Graceful degrade**: `hmmlearn` può non compilare su Windows senza MS C++ Build Tools. In quel caso il layer HMM viene saltato e il modello osservabile funziona comunque (flag file `.hmm_available` = `true`/`false`).
 

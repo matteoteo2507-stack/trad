@@ -11,7 +11,7 @@ BUDGET = {"round_rifinitura_per_famiglia": 3, "prereg_esterne_per_trimestre": 3,
 
 
 def _vol(**kw):
-    f = {"id": "volatilita", "stato": "BOZZA", "binario": "strumenti", "fonti": ["x"], "round_rifinitura": 0,
+    f = {"id": "volatilita", "stato": "BOZZA", "binario": "strumenti", "fonti": ["x"], "round_rifinitura": 0, "grandezze": ["volatilita"],
          "alfa_famiglia": 0.05, "trial_cumulati": 0, "holdout_aperto": None, "holdout_inizio": "2024-11-01",
          "prereg_esterna_trimestre": "2026-Q4", "provenienza_ipotesi": "letteratura",
          "finestra_dati_fine": "2026-11-09",
@@ -27,7 +27,7 @@ def _dati(famiglie):
 
 
 def _strat(fid):
-    return {"id": fid, "stato": "CLOSED", "motivo_chiusura": "potenza", "round_rifinitura": 0, "fonti": ["x"],
+    return {"id": fid, "stato": "CLOSED", "motivo_chiusura": "potenza", "round_rifinitura": 0, "fonti": ["x"], "grandezze": ["tendenza"],
             "prereg_esterna_trimestre": "2026-Q4", "provenienza_ipotesi": "umana_esterna",
             "finestra_dati_fine": "2026-10-01"}
 

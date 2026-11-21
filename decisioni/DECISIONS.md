@@ -11,6 +11,43 @@
 
 ---
 
+## 2026-11-21 (2) — I3 Struttura fra asset: **si apre** sulla dipendenza fra rendimenti; **debiti di protocollo corretti** prima del passo 2; 0 trial
+
+Passo 1 di I3 ([controllo delle grandezze](../magazzino/registro/referti/grandezze_I3_struttura_2026-11-21.md), commit
+`0f04f70`; gatekeeper **PASSA CON RISERVE**, 0 bloccanti, 11 riserve applicate). Nessun dato letto.
+
+**Decisioni di Matteo su I3.**
+1. **I3 si apre** come famiglia del binario strumenti sulla grandezza **dipendenza fra i rendimenti** (correlazioni e
+   fattori): PCA, auto-encoder, beta dinamico, regimi di correlazione, beta su fattori, raggruppamenti, dipendenza nelle
+   code e dispersione standardizzata sono candidati o varianti della stessa famiglia. Fuori: anticipo e momentum fra
+   asset (rendimenti), reversione dei residui e cointegrazione (spread), ricadute di volatilita' (`volatilita`). Nel
+   contatore entra con la pre-registrazione (passo 3), quando errore, sottofamiglie e benchmark sono fissati.
+2. **Ingresso fisso**: volatilita' EWMA con λ = 0,94 (la formula), scelta perche' standard dichiarato prima e senza
+   parametri stimati, non per gli esiti di `volatilita`; definizione del giorno e distribuzione marginale si fissano con
+   essa, prima di ogni dato.
+3. **Passo 2 senza "chi paga" alla lettera**: per una misura di rischio la classe si dichiara "nessuna"; classe, chi paga
+   e limite all'arbitraggio si cercano solo per un'eventuale sottofamiglia di premio.
+
+**Debiti corretti prima di procedere** (Matteo: "li correggerei prima di procedere"), dai controlli di I2 e I3:
+- **contatore**: campo `grandezze` per ogni famiglia, verificato da `--check`, con le grandezze coperte da piu' famiglie
+  in tabella (`motore/core/trial_ledger.py`, test nuovi; 40 test del contatore passano);
+- **LIFECYCLE §3**: "stessa grandezza" letta per ingresso e per bersaglio (se divergono decide Matteo) e regola delle
+  **grandezze composte** (ingresso fisso);
+- **LIFECYCLE §7a** (scelta di Matteo): una famiglia CLOSED fra le strategie riproposta come **strumento** resta una
+  riapertura, con la **quota del binario d'origine** e un round;
+- **LIFECYCLE §8ter**: procedura in tre passi; per un bersaglio diverso dalla varianza misura, perdita e benchmark li
+  decide Matteo al passo 2; **ingresso fisso da un'altra famiglia** (scelta di Matteo): la regola dei dati futuri del
+  2026-11-20 (2) vale **anche per `trad`**, non solo per i soci;
+- **gatekeeper**, Checklist 10 punti 1, 2, 8 e 9 nuovo; modulo 10 §2 (riga della tendenza aggiornata, dipendenza fra
+  asset fuori dalle sei) e §9 (l'ADX non e' coperto da Levine-Pedersen); modulo 04 §7 (persistenza da sovrapposizione
+  meccanica ma testabile); blueprint Markov (HMM con Viterbi non usabile come strumento, S5);
+- `decisioni/mappa/` (01) e `_modifiche.md` aggiornati, stato `da_rivedere`.
+
+**Prossimo**: passo 2 di I3, cominciando dalle decisioni che mancano al gate (misura della correlazione realizzata,
+perdita primaria, benchmark), poi la potenza coi dati in casa e con quelli acquistabili.
+
+---
+
 ## 2026-11-21 — I2 Regimi: **chiusa senza famiglia**; cointegrazione solo con un meccanismo; `tsmom` e `trend_momentum` **due famiglie**; 0 trial
 
 Passo 1 di I2 ([backlog §I](BACKLOG_RICERCA.md)): il controllo "stessa grandezza = stessa famiglia"
