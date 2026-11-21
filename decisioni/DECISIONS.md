@@ -67,6 +67,15 @@ la voce (2) riportava "40 test", che erano 26 del contatore piu' 14 di prop-lab 
 `_modifiche.md` del primo commit riporta il nome del valore di allora. Test dopo la correzione: 37 nei quattro file del
 contatore e 14 di prop-lab, passano; `--check`: nessun problema.
 
+**Terza passata del gatekeeper (commit `89377b3`): PASSA CON RISERVE**, 0 bloccanti; il bloccante della seconda e' chiuso.
+Riserve chiuse lo stesso giorno: le 14 famiglie esenti hanno **trial e binario congelati al 21/11**
+(`CONGELATE_21_11`): `--check` fallisce se una cambia binario o scende sotto i trial di allora, quindi riaprirle
+spostandole fra gli strumenti o ripartendo da zero non passa piu' (prima passava); **id ripetuti** = errore (l'esenzione
+si decide per id); la **fonte** di una parentela deve esistere (una data citata e' una voce di DECISIONS, una
+pre-registrazione e' un file del repo); `famiglia` non stringa da' un messaggio invece di un crash; LIFECYCLE §7a dice
+cosa controlla il codice; la riga di `_modifiche.md` corretta e' barrata, non riscritta. Resta al gatekeeper solo il
+binario invariato delle famiglie nate dopo il 21/11. Test: 41 nei quattro file del contatore e 14 di prop-lab, passano.
+
 ---
 
 ## 2026-11-21 (2) — I3 Struttura fra asset: **si apre** sulla dipendenza fra rendimenti; **debiti di protocollo corretti** prima del passo 2; 0 trial

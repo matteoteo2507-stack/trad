@@ -362,8 +362,10 @@ Quando il §7 e' soddisfatto, la riapertura:
 - **non puo' validarsi sui dati che hanno generato l'idea**: i dati gia' guardati restano dati di scoperta.
 - **non cambia binario** (Matteo, 21/11): una famiglia CLOSED del binario strategie o hub riproposta come
   **strumento** (§8ter) resta la stessa famiglia e una riapertura. Servono il §7 e la quota del binario d'origine, e si
-  consuma un round; il binario `strumenti`, che non ha quota, non e' una via d'ingresso per le famiglie chiuse. Il
-  controllo e' quello del §3 sulle grandezze (DECISIONS 2026-11-21 (2)).
+  consuma un round; il binario `strumenti`, che non ha quota, non e' una via d'ingresso per le famiglie chiuse
+  (DECISIONS 2026-11-21 (2)). Cosa controlla il codice (§3, DECISIONS 2026-11-21 (3)): vieta la riapertura da un'altra
+  voce; per le 14 famiglie CLOSED al 21/11 controlla che il binario resti `strategie` e che i trial non scendano sotto
+  quelli di allora. Per le famiglie successive il binario invariato lo controlla il gatekeeper sul diff del contatore.
 
 ### 7b. Forward di una famiglia CLOSED (dal 2026-11-04)
 

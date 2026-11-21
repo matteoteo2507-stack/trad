@@ -3,7 +3,7 @@
 Prima del 21/11 il contatore non sapeva quale grandezza misurasse una famiglia: due id sulla stessa grandezza
 passavano `--check` in silenzio (debito 1 del controllo di I2). Nessun dato vero: registri sintetici.
 """
-from motore.core.trial_ledger import verifica, grandezze_condivise, tabella, load
+from motore.core.trial_ledger import verifica, grandezze_condivise, tabella, load, CONGELATE_21_11
 
 BUDGET = {"round_rifinitura_per_famiglia": 3, "prereg_esterne_per_trimestre": 3,
           "prereg_esterne_per_trimestre_soglia_allarme": 2, "prereg_hub_per_trimestre": 1,
@@ -15,6 +15,8 @@ def _fam(fid, grandezze):
          "provenienza_ipotesi": "umana_esterna", "finestra_dati_fine": "2026-10-01"}
     if grandezze is not None:
         f["grandezze"] = grandezze
+    if CONGELATE_21_11.get(fid) is not None:     # le famiglie storiche hanno i loro trial del 21/11
+        f["trial_cumulati"] = CONGELATE_21_11[fid]
     return f
 
 
@@ -68,7 +70,7 @@ def test_famiglia_aperta_sulla_grandezza_di_una_chiusa_senza_parentela_fallisce(
 
 
 def test_famiglia_parente_con_fonte_passa():
-    par = [{"famiglia": "tsmom", "tipo": "parente", "fonte": "DECISIONS 2099-01-01"}]
+    par = [{"famiglia": "tsmom", "tipo": "parente", "fonte": "DECISIONS 2026-11-21 (3)"}]
     dati = _dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)])
     assert verifica(dati, registro={}) == []
 
@@ -77,7 +79,7 @@ def test_riapertura_da_un_altra_voce_e_la_porta_laterale_e_fallisce():
     """G1 del 21/11, bloccante: una famiglia nuova sul binario strumenti che si dichiara 'riapertura' di tsmom (strategie,
     CLOSED) non somma i trial, non consuma quota ne' round e cambia binario. Per il §7a la riapertura si fa sulla voce
     di tsmom."""
-    par = [{"famiglia": "tsmom", "tipo": "riapertura", "fonte": "DECISIONS 2099-01-01"}]
+    par = [{"famiglia": "tsmom", "tipo": "riapertura", "fonte": "DECISIONS 2026-11-21 (3)"}]
     probl = verifica(_dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)]), registro={})
     assert any("STESSA voce" in p for p in probl)
 
@@ -89,7 +91,7 @@ def test_parentela_senza_fonte_o_con_tipo_ignoto_fallisce():
 
 
 def test_parentela_verso_se_stessa_o_senza_grandezze_comuni_fallisce():
-    fonte = "DECISIONS 2099-01-01"
+    fonte = "DECISIONS 2026-11-21 (3)"
     se = [{"famiglia": "nuova", "tipo": "parente", "fonte": fonte}]
     assert any("verso se stessa" in p for p in verifica(_dati([_nuova(["volume"], parentela=se)]), registro={}))
     lontana = [{"famiglia": "lv", "tipo": "parente", "fonte": fonte}]
@@ -128,3 +130,32 @@ def test_livelli_ha_misurato_anche_il_volume():
     revisione del 21/11, prima di I4)."""
     f = next(f for f in load()["famiglie"] if f["id"] == "livelli")
     assert "volume" in f["grandezze"]
+
+
+def test_id_ripetuto_e_un_errore():
+    """L'esenzione si decide per id: una seconda voce 'tsmom' sarebbe esente senza esserlo (terza passata, 21/11)."""
+    probl = verifica(_dati([_fam("tsmom", ["tendenza"]), _fam("tsmom", ["tendenza"])]), registro={})
+    assert any("id ripetuto" in p for p in probl)
+
+
+def test_famiglia_congelata_non_cambia_binario_ne_azzera_i_trial():
+    """§7a sulla stessa voce: tsmom riaperta come strumento con i trial azzerati deve fallire."""
+    f = _fam("tsmom", ["tendenza"])
+    f.update(binario="hub", trial_cumulati=0)
+    probl = verifica(_dati([f]), registro={})
+    assert any("binario cambiato" in p for p in probl) and any("sotto i 8 del 21/11" in p for p in probl)
+
+
+def test_fonte_della_parentela_deve_esistere():
+    par = [{"famiglia": "tsmom", "tipo": "parente", "fonte": "DECISIONS 2099-12-31"}]
+    probl = verifica(_dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)]), registro={})
+    assert any("non ha una voce del 2099-12-31" in p for p in probl)
+    par = [{"famiglia": "tsmom", "tipo": "parente", "fonte": "magazzino/registro/documenti/FINTA_PREREGISTRATION.md"}]
+    probl = verifica(_dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)]), registro={})
+    assert any("non trovata nel repo" in p for p in probl)
+
+
+def test_famiglia_di_parentela_non_stringa_da_un_messaggio():
+    par = [{"famiglia": ["tsmom"], "tipo": "parente", "fonte": "DECISIONS 2026-11-21 (3)"}]
+    probl = verifica(_dati([_fam("tsmom", ["tendenza"]), _nuova(["tendenza"], parentela=par)]), registro={})
+    assert any("deve essere l'id" in p for p in probl)

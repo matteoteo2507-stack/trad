@@ -140,8 +140,10 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
   - *Campi `grandezze` e `parentela` nel contatore* (DECISIONS 2026-11-21 (3)): ogni famiglia dichiara le grandezze
     della sua **domanda primaria** (filtri e ingressi fissi nelle note); una famiglia che ne condivide una con un'altra
     o e' una riapertura, e allora si fa sulla stessa voce (§7a), o dichiara la `parentela` di tipo `parente` con la
-    fonte, altrimenti `--check` fallisce. Esenti solo le 14 famiglie CLOSED al 21/11. Il codice non vede la storia: che
-    una riapertura non cambi binario lo controlla il gatekeeper.
+    fonte (che deve esistere: voce di DECISIONS o file di pre-registrazione), altrimenti `--check` fallisce. Esenti solo
+    le 14 famiglie CLOSED al 21/11, con trial e binario **congelati** (`CONGELATE_21_11`): se una cambia binario o
+    scende sotto i trial di allora, `--check` fallisce. Id ripetuti = errore. Per le famiglie nate dopo, che una
+    riapertura non cambi binario lo controlla il gatekeeper sul diff del contatore.
     `segnale_esterno` e' un'etichetta per i segnali copiati, fuori dalla tabella delle grandezze condivise e vietata
     agli strumenti e all'hub. Primo caso: `volatilita` dichiara la parentela con `trend_momentum` (gradiente di
     volatilita', altro bersaglio).
@@ -180,7 +182,7 @@ con file e riga per ogni rilievo.
 | Revisore indicato dai documenti di metodo | uno solo, ed è un agente che Claude Code carica | i riferimenti di `QUANT_REVIEW_PROTOCOL.md` e `STRATEGY_LIFECYCLE.md` §9 portano a `.claude/agents/` (il 02/10: **no**, portavano ad `agents/quant_reviewer.md`; il 13/10: **sì**, vecchio revisore ritirato) | Claude |
 | Ogni famiglia con una pre-registrazione ha la sua riga nel contatore | sì | confronto tra `magazzino/registro/documenti/*_PREREGISTRATION.md` e le voci del ledger | Claude |
 | Ogni famiglia di strumenti ha errore di famiglia, quote e benchmark per sottofamiglia | sì | `--check` (`_verifica_strumenti`); test in `motore/core/tests/test_trial_ledger_strumenti.py` (l'11/11: 8 passano, nessuna famiglia ancora nel contatore) | Claude |
-| Ogni famiglia dichiara le sue grandezze | sì | `--check` (campo `grandezze`); test in `motore/core/tests/test_trial_ledger_grandezze.py` (il 21/11: 15 famiglie su 15; passano i 26 test dei quattro file del contatore e i 14 di prop-lab `test_core.py`) | Claude |
+| Ogni famiglia dichiara le sue grandezze | sì | `--check` (campo `grandezze`); test in `motore/core/tests/test_trial_ledger_grandezze.py` (il 21/11: 15 famiglie su 15; passano i 41 test dei quattro file del contatore e i 14 di prop-lab `test_core.py`) | Claude |
 | Ogni ipotesi arrivata dall'hub ha la scheda d'ingresso | sì | la nota di intake in `magazzino/registro/referti/` riporta P1-P6 o il punto in cui si e' fermata (il 25/10: prima prova, insider + geopolitica, fermata a P5 e alla domanda 6) | Claude |
 
 ## Come si rompe

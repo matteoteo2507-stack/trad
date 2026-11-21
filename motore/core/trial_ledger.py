@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 from math import sqrt
 from typing import Optional
@@ -62,9 +63,14 @@ NON_GRANDEZZE = ("segnale_esterno",)
 TIPI_PARENTELA = ("parente",)
 # Le famiglie CLOSED alla data della regola (DECISIONS 2026-11-21 (3)): esenti dall'obbligo di parentela. Ogni altra
 # famiglia, anche se poi si chiude, conserva l'obbligo (la relazione dichiarata non si perde alla chiusura).
-ESENTI_PARENTELA = ("livelli", "nxt", "opening_range", "tsmom", "meanrev_vol", "seasonality_tom", "round_grid",
-                    "trend_momentum", "meanrev_kichev", "mentor_signals", "london_breakout", "forexgump_signals",
-                    "mr_indici_rsi2", "momentum_ultima_mezzora")
+# Trial congelati al 21/11 (None = non ricostruibili): tutte stavano sul binario `strategie`. Una loro riapertura si fa
+# sulla stessa voce (§7a), quindi il binario non puo' cambiare e i trial non possono scendere sotto questi valori:
+# il controllo non ha bisogno di storia (terza passata del gatekeeper, 21/11).
+CONGELATE_21_11 = {"livelli": 384, "nxt": 2, "opening_range": None, "tsmom": 8, "meanrev_vol": 6, "seasonality_tom": 4,
+                   "round_grid": 1, "trend_momentum": None, "meanrev_kichev": 0, "mentor_signals": 1,
+                   "london_breakout": None, "forexgump_signals": 1, "mr_indici_rsi2": 1, "momentum_ultima_mezzora": 1}
+ESENTI_PARENTELA = tuple(CONGELATE_21_11)
+DECISIONS_MD = os.path.join(ROOT, "decisioni", "DECISIONS.md")
 
 
 def load(path: str = LEDGER) -> dict:
@@ -242,6 +248,7 @@ def verifica(dati: Optional[dict] = None, registro: Optional[dict] = None) -> li
     dati = dati or load()
     b = dati["budget"]
     problemi = _verifica_prop_lab(dati, registro_prop_lab() if registro is None else registro)
+    problemi += _verifica_id_e_congelate(dati)
 
     for f in dati["famiglie"]:
         eti = "%-16s" % f["id"]
@@ -347,6 +354,52 @@ def _verifica_strumenti(f: dict) -> list:
     return out
 
 
+def _intestazioni_decisions() -> set:
+    try:
+        with open(DECISIONS_MD, encoding="utf-8") as fh:
+            return set(re.findall(r"^## (\d{4}-\d{2}-\d{2})", fh.read(), flags=re.M))
+    except OSError:
+        return set()
+
+
+def _fonte_mancante(fonte: str) -> list:
+    """La fonte di una parentela deve esistere: ogni data citata e' una voce di DECISIONS, ogni pre-registrazione
+    citata e' un file del repo (terza passata del gatekeeper, 21/11)."""
+    out = []
+    date = re.findall(r"\d{4}-\d{2}-\d{2}", fonte)
+    if "DECISIONS" in fonte:
+        voci = _intestazioni_decisions()
+        out += ["DECISIONS non ha una voce del %s" % d for d in date if d not in voci]
+    for path in re.findall(r"[\w./-]*_PREREGISTRATION\.md", fonte):
+        if not os.path.exists(os.path.join(ROOT, path)):
+            out.append("pre-registrazione %s non trovata nel repo" % path)
+    return out
+
+
+def _verifica_id_e_congelate(dati: dict) -> list:
+    """Id unici (l'esenzione dalla parentela si decide per id); le famiglie congelate al 21/11 esistono, restano sul
+    binario `strategie` e non scendono sotto i trial di allora (§7a: una riapertura sta sulla stessa voce e somma)."""
+    out = []
+    visti = set()
+    for f in dati["famiglie"]:
+        if f["id"] in visti:
+            out.append("%-16s id ripetuto nel contatore: ogni famiglia ha una voce sola" % f["id"])
+        visti.add(f["id"])
+    per_id = {f["id"]: f for f in dati["famiglie"]}
+    for fid, trial in CONGELATE_21_11.items():
+        f = per_id.get(fid)
+        if f is None:
+            continue                     # registri sintetici dei test: la famiglia non c'e'
+        eti = "%-16s" % fid
+        if f.get("binario", "strategie") != "strategie":
+            out.append("%s binario cambiato in '%s': una riapertura non cambia binario (sez.7a)" % (eti, f["binario"]))
+        tc = f.get("trial_cumulati")
+        if trial is not None and (tc is None or tc < trial):
+            out.append("%s trial_cumulati %s sotto i %d del 21/11: una riapertura somma, non riparte (sez.7a)"
+                       % (eti, tc, trial))
+    return out
+
+
 def _verifica_parentela(f: dict, eti: str, dati: dict) -> list:
     """Una famiglia che condivide una grandezza con un'altra dichiara la relazione (DECISIONS 2026-11-21 (3), LIFECYCLE
     §3 e §7a): voce `parentela` = [{"famiglia", "tipo": "parente", "fonte"}], con la fonte in DECISIONS o in una
@@ -366,6 +419,9 @@ def _verifica_parentela(f: dict, eti: str, dati: dict) -> list:
     dichiarate = set()
     for p in par:
         altra = p.get("famiglia")
+        if not isinstance(altra, str):
+            out.append("%s parentela malformata: 'famiglia' deve essere l'id di una famiglia (stringa)" % eti)
+            continue
         if altra == f["id"]:
             out.append("%s parentela verso se stessa" % eti)
         elif altra not in ids:
@@ -381,6 +437,8 @@ def _verifica_parentela(f: dict, eti: str, dati: dict) -> list:
         fonte = str(p.get("fonte") or "")
         if "DECISIONS" not in fonte and "PREREGISTRATION" not in fonte:
             out.append("%s parentela con %s: la fonte deve nominare DECISIONS o una pre-registrazione" % (eti, altra))
+        else:
+            out += ["%s parentela con %s: %s" % (eti, altra, m) for m in _fonte_mancante(fonte)]
         dichiarate.add(altra)
     if f["id"] in ESENTI_PARENTELA:
         return out
