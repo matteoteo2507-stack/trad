@@ -39,11 +39,15 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; cambiarle do
 - **Finestra comune W**: seduta USA, 9:30-16:00 New York, secondo il calendario di borsa di New York (XNYS). Le barre
   Dukascopy (bid, ora d'inizio in UTC) si convertono all'ora di New York col fuso, quindi i cambi d'ora europei e
   americani non spostano la finestra; DAX e BUND, quotati su orari europei, si leggono comunque in ora di New York.
-- **Rendimenti a 15 minuti** (26 per seduta piena), log del prezzo bid all'ultima barra M5 di ogni quarto d'ora, griglia
-  allineata alle 9:30 New York.
-- **Correzione per un ritardo** con **pesi di Bartlett** (½ sui prodotti incrociati a ritardo ±1): toglie parte
-  dell'effetto Epps delle quotazioni non sincrone e garantisce una matrice semidefinita positiva (con peso 1 potrebbe
-  non esserlo). Scelta di Claude per correttezza, dichiarata.
+- **Rendimenti a 15 minuti** (26 per seduta piena), log del prezzo bid: il primo prezzo e' l'**open della barra M5
+  delle 9:30**, poi la **chiusura della barra M5 che finisce a ogni quarto d'ora** (quella che inizia alle :10, :25,
+  :40, :55), fino alla chiusura della barra delle 15:55. Un prezzo mancante rende mancanti i due rendimenti adiacenti
+  (nessun rendimento su 30 minuti); i prodotti incrociati si sommano solo sui quarti d'ora in cui entrambi gli strumenti
+  (e, per il ritardo, entrambi i quarti d'ora) hanno il rendimento.
+- **Correzione per un ritardo** con **pesi di Bartlett** (½ sui prodotti incrociati a ritardo ±1) **su tutta la
+  matrice, diagonale compresa**: toglie parte dell'effetto Epps delle quotazioni non sincrone e garantisce una matrice
+  semidefinita positiva. Dopo la correzione resta un Epps residuo, uguale per tutte le previsioni: il bersaglio e'
+  l'attesa di **questo** stimatore, non la correlazione vera, e va detto.
 - **Giorni**: le sedute piene del calendario XNYS. Le **chiusure anticipate** (13:00) sono escluse e si contano. Un
   giorno entra solo se **tutti** gli N strumenti hanno almeno il 90% dei 26 rendimenti attesi: si esclude l'unione dei
   giorni mancanti, e si riporta per anno e per strumento quanti giorni esclude (controllo di selezione, come la
@@ -53,10 +57,21 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; cambiarle do
   rendimenti nulli conta come mancante (un prezzo fermo spinge la correlazione verso zero). La quota per strumento e per
   anno si misura nel controllo di struttura, prima di ogni statistica.
 - **Rollover** dei CFD su futures (BUND, USTBOND, COPPER, NATGAS, WTI): il rendimento a 15 minuti che attraversa
-  l'ora di un cambio di contratto si toglie **nel loader**, una volta sola; le date si prendono dal calendario del
-  fornitore. Se il calendario non si trova, lo strumento resta fuori (regola fissata ora, non dopo aver visto i salti).
+  l'ora di un cambio di contratto si toglie **nel loader**, una volta sola, con le date del calendario del fornitore.
+  Se il calendario non si trova si assume che il cambio avvenga **alla riapertura serale**, fuori dalla seduta USA,
+  come verificato per il WTI di Dukascopy (DECISIONS 2026-11-13, salti alla riapertura del giorno 19): lo strumento
+  resta, l'ipotesi e' dichiarata, e il controllo di struttura riporta per ogni strumento dove cadono le pause di
+  quotazione (solo orari, nessun rendimento).
 - **DAX**: entra solo se il controllo di struttura mostra barre nel 90% delle sedute per tutta la finestra (dopo le
   11:30 di New York e' fuori dalla seduta cash di Francoforte); altrimenti resta fuori.
+- **Strumento fuori**: se nello sviluppo i suoi giorni mancanti (meno del 90% dei rendimenti, o oltre il 25% di
+  rendimenti nulli) superano il 10% delle sedute XNYS, lo strumento esce dall'universo, deciso una volta sul controllo
+  di struttura e prima di ogni perdita (con l'esclusione per unione, uno strumento spesso fermo cancellerebbe giorni a
+  tutti).
+- **Calendario**: XNYS di `exchange_calendars`, versione registrata nelle guardie (come la volatilita').
+- **Controllo di struttura**: conteggi su sviluppo e blocco; il controllo di selezione (rendimento assoluto dei giorni
+  esclusi contro la mediana) **solo sullo sviluppo**.
+- **Orizzonte 5**: un'origine si esclude se uno dei 5 giorni e' escluso (come la volatilita').
 
 ## 4. Ingresso fisso e scala del bersaglio
 
@@ -65,12 +80,26 @@ RV_{i,t} = somma dei quadrati dei 26 rendimenti a 15 minuti nella finestra W; σ
 RV_i fino alla seduta t** (la formula del pacchetto, applicata alla stessa finestra del bersaglio, Matteo).
 **Distribuzione marginale: gaussiana** (quasi-verosimiglianza), dove serve una verosimiglianza (DCC) (Matteo).
 
-**Fattore di scala** (Matteo, rimedio del bloccante B1). Senza, la diagonale del bersaglio non vale 1 e la perdita di
-Stein premia correlazioni gonfiate o sgonfiate (calcolo sintetico del gatekeeper: con diagonale 0,5 e correlazione vera
-0,5 la Stein premia 0,725). Come c_t della volatilita' (VOLATILITA_PREREGISTRATION §3, "Scala del bersaglio"):
-s_{i,t} = (somma di RV_i) / (somma di σ̂²_i) sulle **1.000 sedute** che finiscono a t, solo passato. I rendimenti
-standardizzati sono z_{i,k} = r_{i,k} / (σ̂_{i,t−1} · √s_{i,t−1}) per i quarti d'ora k della seduta t. Resta l'errore
-**condizionato** dell'EWMA (la diagonale vale 1 in media, non giorno per giorno), dichiarato.
+L'EWMA e s si aggiornano sulle sedute valide **dello strumento** (non solo su quelle comuni); in una seduta non valida
+lo strumento tiene il valore del giorno prima.
+
+**Fattore di scala** (rimedio del bloccante B1). Senza, la diagonale del bersaglio non vale 1 e la perdita di Stein
+premia correlazioni gonfiate o sgonfiate (calcolo sintetico del gatekeeper: con diagonale 0,5 e correlazione vera 0,5 la
+Stein premia 0,725; con 0,95 premia 0,516). Come c_t della volatilita' (VOLATILITA_PREREGISTRATION §3), **col bersaglio
+al numeratore**: sia D_{i,τ} l'elemento diagonale della matrice di Bartlett dei rendimenti **grezzi** della seduta τ
+(RV piu' il termine a ritardo 1); s_{i,t} = **media semplice** dei rapporti D_{i,τ} / σ̂²_{i,τ−1} sulle **500 sedute**
+valide che finiscono a t (solo passato). La media semplice, non il rapporto di somme di c_t, perche' la perdita di Stein
+e' lineare nel bersaglio e conta la media sui giorni (il rapporto di somme sarebbe una media pesata per la
+volatilita'); la differenza si misura nel G9, non sui dati. I rendimenti standardizzati sono
+z_{i,k} = r_{i,k} / (σ̂_{i,t−1} · √s_{i,t−1}) per i quarti d'ora k della seduta t.
+
+**Limite dichiarato: la scala vale in media, non giorno per giorno.** Nei giorni in cui l'EWMA sbaglia la volatilita',
+la diagonale del bersaglio si allontana da 1 e la Stein premia in parte le previsioni di correlazione che si muovono
+insieme a quell'errore (calcolo sintetico: con diagonale 1,25 l'ottimo scende da 0,5 a 0,441, con 0,8 sale a 0,572;
+una previsione costante non ne e' toccata). Le fonti definiscono la proxy non distorta condizionatamente al passato.
+Rimedio deciso (Matteo e Claude, 21/11): **si misura nel G9** (§9) con volatilita' marginali che l'EWMA sbaglia; se il
+controllo negativo rifiuta oltre la sua quota, **prima di ogni trial** il bersaglio passa alla correlazione realizzata
+(diagonale 1 ogni giorno), con la sua giustificazione sul testo delle fonti.
 
 **Bersaglio.** Σ_t = matrice realizzata dei z della seduta t, con la correzione di Bartlett. Per l'orizzonte 5:
 media delle Σ delle sedute t+1 ... t+5, ognuna standardizzata col suo σ̂ del giorno prima (informazione successiva
@@ -107,12 +136,15 @@ Una perdita non si cambia dopo un esito (G2).
 
 - **Benchmark del verdetto**: Q_t = 0,94·Q_{t−1} + 0,06·Σ_t (EWMA delle matrici realizzate), H = Q normalizzata a
   diagonale 1. Nessun parametro stimato.
-- **Riferimenti di skill** (G3): correlazione **costante** = media delle matrici realizzate (normalizzate) sulle 1.000
-  sedute precedenti (finestra fissa, H3); **persistenza** = la matrice di ieri normalizzata, regolarizzata come
-  0,9·R_t + 0,1·I (regola fissata ora, copre anche il caso non definito positivo).
-- **Benchmark forte**: **DCC(1,1)** sulle stesse matrici, gaussiano, stimato sulla finestra mobile di 1.000 sedute con
-  ristima settimanale (H3); previsione a 5 passi con l'approssimazione della matrice Q a piu' passi (da citare con la
-  fonte alla bozza).
+- **Riferimenti di skill** (G3): correlazione **costante** = media delle matrici di correlazione (ogni Σ normalizzata a
+  diagonale 1, poi la media) sulle **500 sedute** precedenti (finestra fissa, H3); **persistenza** = la matrice di ieri
+  normalizzata, regolarizzata come 0,9·R_t + 0,1·I (regola fissata ora, copre anche il caso non definito positivo).
+- **Benchmark forte**: **DCC(1,1) su matrici realizzate**, Q_t = (1 − a − b)·Q̄ + a·Σ_{t−1} + b·Q_{t−1}, con Q̄ la
+  media delle Σ della finestra e H = Q normalizzata; (a, b) stimati per **quasi-verosimiglianza gaussiana dei
+  rendimenti a 15 minuti standardizzati** (covarianza di un quarto d'ora = H_t / 26, ritardo 0), sulla finestra mobile
+  di **500 sedute**, ristima settimanale (H3). Previsione a 5 passi: E_t[Q_{t+k}] = Q̄ + (a + b)^{k−1}·(Q_{t+1} − Q̄),
+  poi normalizzata (approssimazione di Engle e Sheppard 2001, dalla memoria: **in quarantena**, da verificare prima del
+  passo 3).
 - **Come si legge "batte l'EWMA ma non la costante"** (R3, scritto prima): un candidato che batte l'EWMA ma non la
   costante dice che la contrazione verso la media batte un filtro rumoroso, un risultato noto (Checklist 5), non che il
   candidato prevede la dinamica. Il pacchetto lo riporterebbe cosi'.
@@ -142,7 +174,8 @@ gratis da Dukascopy M5 con lo stesso script della volatilita' (regola d'acquisto
 - **Blocco 2024-11-11 → 2026-11-10 degli M5** (holdout sigillato della volatilita', mai piu' usabile dal ridisegno):
   **I3 lo legge, dichiarandolo** (Matteo). Da qui il blocco e' toccato dalla pipeline per i nove strumenti; una fonte
   comprata in futuro che lo copra non conta piu' come mai toccata (impegno registrato in DECISIONS 2026-11-21 (5)).
-  I3 non riporta statistiche di volatilita' su quel blocco (§4).
+  I3 non riporta statistiche di volatilita' su quel blocco (§4): sul blocco il controllo di struttura riporta solo
+  conteggi, e il controllo di selezione con i rendimenti assoluti si fa solo sullo sviluppo (§3).
 - **Gli 8 strumenti nuovi** (Matteo): letti da I3, **perdono in modo irreversibile** lo stato di "mai visti" per la
   calibrazione dell'EWMA del ridisegno della volatilita'. Restano a quel ridisegno gli altri strumenti Dukascopy mai
   toccati (A1 §8 ne censiva circa 280 fra le azioni USA; bond e commodity sono pochi).
@@ -150,15 +183,26 @@ gratis da Dukascopy M5 con lo stesso script della volatilita' (regola d'acquisto
   diagonale (LIFECYCLE §8ter, "Ingresso fisso da un'altra famiglia"); al passo 3 si scrive come si riportano le
   perdite in quel periodo.
 - **Correlazioni medie per classe** gia' calcolate su dati D1 (A1 §4, §8, §9): non sulla misura di I3, ma note.
-- **Contaminazione** (H6, Checklist 5): il periodo 2024-11 → 2026-05 precede il knowledge cutoff del modello
-  (2026-05-31) e contiene lo shock dei dazi di aprile 2025; universo, benchmark e misura li ha proposti Claude.
+- **Contaminazione** (H6, Checklist 5): quasi tutto il periodo dei dati (dal 2019 al 2026-05) precede il knowledge
+  cutoff del modello (2026-05-31), compreso lo shock dei dazi di aprile 2025 nel blocco; universo, benchmark e misura li
+  ha proposti Claude.
   Fatti famosi sulla grandezza ("le correlazioni salgono nelle crisi"; azioni-obbligazioni positive nel 2022) confermati
   dal test porterebbero poca informazione nuova.
 
 ## 9. Controllo della pipeline (G9, rimedio del bloccante B3)
 
-Due processi simulati **attraverso la misura vera** (26 rendimenti a 15 minuti, ritardi di quotazione come nei dati,
-standardizzazione con l'ingresso fisso, fattore di scala, correzione di Bartlett):
+Due processi simulati **attraverso la misura vera** (26 rendimenti a 15 minuti, standardizzazione con l'ingresso fisso,
+fattore di scala, correzione di Bartlett), con due ingredienti dichiarati:
+- **volatilita' marginali che l'EWMA sbaglia** (per esempio un GJR per strumento): senza, l'errore condizionato
+  dell'EWMA e' zero e il controllo non vede il limite del §4. I parametri si fissano al passo 3;
+- **quotazioni non sincrone**: per ogni strumento una probabilita' di prezzo fermo per quarto d'ora presa dal controllo
+  di struttura (solo conteggi di rendimenti nulli, nessuna statistica sui rendimenti). La frase "il benchmark e' il
+  previsore esatto" vale solo se la misura simulata non ha Epps residuo: se ne ha, un rifiuto del negativo misura la
+  distorsione della misura, e va letto cosi'.
+
+**Ordine**: il DCC si stima e il G9 gira **solo dopo il commit di candidati, sottofamiglie e quote** (passo 3); i
+parametri stimati non si riportano prima. Il rapporto effetto/MDE dice quanto un DCC realistico batte l'EWMA: e' la
+stessa informazione che il §10 tiene nascosta.
 - **negativo**: la correlazione segue esattamente la ricorsione EWMA 0,94 (il benchmark e' il previsore esatto,
   l'analogo dell'IGARCH della volatilita'): il test deve rifiutare al massimo alla sua quota;
 - **positivo**: un **DCC(1,1) con i parametri stimati sullo sviluppo** (Matteo), a scelte congelate: e' il benchmark
@@ -171,8 +215,14 @@ standardizzazione con l'ingresso fisso, fattore di scala, correzione di Bartlett
 ## 10. Piano della potenza (prima di raccogliere)
 
 **Ordine** (rimedio del bloccante B2): (1) commit di tutte le scelte dei §3-§9, del codice e delle guardie (sha256 dei
-file, nessuna seduta oltre il 2024-11-08 letta per l'MDE); (2) verifica delle fonti sul testo (§5); (3) controllo di
-struttura (solo conteggi: barre, giorni, quote di rendimenti nulli, DAX, rollover); (4) calcolo.
+file, nessuna seduta oltre il 2024-11-08 letta per l'MDE, e una guardia che impedisce allo script di stampare la media o
+il segno del differenziale); (2) verifica delle fonti sul testo (§5); (3) download degli 8 strumenti e controllo di
+struttura (solo conteggi: barre, giorni, rendimenti nulli, DAX, pause di quotazione); (4) calcolo.
+
+**Riscaldamento e prima origine**: la storia comune parte intorno al 2019 (il piu' tardi fra gli inizi M5, da leggere
+sui file). Le finestre di 500 sedute (fattore di scala, costante, DCC) richiedono 500 sedute valide comuni prima della
+prima origine, quindi la prima origine cade intorno al 2021 e lo sviluppo per la potenza va da li' al 2024-11-08
+(circa 950 sedute). Nessuna finestra incompleta: un'origine senza 500 sedute valide prima non entra.
 
 **Cosa riporta** (Matteo): **solo la deviazione HAC** del differenziale di perdita fra EWMA e correlazione costante,
 per orizzonte, **senza media ne' segno**: cosi' nessun numero dice quale modello vince, e i candidati si possono ancora
@@ -185,15 +235,33 @@ Fattori a una coda all'80% (`fattore_potenza`, calcolati dal gatekeeper il 21/11
 saranno fissate.
 
 **Trial**: 0. EWMA e costante sono benchmark e riferimento, non varianti (precedente: la volatilita' non li ha contati,
-VOLATILITA_PREREGISTRATION §5); condizioni: la finestra della costante e' fissata ora (1.000 sedute), e la costante non
+VOLATILITA_PREREGISTRATION §5); condizioni: la finestra della costante e' fissata ora (500 sedute), e la costante non
 puo' diventare lo strumento consegnato a partire da questi dati.
 
-## Decisioni di Matteo del 21/11 (passo 2)
+## Statuto delle decisioni (Matteo, 21/11)
+
+Le scelte di questo referto sono **prese insieme da Matteo e Claude**, con un margine d'errore dichiarato: Matteo non ha
+ancora una comprensione profonda di questi strumenti, quindi sono **falsificabili e rivedibili**, non fissate per
+sempre (vale per tutte le decisioni della sessione del 20-21/11). Il protocollo non chiede di non cambiarle: chiede di
+dire **quanto costa** cambiarle.
+- **Prima di leggere i dati** per cio' che la scelta tocca: si cambia **gratis**, con una voce nuova in DECISIONS.
+- **Dopo aver letto i dati ma prima di vedere le perdite** (per esempio dopo il controllo di struttura): e' una
+  **deviazione** dichiarata nella tabella P5, con il motivo; non conta come trial se si sarebbe fatta con qualunque
+  esito.
+- **Dopo aver visto perdite o differenziali**: e' una **variante** (C3) e si conta; se e' grande rende esplorativo il
+  test (P5).
+Il commit del §10 punto (1) non rende le scelte immutabili: segna il punto da cui un cambio smette di essere gratis.
+
+## Decisioni del 21/11 (passo 2), prese insieme
 
 Misura intraday, orizzonte 1 e 5 giorni; perdita di Stein; benchmark EWMA 0,94; il blocco sigillato degli M5 si legge,
 dichiarandolo; **fattore di scala** come c_t; gli **8 strumenti nuovi si spendono per I3**; la potenza riporta **solo la
 dispersione**; positivo del G9 con parametri **stimati sullo sviluppo**; EWMA calcolata **sulla stessa seduta** del
-bersaglio; marginale **gaussiana**. Restano al passo 3: candidati, sottofamiglie, quote, unita' di conto, holdout,
+bersaglio; marginale **gaussiana**. Dopo la seconda passata del gatekeeper: il limite della scala giorno per giorno
+**si misura nel G9**, con il passaggio alla correlazione realizzata se il negativo rifiuta oltre la quota; finestre
+fisse di **500 sedute**; rollover senza calendario **alla riapertura serale**; le regole di misura del §3 proposte da
+Claude (Bartlett su tutta la matrice, 90% dei rendimenti, chiusure anticipate escluse, 25% di rendimenti nulli, soglia
+del 10% per lo strumento, DAX, prezzi) adottate insieme. Restano al passo 3: candidati, sottofamiglie, quote, unita' di conto, holdout,
 repliche del G9, P4.
 
 ## Revisione del gatekeeper
@@ -205,4 +273,13 @@ I3, Matteo). Riserve: R1 dichiarazioni di misura → §3; R2 singolarita' → §
 "batte l'EWMA" → §4, §6; R4 orizzonte 5 e pacchetto → §2, §4, §5, §6; R5 potenza → §10; R6 universo, citazione A1,
 majors, inizio, unita' → §7; R7 blocco, impegno N3 in DECISIONS, contaminazione → §8; R8 fonti prima della corsa → §5.
 
-*(seconda passata: da compilare)*
+**Seconda passata (commit `0721a6a`): BLOCCA**, 1 bloccante, 9 riserve. Bloccante: Bartlett e fattore di scala
+stimavano due diagonali diverse (la diagonale media sarebbe stata circa 1 + ρ1) → §4, s col bersaglio al numeratore
+(diagonale di Bartlett dei rendimenti grezzi). Riserve: scala condizionata → §4 (limite dichiarato, misurato nel G9,
+regola di passaggio); G9 senza volatilita' marginali e quotazioni non sincrone → §9; ordine del G9 dopo il commit dei
+candidati → §9; riscaldamento e prima origine → §10 e finestre di 500 sedute; regole di misura da fissare → §3 (prezzi,
+quarti mancanti, aggiornamento di EWMA e s, orizzonte 5, costante, soglia dello strumento, rollover, periodo del
+controllo, calendario); chi decide la misura → "Statuto" e decisioni; frase falsa sul blocco → §8; media pesata → §4
+(media semplice); contaminazione e Epps residuo → §3, §8.
+
+*(terza passata: da compilare)*

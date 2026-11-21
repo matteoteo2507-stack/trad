@@ -11,6 +11,31 @@
 
 ---
 
+## 2026-11-21 (6) — Statuto: le decisioni della sessione sono **prese insieme e rivedibili**, col costo del cambio dichiarato; I3 passo 2 dopo la seconda passata; 0 trial
+
+**Statuto (Matteo, 21/11).** Le decisioni tecniche di questa sessione (20-21/11, voci 2026-11-20 e 2026-11-21 (1)-(6))
+sono **prese insieme da Matteo e Claude**, con un margine d'errore dichiarato: Matteo non ha ancora una comprensione
+profonda di questi strumenti. Sono **falsificabili e rivedibili**, non fissate per sempre. Il protocollo resta e dice
+quanto costa cambiarle: **gratis** prima di leggere i dati che la scelta tocca (voce nuova qui); **deviazione**
+dichiarata (P5) dopo aver letto i dati ma prima di vedere perdite o esiti; **variante contata** (C3) dopo averli visti.
+Un commit "prima di ogni dato" segna da dove un cambio smette di essere gratis, non rende la scelta immutabile.
+
+**I3 passo 2, seconda passata del gatekeeper (commit `0721a6a`): BLOCCA**, 1 bloccante (fattore di scala e correzione di
+Bartlett stimavano due diagonali diverse: corretto mettendo nel fattore la diagonale del bersaglio, come c_t), 9 riserve
+applicate nel [referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md). Decisioni prese insieme:
+1. il fattore di scala porta la diagonale a 1 **in media**, non giorno per giorno: il limite **si misura nel G9** con
+   volatilita' marginali che l'EWMA sbaglia; se il controllo negativo rifiuta oltre la sua quota, prima di ogni trial il
+   bersaglio passa alla correlazione realizzata;
+2. finestre fisse (fattore di scala, costante, DCC) di **500 sedute**: la storia comune parte intorno al 2019, e con 1.000
+   lo sviluppo sarebbe di circa 470 sedute;
+3. rollover dei CFD su futures senza calendario del fornitore: si assume il cambio **alla riapertura serale**, fuori dalla
+   seduta USA, come verificato per il WTI;
+4. le regole di misura proposte da Claude (Bartlett su tutta la matrice, 90% dei rendimenti per giorno, chiusure
+   anticipate escluse, 25% di rendimenti nulli, strumento fuori oltre il 10% di sedute mancanti, DAX, convenzione dei
+   prezzi) adottate insieme, sotto lo statuto sopra.
+
+---
+
 ## 2026-11-21 (5) — I3 passo 2: misura intraday, perdita di **Stein**, benchmark **EWMA 0,94**, fattore di scala; gli 8 strumenti nuovi **si spendono per I3**; 0 trial
 
 Passo 2 di I3 ([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md)). Classe: nessuna (misura
