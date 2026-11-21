@@ -11,6 +11,44 @@
 
 ---
 
+## 2026-11-21 — I2 Regimi: **chiusa senza famiglia**; cointegrazione solo con un meccanismo; `tsmom` e `trend_momentum` **due famiglie**; 0 trial
+
+Passo 1 di I2 ([backlog §I](BACKLOG_RICERCA.md)): il controllo "stessa grandezza = stessa famiglia"
+([referto](../magazzino/registro/referti/grandezze_I2_regimi_2026-11-20.md), commit `e51ad05`), rivisto dal gatekeeper
+(Checklist 10 punto 8: **PASSA CON RISERVE**, 0 bloccanti, 13 riserve applicate nel testo). Nessun dato letto.
+
+**Criterio.** Conta il bersaglio che lo strumento prevede. Per la direzione, "il regime Bull persiste" e "il segno del
+rendimento passato guadagna" sono due perdite sullo stesso bersaglio (il rendimento futuro): una variante, non una
+famiglia. Ogni etichetta su finestra mobile persiste a un passo per costruzione, quindi "il regime di oggi prevede
+quello di domani" a un passo e' soddisfatta anche senza contenuto.
+
+**Decisioni di Matteo.**
+1. **La forza dell'ADX resta tendenza** (opzione A): la regola dell'08/10 resta com'e'. **In I2 non resta nessuna
+   grandezza nuova** fra i regimi letti dal prezzo: nessuna famiglia si apre. Asse ATR di `regime.py` → `volatilita`
+   (solo come serie contata nel ridisegno, voce 2026-11-20 (2)); asse direzionale, catene di Markov, Kalman come
+   livello, canale di regressione, Hurst e simili → tendenza e spostamento dalla media, CLOSED (riaprono solo col §7;
+   usati come filtro si imputano alla famiglia filtrata); regimi di correlazione e beta dinamico → I3; volume e
+   liquidita' → I4; regimi macro fuori da I2 (famiglia nuova con la sua pre-registrazione, da `_INTAKE.md` o dalla
+   scheda d'ingresso dall'hub). `regime.py` resta in uso **senza misura**.
+2. **Cointegrazione fra due asset** (Kalman sui livelli, opzione 3): diventa una famiglia nuova **solo** con un
+   meccanismo economico indipendente scritto qui (LIFECYCLE §3, ultima riga), parentela dichiarata con le famiglie
+   della grandezza 2 (`meanrev_vol`, `meanrev_kichev`, `mr_indici_rsi2`) e nessun holdout sui loro dati. Oggi il
+   meccanismo non c'e': non si apre nulla.
+3. **`tsmom` e `trend_momentum` sono due famiglie**, come nel contatore, anche se la
+   [pre-registrazione del playground](../magazzino/registro/documenti/TREND_EXIT_PLAYGROUND_PREREGISTRATION.md)
+   contava TSMOM come round 1 della "famiglia trend" (annotata). Conseguenze: un trial futuro sulla tendenza dichiara a
+   quale delle due appartiene; i dati visti da una restano visti anche per l'altra (stessa grandezza, precedente del
+   2026-10-09: niente holdout sui dati della famiglia simile), cioe' D1 multi-asset fino al 2026-07-08 (`tsmom`) e al
+   2026-08-14 (`trend_momentum`). **Aperto**: i round di `trend_momentum` restano 2 di 3 nel contatore (scelta prudente)
+   finche' Matteo non decide se scendono a 1.
+
+**Debito di protocollo emerso** (nel referto, non corretto): il contatore non ha un campo grandezza; il §7a non regola
+una famiglia CLOSED fra le strategie riaperta come strumento (binario senza quota); modulo 10 §2 e §9, 04 §7 e il
+blueprint Markov (HMM con Viterbi, cioe' lisciamento) hanno frasi superate o imprecise. **Prossimo**: I3 (PCA),
+proposto, attende la conferma di Matteo.
+
+---
+
 ## 2026-11-20 (2) — Volatilita': famiglia **in ridisegno** su dati futuri; primo pacchetto d'uscita **`volatilita_ewma` v1** per i soci; 0 trial
 
 Decisioni di Matteo dopo il passo 5 (voce sotto), con la revisione del gatekeeper sul pacchetto

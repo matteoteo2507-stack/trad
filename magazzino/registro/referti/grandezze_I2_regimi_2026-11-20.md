@@ -99,7 +99,14 @@ diversamente su D1.
 
 Conseguenza per `regime.py`: resta "in uso senza misura" e non si misura in I2.
 
-## Decisioni aperte (Matteo)
+## Decisioni di Matteo (21/11)
+
+**D1 = A** (la forza dell'ADX resta tendenza: I2 si chiude senza famiglia), **D2 = opzione 3** (cointegrazione: famiglia
+nuova solo con un meccanismo indipendente scritto in DECISIONS), **D3 = due famiglie** (`tsmom` e `trend_momentum`
+restano distinte; i round di `trend_momentum` restano 2 di 3 finche' non si decide altro). Registrate in
+[DECISIONS 2026-11-21](../../../decisioni/DECISIONS.md). Le opzioni come erano poste:
+
+## Decisioni poste
 
 - **D1 — La forza della tendenza (2b) e' tendenza o una grandezza a se'?** Per la lettera della regola dell'08/10 e'
   tendenza: l'ADX e' nominato nella grandezza 1. La motivazione della regola pero' non la copre: Levine-Pedersen

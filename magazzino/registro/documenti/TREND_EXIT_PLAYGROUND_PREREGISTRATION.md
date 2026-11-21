@@ -120,6 +120,8 @@ Baseline (non varianti di strategia, non entrano nel conteggio trial):
 **Primario = (100, E1)**; i lookback 50 e 200 sono **robustezza**, riportati ma **non eleggibili al
 verdetto**. Nessun tuning per-asset, nessuna scelta di parametro dopo aver visto i numeri.
 Famiglia trend: **round 2 di 3** (round 1 = TSMOM canonico, NO-GO).
+> ⚠️ *21/11 (Matteo):* `tsmom` e `trend_momentum` sono **due famiglie** (DECISIONS 2026-11-21). Il contatore tiene
+> per questa ancora 2 round di 3 finche' Matteo non decide se scendono a 1.
 Budget fonti esterne: **2ª di 2-3 del trimestre** (la 1ª è stata la griglia .80/.20).
 
 ## Regole di decisione (scritte prima dei numeri)
