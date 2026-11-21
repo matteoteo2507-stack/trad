@@ -677,6 +677,19 @@ Chi legge un blocco sigillato di B lo dichiara prima di leggerlo.
   elencate sono post-esito.
 - **P5** Ogni deviazione dalla pre-registrazione va in una tabella con la giustificazione; una deviazione grande rende
   esplorativo l'intero test.
+- **P6 Costo di un cambio** (Matteo, 21/11; DECISIONS 2026-11-21 (7)). Le scelte di **misura e di disegno** sono prese
+  insieme da Matteo e Claude e sono rivedibili; il costo dipende da cosa si e' visto.
+  (1) Prima del commit di congelamento, e se nessun dato o risultato gia' visto (elencato fra i "dati gia' visti")
+  riguarda la scelta: **gratis**, con una voce in DECISIONS.
+  (2) Dopo il commit, o dopo dati che non contengono perdite ne' differenziali (conteggi del controllo di struttura,
+  testo delle fonti): **deviazione** nella tabella P5, con il motivo e la risposta scritta al test del §4 ("l'avrei
+  fatta con qualunque esito?"). 0 trial se la risposta e' si'; non rende esplorativo il test.
+  (3) Dopo perdite o differenziali sui dati reali, comprese le dispersioni e le simulazioni calibrate sui dati reali
+  (G9): ammessi solo i cambi **elencati prima** come condizionati a quell'uscita; ogni altro cambio e' una **variante
+  contata** (C1, C3) ed **esplorativa** (P1-P3): niente verdetto, niente holdout.
+  (4) Dopo l'apertura dell'holdout: nessuna scelta (H5).
+  **Regole di protezione** (holdout, sigilli, dati futuri, decorrenze, budget) e **verdetti** non sono scelte: cambiano
+  solo con il §7 o con una decisione di metodo di Matteo che dichiari cosa ha visto.
 
 **Sottofamiglie**
 - **S1** La pre-registrazione di famiglia le elenca tutte. La teoria senza previsioni testate (per la volatilita':

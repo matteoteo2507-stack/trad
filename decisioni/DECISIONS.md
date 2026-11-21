@@ -11,7 +11,35 @@
 
 ---
 
+## 2026-11-21 (7) — **P6 "costo di un cambio"** nel LIFECYCLE; statuto ristretto a misura e disegno; I3 passo 2: matrice, G9, riscaldamento, pause; 0 trial
+
+**Terza passata del gatekeeper sul passo 2 (commit `c84fa77`): BLOCCA**, 1 bloccante: lo statuto della voce (6), come
+scritto da Claude, rendeva rivedibili gratis anche regole di protezione (per esempio "ridisegno della volatilita' solo su
+dati futuri", bloccante del 20/11, perche' l'holdout non e' mai stato letto) e verdetti gia' dati (l'uscita dei nodi
+GARCH e HMM); non diceva che una variante nata dopo le perdite e' esplorativa (P1) ne' che dopo l'holdout non si sceglie
+(H5). Errore di Claude.
+
+**Decisioni** (prese insieme, sotto lo statuto corretto):
+1. **P6 nel LIFECYCLE §8ter** (Matteo conferma il testo del gatekeeper): scelte di misura e di disegno rivedibili; gratis
+   prima del commit di congelamento se nessun dato gia' visto le riguarda; deviazione P5 dopo il commit o dopo soli
+   conteggi; dopo perdite o differenziali solo i cambi previsti prima, gli altri sono varianti contate ed esplorative;
+   nessuna scelta dopo l'holdout. **Regole di protezione e verdetti non sono scelte**: cambiano solo col §7 o con una
+   decisione di metodo di Matteo che dichiari cosa ha visto. Lo statuto della voce (6) e' ristretto di conseguenza.
+2. **Rendimento mancante = zero** nei prodotti della matrice giornaliera: la matrice di Bartlett resta semidefinita
+   positiva per costruzione; l'attenuazione della diagonale la assorbe il fattore di scala.
+3. **Parametri GJR del controllo negativo stimati sullo sviluppo**, solo dopo il commit di candidati e quote, e non
+   riportati (come il DCC del positivo).
+4. **Pausa di quotazione dentro la seduta USA**: si toglie ogni giorno il rendimento che la attraversa (conta come
+   mancante); lo strumento resta se rispetta le soglie.
+Le altre riserve (due configurazioni del negativo, bersaglio alternativo definito ora, riscaldamento con finestre una
+dentro l'altra, inizializzazioni, campione del positivo) sono scritte nel
+[referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md). Mappa (01) e `_modifiche.md` aggiornati.
+
+---
+
 ## 2026-11-21 (6) — Statuto: le decisioni della sessione sono **prese insieme e rivedibili**, col costo del cambio dichiarato; I3 passo 2 dopo la seconda passata; 0 trial
+
+⚠️ *Corretto da DECISIONS 2026-11-21 (7):* lo statuto sotto vale **solo per le scelte di misura e di disegno**, con i costi della regola **P6** (LIFECYCLE §8ter); regole di protezione e verdetti ne sono esclusi. Testo originale:
 
 **Statuto (Matteo, 21/11).** Le decisioni tecniche di questa sessione (20-21/11, voci 2026-11-20 e 2026-11-21 (1)-(6))
 sono **prese insieme da Matteo e Claude**, con un margine d'errore dichiarato: Matteo non ha ancora una comprensione

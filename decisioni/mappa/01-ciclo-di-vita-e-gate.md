@@ -149,6 +149,12 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
     volatilita', altro bersaglio).
   - *Grandezze composte che cambiano in entrambe le parti* (Matteo): il confronto conta in tutte e due le famiglie e
     procede, ma i vincoli sui dati dell'altra famiglia restano.
+  - *P6, costo di un cambio* (§8ter, DECISIONS 2026-11-21 (7)): le scelte di misura e di disegno sono prese insieme e
+    rivedibili; cambiarle e' gratis prima del commit di congelamento (se nessun dato gia' visto le riguarda), una
+    deviazione dichiarata dopo il commit o dopo soli conteggi, una variante contata ed esplorativa dopo perdite o
+    differenziali (salvo i cambi previsti prima), vietato dopo l'holdout. Regole di protezione e verdetti non sono
+    scelte. *Come si rompe*: se un cambio dopo le perdite viene scritto come "deviazione", il verdetto resta
+    confermativo senza esserlo; il gatekeeper lo controlla con la tabella delle deviazioni.
   *Come si rompe*: se una grandezza viene assegnata male nel contatore, la tabella mostra un quadro falso: il campo
   aiuta, ma il controllo si fa anche nei documenti, dove una grandezza puo' comparire come uso senza essere una famiglia.
 
