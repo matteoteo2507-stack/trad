@@ -11,6 +11,17 @@
 
 ---
 
+## 2026-11-22 — I3 passo 2 **chiuso** (sesta passata: PASSA CON RISERVE); sessione registrata; 0 trial
+
+Sesta passata del gatekeeper sul passo 2 (commit `7259c62`): **PASSA CON RISERVE**. N2 gira dopo i soli conteggi; il
+passo 2 e' chiuso fino al commit (1) del §10. Il commit (1) non sara' approvato senza le riserve R1-R6, elencate nel
+[referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md) (sezione della sesta passata): la piu'
+grossa e' R1, il processo simulato di N2 che con la ricorsione EWMA come processo vero degenera; serve una scelta
+presa insieme prima di scrivere il codice. Sessione chiusa qui (limite di contesto e di spesa), ripresa in una sessione
+nuova dalle riserve.
+
+---
+
 ## 2026-11-21 (9) — I3: il controllo **N2 gira prima della potenza**, fissato per intero ora; requisiti del codice; 0 trial
 
 **Quinta passata del gatekeeper sul passo 2 (commit `980a839`): BLOCCA**, 1 bloccante: N2 (la misura e' distorta dalle

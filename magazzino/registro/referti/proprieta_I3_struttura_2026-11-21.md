@@ -408,4 +408,30 @@ dopo la dispersione HAC, quindi il ritorno al passo 2 non era una deviazione gra
 della potenza (§9, DECISIONS (9)). Riserve: un solo elenco delle scelte rinviate → statuto; conseguenze del G9 prima di
 qualunque configurazione → §9; guardia "nessun canale" → requisiti del commit (1); fine dei dati al 2026-11-10 → §10.
 
-*(sesta passata: da compilare)*
+**Sesta passata (commit `7259c62`, chiusa il 22/11): PASSA CON RISERVE**. Il passo 2 e' chiuso fino al commit (1): N2
+gira davvero dopo i soli conteggi e non porta informazione sulle perdite reali. Il gatekeeper **non approva il commit (1)**
+senza queste correzioni, tutte prima di ogni dato (0 trial). **Da fare all'inizio della prossima sessione:**
+- **R1, processo di N2 incoerente e degenere**: la ricorsione EWMA sulla matrice intera muove la diagonale e, usata come
+  processo vero, degenera (simulazione su numeri inventati: diagonale 0,14-3,9, condizionamento mediano ~1.260, |ρ| max
+  mediano 0,86; script del gatekeeper `scratchpad/m_walk.py`, non nel repo). Serve: un processo con diagonale ferma che
+  non degenera (per esempio una ricorsione sulla correlazione che ritorna verso una matrice fissa dichiarata; allora un
+  rifiuto si legge come contrazione verso la media, non come Epps, e la lettura va scritta prima); una matrice di
+  partenza non identita' (struttura a blocchi con livelli dalle correlazioni D1 di A1, gia' note); metodo e numero di
+  simulazioni della mappa inversa, regola e conteggio delle matrici non valide; il seme. **Scelta da fare insieme.**
+- **R2, generatore dei buchi**: componente giornaliera (sedute mancanti intere, festivi europei) e componente per ora
+  del giorno (pause a ora fissa, prezzi fermi lunghi, DAX dopo le 11:30 NY), dai conteggi.
+- **R3, rinvii ancora sparsi**: togliere o riscrivere le frasi che rinviano N2 al passo 3 (§9, "in entrambe" e
+  "repliche al passo 3"; soglie del G9), il secondo elenco "Restano al passo 3" nelle decisioni, e far rimandare allo
+  statuto §6, §7, §8 e §10.
+- **R4, statuto**: "nessun'altra informazione su perdite o differenziali **sui dati reali**" (le quote di N2 sono
+  differenziali simulati).
+- **R5, soglia di N2 su quattro confronti**: falso allarme ~3,0% per confronto, fino a ~11,6% sui quattro: dichiararlo
+  o usare Bonferroni.
+- **R6, requisiti del commit (1)**: aggiungere `git=False` solo nei test; statsmodels se usato; byte con gli sha256;
+  **data limite 2024-11-08 anche per il controllo di selezione**; "nessuna RV, nessuna media di rendimenti" nel controllo
+  di struttura; test sul fuso ai cambi d'ora, test senza prezzi, nessuna finestra incompleta; **requisiti di N2**
+  (parte dopo struttura e hash committati, legge solo il file dei conteggi con guardia sui percorsi, chiavi d'uscita
+  ammesse: quote di rifiuto, esito, matrici non valide; test: con probabilita' zero diagonale ~1, la mappa inversa
+  ritrova la correlazione vera, stesso seme stesso risultato).
+Debito: primitiva comune in `motore/core` per campi d'uscita ammessi e data limite; riga nella Checklist 10 "un negativo
+con un processo che degenera non vale".
