@@ -11,6 +11,35 @@
 
 ---
 
+## 2026-11-23 (4) — I3: misura a **30 minuti con Bartlett a 2 ritardi**, scelta prima di ogni dato dopo le prove sintetiche dei rimedi; ottava passata applicata; 0 trial
+
+**Ottava passata del gatekeeper (commit `dba01af`): BLOCCA**, 1 bloccante (la verifica del generatore usciva nella
+stessa corsa di δ, con tolleranza senza rumore di campionamento e correzioni senza limite) e 6 riserve. Fra queste, la
+R4: su numeri inventati i prezzi fermi favoriscono la costante anche a quota fissa, quindi con la misura a 15 minuti N2
+avrebbe probabilmente rifiutato.
+
+**Prove sintetiche dei rimedi** (codice nuovo in `magazzino/registro/codice/struttura/`, 60 repliche per riga, numeri
+inventati; tabella nel [referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), sezione "Prove
+sintetiche"). A 15 minuti nessun numero di ritardi porta δ sopra −0,5 gia' col 5% di prezzi fermi su 7 strumenti, e con
+quote piu' alte le esclusioni svuotano il campione. **30 minuti con Bartlett a 2 ritardi** passa col 5% su 7 (δ −0,36 /
+−0,46) e con la rampa al 10%, con la guardia pulita; rifiuta col 5% su tutti i 17. A 30 minuti con 3-4 ritardi la
+guardia si rompe. Errore di Claude trovato nella prova: la soglia della guardia era fissa a 35 anche con 60 repliche;
+corretta (dipende dalle repliche).
+
+**Decisione presa insieme** (raccomandata da Claude; gratis, P6 del §8ter punto 1): la misura di base diventa
+**rendimenti a 30 minuti** (13 per seduta) con **Bartlett a 2 ritardi**. Costo dichiarato: bersaglio piu' rumoroso, MDE
+piu' grande, Σ giornaliera singolare con 17 strumenti (il differenziale di Stein non ne ha bisogno). Rimedio rimasto
+dopo i conteggi: uscita dello strumento con piu' prezzi fermi, fino a tre; finiti i rimedi I3 si ferma al passo 2 e si
+torna a Matteo. Controllo positivo ridefinito: 5% fisso su tutti i 17.
+
+**Ottava passata applicata**: verifica del generatore in uno script a se' prima delle repliche, tolleranza col rumore
+di campionamento, due correzioni ammesse in ordine; δ in unita' di errore standard (non di MDE); MDE con δ > 0;
+intersezione delle origini; rimedi completi. Correzioni del generatore trovate dai test: la catena dei prezzi fermi
+parte dalla distribuzione stazionaria (prima la quota di nulli usciva 8,8% invece del 10%) e usa la durata che
+riproduce quella contata, troncata a inizio e fine seduta.
+
+---
+
 ## 2026-11-23 (3) — I3: settima passata **BLOCCA**; N2 decide sullo **spostamento appaiato** (τ = 0,5), con controllo positivo; 0 trial
 
 Settima passata del gatekeeper sul referto (commit `f8654d0`): **BLOCCA**, 1 bloccante, 8 riserve. **B1**: con il

@@ -72,12 +72,15 @@ def test_bartlett_semidefinita_con_zeri():
             assert np.linalg.eigvalsh(M.bartlett(x, q))[0] > -1e-10
 
 
-def test_bartlett_un_ritardo_a_mano():
+def test_bartlett_uno_e_due_ritardi_a_mano():
     rng = np.random.default_rng(2)
     x = rng.standard_normal((26, 3))
     G0 = x.T @ x
     G1 = x[1:].T @ x[:-1]
+    G2 = x[2:].T @ x[:-2]
     assert np.allclose(M.bartlett(x, 1), G0 + 0.5 * (G1 + G1.T))
+    assert np.allclose(M.bartlett(x, 2), G0 + 2 / 3 * (G1 + G1.T) + 1 / 3 * (G2 + G2.T))
+    assert M.RITARDI == 2 and M.N_PREZZI == 14
 
 
 def test_ewma_ricorsione_del_pacchetto():
@@ -116,7 +119,7 @@ def test_ewma_tiene_il_valore_nelle_sedute_non_valide():
 def test_fattore_scala_su_processo_esatto():
     """Volatilita' costante: la diagonale media dei z vale circa 1 dopo il riscaldamento."""
     rng = np.random.default_rng(4)
-    X = S.rendimenti_veri(900, rng, S.r_bar())["X"]
+    X = S.rendimenti_veri(900, rng, S.r_bar())["X"][:, ::S.PASSO_MISURA]
     m = M.matrici(X)
     diag = np.einsum("tii->ti", m["Sigma"][m["pronto"]])
     assert abs(diag.mean() - 1.0) < 0.05
@@ -124,7 +127,7 @@ def test_fattore_scala_su_processo_esatto():
 
 def test_riscaldamento():
     rng = np.random.default_rng(5)
-    X = S.rendimenti_veri(700, rng, S.r_bar())["X"]
+    X = S.rendimenti_veri(700, rng, S.r_bar())["X"][:, ::S.PASSO_MISURA]
     m = M.matrici(X)
     assert np.flatnonzero(m["pronto"])[0] == 550             # 50 di avvio + 500 del fattore di scala
     prev = V.tutte(m)
@@ -155,7 +158,7 @@ def test_stein_differenziale_uguale_alla_differenza_delle_perdite():
 
 def test_previsioni_definite_a_diagonale_uno():
     rng = np.random.default_rng(7)
-    X = S.rendimenti_veri(1200, rng, S.r_bar())["X"]
+    X = S.rendimenti_veri(1200, rng, S.r_bar())["X"][:, ::S.PASSO_MISURA]
     m = M.matrici(X)
     for nome, H in V.tutte(m).items():
         ok = np.isfinite(H).all(axis=(1, 2))
@@ -213,11 +216,11 @@ def test_processo_diagonale_e_limite():
 
 def test_gemelli_senza_difetti_coincidono_e_delta_zero():
     T = 700
-    X = S.rendimenti_veri(T, np.random.default_rng(10), S.r_bar())["X"]
+    X = S.rendimenti_veri(T, np.random.default_rng(10), S.r_bar())["X"][:, ::S.PASSO_MISURA]
     Y = S.applica_difetti(X, np.random.default_rng(11), S.nessun_difetto(T, 17))
     assert np.array_equal(X, Y)
-    _, _, ds = S.misura_e_differenziali(X, 1, 1)
-    _, _, dd = S.misura_e_differenziali(Y, 1, 1)
+    _, _, ds = S.misura_e_differenziali(X)
+    _, _, dd = S.misura_e_differenziali(Y)
     for k in ds:
         assert S.delta(dd[k], ds[k], k[1]) == 0.0
 
@@ -226,8 +229,8 @@ def test_catena_dei_fermi_riproduce_quota_e_durata():
     T, N = 4000, 1
     d = S.nessun_difetto(T, N)
     d["p0"][:] = 0.10
-    d["L"][:] = 3.0
-    X = np.cumsum(np.random.default_rng(12).standard_normal((T, 27, N)), axis=1)
+    d["L"][:] = S.durata_catena(3.0)                             # durata della catena che da' 3 come durata contata
+    X = np.cumsum(np.random.default_rng(12).standard_normal((T, 14, N)), axis=1)
     X[:, 0] = 0.0
     Y = S.applica_difetti(X, np.random.default_rng(13), d)
     r, _ = M.rendimenti(Y)
@@ -244,7 +247,7 @@ def test_catena_dei_fermi_riproduce_quota_e_durata():
                 n = 0
         if n:
             corse.append(n)
-    assert 2.6 < np.mean(corse) < 3.1                            # il troncamento a fine seduta accorcia un po'
+    assert 2.85 < np.mean(corse) < 3.15
     assert not np.any(Y[:, 0] != X[:, 0])                        # l'open non e' mai fermo
 
 
@@ -257,18 +260,18 @@ def test_mancanti_per_ora_e_seduta():
     T, N = 3000, 2
     d = S.nessun_difetto(T, N)
     d["p_giorno"][:, 0] = 0.05
-    d["p_ora"][:, 26, 1] = 1.0
-    X = np.zeros((T, 27, N))
+    d["p_ora"][:, 13, 1] = 1.0
+    X = np.zeros((T, 14, N))
     Y = S.applica_difetti(X, np.random.default_rng(14), d)
     manca_giorno = np.isnan(Y[:, :, 0]).all(axis=1)
     assert abs(manca_giorno.mean() - 0.05) < 0.015
-    assert np.isnan(Y[:, 26, 1]).all() and not np.isnan(Y[:, :26, 1]).any()
+    assert np.isnan(Y[:, 13, 1]).all() and not np.isnan(Y[:, :13, 1]).any()
 
 
 def test_stesso_seme_stesso_risultato():
     T = 720
-    a = S.esegui(T, S.difetto_positivo(T, p_max=0.10), 123, repliche=2)
-    b = S.esegui(T, S.difetto_positivo(T, p_max=0.10), 123, repliche=2)
+    a = S.esegui(T, S.difetto_positivo(T), 123, repliche=2)
+    b = S.esegui(T, S.difetto_positivo(T), 123, repliche=2)
     assert a == b
 
 
@@ -286,3 +289,9 @@ def test_soglia_guardia_dipende_dalle_repliche():
     righe = [{"non_valide": 0, ("guardia", 1): i < 12, ("guardia", 5): False,
               **{("delta", n, h): 0.0 for n in ("costante", "persistenza") for h in (1, 5)}} for i in range(60)]
     assert S.riassumi(righe)["esito"] == "GUASTO"
+
+
+def test_controllo_positivo_dichiarato():
+    d = S.difetto_positivo(100)
+    assert (d["p0"] == 0.05).all() and (d["L"] == 3.0).all()
+    assert not d["p_giorno"].any() and not d["p_ora"].any() and d["p_ora"].shape[1] == 14

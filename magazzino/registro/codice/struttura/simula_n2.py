@@ -22,8 +22,10 @@ BLOCCHI = {("SPX500", "NAS100", "DOW", "RUSSELL", "DAX"): 0.791,     # A1 §4, i
            ("EURUSD", "USDJPY", "GBPUSD", "AUDUSD"): 0.050}             # A1 §4, cross FX
 FONDO = 0.112                                                           # A1 §8, tutte le coppie dei futures
 A, B = 0.06, 0.93
-N_ORARI = 27
+N_ORARI = 27          # griglia del processo vero: 26 quarti d'ora
 N_REND = 26
+PASSO_MISURA = 2      # la misura prende un prezzo su due: 14 prezzi, 13 rendimenti a 30 minuti (23/11)
+N_PREZZI = 14
 N_H = 247              # sedute piene XNYS 2024-11-11 -> 2025-11-10 (referto §9)
 TAU = 0.5
 SEME = 20261123
@@ -39,7 +41,9 @@ def soglia_guardia(repliche: int) -> int:
     return int(stats.binom.ppf(0.975, repliche, 0.05))
 EIG_MIN = 1e-10
 MIN_ORIGINI = 50
-POSITIVO_STRUMENTI = ("EURUSD", "USDJPY", "GBPUSD", "AUDUSD", "XAUUSD", "XAGUSD", "BUND")
+POSITIVO_STRUMENTI = ("EURUSD", "USDJPY", "GBPUSD", "AUDUSD", "XAUUSD", "XAGUSD", "BUND")   # prove del 23/11
+POSITIVO_QUOTA = 0.05     # controllo positivo dal 23/11: 5% fisso su tutti i 17, L = 3 mezz'ore
+POSITIVO_L = 3.0
 
 
 def r_bar(universo=UNIVERSO) -> np.ndarray:
@@ -72,6 +76,16 @@ def rendimenti_veri(T: int, rng: np.random.Generator, Rb: np.ndarray, a: float =
     return {"X": X, "eig_min": eig_min}
 
 
+def durata_catena(L_contata: np.ndarray, n: int = N_PREZZI - 1) -> np.ndarray:
+    """Durata media della catena che riproduce la durata **contata** nei dati (serie di nulli troncate a inizio e fine
+    seduta): con catena stazionaria su n rendimenti, L_contata = n / (1 + (n − 1)/L), quindi L = (n − 1)/(n/L_contata − 1).
+    Si ferma se L_contata >= n (conteggi incoerenti)."""
+    Lc = np.asarray(L_contata, float)
+    if np.any(Lc >= n) or np.any(Lc < 1.0):
+        raise ValueError("durata contata fuori da [1, %d)" % n)
+    return (n - 1) / (n / Lc - 1.0)
+
+
 def prob_fermo(p0: np.ndarray, L: np.ndarray) -> np.ndarray:
     """p_u = p0 / (L·(1 − p0)): probabilita' di passare da aggiornato a fermo (referto §9)."""
     p0, L = np.asarray(p0, float), np.asarray(L, float)
@@ -83,7 +97,8 @@ def prob_fermo(p0: np.ndarray, L: np.ndarray) -> np.ndarray:
 
 def applica_difetti(X: np.ndarray, rng: np.random.Generator, difetti: dict) -> np.ndarray:
     """Prezzi osservati. `difetti`: p_giorno[t, i], p0[t, i], L[t, i], p_ora[t, k, i] (k = 0..26).
-    Ordine: seduta mancante, prezzi fermi (catena che riparte ogni seduta, open mai fermo), mancanti per ora. Ogni
+    Ordine: seduta mancante, prezzi fermi (catena che riparte ogni seduta dalla sua distribuzione stazionaria: lo stato
+    dell'open si estrae con probabilita' p0, ma il prezzo dell'open e' sempre quello vero), mancanti per ora. Ogni
     seduta estrae sempre gli stessi tre blocchi di numeri, cosi' il flusso non dipende dai valori."""
     T, K, N = X.shape
     pu = prob_fermo(difetti["p0"], difetti["L"])
@@ -91,12 +106,12 @@ def applica_difetti(X: np.ndarray, rng: np.random.Generator, difetti: dict) -> n
     Y = np.empty_like(X)
     for t in range(T):
         u_giorno = rng.random(N)
-        u_fermo = rng.random((K - 1, N))
+        u_fermo = rng.random((K, N))
         u_ora = rng.random((K, N))
         y = X[t].copy()
-        fermo = np.zeros(N, bool)
+        fermo = u_fermo[0] < difetti["p0"][t]          # stato dell'open dalla distribuzione stazionaria
         for k in range(1, K):
-            fermo = np.where(fermo, u_fermo[k - 1] < resta[t], u_fermo[k - 1] < pu[t])
+            fermo = np.where(fermo, u_fermo[k] < resta[t], u_fermo[k] < pu[t])
             y[k] = np.where(fermo, y[k - 1], X[t, k])
         y[u_ora < difetti["p_ora"][t]] = np.nan
         y[:, u_giorno < difetti["p_giorno"][t]] = np.nan
@@ -106,17 +121,15 @@ def applica_difetti(X: np.ndarray, rng: np.random.Generator, difetti: dict) -> n
 
 def nessun_difetto(T: int, N: int) -> dict:
     return {"p_giorno": np.zeros((T, N)), "p0": np.zeros((T, N)), "L": np.ones((T, N)),
-            "p_ora": np.zeros((T, N_ORARI, N))}
+            "p_ora": np.zeros((T, N_PREZZI, N))}
 
 
-def difetto_positivo(T: int, universo=UNIVERSO, p_max: float = 0.30, L: float = 3.0) -> dict:
-    """Controllo positivo del §9: rampa lineare per seduta da 0 a p_max sui 7 strumenti, durata media L, nient'altro."""
+def difetto_positivo(T: int, universo=UNIVERSO, quota: float = POSITIVO_QUOTA, L: float = POSITIVO_L) -> dict:
+    """Controllo positivo del §9 (dal 23/11): quota fissa di prezzi fermi su tutti gli strumenti, durata media L sulla
+    griglia della misura, nessun altro difetto."""
     d = nessun_difetto(T, len(universo))
-    rampa = np.linspace(0.0, p_max, T)
-    for x in POSITIVO_STRUMENTI:
-        i = universo.index(x)
-        d["p0"][:, i] = rampa
-        d["L"][:, i] = L
+    d["p0"][:] = quota
+    d["L"][:] = L
     return d
 
 
@@ -130,10 +143,11 @@ def matrici_non_valide(m: dict, prev: dict, eig_q: np.ndarray) -> int:
     return n
 
 
-def misura_e_differenziali(P: np.ndarray, passo: int, ritardi: int, colonne=None):
+def misura_e_differenziali(P: np.ndarray, ritardi: int = M.RITARDI, colonne=None):
+    """`P` sulla griglia della misura (14 prezzi)."""
     if colonne is not None:
         P = P[:, :, colonne]
-    m = M.matrici(P, passo=passo, ritardi=ritardi)
+    m = M.matrici(P, ritardi=ritardi)
     prev = V.tutte(m)
     return m, prev, V.differenziali(m, prev)
 
@@ -161,14 +175,14 @@ def dm_rifiuta(d: np.ndarray, h: int, alfa: float = 0.05) -> bool:
 
 def replica(args) -> dict:
     """Una replica: gemello sincrono e gemello con difetti, stessi rendimenti veri. Solo grandezze ammesse in uscita."""
-    figlio, T, difetti, a, b, passo, ritardi, colonne, universo = args
+    figlio, T, difetti, a, b, ritardi, colonne, universo = args
     s_veri, s_dif = figlio.spawn(2)
     Rb = r_bar(universo)
     vero = rendimenti_veri(T, np.random.default_rng(s_veri), Rb, a, b)
-    X = vero["X"]
+    X = vero["X"][:, ::PASSO_MISURA]                     # griglia della misura: i difetti si applicano qui
     Y = applica_difetti(X, np.random.default_rng(s_dif), difetti)
-    m_s, p_s, d_s = misura_e_differenziali(X, passo, ritardi, colonne)
-    m_d, p_d, d_d = misura_e_differenziali(Y, passo, ritardi, colonne)
+    m_s, p_s, d_s = misura_e_differenziali(X, ritardi, colonne)
+    m_d, p_d, d_d = misura_e_differenziali(Y, ritardi, colonne)
     out = {"non_valide": matrici_non_valide(m_s, p_s, vero["eig_min"]) + matrici_non_valide(m_d, p_d, vero["eig_min"])}
     for (nome, h) in d_s:
         out[("delta", nome, h)] = delta(d_d[(nome, h)], d_s[(nome, h)], h)
@@ -177,10 +191,10 @@ def replica(args) -> dict:
     return out
 
 
-def esegui(T: int, difetti: dict, seme: int, repliche: int = REPLICHE, a: float = A, b: float = B, passo: int = 1,
-           ritardi: int = 1, colonne=None, universo=UNIVERSO, processi: int = 1) -> dict:
+def esegui(T: int, difetti: dict, seme: int, repliche: int = REPLICHE, a: float = A, b: float = B,
+           ritardi: int = M.RITARDI, colonne=None, universo=UNIVERSO, processi: int = 1) -> dict:
     figli = np.random.SeedSequence(seme).spawn(repliche)
-    compiti = [(f, T, difetti, a, b, passo, ritardi, colonne, universo) for f in figli]
+    compiti = [(f, T, difetti, a, b, ritardi, colonne, universo) for f in figli]
     if processi > 1:
         from concurrent.futures import ProcessPoolExecutor
         with ProcessPoolExecutor(processi) as ex:

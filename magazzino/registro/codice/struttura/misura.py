@@ -4,14 +4,14 @@ Funzioni pure su array, usate dal simulatore di N2 e (dal commit (1)) dal loader
 chiama decide cosa esce (guardia "nessun canale", requisiti del commit (1) punto 4).
 
 Convenzioni (referto §3, §4):
-- `P[t, k, i]`: log-prezzo della seduta t, orario k (k = 0 l'open delle 9:30, k = 1..26 le chiusure dei quarti d'ora),
-  strumento i; NaN = prezzo mancante. Con `passo = 2` si usano solo gli orari pari (rendimenti a 30 minuti, rimedio
-  (ii) del §9).
+- `P[t, k, i]`: log-prezzo della seduta t, orario k della griglia della misura, strumento i; NaN = prezzo mancante.
+  Dal 23/11 la misura e' a **30 minuti** (14 prezzi: l'open delle 9:30 e le 13 chiusure delle mezz'ore) con
+  **Bartlett a 2 ritardi** (DECISIONS 2026-11-23 (4)); `passo` sottocampiona una griglia piu' fine se serve.
 - rendimento = differenza di log-prezzi adiacenti; un prezzo mancante rende mancanti i due rendimenti adiacenti;
   **mancante = zero** nei prodotti.
 - strumento-giorno valido: almeno il 90% dei rendimenti attesi osservati e al massimo il 25% di nulli **fra gli
   osservati**; giorno comune valido: tutti gli strumenti validi (esclusione per unione).
-- Bartlett con `ritardi` ritardi (1 di base; 2 col rimedio (i)): pesi 1 − l/(ritardi + 1), su tutta la matrice;
+- Bartlett con `ritardi` ritardi (2 di base): pesi 1 − l/(ritardi + 1), su tutta la matrice;
   semidefinita positiva per costruzione (Newey-West), anche con gli zeri.
 - ingresso fisso: σ̂² = EWMA 0,94 della RV sulle sedute valide **dello strumento**, avvio dalla media delle prime 50 RV
   valide (non usate per altro); in una seduta non valida si tiene il valore di prima.
@@ -28,6 +28,8 @@ AVVIO_EWMA = 50
 FINESTRA_S = 500
 SOGLIA_OSSERVATI = 0.90
 SOGLIA_NULLI = 0.25
+RITARDI = 2
+N_PREZZI = 14
 
 
 def rendimenti(P: np.ndarray, passo: int = 1) -> tuple[np.ndarray, np.ndarray]:
@@ -91,7 +93,7 @@ def fattore_scala(D: np.ndarray, s2: np.ndarray, valido: np.ndarray, finestra: i
     return out
 
 
-def matrici(P: np.ndarray, passo: int = 1, ritardi: int = 1) -> dict:
+def matrici(P: np.ndarray, passo: int = 1, ritardi: int = RITARDI) -> dict:
     """Σ per seduta (NaN dove non definita) e maschere. Restituisce solo oggetti in memoria."""
     r, oss = rendimenti(P, passo)
     valido_i = validi_strumento(r, oss)

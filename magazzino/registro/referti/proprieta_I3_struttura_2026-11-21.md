@@ -39,33 +39,34 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
 - **Finestra comune W**: seduta USA, 9:30-16:00 New York, secondo il calendario di borsa di New York (XNYS). Le barre
   Dukascopy (bid, ora d'inizio in UTC) si convertono all'ora di New York col fuso, quindi i cambi d'ora europei e
   americani non spostano la finestra; DAX e BUND, quotati su orari europei, si leggono comunque in ora di New York.
-- **Rendimenti a 15 minuti** (26 per seduta piena), log del prezzo bid: il primo prezzo e' l'**open della barra M5
-  delle 9:30**, poi la **chiusura della barra M5 che finisce a ogni quarto d'ora** (quella che inizia alle :10, :25,
-  :40, :55), fino alla chiusura della barra delle 15:55. Un prezzo mancante rende mancanti i due rendimenti adiacenti
-  (nessun rendimento su 30 minuti). **Un rendimento mancante vale zero in tutti i prodotti** (decisione del 21/11,
+- **Rendimenti a 30 minuti** (13 per seduta piena; *fino al 23/11 erano 15 minuti, 26 per seduta: cambiato prima di
+  ogni dato dopo le prove sintetiche dei rimedi, sezione in fondo, DECISIONS 2026-11-23 (4)*), log del prezzo bid: il
+  primo prezzo e' l'**open della barra M5 delle 9:30**, poi la **chiusura della barra M5 che finisce a ogni mezz'ora**
+  (quella che inizia alle :25 e alle :55), fino alla chiusura della barra delle 15:55: 14 prezzi. Un prezzo mancante
+  rende mancanti i due rendimenti adiacenti (nessun rendimento su 60 minuti). **Un rendimento mancante vale zero in tutti i prodotti** (decisione del 21/11,
   DECISIONS (7)): la matrice di Bartlett resta semidefinita positiva per costruzione anche con buchi; la diagonale un po'
   piu' bassa la assorbe il fattore di scala, uguale per tutte le previsioni.
-- **Correzione per un ritardo** con **pesi di Bartlett** (½ sui prodotti incrociati a ritardo ±1) **su tutta la
-  matrice, diagonale compresa**: toglie parte dell'effetto Epps delle quotazioni non sincrone e garantisce una matrice
+- **Correzione per due ritardi** con **pesi di Bartlett** (2/3 sui prodotti incrociati a ritardo ±1, 1/3 a ritardo
+  ±2; *fino al 23/11 un ritardo, ½*) **su tutta la matrice, diagonale compresa**: toglie parte dell'effetto Epps delle quotazioni non sincrone e garantisce una matrice
   semidefinita positiva. Dopo la correzione resta un Epps residuo, uguale per tutte le previsioni: il bersaglio e'
   l'attesa di **questo** stimatore, non la correlazione vera, e va detto.
 - **Giorni**: le sedute piene del calendario XNYS. Le **chiusure anticipate** (13:00) sono escluse e si contano. Un
-  giorno entra solo se **tutti** gli N strumenti hanno almeno il 90% dei 26 rendimenti attesi: si esclude l'unione dei
+  giorno entra solo se **tutti** gli N strumenti hanno almeno il 90% dei 13 rendimenti attesi (cioe' 12): si esclude l'unione dei
   giorni mancanti, e si riporta per anno e per strumento quanti giorni esclude (controllo di selezione, come la
   volatilita': per ogni giorno escluso si riporta il rendimento assoluto della seduta contro la mediana, per vedere se le
   esclusioni coincidono con i giorni estremi).
-- **Quotazioni ferme**: un rendimento a 15 minuti **osservato** ed esattamente nullo si conta; uno strumento-giorno con
+- **Quotazioni ferme**: un rendimento a 30 minuti **osservato** ed esattamente nullo si conta; uno strumento-giorno con
   piu' del 25% di rendimenti nulli **fra quelli osservati** conta come mancante (un rendimento mancante, che vale zero
   solo nei prodotti, non e' un rendimento nullo: la quota si conta prima di mettere gli zeri, cosi' un buco non pesa due
   volte) (un prezzo fermo spinge la correlazione verso zero). La quota per strumento e per
   anno si misura nel controllo di struttura, prima di ogni statistica.
-- **Rollover** dei CFD su futures (BUND, USTBOND, COPPER, NATGAS, WTI): il rendimento a 15 minuti che attraversa
+- **Rollover** dei CFD su futures (BUND, USTBOND, COPPER, NATGAS, WTI): il rendimento a 30 minuti che attraversa
   l'ora di un cambio di contratto si toglie **nel loader**, una volta sola, con le date del calendario del fornitore.
   Se il calendario non si trova si assume che il cambio avvenga **alla riapertura serale**, fuori dalla seduta USA,
   come verificato per il WTI di Dukascopy (DECISIONS 2026-11-13, salti alla riapertura del giorno 19): lo strumento
   resta, l'ipotesi e' dichiarata, e il controllo di struttura riporta per ogni strumento dove cadono le pause di
   quotazione (solo orari, nessun rendimento). **Se una pausa o una riapertura cade dentro W**, ogni giorno si toglie il
-  rendimento a 15 minuti che la attraversa (vale come mancante); lo strumento resta se rispetta le soglie (DECISIONS (7)).
+  rendimento a 30 minuti che la attraversa (vale come mancante); lo strumento resta se rispetta le soglie (DECISIONS (7)).
 - **DAX**: entra solo se il controllo di struttura mostra barre nel 90% delle sedute per tutta la finestra (dopo le
   11:30 di New York e' fuori dalla seduta cash di Francoforte); altrimenti resta fuori.
 - **Strumento fuori**: se nello sviluppo i suoi giorni mancanti (meno del 90% dei rendimenti, o oltre il 25% di
@@ -74,7 +75,7 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   tutti).
 - **Calendario**: XNYS di `exchange_calendars`, versione registrata nelle guardie (come la volatilita').
 - **Controllo di struttura**: conteggi su sviluppo e blocco. Per il G9 (§9, N2) si prendono **solo dallo sviluppo**,
-  per strumento e per anno: sedute mancanti per intero, prezzi mancanti per ciascuno dei 27 orari della seduta, quota
+  per strumento e per anno: sedute mancanti per intero, prezzi mancanti per ciascuno dei 14 orari della seduta, quota
   di rendimenti nulli **fra quelli osservati** e lunghezza media delle serie di rendimenti nulli consecutivi. Nessuna
   RV, nessuna media di rendimenti, nessun livello di prezzo. Il controllo di selezione (rendimento assoluto dei giorni
   esclusi contro la mediana) si fa **solo sullo sviluppo**, con la data limite 2024-11-08 applicata alla lettura come
@@ -84,7 +85,7 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
 ## 4. Ingresso fisso e scala del bersaglio
 
 **Ingresso fisso** (Matteo, D2 e decisioni del 21/11 in DECISIONS (5)): per ogni strumento i e ogni seduta t,
-RV_{i,t} = somma dei quadrati dei 26 rendimenti a 15 minuti nella finestra W; σ̂²_{i,t} = **EWMA con λ = 0,94 di
+RV_{i,t} = somma dei quadrati dei 13 rendimenti a 30 minuti nella finestra W; σ̂²_{i,t} = **EWMA con λ = 0,94 di
 RV_i fino alla seduta t** (la formula del pacchetto, applicata alla stessa finestra del bersaglio, Matteo).
 **Distribuzione marginale: gaussiana** (quasi-verosimiglianza), dove serve una verosimiglianza (DCC) (Matteo).
 
@@ -97,11 +98,11 @@ strumento, che non si usano per altro. Le matrici Σ, le correlazioni, la costan
 premia correlazioni gonfiate o sgonfiate (calcolo sintetico del gatekeeper: con diagonale 0,5 e correlazione vera 0,5 la
 Stein premia 0,725; con 0,95 premia 0,516). Come c_t della volatilita' (VOLATILITA_PREREGISTRATION §3), **col bersaglio
 al numeratore**: sia D_{i,τ} l'elemento diagonale della matrice di Bartlett dei rendimenti **grezzi** della seduta τ
-(RV piu' il termine a ritardo 1); s_{i,t} = **media semplice** dei rapporti D_{i,τ} / σ̂²_{i,τ−1} sulle **500 sedute**
+(RV piu' i termini a ritardo 1 e 2 coi pesi di Bartlett); s_{i,t} = **media semplice** dei rapporti D_{i,τ} / σ̂²_{i,τ−1} sulle **500 sedute**
 valide che finiscono a t (solo passato). La media semplice, non il rapporto di somme di c_t, perche' la perdita di Stein
 e' lineare nel bersaglio e conta la media sui giorni (il rapporto di somme sarebbe una media pesata per la
 volatilita'); la differenza si misura nel G9, non sui dati. I rendimenti standardizzati sono
-z_{i,k} = r_{i,k} / (σ̂_{i,t−1} · √s_{i,t−1}) per i quarti d'ora k della seduta t.
+z_{i,k} = r_{i,k} / (σ̂_{i,t−1} · √s_{i,t−1}) per le mezz'ore k della seduta t.
 
 **Limite dichiarato: la scala vale in media, non giorno per giorno.** Nei giorni in cui l'EWMA sbaglia la volatilita',
 la diagonale del bersaglio si allontana da 1 e la Stein premia in parte le previsioni di correlazione che si muovono
@@ -137,7 +138,9 @@ come risultato sull'EWMA. Si riportano solo i differenziali di perdita fra previ
 
 L(H, Σ) = tr(H⁻¹Σ) − log det(H⁻¹Σ) − N. Si calcolano **solo i differenziali** fra due previsioni,
 L(H₁, Σ) − L(H₂, Σ) = tr((H₁⁻¹ − H₂⁻¹)Σ) + log det H₁ − log det H₂, che richiedono H invertibile e non Σ (il livello
-sarebbe infinito se Σ e' singolare). Con N ≤ 17 < 26 rendimenti per seduta il rango a ritardo 0 non e' un vincolo.
+sarebbe infinito se Σ e' singolare). Con 13 rendimenti per seduta e N fino a 17 la Σ di un giorno puo' essere singolare (rango al piu' 13 a ritardo 0; la
+correzione di Bartlett lo alza ma non lo garantisce): il differenziale non ne ha bisogno, perche' inverte solo le
+previsioni H, che sono definite positive; la perdita piena non si calcola mai.
 Secondaria la **Frobenius**, solo come lettura. Errori HAC con max(h − 1, 4) ritardi per le origini sovrapposte, come la
 volatilita'.
 
@@ -160,7 +163,7 @@ Una perdita non si cambia dopo un esito (G2).
   normalizzata, regolarizzata come 0,9·R_t + 0,1·I (regola fissata ora, copre anche il caso non definito positivo).
 - **Benchmark forte**: **DCC(1,1) su matrici realizzate**, Q_t = (1 − a − b)·Q̄ + a·Σ_{t−1} + b·Q_{t−1}, con Q̄ la
   media delle Σ della finestra e H = Q normalizzata; (a, b) stimati per **quasi-verosimiglianza gaussiana dei
-  rendimenti a 15 minuti standardizzati** (covarianza di un quarto d'ora = H_t / 26, ritardo 0), sulla finestra mobile
+  rendimenti a 30 minuti standardizzati** (covarianza di una mezz'ora = H_t / 13, ritardo 0), sulla finestra mobile
   di **500 sedute**, ristima settimanale (H3). Previsione a 5 passi: E_t[Q_{t+k}] = Q̄ + (a + b)^{k−1}·(Q_{t+1} − Q̄),
   poi normalizzata (approssimazione di Engle e Sheppard 2001, dalla memoria: **in quarantena**, da verificare prima del
   passo 3).
@@ -212,7 +215,7 @@ gratis da Dukascopy M5 con lo stesso script della volatilita' (regola d'acquisto
 
 ## 9. Controllo della pipeline (G9, rimedio del bloccante B3)
 
-Processi simulati **attraverso la misura vera** (26 rendimenti a 15 minuti, standardizzazione con l'ingresso fisso,
+Processi simulati **attraverso la misura vera** (13 rendimenti a 30 minuti, standardizzazione con l'ingresso fisso,
 fattore di scala, correzione di Bartlett, rendimento mancante = zero), con due ingredienti dichiarati:
 - **volatilita' marginali che l'EWMA sbaglia**: un **GJR per strumento con parametri stimati sui rendimenti di
   sviluppo**, solo dopo il commit di candidati e quote e **senza riportarli** (DECISIONS (7)): senza, l'errore
@@ -263,27 +266,41 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   correlazione vera e la misura gli si applica sopra) e non si calcola.
 - **Quotazioni non sincrone e buchi** (riserva R2 della sesta passata, precisata con R3, R4 e R8 della settima), tutti
   dai **soli conteggi dello sviluppo**, per strumento e per anno, presi **prima delle esclusioni**, generati sui
-  **prezzi** (27 per seduta: l'open delle 9:30 e le 26 chiusure dei quarti d'ora) e passati alla misura vera (prezzo
+  **prezzi della misura** (14 per seduta: l'open delle 9:30 e le 13 chiusure delle mezz'ore; il processo vero vive
+  sui 26 quarti d'ora e la misura ne prende uno su due) e passati alla misura vera (prezzo
   mancante → due rendimenti mancanti, mancante = zero, soglie del 90% e del 25%, esclusione per unione), in quest'ordine:
   1. **seduta mancante per intero**: probabilita' che la seduta non abbia alcun prezzo in W (per esempio i festivi
      europei di DAX e BUND); estratta indipendente per strumento;
-  2. **prezzi fermi**, nelle sedute presenti: una catena a due stati che **riparte ogni seduta**, con l'open delle 9:30
-     sempre aggiornato; dallo stato "aggiornato" si passa a "fermo" con probabilita' p_u = p0 / (L·(1 − p0)), da "fermo"
+  2. **prezzi fermi**, nelle sedute presenti: una catena a due stati che **riparte ogni seduta dalla sua distribuzione
+     stazionaria** (lo stato dell'open si estrae con probabilita' p0, ma il prezzo dell'open e' sempre quello vero;
+     *corretto il 23/11: con l'open sempre "aggiornato" e soli 13 rendimenti la quota di nulli riprodotta scendeva dal
+     10% all'8,8%, test sintetico*); dallo stato "aggiornato" si passa a "fermo" con probabilita' p_u = p0 / (L·(1 − p0)), da "fermo"
      si resta fermi con probabilita' 1 − 1/L, dove p0 e' la quota di rendimenti nulli fra quelli osservati e L la
      lunghezza media delle serie di rendimenti nulli consecutivi. Se p_u > 1 il codice si ferma (conteggi incoerenti).
      Un prezzo fermo ripete l'ultimo prezzo: il rendimento accumulato compare all'aggiornamento successivo (e' il
      meccanismo dell'Epps);
-  3. **prezzo mancante per ora del giorno**, nelle sedute presenti: per ciascuno dei 27 orari, la probabilita' che il
+  3. **prezzo mancante per ora del giorno**, nelle sedute presenti: per ciascuno dei 14 orari, la probabilita' che il
      prezzo manchi, contata **sulle sole sedute presenti** (una seduta mancante per intero non conta due volte, come gli
      zeri nella quarta passata); riproduce le pause a ora fissa e il DAX dopo le 11:30 di New York. Un mancante cancella
      il prezzo anche se la catena lo dava fermo.
   **Come si contano nei dati veri**: una serie di rendimenti nulli consecutivi si interrompe a un rendimento mancante e
-  si tronca a fine seduta; il troncamento accorcia la durata media L, e si dichiara. Le estrazioni per ora sono
+  si tronca a inizio e a fine seduta; il troncamento accorcia la durata contata L̃. Per riprodurla, la catena usa
+  L = (n − 1)/(n/L̃ − 1), con n = 13 rendimenti (con catena stazionaria la durata contata e' n/(1 + (n − 1)/L); per L = 3
+  vale 2,6, e il test sintetico la ritrova); se L̃ >= 13 il codice si ferma. *Aggiunto il 23/11: prima la catena usava
+  la durata contata come se fosse la sua, e i fermi simulati risultavano piu' corti di quelli veri.* Le estrazioni per ora sono
   indipendenti fra loro, quindi i buchi di piu' ore consecutive non si riproducono: per questo il generatore si
-  **verifica** sui soli conteggi prima di N2: per strumento e per anno, la quota di sedute che il generatore fa
-  escludere (meno del 90% dei rendimenti o oltre il 25% di nulli) deve stare entro **2 punti percentuali, o il 25% del
-  valore vero se piu' largo**, da quella del controllo di struttura. Se non ci sta, il generatore e' **GUASTO** e si
-  corregge prima di N2 (correzione, non scelta). Il rollover dentro W non si simula: per la regola del §3 cade alla
+  **verifica** sui soli conteggi prima di N2 (bloccante B1 dell'ottava passata): per strumento e per anno, la quota
+  q̂ di sedute che il generatore fa escludere (meno del 90% dei rendimenti o oltre il 25% di nulli) su 200 anni
+  simulati deve stare entro max(2 punti; 25% di q; 3·√(q(1 − q)/n_anno)) dalla quota vera q del controllo di
+  struttura, con n_anno le sedute di quell'anno (il terzo termine assorbe il rumore di campionamento della quota vera:
+  con ~245 sedute un generatore perfetto usciva per caso dalla tolleranza in una cella su 10-19). La verifica gira in
+  uno script a se', **prima** di simulare qualunque replica: se e' GUASTO lo script si ferma e l'unica uscita e' la
+  verifica (un test lo controlla), quindi nessun δ e' visto prima di correggere il generatore. **Correzioni ammesse
+  del generatore, in quest'ordine**, ognuna una deviazione P5 (P6 punto 2) e seguita da una nuova verifica: (1) i
+  prezzi mancanti per ora estratti a blocchi, con la durata media delle serie di prezzi mancanti consecutivi contata
+  come quella dei nulli; (2) la seduta mancante per intero estratta insieme per gli strumenti con lo stesso calendario
+  europeo (DAX, BUND). Se dopo le due la verifica fallisce ancora, N2 e' GUASTO e si torna al passo 2. Resta gratis
+  solo la correzione di un errore di codice (il generatore non fa cio' che il testo dice). Il rollover dentro W non si simula: per la regola del §3 cade alla
   riapertura serale; se il controllo trova pause dentro W, il punto 3 le contiene gia'.
 - **Universo e sedute simulate** (riserva R5 della settima): l'universo e' quello fissato dal controllo di struttura
   vero (DAX e regola del 10% decisi li'); **nelle repliche la regola del 10% non si riapplica**, cosi' i due gemelli
@@ -304,12 +321,19 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   d_t = L(alternativa) − L(EWMA) (Stein; positivo = l'EWMA e' migliore), e
   δ = (media di d nel gemello con difetti − media di d nel gemello sincrono) / (deviazione HAC di d nel gemello
   sincrono / √n_h),
+  con medie e deviazione calcolate sull'**intersezione delle origini valide** dei due gemelli (il gemello con difetti
+  perde sedute per l'esclusione per unione: riserva R6 dell'ottava passata); una replica con meno di 50 origini comuni
+  conta come campione insufficiente e rende N2 GUASTO,
   con deviazione HAC centrata a max(h − 1, 4) ritardi e **n_h = 247**, le sedute piene XNYS dal 2024-11-11 al 2025-11-10
   (un anno, dal solo calendario: 250 sedute meno 3 chiusure anticipate; unita' di misura, non una scelta dell'holdout).
-  δ dice di quante "unita' di MDE di un anno" i difetti spostano il confronto. **N2 RIFIUTA per misura** se, per la
+  δ e' in unita' di **errore standard** di un anno (sd/√247): l'MDE vale 2,486 di queste unita' (riserva R1
+  dell'ottava passata; la versione precedente diceva per errore "unita' di MDE"). La sd e' quella del gemello
+  sincrono simulato, non quella reale: se la reale e' piu' grande, la regola e' piu' severa del dichiarato. **N2 RIFIUTA per misura** se, per la
   costante, la **mediana di δ sulle 500 repliche e' sotto −0,5** in almeno uno dei due orizzonti (circa un quinto del
   fattore MDE 2,486): i difetti favoriscono l'alternativa abbastanza da poter creare un falso positivo. Uno spostamento
-  a favore dell'EWMA (δ > 0) toglie potenza ma non crea falsi positivi: si riporta e non ferma il test. Con probabilita'
+  a favore dell'EWMA (δ > 0) toglie potenza ma non crea falsi positivi: si riporta e non ferma il test; in quel
+  caso, accanto a un mancato rifiuto, l'MDE si riporta anche come (fattore + mediana di δ)·errore standard (riserva
+  R5 dell'ottava passata). Con probabilita'
   di difetto zero δ vale esattamente 0. Bonferroni non serve piu': la regola e' una soglia su una grandezza, non un test.
 - **Guardia sul processo** (gemello sincrono): in ogni replica e orizzonte si fa anche il Diebold-Mariano a una coda
   "la costante batte l'EWMA" (HLN, HAC con max(h − 1, 4) ritardi, al 5%) **sul solo gemello sincrono**; se piu' di **35
@@ -328,17 +352,23 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
     si cambia **una volta per tentativo, in quest'ordine fisso**: (0,06; 0,93) → (0,06; 0,90) → (0,04; 0,94); al
     massimo questi tre; se nessuno passa si torna al testo. Un cambio e' gratis (P6 punto 1: dati sintetici, prima del
     commit) solo a queste condizioni, e si registra in DECISIONS;
-  - **controllo positivo di N2** (seme 20261126): con un difetto dichiarato ora (quota di prezzi fermi che sale da 0 al
-    30% negli anni su 7 strumenti, durata media 3 quarti d'ora, come nella prova del gatekeeper) la regola deve
-    scattare (mediana di δ sotto −0,5 per la costante in almeno un orizzonte); con probabilita' di difetto zero δ deve
+  - **controllo positivo di N2** (seme 20261126): con un difetto dichiarato ora, **quota di prezzi fermi fissa del 5%
+    su tutti i 17 strumenti, durata media L = 3 mezz'ore, nessun altro difetto** (sulla griglia della misura; *fino al
+    23/11 era una rampa fino al 30% su 7 strumenti, che con le esclusioni svuota il campione: sezione "Prove
+    sintetiche"*), la regola deve scattare (mediana di δ sotto −0,5 per la costante in almeno un orizzonte); con probabilita' di difetto zero δ deve
     valere esattamente 0. Se il difetto non fa scattare la regola, la regola non va e si torna al testo.
 - **Conseguenze, scritte ora**:
   - **RIFIUTA per misura** (regola di δ): la misura e' distorta (Epps residuo, buchi o la loro variazione negli anni);
     il test non va avanti e si torna al passo 2 (punto 2 di P6, deviazione, 0 trial). **Rimedi ammessi, elencati ora**
-    (riserva R8 della settima), uno alla volta e in quest'ordine, ciascuno seguito da un nuovo N2: (i) correzione di
-    Bartlett con **due ritardi** invece di uno; (ii) rendimenti a **30 minuti** invece di 15; (iii) uscita dello
-    strumento con la quota di prezzi fermi piu' alta nello sviluppo. Ogni rimedio e' una deviazione nella tabella P5
-    (punto 2 di P6); un rimedio non elencato qui e' una scelta nuova dopo un'uscita (punto 3);
+    (riserve R8 della settima e R3 dell'ottava): i rimedi (i) Bartlett a due ritardi e (ii) 30 minuti sono gia' la
+    misura di base dal 23/11; resta (iii) l'**uscita dello strumento** con la quota di prezzi fermi piu' alta nello
+    sviluppo, **ripetibile fino a tre strumenti**, uno alla volta, ciascuna seguita da un nuovo N2 (le uscite si
+    sommano: lo strumento uscito non rientra). L'universo minimo resta di 14 strumenti; R̄ perde le righe degli
+    strumenti usciti. Ogni uscita e' una deviazione nella tabella P5 (punto 2 di P6); un rimedio non elencato qui e'
+    una scelta nuova dopo un'uscita (punto 3). **Finiti i rimedi** (tre strumenti fuori e N2 che rifiuta ancora): la
+    misura intraday sui CFD Dukascopy non basta, I3 si ferma al passo 2 e si torna a Matteo (dati di borsa sincroni,
+    backlog §G, o famiglia chiusa per misura). Piu' ritardi di Bartlett non sono un rimedio: a 30 minuti con 3 o 4
+    ritardi la guardia del gemello sincrono si rompe (sezione "Prove sintetiche");
   - **GUASTO** (guardia sul processo, generatore fuori tolleranza o matrici non valide): N2 non passa; si cerca
     l'errore o si torna al passo 2 per il processo (punto 2 di P6);
   - nessuno dei due: si calcola la potenza.
@@ -498,7 +528,8 @@ del 10% per lo strumento, DAX, prezzi) adottate insieme. Le scelte che restano s
 (sopra). Le probabilita' di N2 per strumento e per anno, coi mancanti generati, sono fissate nel §9 (con mancante =
 zero e prezzi fermi la correlazione misurata si attenua di circa √((1−p_i)(1−p_j)); se le quote cambiano negli anni
 EWMA e DCC seguono l'attenuazione e la costante no: un vantaggio sulla qualita' dei dati, non sulla dinamica, che N2
-deve vedere).
+deve vedere). ⚠️ *Smentita in direzione dalle prove sintetiche del 23/11 (sezione in fondo, numeri inventati): i
+prezzi fermi favoriscono la costante, anche a quota fissa.*
 
 **23/11 (riserve della sesta passata), prese insieme:** processo di N2 sulla correlazione con ritorno verso una matrice
 a blocchi dalle correlazioni D1 di A1, a = 0,06 e b = 0,93, con gemello sincrono (opzione A fra tre, raccomandata da
