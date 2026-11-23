@@ -593,3 +593,26 @@ presenti → §9; R5 universo fisso nelle repliche, date XNYS reali, stesse orig
 per le prove, tentativi ammessi su (a, b) → §9; R7 lettura appaiata nella ripetizione sui candidati → §9 e statuto; R8
 verifica del generatore e rimedi ammessi elencati prima → §9. Debito nuovo per Matteo: nella Checklist 10 la riga "un
 negativo deve poter rifiutare, con il suo controllo positivo"; primitiva comune per la soglia appaiata in `motore/core`.
+
+**Ottava passata (commit `dba01af`, 23/11): BLOCCA**, 1 bloccante, 6 riserve; B1 e R1-R8 della settima risultano chiusi
+(la regola su δ scatta col difetto dichiarato, δ ≈ −5,4, e vale 0 esatto senza difetti: prova del gatekeeper su numeri
+inventati). **Da fare prima del commit (1), tutto gratis (P6 punto 1):**
+- **B1, verifica del generatore**: (a) se e' GUASTO lo script si ferma **prima** di simulare le repliche e l'unica
+  uscita e' la verifica (test); (b) tolleranza col rumore di campionamento, per esempio max(2 punti; 25%;
+  3·√(q(1−q)/n_anno)), perche' con ~245 sedute l'anno un generatore perfetto esce dalla tolleranza del 23/11 per caso
+  nel 10-19% delle celle; (c) elenco ordinato e limitato delle correzioni ammesse del generatore (per esempio una
+  componente a blocchi per i buchi di piu' ore), ognuna una deviazione P5; gratis solo un errore di codice.
+- **R1** δ e' in unita' di **errore standard** di un anno (sd/√247), non di MDE; denominatore dalla sd sintetica (se la
+  reale e' maggiore la regola e' piu' severa); test di unita' su δ nel punto 7.
+- **R2** controllo positivo scritto per intero: EURUSD, USDJPY, GBPUSD, AUDUSD, XAUUSD, XAGUSD, BUND; quota di prezzi
+  fermi in rampa lineare per seduta da 0 a 0,30 sulle 1.450 sedute, L = 3, nessun altro difetto.
+- **R3** rimedi: si sommano o si sostituiscono; cosa succede quando finiscono; cosa cambia coi 30 minuti (13 rendimenti,
+  soglie, Bartlett, Σ singolare con N > 13 nel §5, HAC del §10).
+- **R4** su numeri inventati i prezzi fermi favoriscono la costante **anche a quota costante** (mediana di δ: −1,53 col
+  5% su 7 strumenti, −4,33 col 15%, −5,86 col 5% su tutti; −0,66 con rampa 0→3%): con conteggi realistici N2
+  probabilmente rifiutera'. La frase delle decisioni del 21/11 (EWMA e DCC seguono l'attenuazione, la costante no) va
+  corretta come misura sintetica; i tre rimedi vanno provati sul difetto del controllo positivo prima del commit.
+- **R5** se la mediana di δ e' sopra 0, accanto a un mancato rifiuto l'MDE si riporta anche come (fattore + δ)·errore
+  standard.
+- **R6** origini delle due medie e della sd: l'intersezione delle origini valide dei due gemelli.
+Debito nuovo: Checklist 10, "una verifica di calibrazione si ferma prima di produrre la grandezza che decide".
