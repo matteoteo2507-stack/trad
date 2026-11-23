@@ -686,3 +686,22 @@ file degli esiti non si riscrivono: questa e' la lettura corretta.
    con la guardia pulita; col 5% su tutti i 17 rifiuta comunque (−1,6 / −1,9).
 4. Il controllo positivo dichiarato nel §9 (rampa fino al 30%) svuota il campione: va ridefinito.
 5. Se N2 passi davvero dipende dalle quote vere di prezzi fermi per strumento, che si sapranno solo dai conteggi.
+
+## Prove prima del commit di congelamento (23/11, misura a 30 minuti con Bartlett a 2 ritardi)
+
+Script `magazzino/registro/codice/struttura/prove_prima_del_commit.py`, esito in `esiti/prove_prima_del_commit.json`
+(commit `083db54`), 1.450 sedute, 500 repliche, soli dati sintetici.
+- **Verifica del processo** (seme 20261125): **passa al primo tentativo**, (a, b) = (0,06; 0,93): il gemello sincrono
+  rifiuta nella guardia **0 volte su 500** a h = 1 e a h = 5; matrici non valide 0; nessun campione insufficiente.
+- **Controllo positivo** (seme 20261126; 5% fisso di prezzi fermi su tutti i 17, durata della catena 3 mezz'ore sulla
+  griglia della misura): **GUASTO, non scatta**. In **500 repliche su 500** il campione e' insufficiente (meno di 50
+  origini comuni ai due gemelli): con 13 rendimenti per seduta bastano 4 nulli per superare la soglia del 25%, e con
+  l'esclusione per unione su 17 strumenti quasi ogni seduta cade. Il difetto l'aveva definito Claude prendendo il
+  numero dalle prove precedenti, dove i fermi erano generati sui quarti d'ora e poi sottocampionati (molto piu'
+  leggeri sulla griglia a 30 minuti): errore di Claude.
+
+**Cosa dice, oltre al controllo positivo.** Con la misura a 30 minuti la regola dei nulli (25% di 13) e l'esclusione per
+unione sono **fragili**: una quota di prezzi fermi diffusa svuota il campione prima che δ possa dire qualcosa. Lo
+stesso potrebbe succedere sui dati veri. **Aperto, da decidere con Matteo prima del commit (1)** (gratis, P6 punto 1):
+il controllo positivo (un difetto che lasci campione) e se la regola dei nulli e l'esclusione per unione vadano
+riviste per la misura a 30 minuti.

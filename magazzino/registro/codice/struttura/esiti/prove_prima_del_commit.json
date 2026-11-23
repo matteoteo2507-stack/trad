@@ -1,0 +1,39 @@
+{
+ "commit": "083db5471889f89545b9ad41389e5816ab3635fc",
+ "T": 1450,
+ "repliche": 500,
+ "verifica": [
+  {
+   "a": 0.06,
+   "b": 0.93,
+   "guardia_rifiuti_h1": 0,
+   "guardia_rifiuti_h5": 0,
+   "non_valide": 0,
+   "campione_insufficiente": 0,
+   "passa": true
+  }
+ ],
+ "positivo": {
+  "repliche": 500,
+  "non_valide": 0,
+  "delta_costante_h1": null,
+  "delta_costante_h5": null,
+  "delta_persistenza_h1": [
+   -0.212,
+   0.308,
+   0.739,
+   1.212,
+   1.86
+  ],
+  "delta_persistenza_h5": null,
+  "campione_insufficiente": 500,
+  "guardia_rifiuti_h1": 0,
+  "guardia_rifiuti_h5": 0,
+  "esito": "GUASTO",
+  "scatta": false
+ },
+ "processo_scelto": [
+  0.06,
+  0.93
+ ]
+}
