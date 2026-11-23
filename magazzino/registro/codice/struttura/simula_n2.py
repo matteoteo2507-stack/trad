@@ -31,6 +31,12 @@ SEME_VERIFICA = 20261125
 SEME_POSITIVO = 20261126
 REPLICHE = 500
 SOGLIA_GUARDIA = 35    # quantile al 97,5% di Bin(500; 0,05)
+
+
+def soglia_guardia(repliche: int) -> int:
+    """Quantile al 97,5% di Bin(repliche; 0,05): 35 con 500 repliche. Corretto il 23/11: prima la soglia era 35 per
+    qualunque numero di repliche, e le prove con 60 repliche davano PASSA con il 20% di rifiuti."""
+    return int(stats.binom.ppf(0.975, repliche, 0.05))
 EIG_MIN = 1e-10
 MIN_ORIGINI = 50
 POSITIVO_STRUMENTI = ("EURUSD", "USDJPY", "GBPUSD", "AUDUSD", "XAUUSD", "XAGUSD", "BUND")
@@ -202,7 +208,7 @@ def riassumi(righe: list) -> dict:
     for h in V.ORIZZONTI:
         out["guardia_rifiuti_h%d" % h] = int(sum(r[("guardia", h)] for r in righe))
     mediane = [out["delta_costante_h%d" % h][2] if out["delta_costante_h%d" % h] else np.nan for h in V.ORIZZONTI]
-    if out["non_valide"] > 0 or insufficienti > 0 or any(out["guardia_rifiuti_h%d" % h] > SOGLIA_GUARDIA for h in V.ORIZZONTI):
+    if out["non_valide"] > 0 or insufficienti > 0 or any(out["guardia_rifiuti_h%d" % h] > soglia_guardia(len(righe)) for h in V.ORIZZONTI):
         out["esito"] = "GUASTO"
     elif min(mediane) < -TAU:
         out["esito"] = "RIFIUTA per misura"

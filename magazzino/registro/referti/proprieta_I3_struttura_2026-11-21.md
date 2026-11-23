@@ -616,3 +616,42 @@ inventati). **Da fare prima del commit (1), tutto gratis (P6 punto 1):**
   standard.
 - **R6** origini delle due medie e della sd: l'intersezione delle origini valide dei due gemelli.
 Debito nuovo: Checklist 10, "una verifica di calibrazione si ferma prima di produrre la grandezza che decide".
+
+## Prove sintetiche dei rimedi di N2 (23/11, prima del commit di congelamento)
+
+Riserva R4 dell'ottava passata: prima di scegliere la misura, i rimedi si provano su difetti **inventati** (nessun dato,
+P6 punto 1). Codice: `magazzino/registro/codice/struttura/` (`misura.py`, `previsioni.py`, `simula_n2.py`, 23 test
+sintetici); esiti in `esiti/prove_rimedi_2026-11-23.json` (commit `fb2e388`) e `esiti/prove_ritardi_2026-11-23.json`
+(commit `4fa85c4`): processo del §9, 1.450 sedute, 60 repliche per riga, seme 20261127, pipeline intera (esclusioni
+comprese). Prezzi fermi con durata media 3 quarti d'ora; nessun altro difetto. In tabella: **mediana di δ per la
+costante** (h = 1 / h = 5) ed esito; τ = 0,5.
+
+| difetto | 15 min, Bartlett 1 (oggi) | 15 min, B2 | 30 min, B1 | **30 min, B2** | 30 min, B3 / B4 |
+|---|---|---|---|---|---|
+| rampa 0 → 10% su 7 | −1,59 / −1,95, campione corto in 3 repliche | −1,04 / −1,30 | −0,73 / −0,77 | **−0,41 / −0,41 PASSA** | guardia rotta |
+| 5% fisso su 7 | −1,51 / −1,94 | −1,10 / −1,18 | −0,67 / −0,76 | **−0,36 / −0,46 PASSA** | guardia rotta |
+| 15% fisso su 7 | campione insufficiente | idem | idem a h = 5 | idem a h = 5 | — |
+| 5% fisso su tutti i 17 | −6,34 / campione insufficiente | −4,35 / idem | −2,86 / −3,52 | **−1,63 / −1,91 RIFIUTA** | guardia rotta |
+| BUND 15%, altri 6 al 5% | −2,15 / −3,11, campione corto in 40 | — | — | — | — |
+| idem, BUND fuori (rimedio iii) | −1,28 / −1,47 | — | — | — | — |
+
+(15 min con B3 e B4: −0,83 / −0,91 e −0,62 / −0,66 sul 5% su 7, sempre oltre τ.) La guardia sul gemello sincrono
+(costante che batte l'EWMA senza difetti) resta a 0 rifiuti su 60 con B1 e B2; a 30 minuti con B3 rifiuta in 3 e 12
+repliche su 60, con B4 in 46 e 59: con 13 rendimenti per seduta e tre o quattro ritardi la Σ di ogni giorno e' cosi'
+rumorosa che la costante batte l'EWMA anche senza difetti, e il negativo non vale.
+
+**Errore di codice trovato nella prova e corretto**: la soglia della guardia era fissa a 35 (giusta per 500 repliche)
+anche con 60 repliche, dove il quantile al 97,5% e' 7; il file `prove_ritardi` riporta quindi "PASSA" per 30 minuti
+con B3, che e' **GUASTO** (12 su 60 a h = 5). Ora la soglia dipende dal numero di repliche (`soglia_guardia`, test). I
+file degli esiti non si riscrivono: questa e' la lettura corretta.
+
+**Lettura (numeri inventati, da non confondere con i dati veri).**
+1. I prezzi fermi favoriscono la costante sempre, anche a quota costante (conferma la R4 dell'ottava passata, ora con
+   le esclusioni): la frase delle decisioni del 21/11 sull'attenuazione aveva la direzione sbagliata.
+2. A 15 minuti nessun numero di ritardi porta δ sotto τ gia' col 5% di prezzi fermi su 7 strumenti; con lo stesso 5%
+   su tutti i 17, o col 15% su 7, la regola del 25% di nulli e l'esclusione per unione **svuotano il campione**
+   (all'orizzonte 5 restano meno di 50 origini).
+3. **30 minuti con Bartlett a 2 ritardi** e' l'unica misura provata che passa col 5% su 7 e con la rampa al 10%,
+   con la guardia pulita; col 5% su tutti i 17 rifiuta comunque (−1,6 / −1,9).
+4. Il controllo positivo dichiarato nel §9 (rampa fino al 30%) svuota il campione: va ridefinito.
+5. Se N2 passi davvero dipende dalle quote vere di prezzi fermi per strumento, che si sapranno solo dai conteggi.

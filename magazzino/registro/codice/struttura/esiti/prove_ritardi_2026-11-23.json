@@ -1,0 +1,416 @@
+{
+ "commit": "4fa85c463de2d32a416bcaf69a907ae1804effd3",
+ "T": 1450,
+ "seme": 20261127,
+ "repliche": 60,
+ "prove": {
+  "fisso_5_su_7 | 15m_B3": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -1.391,
+    -1.063,
+    -0.832,
+    -0.528,
+    -0.192
+   ],
+   "delta_costante_h5": [
+    -2.045,
+    -1.364,
+    -0.908,
+    -0.432,
+    0.168
+   ],
+   "delta_persistenza_h1": [
+    -0.118,
+    0.058,
+    0.136,
+    0.271,
+    0.509
+   ],
+   "delta_persistenza_h5": [
+    -0.298,
+    0.065,
+    0.242,
+    0.475,
+    0.784
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 0,
+   "guardia_rifiuti_h5": 0,
+   "esito": "RIFIUTA per misura"
+  },
+  "fisso_5_su_7 | 15m_B4": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -1.133,
+    -0.858,
+    -0.624,
+    -0.323,
+    -0.029
+   ],
+   "delta_costante_h5": [
+    -1.744,
+    -1.13,
+    -0.656,
+    -0.275,
+    0.388
+   ],
+   "delta_persistenza_h1": [
+    -0.164,
+    0.048,
+    0.117,
+    0.276,
+    0.418
+   ],
+   "delta_persistenza_h5": [
+    -0.166,
+    -0.009,
+    0.24,
+    0.405,
+    0.665
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 0,
+   "guardia_rifiuti_h5": 0,
+   "esito": "RIFIUTA per misura"
+  },
+  "fisso_5_su_7 | 30m_B3": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -0.659,
+    -0.413,
+    -0.229,
+    -0.088,
+    0.062
+   ],
+   "delta_costante_h5": [
+    -1.047,
+    -0.566,
+    -0.317,
+    -0.061,
+    0.165
+   ],
+   "delta_persistenza_h1": [
+    -0.113,
+    0.036,
+    0.107,
+    0.225,
+    0.341
+   ],
+   "delta_persistenza_h5": [
+    -0.055,
+    0.068,
+    0.174,
+    0.289,
+    0.453
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 3,
+   "guardia_rifiuti_h5": 12,
+   "esito": "PASSA"
+  },
+  "fisso_5_su_7 | 30m_B4": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -0.557,
+    -0.306,
+    -0.166,
+    -0.025,
+    0.128
+   ],
+   "delta_costante_h5": [
+    -0.876,
+    -0.479,
+    -0.242,
+    -0.016,
+    0.325
+   ],
+   "delta_persistenza_h1": [
+    -0.104,
+    -0.003,
+    0.099,
+    0.185,
+    0.297
+   ],
+   "delta_persistenza_h5": [
+    -0.034,
+    0.063,
+    0.143,
+    0.279,
+    0.453
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 46,
+   "guardia_rifiuti_h5": 59,
+   "esito": "GUASTO"
+  },
+  "fisso_5_su_17 | 15m_B3": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -5.428,
+    -4.085,
+    -3.144,
+    -2.517,
+    -1.381
+   ],
+   "delta_costante_h5": null,
+   "delta_persistenza_h1": [
+    0.511,
+    1.083,
+    1.272,
+    1.657,
+    1.919
+   ],
+   "delta_persistenza_h5": null,
+   "campione_insufficiente": 60,
+   "guardia_rifiuti_h1": 0,
+   "guardia_rifiuti_h5": 0,
+   "esito": "GUASTO"
+  },
+  "fisso_5_su_17 | 15m_B4": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -4.63,
+    -3.36,
+    -2.583,
+    -1.871,
+    -0.533
+   ],
+   "delta_costante_h5": null,
+   "delta_persistenza_h1": [
+    0.398,
+    0.796,
+    0.978,
+    1.289,
+    1.696
+   ],
+   "delta_persistenza_h5": null,
+   "campione_insufficiente": 60,
+   "guardia_rifiuti_h1": 0,
+   "guardia_rifiuti_h5": 0,
+   "esito": "GUASTO"
+  },
+  "fisso_5_su_17 | 30m_B3": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -1.722,
+    -1.35,
+    -0.983,
+    -0.62,
+    -0.237
+   ],
+   "delta_costante_h5": [
+    -3.296,
+    -2.389,
+    -1.149,
+    -0.624,
+    0.681
+   ],
+   "delta_persistenza_h1": [
+    0.609,
+    0.746,
+    0.958,
+    1.107,
+    1.345
+   ],
+   "delta_persistenza_h5": [
+    0.842,
+    1.259,
+    1.605,
+    1.831,
+    2.447
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 3,
+   "guardia_rifiuti_h5": 12,
+   "esito": "RIFIUTA per misura"
+  },
+  "fisso_5_su_17 | 30m_B4": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -1.362,
+    -0.979,
+    -0.557,
+    -0.278,
+    0.036
+   ],
+   "delta_costante_h5": [
+    -2.84,
+    -1.693,
+    -0.767,
+    -0.184,
+    1.111
+   ],
+   "delta_persistenza_h1": [
+    0.509,
+    0.623,
+    0.781,
+    0.946,
+    1.175
+   ],
+   "delta_persistenza_h5": [
+    0.581,
+    0.951,
+    1.286,
+    1.497,
+    1.986
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 46,
+   "guardia_rifiuti_h5": 59,
+   "esito": "GUASTO"
+  },
+  "rampa_0_10_su_7 | 15m_B3": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -1.698,
+    -1.169,
+    -0.748,
+    -0.51,
+    0.004
+   ],
+   "delta_costante_h5": [
+    -3.448,
+    -1.587,
+    -0.822,
+    -0.166,
+    0.563
+   ],
+   "delta_persistenza_h1": [
+    -0.214,
+    -0.049,
+    0.214,
+    0.333,
+    0.563
+   ],
+   "delta_persistenza_h5": [
+    -0.616,
+    -0.158,
+    0.178,
+    0.512,
+    0.935
+   ],
+   "campione_insufficiente": 3,
+   "guardia_rifiuti_h1": 0,
+   "guardia_rifiuti_h5": 0,
+   "esito": "GUASTO"
+  },
+  "rampa_0_10_su_7 | 15m_B4": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -1.438,
+    -0.961,
+    -0.621,
+    -0.297,
+    0.131
+   ],
+   "delta_costante_h5": [
+    -3.168,
+    -1.197,
+    -0.626,
+    -0.034,
+    0.701
+   ],
+   "delta_persistenza_h1": [
+    -0.231,
+    -0.014,
+    0.122,
+    0.269,
+    0.624
+   ],
+   "delta_persistenza_h5": [
+    -0.411,
+    -0.008,
+    0.136,
+    0.391,
+    0.825
+   ],
+   "campione_insufficiente": 3,
+   "guardia_rifiuti_h1": 0,
+   "guardia_rifiuti_h5": 0,
+   "esito": "GUASTO"
+  },
+  "rampa_0_10_su_7 | 30m_B3": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -0.681,
+    -0.425,
+    -0.258,
+    -0.073,
+    0.005
+   ],
+   "delta_costante_h5": [
+    -1.085,
+    -0.662,
+    -0.214,
+    0.027,
+    0.404
+   ],
+   "delta_persistenza_h1": [
+    -0.065,
+    0.12,
+    0.197,
+    0.295,
+    0.438
+   ],
+   "delta_persistenza_h5": [
+    -0.103,
+    0.086,
+    0.161,
+    0.312,
+    0.657
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 3,
+   "guardia_rifiuti_h5": 12,
+   "esito": "PASSA"
+  },
+  "rampa_0_10_su_7 | 30m_B4": {
+   "repliche": 60,
+   "non_valide": 0,
+   "delta_costante_h1": [
+    -0.587,
+    -0.348,
+    -0.207,
+    0.004,
+    0.145
+   ],
+   "delta_costante_h5": [
+    -0.94,
+    -0.501,
+    -0.105,
+    0.075,
+    0.499
+   ],
+   "delta_persistenza_h1": [
+    -0.062,
+    0.039,
+    0.186,
+    0.266,
+    0.348
+   ],
+   "delta_persistenza_h5": [
+    -0.111,
+    0.054,
+    0.148,
+    0.287,
+    0.573
+   ],
+   "campione_insufficiente": 0,
+   "guardia_rifiuti_h1": 46,
+   "guardia_rifiuti_h5": 59,
+   "esito": "GUASTO"
+  }
+ }
+}

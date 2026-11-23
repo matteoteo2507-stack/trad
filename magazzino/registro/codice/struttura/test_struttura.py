@@ -278,3 +278,11 @@ def test_uscita_solo_chiavi_ammesse():
     ammesse = {"repliche", "non_valide", "campione_insufficiente", "esito", "guardia_rifiuti_h1", "guardia_rifiuti_h5"}
     ammesse |= {"delta_%s_h%d" % (n, h) for n in ("costante", "persistenza") for h in (1, 5)}
     assert set(out) == ammesse
+
+
+def test_soglia_guardia_dipende_dalle_repliche():
+    assert S.soglia_guardia(500) == S.SOGLIA_GUARDIA == 35
+    assert S.soglia_guardia(60) == 7
+    righe = [{"non_valide": 0, ("guardia", 1): i < 12, ("guardia", 5): False,
+              **{("delta", n, h): 0.0 for n in ("costante", "persistenza") for h in (1, 5)}} for i in range(60)]
+    assert S.riassumi(righe)["esito"] == "GUASTO"
