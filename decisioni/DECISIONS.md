@@ -11,7 +11,33 @@
 
 ---
 
+## 2026-11-23 (3) — I3: settima passata **BLOCCA**; N2 decide sullo **spostamento appaiato** (τ = 0,5), con controllo positivo; 0 trial
+
+Settima passata del gatekeeper sul referto (commit `f8654d0`): **BLOCCA**, 1 bloccante, 8 riserve. **B1**: con il
+processo scelto in (2) l'EWMA e' quasi il previsore ottimo, quindi un difetto di misura doveva ribaltare tutto il
+distacco perche' una replica rifiutasse: N2 passava per costruzione, anche con difetti che sposterebbero un confronto
+vero di quasi due volte il fattore MDE (prova del gatekeeper su numeri inventati). Il gatekeeper lo attribuisce anche
+alla propria sesta passata.
+
+**Decisioni prese insieme** (raccomandate da Claude, sulla proposta del gatekeeper; rivedibili col costo di P6 del
+§8ter, oggi gratis: punto 1):
+1. N2 decide su δ, lo spostamento del differenziale "costante meno EWMA" dovuto ai difetti, misurato contro il gemello
+   sincrono in unita' di un anno di holdout (n_h = 247 sedute dal calendario). **Rifiuta per misura se la mediana di δ
+   e' sotto −0,5** in un orizzonte (τ = 0,5 fra 0,25, 0,5 e 1). Uno spostamento a favore dell'EWMA si riporta e non
+   ferma. Prima del commit, un **controllo positivo** sintetico deve far scattare la regola.
+2. La **persistenza** si calcola e si riporta, ma **non decide**.
+Il gemello sincrono resta come guardia sul processo (GUASTO oltre 35 repliche su 500 per orizzonte). Riserve R1-R8
+applicate nel [referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md) (§9 e sezione della
+settima passata): numero corretto della soglia di prima, descrizione dello 0,112, catena dei prezzi fermi, mancanti
+sulle sole sedute presenti, universo fisso nelle repliche, semi e flussi, lettura appaiata nella ripetizione,
+verifica del generatore e rimedi ammessi elencati prima. Debito nuovo per Matteo: riga della Checklist 10 "un negativo
+deve poter rifiutare, con il suo controllo positivo".
+
+---
+
 ## 2026-11-23 (2) — I3: riserve R1-R6 della sesta passata **applicate**; processo di N2 sulla correlazione con **gemello sincrono**; 0 trial
+
+⚠️ *Corretto da DECISIONS 2026-11-23 (3):* la soglia con Bonferroni (36 repliche) e' superata dalla regola su δ; il "~17%" era sbagliato (la soglia di prima dava ~11,6% sui quattro confronti). Testo originale:
 
 Testo del [referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), prima del commit di
 congelamento e di ogni dato (P6 del §8ter, punto 1: gratis).

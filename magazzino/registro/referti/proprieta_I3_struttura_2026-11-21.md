@@ -248,60 +248,105 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   TREND_A1_HELDOUT_POWER §4); **energia** (WTI, NATGAS) **0,443** (insieme "energia" di A1: BRENT, WTI, NATGAS,
   DIESEL); **cambi** (EURUSD, USDJPY, GBPUSD, AUDUSD) **0,050** (cross FX di A1, non le majors: dichiarato); **ogni
   altra coppia**, dentro una classe senza numero di A1 (XAUUSD-XAGUSD, BUND-USTBOND) e fra classi, **0,112**, la media
-  dei futures pysystemtrade di A1 (§8 dello stesso referto), l'unico numero di A1 misurato fra classi diverse. Le
+  su **tutte** le coppie dei 20 futures pysystemtrade di A1 in 5 classi, dentro e fra classi (§8 dello stesso
+  referto), usata come livello di fondo (riserva R2 della settima passata: non e' una misura "fra classi"). Le
   correlazioni vere di metalli e obbligazioni sono quasi certamente piu' alte: il processo non deve somigliare al
   mercato, deve partire da una struttura non banale. Con 17 strumenti l'autovalore minimo di R̄ e' 0,209 (calcolato il
   23/11, nessun dato); se il DAX esce dall'universo si toglie la sua riga e colonna. Il codice verifica che R̄ sia
   definita positiva e si ferma se non lo e' (nessuna correzione automatica).
-- **Lettura, scritta ora**: con questo processo l'EWMA **non** e' il previsore esatto (il processo torna verso R̄);
-  e' un negativo valido perche', **senza difetti di misura**, costante e persistenza non battono l'EWMA piu' spesso del
-  livello (gemello sincrono sotto). Un rifiuto quando il gemello non rifiuta viene quindi dalla misura (Epps residuo,
-  buchi, prezzi fermi o la loro variazione negli anni), non dalla contrazione verso la media. La mappa fra correlazione
-  vera e misurata non serve piu' (il processo e' definito sulla correlazione vera e la misura gli si applica sopra) e
-  non si calcola.
-- **Quotazioni non sincrone e buchi** (riserva R2), tutti dai **soli conteggi dello sviluppo**, per strumento e per
-  anno, generati sui **prezzi** (27 per seduta: l'open delle 9:30 e le 26 chiusure dei quarti d'ora) e passati alla
-  misura vera (prezzo mancante → due rendimenti mancanti, mancante = zero, soglie del 90% e del 25%, esclusione per
-  unione, strumento fuori oltre il 10%):
-  - **componente giornaliera**: probabilita' che la seduta manchi per intero (nessun prezzo in W, per esempio i festivi
-    europei di DAX e BUND); le sedute mancanti si estraggono indipendenti per strumento;
-  - **componente per ora del giorno**: per ciascuno dei 27 prezzi della seduta, la probabilita' che manchi (riproduce
-    le pause a ora fissa e il DAX dopo le 11:30 di New York);
-  - **prezzi fermi lunghi**: una catena a due stati per strumento e per anno (il prezzo si aggiorna o resta quello
-    precedente), con probabilita' stazionaria uguale alla quota di rendimenti nulli fra quelli osservati e durata
-    media di un fermo uguale alla lunghezza media delle serie di rendimenti nulli consecutivi. Un prezzo fermo ripete
-    l'ultimo osservato: il rendimento accumulato compare all'aggiornamento successivo (e' il meccanismo dell'Epps).
-  Il rollover dentro W non si simula: per la regola del §3 cade alla riapertura serale; se il controllo di struttura
-  trova pause dentro W, la componente per ora del giorno le contiene gia'.
+- **Lettura, scritta ora**: con questo processo l'EWMA **non** e' il previsore esatto (il processo torna verso R̄) ma ci
+  si avvicina molto (pesi 0,94^k contro 0,93^k piu' il ritorno), quindi senza difetti costante e persistenza sono molto
+  peggiori dell'EWMA. Per questo N2 **non** decide su quante repliche rifiutano un test di significativita' (un difetto
+  dovrebbe ribaltare tutto il distacco, e N2 passerebbe per costruzione: bloccante B1 della settima passata), ma su
+  **quanto i difetti spostano il differenziale**, in unita' di effetto, confrontando ogni replica col suo gemello
+  sincrono (regola sotto). La mappa fra correlazione vera e misurata non serve piu' (il processo e' definito sulla
+  correlazione vera e la misura gli si applica sopra) e non si calcola.
+- **Quotazioni non sincrone e buchi** (riserva R2 della sesta passata, precisata con R3, R4 e R8 della settima), tutti
+  dai **soli conteggi dello sviluppo**, per strumento e per anno, presi **prima delle esclusioni**, generati sui
+  **prezzi** (27 per seduta: l'open delle 9:30 e le 26 chiusure dei quarti d'ora) e passati alla misura vera (prezzo
+  mancante → due rendimenti mancanti, mancante = zero, soglie del 90% e del 25%, esclusione per unione), in quest'ordine:
+  1. **seduta mancante per intero**: probabilita' che la seduta non abbia alcun prezzo in W (per esempio i festivi
+     europei di DAX e BUND); estratta indipendente per strumento;
+  2. **prezzi fermi**, nelle sedute presenti: una catena a due stati che **riparte ogni seduta**, con l'open delle 9:30
+     sempre aggiornato; dallo stato "aggiornato" si passa a "fermo" con probabilita' p_u = p0 / (L·(1 − p0)), da "fermo"
+     si resta fermi con probabilita' 1 − 1/L, dove p0 e' la quota di rendimenti nulli fra quelli osservati e L la
+     lunghezza media delle serie di rendimenti nulli consecutivi. Se p_u > 1 il codice si ferma (conteggi incoerenti).
+     Un prezzo fermo ripete l'ultimo prezzo: il rendimento accumulato compare all'aggiornamento successivo (e' il
+     meccanismo dell'Epps);
+  3. **prezzo mancante per ora del giorno**, nelle sedute presenti: per ciascuno dei 27 orari, la probabilita' che il
+     prezzo manchi, contata **sulle sole sedute presenti** (una seduta mancante per intero non conta due volte, come gli
+     zeri nella quarta passata); riproduce le pause a ora fissa e il DAX dopo le 11:30 di New York. Un mancante cancella
+     il prezzo anche se la catena lo dava fermo.
+  **Come si contano nei dati veri**: una serie di rendimenti nulli consecutivi si interrompe a un rendimento mancante e
+  si tronca a fine seduta; il troncamento accorcia la durata media L, e si dichiara. Le estrazioni per ora sono
+  indipendenti fra loro, quindi i buchi di piu' ore consecutive non si riproducono: per questo il generatore si
+  **verifica** sui soli conteggi prima di N2: per strumento e per anno, la quota di sedute che il generatore fa
+  escludere (meno del 90% dei rendimenti o oltre il 25% di nulli) deve stare entro **2 punti percentuali, o il 25% del
+  valore vero se piu' largo**, da quella del controllo di struttura. Se non ci sta, il generatore e' **GUASTO** e si
+  corregge prima di N2 (correzione, non scelta). Il rollover dentro W non si simula: per la regola del §3 cade alla
+  riapertura serale; se il controllo trova pause dentro W, il punto 3 le contiene gia'.
+- **Universo e sedute simulate** (riserva R5 della settima): l'universo e' quello fissato dal controllo di struttura
+  vero (DAX e regola del 10% decisi li'); **nelle repliche la regola del 10% non si riapplica**, cosi' i due gemelli
+  hanno lo stesso universo. Le sedute simulate sono le **date XNYS reali dello sviluppo comune**, con le chiusure
+  anticipate escluse (servono per le probabilita' per anno); le origini sono le stesse della potenza (§10).
 - **Gemello sincrono**: ogni replica gira due volte con **gli stessi rendimenti veri**, una con i difetti di misura e
-  una senza (probabilita' zero di buchi e di prezzi fermi), attraverso la stessa pipeline. I rendimenti veri e i difetti
-  usano due flussi casuali separati, cosi' il gemello differisce solo per i difetti.
-- **Previsioni confrontate**: EWMA (benchmark) contro **costante** e contro **persistenza** (i candidati non esistono
-  ancora), con le regole e le finestre del §6.
-- **Test**: per ogni confronto e orizzonte, Diebold-Mariano a una coda sul differenziale di Stein ("l'alternativa batte
-  l'EWMA"), correzione HLN, errori HAC con max(h − 1, 4) ritardi, al **5%**; **500 repliche**, ognuna lunga quanto lo
-  sviluppo comune (sedute contate dal controllo di struttura). **Seme 20261123**, una sottosequenza per replica
-  (`numpy.random.SeedSequence(20261123).spawn`), due flussi per replica (rendimenti veri, difetti).
-- **Soglia, con Bonferroni sui quattro confronti** (riserva R5): due confronti per due orizzonti. Un confronto rifiuta
-  se **piu' di 36 repliche su 500** (7,2%) rifiutano: 36 e' il quantile al 98,75% di una binomiale (500; 0,05), con
-  falso allarme dell'1,24% per confronto e al massimo del 5% sui quattro. La soglia di prima (limite alto
-  dell'intervallo binomiale al 95%, ~6,9%) lasciava un falso allarme fino a circa il 17% sui quattro (calcolo esatto
-  del 23/11: 4,5% per confronto, 33 repliche).
+  una senza (probabilita' zero di buchi e di prezzi fermi), attraverso la stessa pipeline.
+- **Seme e flussi** (riserva R6 della settima): seme **20261123**; `SeedSequence(20261123).spawn(500)` da' una
+  sottosequenza per replica, in ordine; ognuna fa `spawn(2)`: il primo flusso genera i rendimenti veri, il secondo i
+  difetti. Dentro un flusso le estrazioni seguono le sedute in ordine di data e, in ogni seduta, gli strumenti
+  nell'ordine del §7. Un seme diverso per ognuna delle due prove prima del commit (sotto): **20261125** per la verifica
+  del processo, **20261126** per il controllo positivo.
+- **Previsioni confrontate**: EWMA (benchmark) contro **costante**, che **decide**, e contro **persistenza**, che si
+  calcola e si riporta ma **non decide** (Matteo, 23/11: con t ≈ 95 nella prova del gatekeeper nessun difetto plausibile
+  vi si vede), con le regole e le finestre del §6.
+- **Regola di N2: spostamento appaiato in unita' di effetto** (rimedio del bloccante B1 della settima passata, scelta
+  presa insieme il 23/11, τ = 0,5 fra 0,25, 0,5 e 1). Per ogni replica, confronto e orizzonte h ∈ {1, 5}:
+  d_t = L(alternativa) − L(EWMA) (Stein; positivo = l'EWMA e' migliore), e
+  δ = (media di d nel gemello con difetti − media di d nel gemello sincrono) / (deviazione HAC di d nel gemello
+  sincrono / √n_h),
+  con deviazione HAC centrata a max(h − 1, 4) ritardi e **n_h = 247**, le sedute piene XNYS dal 2024-11-11 al 2025-11-10
+  (un anno, dal solo calendario: 250 sedute meno 3 chiusure anticipate; unita' di misura, non una scelta dell'holdout).
+  δ dice di quante "unita' di MDE di un anno" i difetti spostano il confronto. **N2 RIFIUTA per misura** se, per la
+  costante, la **mediana di δ sulle 500 repliche e' sotto −0,5** in almeno uno dei due orizzonti (circa un quinto del
+  fattore MDE 2,486): i difetti favoriscono l'alternativa abbastanza da poter creare un falso positivo. Uno spostamento
+  a favore dell'EWMA (δ > 0) toglie potenza ma non crea falsi positivi: si riporta e non ferma il test. Con probabilita'
+  di difetto zero δ vale esattamente 0. Bonferroni non serve piu': la regola e' una soglia su una grandezza, non un test.
+- **Guardia sul processo** (gemello sincrono): in ogni replica e orizzonte si fa anche il Diebold-Mariano a una coda
+  "la costante batte l'EWMA" (HLN, HAC con max(h − 1, 4) ritardi, al 5%) **sul solo gemello sincrono**; se piu' di **35
+  repliche su 500** rifiutano in un orizzonte (35 e' il quantile al 97,5% di una binomiale (500; 0,05): falso allarme
+  1,96% per orizzonte, al massimo 3,9% sui due), il processo non e' un negativo valido alla lunghezza vera e N2 e'
+  **GUASTO**. *Correzione del 23/11 (riserva R1 della settima): la soglia della versione del 22/11 era il limite alto
+  dell'intervallo binomiale al 95%, 34,55 repliche, cioe' almeno 35, con falso allarme del 3,03% per confronto e circa
+  l'11,6% sui quattro, come scritto nella sesta passata; il "17%" della prima stesura di oggi era sbagliato.*
 - **Matrici non valide**: si contano, per replica, le matrici (Q_t, previsioni H, bersagli) con un valore non finito o,
   per Q_t e le H, autovalore minimo ≤ 10⁻¹⁰. Per costruzione dovrebbero essere zero: se ce n'e' anche una, N2 e'
   **GUASTO** (non "passa") e si cerca l'errore.
-- **Verifica prima del commit di congelamento** (test sintetico, nessun dato, P6 punto 1): il gemello sincrono, con
-  1.450 sedute (circa lo sviluppo comune atteso dal 2019) e la pipeline intera, deve stare sotto la soglia in tutti e
-  quattro i confronti. Se non ci sta, a e b si cambiano prima del commit (gratis, con una voce in DECISIONS).
+- **Due prove prima del commit di congelamento** (test sintetici, nessun dato, P6 punto 1), con 1.450 sedute (circa lo
+  sviluppo comune atteso dal 2019), la pipeline intera e 500 repliche:
+  - **verifica del processo** (seme 20261125): il gemello sincrono deve avere **al massimo 25 repliche su 500** (5%)
+    che rifiutano nella guardia sopra, in entrambi gli orizzonti (margine sotto la soglia di 35). Se non ci sta, (a, b)
+    si cambia **una volta per tentativo, in quest'ordine fisso**: (0,06; 0,93) → (0,06; 0,90) → (0,04; 0,94); al
+    massimo questi tre; se nessuno passa si torna al testo. Un cambio e' gratis (P6 punto 1: dati sintetici, prima del
+    commit) solo a queste condizioni, e si registra in DECISIONS;
+  - **controllo positivo di N2** (seme 20261126): con un difetto dichiarato ora (quota di prezzi fermi che sale da 0 al
+    30% negli anni su 7 strumenti, durata media 3 quarti d'ora, come nella prova del gatekeeper) la regola deve
+    scattare (mediana di δ sotto −0,5 per la costante in almeno un orizzonte); con probabilita' di difetto zero δ deve
+    valere esattamente 0. Se il difetto non fa scattare la regola, la regola non va e si torna al testo.
 - **Conseguenze, scritte ora**:
-  - il **gemello con difetti** supera la soglia e il gemello sincrono no: la misura e' distorta (Epps residuo, buchi o la
-    loro variazione negli anni); il test non va avanti e si torna al passo 2 (punto 2 di P6, deviazione, 0 trial);
-  - il **gemello sincrono** supera la soglia (con o senza l'altro): il processo non e' un negativo valido alla lunghezza
-    vera; N2 e' **GUASTO**, non passa, e si torna al passo 2 per il processo (punto 2 di P6);
-  - **matrici non valide**: GUASTO, come sopra;
-  - nessuno dei due supera la soglia: si calcola la potenza.
+  - **RIFIUTA per misura** (regola di δ): la misura e' distorta (Epps residuo, buchi o la loro variazione negli anni);
+    il test non va avanti e si torna al passo 2 (punto 2 di P6, deviazione, 0 trial). **Rimedi ammessi, elencati ora**
+    (riserva R8 della settima), uno alla volta e in quest'ordine, ciascuno seguito da un nuovo N2: (i) correzione di
+    Bartlett con **due ritardi** invece di uno; (ii) rendimenti a **30 minuti** invece di 15; (iii) uscita dello
+    strumento con la quota di prezzi fermi piu' alta nello sviluppo. Ogni rimedio e' una deviazione nella tabella P5
+    (punto 2 di P6); un rimedio non elencato qui e' una scelta nuova dopo un'uscita (punto 3);
+  - **GUASTO** (guardia sul processo, generatore fuori tolleranza o matrici non valide): N2 non passa; si cerca
+    l'errore o si torna al passo 2 per il processo (punto 2 di P6);
+  - nessuno dei due: si calcola la potenza.
 - Dopo il passo 3, N2 si **ripete** sui candidati insieme a N1 e al positivo; le conseguenze di quelle uscite sono fra
   le scelte rinviate (statuto) e si scrivono nel commit del passo 3, prima che giri qualunque configurazione del G9.
+  Nella ripetizione la guardia sul gemello sincrono **non si trasferisce cosi' com'e'**: il processo torna verso R̄,
+  quindi un candidato di contrazione o un DCC e' davvero migliore dell'EWMA e il gemello sincrono rifiutera' per merito;
+  la lettura sara' appaiata (riserva R7 della settima, nell'elenco dello statuto).
 
 **Ordine di N1 e del positivo**: solo dopo il commit di candidati, sottofamiglie, quote e conseguenze (passo 3) si
 stimano GJR e DCC e girano N1, il positivo e la ripetizione di N2; i parametri stimati non si riportano prima. Lo script
@@ -388,10 +433,12 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    limite del punto 3; chiavi d'uscita ammesse come al punto 4;
 6. **N2** (riserva R6): parte solo se il controllo di struttura e gli hash degli 8 sono committati; legge **solo** il
    file dei conteggi del controllo di struttura (guardia sui percorsi: nessun CSV di prezzi aperto, un test lo
-   verifica); chiavi d'uscita ammesse: commit, versioni, seme, numero di repliche e di sedute, per confronto e
-   orizzonte il numero di repliche che rifiutano nei due gemelli, soglia, esito (PASSA, RIFIUTA per misura, GUASTO),
+   verifica); chiavi d'uscita ammesse: commit, versioni, seme, numero di repliche e di sedute, n_h, esito della verifica
+   del generatore per strumento e anno, per confronto e orizzonte i **quantili di δ** (5, 25, 50, 75, 95%) e il numero
+   di repliche che rifiutano nella guardia sul gemello sincrono, soglie, esito (PASSA, RIFIUTA per misura, GUASTO),
    numero di matrici non valide; una chiave in piu' ferma lo script. Su nessun canale: differenziali, perdite, t, p
-   delle singole repliche, matrici;
+   delle singole repliche, matrici. I quantili di δ sono differenziali **simulati** su un processo inventato: lo statuto
+   non cambia;
 7. **test su dati sintetici**, verdi: prezzi e griglia; fuso applicato una volta nel loader e protetto dal doppio, anche
    **ai cambi d'ora** (marzo e novembre, europei e americani); rollover tolto una volta; **file senza prezzi** in una
    seduta e in un intero strumento; Bartlett semidefinita con zeri; nulli sui soli osservati; esclusione per unione,
@@ -399,11 +446,12 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    un processo EWMA esatto; differenziale di Stein uguale alla differenza delle perdite piene; EWMA, costante e
    persistenza definite positive a diagonale 1; riscaldamento (indici 50, 550, 600); ingresso fisso identico bit per
    bit alla formula del pacchetto (importata); deviazione di Newey-West identica a `volatilita/potenza.py:sd_newey_west`;
-   le guardie di data e di campi; **per N2**: con probabilita' di difetto zero i due gemelli coincidono bit per bit e la
-   diagonale media del bersaglio e' vicina a 1; Q_t ha diagonale 1 e autovalore minimo ≥ 0,143·λ_min(R̄) in ogni
+   le guardie di data e di campi; **per N2**: con probabilita' di difetto zero i due gemelli coincidono bit per bit, δ
+   vale 0 e la diagonale media del bersaglio e' vicina a 1; la catena dei prezzi fermi riparte a ogni seduta, l'open non
+   e' mai fermo, p_u > 1 ferma il codice; i mancanti per ora contati sulle sole sedute presenti; le due prove prima del
+   commit del §9 (verifica del processo, seme 20261125; controllo positivo, seme 20261126); Q_t ha diagonale 1 e autovalore minimo ≥ 0,143·λ_min(R̄) in ogni
    seduta; R̄ a blocchi coi valori del §9; il generatore riproduce in media le probabilita' in ingresso (sedute
-   mancanti, prezzi mancanti per ora, quota e durata dei fermi); stesso seme, stesso risultato; il gemello sincrono
-   sotto la soglia con 1.450 sedute (verifica del §9 prima del commit).
+   mancanti, prezzi mancanti per ora, quota e durata dei fermi); stesso seme, stesso risultato.
 
 La **mappa inversa** fra correlazione vera e misurata, chiesta dalla sesta passata, non serve piu' col processo del
 23/11 (§9) e non si scrive.
@@ -423,7 +471,8 @@ sottofamiglie, quote e riciclo; unita' di conto (C1, G8); holdout (inizio e lung
 esatti di N1 e del positivo; conseguenze di tutte le uscite del G9 (positivo sotto l'80%, N1 e N2 insieme con N2 che
 prevale, G9 da rifare dopo il passaggio al bersaglio alternativo, ripetizione di N2 sui candidati); verosimiglianza del
 DCC sul bersaglio alternativo; probabilita' per anno in N1; come si riportano le perdite durante il test del ridisegno
-della volatilita' (§8); P4; la frase del §2 sul vantaggio che coincide con gli anni di dati peggiori. Restano confermative
+della volatilita' (§8); P4; la frase del §2 sul vantaggio che coincide con gli anni di dati peggiori; la lettura
+**appaiata** della guardia sul gemello sincrono nella ripetizione di N2 sui candidati (§9). Restano confermative
 solo se, oltre a quella dispersione e ai conteggi, **nessun'altra informazione su perdite o differenziali sui dati
 reali** e' stata vista; altrimenti vale il punto 3 di P6. Le quote di rifiuto di N2 sono differenziali **simulati**, su
 un processo inventato e tarato sui soli conteggi (nessun rendimento reale entra nella simulazione): non portano
@@ -453,8 +502,10 @@ deve vedere).
 
 **23/11 (riserve della sesta passata), prese insieme:** processo di N2 sulla correlazione con ritorno verso una matrice
 a blocchi dalle correlazioni D1 di A1, a = 0,06 e b = 0,93, con gemello sincrono (opzione A fra tre, raccomandata da
-Claude); soglia di N2 con Bonferroni sui quattro confronti (36 repliche su 500); generatore dei buchi in tre componenti
-dai conteggi (§9).
+Claude); generatore dei buchi in tre componenti dai conteggi (§9). Dopo la settima passata: N2 decide sullo
+**spostamento appaiato δ** in unita' di effetto, con **τ = 0,5** (fra 0,25, 0,5 e 1), e la persistenza resta **solo
+lettura** (scelte prese insieme, raccomandate da Claude sulla proposta del gatekeeper). La soglia con Bonferroni della
+prima stesura di oggi (36 repliche su 500) e' superata.
 
 ## Revisione del gatekeeper
 
@@ -524,5 +575,21 @@ con un processo che degenera non vale".
 correlazione con ritorno verso la matrice a blocchi di A1 e gemello sincrono (opzione A, scelta presa insieme; DECISIONS
 2026-11-23 (2)); R2 → §9 e §3, generatore in tre componenti dai conteggi; R3 → §6, §7, §8, §9, §10 e decisioni del
 21/11, che rimandano all'unico elenco dello statuto; R4 → statuto ("sui dati reali"); R5 → §9, Bonferroni, 36 repliche
-su 500; R6 → requisiti del commit (1), punti 2, 3, 5, 6 e 7. Correzione di citazione nel §7 (il +0,791 di A1 viene da
+su 500 (⚠️ superata dalla settima passata: la regola di N2 ora e' δ); R6 → requisiti del commit (1), punti 2, 3, 5, 6 e 7. Correzione di citazione nel §7 (il +0,791 di A1 viene da
 cinque indici, non da venti). I due debiti restano a Matteo.
+
+**Settima passata (commit `f8654d0`, 23/11): BLOCCA**, 1 bloccante, 8 riserve. Il gatekeeper attribuisce il bloccante
+anche alla propria sesta passata, che aveva accettato la soglia sulle repliche senza controllare che N2 potesse
+rifiutare. **B1**: con il processo del 23/11 l'EWMA e' quasi il previsore ottimo, quindi la statistica DM "costante meno
+EWMA" vale circa +34 senza difetti e +26 con prezzi fermi fino al 30%: uno spostamento di circa 8 deviazioni, cioe'
+circa 4,4 unita' su un anno di holdout, quasi due volte il fattore MDE. Eppure rifiutava 0 repliche su 6, e N2 passava
+per costruzione (prova del gatekeeper su numeri inventati, 6 repliche, script nello scratchpad della sessione, non nel
+repo) → §9: regola sullo spostamento appaiato δ con τ = 0,5, controllo positivo sintetico prima del commit, gemello
+sincrono come guardia sul processo, persistenza solo lettura (scelte prese insieme, DECISIONS 2026-11-23 (3)).
+Riserve: R1 numero sbagliato sulla soglia di prima (era almeno 35 repliche, 3,03% per confronto, ~11,6% sui quattro, non
+"17%") → §9; R2 descrizione dello 0,112 (media su tutte le coppie dei futures, non fra classi) → §9; R3 catena dei
+prezzi fermi (ripartenza, fattibilita', ordine, conteggio delle serie) → §9; R4 mancanti per ora sulle sole sedute
+presenti → §9; R5 universo fisso nelle repliche, date XNYS reali, stesse origini → §9; R6 flussi, ordine, semi diversi
+per le prove, tentativi ammessi su (a, b) → §9; R7 lettura appaiata nella ripetizione sui candidati → §9 e statuto; R8
+verifica del generatore e rimedi ammessi elencati prima → §9. Debito nuovo per Matteo: nella Checklist 10 la riga "un
+negativo deve poter rifiutare, con il suo controllo positivo"; primitiva comune per la soglia appaiata in `motore/core`.
