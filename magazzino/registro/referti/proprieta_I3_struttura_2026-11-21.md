@@ -73,9 +73,12 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   di struttura e prima di ogni perdita (con l'esclusione per unione, uno strumento spesso fermo cancellerebbe giorni a
   tutti).
 - **Calendario**: XNYS di `exchange_calendars`, versione registrata nelle guardie (come la volatilita').
-- **Controllo di struttura**: conteggi su sviluppo e blocco (le probabilita' di prezzo fermo per il G9 si prendono
-  **solo dallo sviluppo**, sui soli rendimenti osservati, separate dalle probabilita' di rendimento mancante); il controllo di selezione (rendimento assoluto dei giorni
-  esclusi contro la mediana) **solo sullo sviluppo**.
+- **Controllo di struttura**: conteggi su sviluppo e blocco. Per il G9 (§9, N2) si prendono **solo dallo sviluppo**,
+  per strumento e per anno: sedute mancanti per intero, prezzi mancanti per ciascuno dei 27 orari della seduta, quota
+  di rendimenti nulli **fra quelli osservati** e lunghezza media delle serie di rendimenti nulli consecutivi. Nessuna
+  RV, nessuna media di rendimenti, nessun livello di prezzo. Il controllo di selezione (rendimento assoluto dei giorni
+  esclusi contro la mediana) si fa **solo sullo sviluppo**, con la data limite 2024-11-08 applicata alla lettura come
+  per la potenza.
 - **Orizzonte 5**: un'origine si esclude se uno dei 5 giorni e' escluso (come la volatilita').
 
 ## 4. Ingresso fisso e scala del bersaglio
@@ -165,7 +168,7 @@ Una perdita non si cambia dopo un esito (G2).
   costante dice che la contrazione verso la media batte un filtro rumoroso, un risultato noto (Checklist 5), non che il
   candidato prevede la dinamica. Il pacchetto lo riporterebbe cosi'.
 - I candidati (PCA a k fattori con k da una regola fissata prima, contrazione verso la costante, raggruppamenti,
-  regimi) e la combinazione semplice si elencano al passo 3, con sottofamiglie e quote.
+  regimi), la combinazione semplice, le sottofamiglie e le quote sono scelte rinviate (statuto).
 
 ## 7. Universo e dati (Matteo: gli 8 strumenti nuovi si spendono per I3)
 
@@ -178,10 +181,12 @@ gratis da Dukascopy M5 con lo stesso script della volatilita' (regola d'acquisto
 - **Inizio della matrice comune**: il piu' tardi fra gli inizi M5 (da verificare sui file: nel D1 USTBOND parte il
   2018-12-18, BUND il 2016-05-02, BTCUSD il 2017-05-07; RUSSELL M5 2018-08), quindi **intorno al 2019**, non dal 2015.
   Lo sviluppo va dal primo giorno comune al 2024-11-08.
-- Il +0,791 del controllo delle grandezze e' la media dei **20 indici del pool libero** di A1 (TREND_A1_HELDOUT_POWER
-  §4), non delle quattro azioni USA (citazione corretta).
+- Il +0,791 di A1 (TREND_A1_HELDOUT_POWER §4) e' la correlazione media dei rendimenti D1 di **cinque indici** (SPX500,
+  NAS100, DAX, N225, DJIND, dal 2017-12-26; `magazzino/registro/codice/trend/heldout_pool.py`, insieme "index"),
+  applicata poi ai 20 indici liberi, non delle quattro azioni USA. *Corretto il 23/11: la versione precedente diceva "la
+  media dei 20 indici del pool libero", ma il codice la misura sui cinque.*
 - **Unita' di conto** (C1, G8): proposta, una serie = **modello × orizzonte** sull'intera matrice (un universo unico);
-  si fissa al passo 3.
+  scelta rinviata (statuto).
 - **Acquistabili**, non necessari finche' il gratuito basta: futures intraday sincroni (Databento, FirstRate); i
   futures a 1 minuto dei soci coprono un anno (2025-11 → 2026-11), utili come conferma su prezzi di borsa.
 
@@ -196,8 +201,8 @@ gratis da Dukascopy M5 con lo stesso script della volatilita' (regola d'acquisto
   calibrazione dell'EWMA del ridisegno della volatilita'. Restano a quel ridisegno gli altri strumenti Dukascopy mai
   toccati (A1 §8 ne censiva circa 280 fra le azioni USA; bond e commodity sono pochi).
 - **Dopo la pre-registrazione del ridisegno della volatilita'**, sui dati del suo test I3 non riporta nulla della
-  diagonale (LIFECYCLE §8ter, "Ingresso fisso da un'altra famiglia"); al passo 3 si scrive come si riportano le
-  perdite in quel periodo.
+  diagonale (LIFECYCLE §8ter, "Ingresso fisso da un'altra famiglia"); come si riportano le perdite in quel periodo e'
+  una scelta rinviata (statuto).
 - **Correlazioni medie per classe** gia' calcolate su dati D1 (A1 §4, §8, §9): non sulla misura di I3, ma note.
 - **Contaminazione** (H6, Checklist 5): quasi tutto il periodo dei dati (dal 2019 al 2026-05) precede il knowledge
   cutoff del modello (2026-05-31), compreso lo shock dei dazi di aprile 2025 nel blocco; universo, benchmark e misura li
@@ -212,33 +217,91 @@ fattore di scala, correzione di Bartlett, rendimento mancante = zero), con due i
 - **volatilita' marginali che l'EWMA sbaglia**: un **GJR per strumento con parametri stimati sui rendimenti di
   sviluppo**, solo dopo il commit di candidati e quote e **senza riportarli** (DECISIONS (7)): senza, l'errore
   condizionato dell'EWMA e' zero e il controllo non vede il limite del §4;
-- **quotazioni non sincrone**: per ogni strumento una probabilita' di prezzo fermo per quarto d'ora presa dal controllo
-  di struttura (solo conteggi di rendimenti nulli, nessuna statistica sui rendimenti). La frase "il benchmark e' il
-  previsore esatto" vale solo se la misura simulata non ha Epps residuo: se ne ha, un rifiuto del negativo misura la
-  distorsione della misura, e va letto cosi'.
+- **quotazioni non sincrone e buchi**: generati dai conteggi del controllo di struttura (sedute mancanti, prezzi
+  mancanti per ora del giorno, prezzi fermi con la loro durata; nessuna statistica sui rendimenti), col generatore
+  descritto in N2 qui sotto.
 
 **N2, fissato ora per intero e prima della potenza** (decisione del 21/11, DECISIONS (9)). Gira dopo il controllo di
 struttura (§10 (3)) e prima del calcolo della potenza (§10 (4)), quindi dopo i **soli conteggi**: se rifiuta, il ritorno
 al passo 2 e' davvero il punto 2 di P6 del §8ter (deviazione, 0 trial).
-- **Processo**: volatilita' **costante e unitaria** per ogni strumento (l'EWMA la prevede esattamente dopo l'avvio);
-  l'attesa della matrice **misurata** segue la ricorsione M_t = 0,94·M_{t−1} + 0,06·Σ_{t−1} (l'EWMA e' il previsore
-  esatto del bersaglio misurato, non della correlazione vera); la correlazione vera dei 26 rendimenti di ogni seduta e'
-  quella che, attraverso la misura, da' in attesa M_t (la mappa fra correlazione vera e misurata si calcola per
-  simulazione prima della corsa, con le sole probabilita' in ingresso); M parte dalla matrice identita'.
-- **Quotazioni non sincrone e buchi**: per ogni strumento e per anno, la probabilita' di prezzo fermo (sui rendimenti
-  osservati) e quella di rendimento mancante, dai conteggi dello sviluppo; si generano sia i prezzi fermi sia i
-  mancanti, con le regole della misura vera (mancante = zero, soglie del 90% e del 25%).
+*Processo riscritto il 23/11 (riserva R1 della sesta passata, scelta presa insieme, opzione A fra tre; DECISIONS
+2026-11-23 (2)).* Il processo precedente (ricorsione EWMA sulla matrice intera, partenza dall'identita') muoveva la
+diagonale e degenerava: su numeri inventati, 200 repliche di 1.450 sedute senza difetti di misura, diagonale spostata
+fino a 2,4, condizionamento mediano ~3.700, e costante e persistenza battevano l'EWMA in 180 e 150 repliche su 200,
+quindi il negativo non valeva (script di Claude nello scratchpad della sessione, non nel repo, pipeline semplificata
+senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo che degenera non vale".
+- **Processo vero, sulla correlazione** (volatilita' **costante e unitaria** per ogni strumento: ogni rendimento a 15
+  minuti ha varianza 1/26, e l'EWMA la prevede senza errore sistematico dopo l'avvio). La correlazione vera dei 26
+  rendimenti della seduta t e' Q_t, con
+  Q_t = (1 − a − b)·R̄ + a·S_{t−1} + b·Q_{t−1}, **a = 0,06, b = 0,93**, Q_0 = R̄,
+  dove S_{t−1} e' la matrice dei prodotti (non centrati) dei 26 rendimenti **veri** della seduta t − 1 normalizzata a
+  diagonale 1, e i rendimenti sono gaussiani. a e' il peso dell'EWMA 0,94; a + b = 0,99 (emivita di circa 69 sedute)
+  rende il processo persistente ma stazionario. Valori dichiarati, nessuno stimato sui dati.
+- **Perche' non degenera, per costruzione**: R̄ e S hanno diagonale 1, quindi Q_t ha diagonale **esattamente 1** in ogni
+  seduta (nessuna normalizzazione); Q_t e' una combinazione convessa di matrici semidefinite, e il suo autovalore minimo
+  non scende mai sotto (1 − a − b)/(1 − b) = 0,143 volte quello di R̄. Prova su numeri inventati (stesso script, 200
+  repliche di 1.450 sedute): condizionamento massimo mediano 35, |ρ| massimo mediano 0,80, nessun rifiuto di costante o
+  persistenza senza difetti di misura; su 10.000 sedute nessun cambiamento.
+- **Matrice di ritorno R̄, a blocchi, dalle correlazioni D1 gia' note di A1** (non dalla memoria del modello, Checklist
+  5): **azioni** (SPX500, NAS100, DOW, RUSSELL, DAX) **0,791**, la media dell'insieme "indici" di A1 (SPX500, NAS100,
+  DAX, N225, DJIND, rendimenti D1 dal 2017-12-26; `magazzino/registro/codice/trend/heldout_pool.py`,
+  TREND_A1_HELDOUT_POWER §4); **energia** (WTI, NATGAS) **0,443** (insieme "energia" di A1: BRENT, WTI, NATGAS,
+  DIESEL); **cambi** (EURUSD, USDJPY, GBPUSD, AUDUSD) **0,050** (cross FX di A1, non le majors: dichiarato); **ogni
+  altra coppia**, dentro una classe senza numero di A1 (XAUUSD-XAGUSD, BUND-USTBOND) e fra classi, **0,112**, la media
+  dei futures pysystemtrade di A1 (§8 dello stesso referto), l'unico numero di A1 misurato fra classi diverse. Le
+  correlazioni vere di metalli e obbligazioni sono quasi certamente piu' alte: il processo non deve somigliare al
+  mercato, deve partire da una struttura non banale. Con 17 strumenti l'autovalore minimo di R̄ e' 0,209 (calcolato il
+  23/11, nessun dato); se il DAX esce dall'universo si toglie la sua riga e colonna. Il codice verifica che R̄ sia
+  definita positiva e si ferma se non lo e' (nessuna correzione automatica).
+- **Lettura, scritta ora**: con questo processo l'EWMA **non** e' il previsore esatto (il processo torna verso R̄);
+  e' un negativo valido perche', **senza difetti di misura**, costante e persistenza non battono l'EWMA piu' spesso del
+  livello (gemello sincrono sotto). Un rifiuto quando il gemello non rifiuta viene quindi dalla misura (Epps residuo,
+  buchi, prezzi fermi o la loro variazione negli anni), non dalla contrazione verso la media. La mappa fra correlazione
+  vera e misurata non serve piu' (il processo e' definito sulla correlazione vera e la misura gli si applica sopra) e
+  non si calcola.
+- **Quotazioni non sincrone e buchi** (riserva R2), tutti dai **soli conteggi dello sviluppo**, per strumento e per
+  anno, generati sui **prezzi** (27 per seduta: l'open delle 9:30 e le 26 chiusure dei quarti d'ora) e passati alla
+  misura vera (prezzo mancante → due rendimenti mancanti, mancante = zero, soglie del 90% e del 25%, esclusione per
+  unione, strumento fuori oltre il 10%):
+  - **componente giornaliera**: probabilita' che la seduta manchi per intero (nessun prezzo in W, per esempio i festivi
+    europei di DAX e BUND); le sedute mancanti si estraggono indipendenti per strumento;
+  - **componente per ora del giorno**: per ciascuno dei 27 prezzi della seduta, la probabilita' che manchi (riproduce
+    le pause a ora fissa e il DAX dopo le 11:30 di New York);
+  - **prezzi fermi lunghi**: una catena a due stati per strumento e per anno (il prezzo si aggiorna o resta quello
+    precedente), con probabilita' stazionaria uguale alla quota di rendimenti nulli fra quelli osservati e durata
+    media di un fermo uguale alla lunghezza media delle serie di rendimenti nulli consecutivi. Un prezzo fermo ripete
+    l'ultimo osservato: il rendimento accumulato compare all'aggiornamento successivo (e' il meccanismo dell'Epps).
+  Il rollover dentro W non si simula: per la regola del §3 cade alla riapertura serale; se il controllo di struttura
+  trova pause dentro W, la componente per ora del giorno le contiene gia'.
+- **Gemello sincrono**: ogni replica gira due volte con **gli stessi rendimenti veri**, una con i difetti di misura e
+  una senza (probabilita' zero di buchi e di prezzi fermi), attraverso la stessa pipeline. I rendimenti veri e i difetti
+  usano due flussi casuali separati, cosi' il gemello differisce solo per i difetti.
 - **Previsioni confrontate**: EWMA (benchmark) contro **costante** e contro **persistenza** (i candidati non esistono
   ancora), con le regole e le finestre del §6.
 - **Test**: per ogni confronto e orizzonte, Diebold-Mariano a una coda sul differenziale di Stein ("l'alternativa batte
   l'EWMA"), correzione HLN, errori HAC con max(h − 1, 4) ritardi, al **5%**; **500 repliche**, ognuna lunga quanto lo
-  sviluppo comune (sedute contate dal controllo di struttura), seme fisso.
-- **Soglia**: rifiuta se la quota di repliche che rifiutano supera il limite alto dell'intervallo binomiale al 95%
-  attorno al 5% (con 500 repliche circa 6,9%), in almeno un confronto.
-- **Conseguenza, scritta ora**: se N2 rifiuta, la misura e' distorta dall'Epps residuo: il test non va avanti e si torna
-  al passo 2 (punto 2 di P6). Se non rifiuta, si calcola la potenza.
-- Dopo il passo 3, N2 si **ripete** sui candidati insieme a N1 e al positivo; le conseguenze di quelle uscite si
-  scrivono nel commit del passo 3, prima che giri qualunque configurazione del G9.
+  sviluppo comune (sedute contate dal controllo di struttura). **Seme 20261123**, una sottosequenza per replica
+  (`numpy.random.SeedSequence(20261123).spawn`), due flussi per replica (rendimenti veri, difetti).
+- **Soglia, con Bonferroni sui quattro confronti** (riserva R5): due confronti per due orizzonti. Un confronto rifiuta
+  se **piu' di 36 repliche su 500** (7,2%) rifiutano: 36 e' il quantile al 98,75% di una binomiale (500; 0,05), con
+  falso allarme dell'1,24% per confronto e al massimo del 5% sui quattro. La soglia di prima (limite alto
+  dell'intervallo binomiale al 95%, ~6,9%) lasciava un falso allarme fino a circa il 17% sui quattro (calcolo esatto
+  del 23/11: 4,5% per confronto, 33 repliche).
+- **Matrici non valide**: si contano, per replica, le matrici (Q_t, previsioni H, bersagli) con un valore non finito o,
+  per Q_t e le H, autovalore minimo ≤ 10⁻¹⁰. Per costruzione dovrebbero essere zero: se ce n'e' anche una, N2 e'
+  **GUASTO** (non "passa") e si cerca l'errore.
+- **Verifica prima del commit di congelamento** (test sintetico, nessun dato, P6 punto 1): il gemello sincrono, con
+  1.450 sedute (circa lo sviluppo comune atteso dal 2019) e la pipeline intera, deve stare sotto la soglia in tutti e
+  quattro i confronti. Se non ci sta, a e b si cambiano prima del commit (gratis, con una voce in DECISIONS).
+- **Conseguenze, scritte ora**:
+  - il **gemello con difetti** supera la soglia e il gemello sincrono no: la misura e' distorta (Epps residuo, buchi o la
+    loro variazione negli anni); il test non va avanti e si torna al passo 2 (punto 2 di P6, deviazione, 0 trial);
+  - il **gemello sincrono** supera la soglia (con o senza l'altro): il processo non e' un negativo valido alla lunghezza
+    vera; N2 e' **GUASTO**, non passa, e si torna al passo 2 per il processo (punto 2 di P6);
+  - **matrici non valide**: GUASTO, come sopra;
+  - nessuno dei due supera la soglia: si calcola la potenza.
+- Dopo il passo 3, N2 si **ripete** sui candidati insieme a N1 e al positivo; le conseguenze di quelle uscite sono fra
+  le scelte rinviate (statuto) e si scrivono nel commit del passo 3, prima che giri qualunque configurazione del G9.
 
 **Ordine di N1 e del positivo**: solo dopo il commit di candidati, sottofamiglie, quote e conseguenze (passo 3) si
 stimano GJR e DCC e girano N1, il positivo e la ripetizione di N2; i parametri stimati non si riportano prima. Lo script
@@ -246,21 +309,19 @@ del G9 si rifiuta di partire senza quel commit (percorso protetto pulito, hash r
 - **negativo, in due configurazioni** (ogni rifiuto ha una sola causa e una conseguenza scritta ora):
   - **N1**: marginali GJR (l'EWMA sbaglia la scala) e quotazioni **sincrone**. Se rifiuta oltre la soglia, si passa al
     bersaglio alternativo del §4;
-  - **N2**: volatilita' che l'EWMA prevede esattamente e quotazioni **non sincrone** come nello sviluppo; fissato per
-    intero sotto, gira prima della potenza;
-  - in entrambe la correlazione segue la ricorsione EWMA 0,94 **del bersaglio misurato** (il processo esatto per lo
-    stimatore, non per la correlazione vera: si scrive al passo 3); **soglia**: il limite alto dell'intervallo binomiale
-    al 95% attorno alla quota, con le repliche fissate al passo 3. Le rifiniture P4 dei round 2-3 entrano anche nel
-    negativo (un candidato che legge le diagonali passate puo' prevedere l'errore dell'EWMA e vincere per bravura sulla
-    volatilita');
+  - **N2**: volatilita' costante (l'EWMA non sbaglia la scala) e quotazioni **non sincrone** come nello sviluppo;
+    fissato per intero sopra, gira prima della potenza;
+  - il processo di correlazione, le repliche e le soglie di **N1** sono scelte rinviate (statuto); quelli di N2 sono
+    fissati sopra. Le rifiniture P4 dei round 2-3 entrano anche nel negativo (un candidato che legge le diagonali
+    passate puo' prevedere l'errore dell'EWMA e vincere per bravura sulla volatilita');
 - **positivo**: un **DCC(1,1) con i parametri stimati sulle ultime 500 sedute comuni dello sviluppo** (H3), a scelte
   congelate: e' il benchmark forte, non un candidato, quindi 0 trial. In ogni replica il DCC **si ristima** con la stessa
   verosimiglianza della pipeline (cosi' si mette alla prova anche la differenza fra verosimiglianza a ritardo 0 e
   bersaglio con Bartlett). Il test deve trovare il DCC contro l'EWMA almeno nell'80% delle repliche.
 - Il **rapporto effetto/MDE** del positivo si scrive **prima di contare qualunque trial**: se il disegno non vede
   l'effetto di un DCC realistico, lo si dice prima, non dopo 100 trial (lezione del 2026-11-20).
-- Numero di repliche e soglie come la volatilita' (p puntuale dello SPA, DECISIONS 2026-11-19 (2)), da fissare al
-  passo 3.
+- Numero di repliche e soglie di N1 e del positivo: scelte rinviate (statuto), con il precedente della volatilita' (p
+  puntuale dello SPA, DECISIONS 2026-11-19 (2)).
 
 ## 10. Piano della potenza (prima di raccogliere)
 
@@ -286,16 +347,16 @@ per orizzonte, **senza media ne' segno**: cosi' nessun numero dice quale modello
 scegliere al passo 3. E' un ordine di grandezza (un differenziale fra due previsioni lontane puo' essere piu' disperso
 di quello fra un candidato e l'EWMA); la prova vera e' il rapporto effetto/MDE del positivo (§9).
 
-**MDE** = fattore × deviazione HAC / √n, con n = sedute dell'holdout (da fissare al passo 3: si riporta per 1 e 2 anni).
-Fattori a una coda all'80% (`fattore_potenza`, calcolati dal gatekeeper il 21/11): **2,486** (α 5%), **2,802** (2,5%),
-**3,083** (1,25%), **3,339** (0,625%); quello giusto e' la prima soglia di Holm dell'ipotesi elementare, quando le quote
-saranno fissate.
+**MDE** = fattore × deviazione HAC / √n, con n = sedute dell'holdout (inizio e lunghezza: scelta rinviata, statuto; si
+riporta per 1 e 2 anni). Fattori a una coda all'80% (`fattore_potenza`, calcolati dal gatekeeper il 21/11): **2,486**
+(α 5%), **2,802** (2,5%), **3,083** (1,25%), **3,339** (0,625%); quello giusto e' la prima soglia di Holm
+dell'ipotesi elementare, quando le quote (scelta rinviata) saranno fissate.
 
 **Trial**: 0. EWMA e costante sono benchmark e riferimento, non varianti (precedente: la volatilita' non li ha contati,
 VOLATILITA_PREREGISTRATION §5); condizioni: la finestra della costante e' fissata ora (500 sedute), e la costante non
 puo' diventare lo strumento consegnato a partire da questi dati.
 
-## Requisiti del commit (1) (dalla quinta passata del gatekeeper, 21/11)
+## Requisiti del commit (1) (dalla quinta passata del gatekeeper, 21/11, e dalla sesta, riserva R6, 23/11)
 
 Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
 1. **contenuto**: questo referto, la voce DECISIONS, il codice in una cartella nuova sotto `magazzino/registro/codice/`
@@ -303,14 +364,16 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    `volatilita/scarica_dukascopy.py`) con date d'inizio e di fine fisse, fine al 2026-11-10;
 2. **guardie** sul modello di `volatilita/guardie.py`, in testa a ogni script, ferme al primo errore: percorsi protetti
    puliti in git (referto, LIFECYCLE, contatore, cartella di I3, `motore/core`, `motore/tests`, i moduli della
-   volatilita' importati e `volatilita/hash_dati.json`), hash del commit in ogni uscita; versioni fissate (Python 3.12,
-   numpy, pandas, scipy, `exchange_calendars` 4.13.2; `arch` solo dal passo 3), lo script si ferma se non coincidono;
-   sha256 dei 9 M5 contro `volatilita/hash_dati.json` (letto, mai riscritto) e degli 8 nuovi registrati una volta sola
-   subito dopo il download (file temporaneo e sostituzione, rifiuto se esiste); data massima di ogni file ≤ 2026-11-10;
-   `trial_ledger --check` a 0; ordine: la potenza parte solo se esistono, committati, l'esito della verifica delle
-   fonti, il controllo di struttura, gli hash degli 8 e l'esito di N2;
-3. **data della potenza**: fine al 2024-11-08 scritta nel codice, applicata **alla lettura** prima di ogni rendimento,
-   controllata su ogni oggetto derivato; un test con una seduta successiva deve fermare lo script;
+   volatilita' importati e `volatilita/hash_dati.json`), hash del commit in ogni uscita; il controllo di git si salta
+   (`git=False`) **solo nei test**, mai in una corsa che produce numeri; versioni fissate (Python 3.12, numpy, pandas,
+   scipy, `exchange_calendars` 4.13.2, statsmodels se usato; `arch` solo dal passo 3), lo script si ferma se non
+   coincidono; sha256 **e numero di byte** dei 9 M5 contro `volatilita/hash_dati.json` (letto, mai riscritto) e degli 8
+   nuovi registrati una volta sola subito dopo il download (file temporaneo e sostituzione, rifiuto se esiste); data
+   massima di ogni file ≤ 2026-11-10; `trial_ledger --check` a 0; ordine: la potenza parte solo se esistono,
+   committati, l'esito della verifica delle fonti, il controllo di struttura, gli hash degli 8 e l'esito di N2;
+3. **data della potenza e del controllo di selezione**: fine al 2024-11-08 scritta nel codice, applicata **alla
+   lettura** prima di ogni rendimento, controllata su ogni oggetto derivato; un test con una seduta successiva deve
+   fermare lo script (per la potenza e per il controllo di selezione);
 4. **uscita della potenza, nessun canale aperto**: un dizionario con chiavi ammesse (commit, versioni, sha256; per
    h ∈ {1, 5} numero di origini, ritardi HAC, deviazione HAC **centrata** del differenziale; sedute dell'holdout a 1 e 2
    anni dal solo calendario; fattori e MDE); una chiave in piu' ferma lo script (un test aggiunge `media`). Su nessun
@@ -319,15 +382,31 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    rapporti D/σ̂², media di z². La serie dei differenziali vive solo in memoria e passa a una funzione che restituisce la
    sola deviazione; gli errori riportano data e tipo, non valori. Non si ripete l'abitudine della volatilita' di salvare
    le perdite in cache;
-5. **uscita del controllo di struttura e di N2**: solo conteggi per strumento e per anno (sviluppo e blocco separati),
-   probabilita' per il G9 dal solo sviluppo, orari delle pause, copertura del DAX, regola del 10%; il controllo di
-   selezione solo sullo sviluppo; per N2 le quote di rifiuto per confronto e orizzonte e l'esito rispetto alla soglia;
-6. **test su dati sintetici**, verdi: prezzi e griglia; fuso applicato una volta nel loader e protetto dal doppio;
-   rollover tolto una volta; Bartlett semidefinita con zeri; nulli sui soli osservati; esclusione per unione, chiusure
-   anticipate, orizzonte 5; fattore di scala con diagonale media vicina a 1 su un processo EWMA esatto; differenziale di
-   Stein uguale alla differenza delle perdite piene; EWMA, costante e persistenza definite positive a diagonale 1;
-   riscaldamento (indici 50, 550, 600); ingresso fisso identico bit per bit alla formula del pacchetto (importata);
-   deviazione di Newey-West identica a `volatilita/potenza.py:sd_newey_west`; le guardie di data e di campi.
+5. **uscita del controllo di struttura**: solo conteggi per strumento e per anno (sviluppo e blocco separati), le
+   quantita' per il G9 del §3 dal solo sviluppo, orari delle pause, copertura del DAX, regola del 10%; **nessuna RV,
+   nessuna media di rendimenti, nessun livello di prezzo**; il controllo di selezione solo sullo sviluppo, con la data
+   limite del punto 3; chiavi d'uscita ammesse come al punto 4;
+6. **N2** (riserva R6): parte solo se il controllo di struttura e gli hash degli 8 sono committati; legge **solo** il
+   file dei conteggi del controllo di struttura (guardia sui percorsi: nessun CSV di prezzi aperto, un test lo
+   verifica); chiavi d'uscita ammesse: commit, versioni, seme, numero di repliche e di sedute, per confronto e
+   orizzonte il numero di repliche che rifiutano nei due gemelli, soglia, esito (PASSA, RIFIUTA per misura, GUASTO),
+   numero di matrici non valide; una chiave in piu' ferma lo script. Su nessun canale: differenziali, perdite, t, p
+   delle singole repliche, matrici;
+7. **test su dati sintetici**, verdi: prezzi e griglia; fuso applicato una volta nel loader e protetto dal doppio, anche
+   **ai cambi d'ora** (marzo e novembre, europei e americani); rollover tolto una volta; **file senza prezzi** in una
+   seduta e in un intero strumento; Bartlett semidefinita con zeri; nulli sui soli osservati; esclusione per unione,
+   chiusure anticipate, orizzonte 5, **nessuna finestra incompleta**; fattore di scala con diagonale media vicina a 1 su
+   un processo EWMA esatto; differenziale di Stein uguale alla differenza delle perdite piene; EWMA, costante e
+   persistenza definite positive a diagonale 1; riscaldamento (indici 50, 550, 600); ingresso fisso identico bit per
+   bit alla formula del pacchetto (importata); deviazione di Newey-West identica a `volatilita/potenza.py:sd_newey_west`;
+   le guardie di data e di campi; **per N2**: con probabilita' di difetto zero i due gemelli coincidono bit per bit e la
+   diagonale media del bersaglio e' vicina a 1; Q_t ha diagonale 1 e autovalore minimo ≥ 0,143·λ_min(R̄) in ogni
+   seduta; R̄ a blocchi coi valori del §9; il generatore riproduce in media le probabilita' in ingresso (sedute
+   mancanti, prezzi mancanti per ora, quota e durata dei fermi); stesso seme, stesso risultato; il gemello sincrono
+   sotto la soglia con 1.450 sedute (verifica del §9 prima del commit).
+
+La **mappa inversa** fra correlazione vera e misurata, chiesta dalla sesta passata, non serve piu' col processo del
+23/11 (§9) e non si scrive.
 
 ## Statuto delle decisioni (Matteo, 21/11; corretto dalla terza e dalla quarta passata)
 
@@ -345,8 +424,10 @@ esatti di N1 e del positivo; conseguenze di tutte le uscite del G9 (positivo sot
 prevale, G9 da rifare dopo il passaggio al bersaglio alternativo, ripetizione di N2 sui candidati); verosimiglianza del
 DCC sul bersaglio alternativo; probabilita' per anno in N1; come si riportano le perdite durante il test del ridisegno
 della volatilita' (§8); P4; la frase del §2 sul vantaggio che coincide con gli anni di dati peggiori. Restano confermative
-solo se, oltre a quella dispersione e ai conteggi, **nessun'altra informazione** su perdite o differenziali e' stata
-vista; altrimenti vale il punto 3 di P6.
+solo se, oltre a quella dispersione e ai conteggi, **nessun'altra informazione su perdite o differenziali sui dati
+reali** e' stata vista; altrimenti vale il punto 3 di P6. Le quote di rifiuto di N2 sono differenziali **simulati**, su
+un processo inventato e tarato sui soli conteggi (nessun rendimento reale entra nella simulazione): non portano
+informazione sulle perdite reali e non tolgono lo stato confermativo (decisione del 21/11, DECISIONS (9)).
 
 **Regole di protezione** (non sono scelte e non stanno sotto lo statuto; cambiano solo col §7 o con una decisione di
 metodo di Matteo che dichiari cosa ha visto): l'holdout e il blocco sigillato; i dati futuri della volatilita'; la
@@ -364,13 +445,16 @@ bersaglio; marginale **gaussiana**. Dopo la seconda passata del gatekeeper: il l
 **si misura nel G9**, con il passaggio alla correlazione realizzata se il negativo rifiuta oltre la quota; finestre
 fisse di **500 sedute**; rollover senza calendario **alla riapertura serale**; le regole di misura del §3 proposte da
 Claude (Bartlett su tutta la matrice, 90% dei rendimenti, chiusure anticipate escluse, 25% di rendimenti nulli, soglia
-del 10% per lo strumento, DAX, prezzi) adottate insieme. Restano al passo 3: candidati, sottofamiglie, quote, unita' di conto, holdout,
-repliche del G9, P4; inoltre, prima che N1 e il positivo girino: la verosimiglianza del DCC sul bersaglio alternativo
-(oggi usa i rendimenti standardizzati, che quel bersaglio toglie); in N2 le probabilita' di mancante e di prezzo fermo
-**per strumento e per anno**, generando anche i mancanti (con mancante = zero e prezzi fermi la correlazione misurata si
-attenua di circa √((1−p_i)(1−p_j)), e se le quote cambiano negli anni EWMA e DCC seguono l'attenuazione e la costante no:
-un vantaggio sulla qualita' dei dati, non sulla dinamica); nel §2 una frase su cosa dira' il pacchetto se il vantaggio
-coincide con quegli anni.
+del 10% per lo strumento, DAX, prezzi) adottate insieme. Le scelte che restano sono nell'**unico elenco** dello statuto
+(sopra). Le probabilita' di N2 per strumento e per anno, coi mancanti generati, sono fissate nel §9 (con mancante =
+zero e prezzi fermi la correlazione misurata si attenua di circa √((1−p_i)(1−p_j)); se le quote cambiano negli anni
+EWMA e DCC seguono l'attenuazione e la costante no: un vantaggio sulla qualita' dei dati, non sulla dinamica, che N2
+deve vedere).
+
+**23/11 (riserve della sesta passata), prese insieme:** processo di N2 sulla correlazione con ritorno verso una matrice
+a blocchi dalle correlazioni D1 di A1, a = 0,06 e b = 0,93, con gemello sincrono (opzione A fra tre, raccomandata da
+Claude); soglia di N2 con Bonferroni sui quattro confronti (36 repliche su 500); generatore dei buchi in tre componenti
+dai conteggi (§9).
 
 ## Revisione del gatekeeper
 
@@ -435,3 +519,10 @@ senza queste correzioni, tutte prima di ogni dato (0 trial). **Da fare all'inizi
   ritrova la correlazione vera, stesso seme stesso risultato).
 Debito: primitiva comune in `motore/core` per campi d'uscita ammessi e data limite; riga nella Checklist 10 "un negativo
 con un processo che degenera non vale".
+
+**Riserve applicate il 23/11** (prima del commit di congelamento, 0 trial, P6 punto 1): R1 → §9, processo sulla
+correlazione con ritorno verso la matrice a blocchi di A1 e gemello sincrono (opzione A, scelta presa insieme; DECISIONS
+2026-11-23 (2)); R2 → §9 e §3, generatore in tre componenti dai conteggi; R3 → §6, §7, §8, §9, §10 e decisioni del
+21/11, che rimandano all'unico elenco dello statuto; R4 → statuto ("sui dati reali"); R5 → §9, Bonferroni, 36 repliche
+su 500; R6 → requisiti del commit (1), punti 2, 3, 5, 6 e 7. Correzione di citazione nel §7 (il +0,791 di A1 viene da
+cinque indici, non da venti). I due debiti restano a Matteo.

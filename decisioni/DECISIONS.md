@@ -11,6 +11,31 @@
 
 ---
 
+## 2026-11-23 (2) — I3: riserve R1-R6 della sesta passata **applicate**; processo di N2 sulla correlazione con **gemello sincrono**; 0 trial
+
+Testo del [referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), prima del commit di
+congelamento e di ogni dato (P6 del §8ter, punto 1: gratis).
+
+**R1, presa insieme** (opzione A fra tre, raccomandata da Claude). Il processo di prima (ricorsione EWMA sulla matrice
+intera) muoveva la diagonale e degenerava: su numeri inventati costante e persistenza battevano l'EWMA in 180 e 150
+repliche su 200 **senza difetti di misura**, quindi il negativo non valeva. Ora: correlazione vera
+Q_t = 0,01·R̄ + 0,06·S_{t−1} + 0,93·Q_{t−1}, con S la correlazione dei 26 rendimenti veri del giorno prima; diagonale
+esattamente 1 e autovalore minimo ≥ 0,143 volte quello di R̄, per costruzione; R̄ a blocchi dalle correlazioni D1 di A1
+(azioni 0,791, energia 0,443, cambi 0,050, il resto 0,112). Ogni replica gira anche **senza difetti** (gemello
+sincrono, stessi rendimenti veri): un rifiuto col solo gemello difettoso si legge come distorsione della misura, uno del
+gemello sincrono come processo non valido (GUASTO). Il gemello sincrono deve stare sotto la soglia in una prova
+sintetica prima del commit. Le altre due opzioni: EWMA sulla correlazione rinormalizzata (nessuna garanzia di non
+degenerare, scivola via dai blocchi); stesso processo con regola appaiata (troppo sensibile per l'uso).
+**R2** generatore dei buchi in tre componenti dai conteggi dello sviluppo (sedute mancanti, prezzi mancanti per ora,
+prezzi fermi con durata). **R3** un solo elenco delle scelte rinviate. **R4** "sui dati reali" nello statuto. **R5**
+Bonferroni sui quattro confronti: rifiuta oltre **36 repliche su 500**; la soglia di prima lasciava un falso allarme
+fino al ~17% sui quattro. **R6** requisiti del commit (1) completati (N2, byte, `git=False` solo nei test, data limite
+anche per il controllo di selezione, test nuovi). Correzione di citazione: il +0,791 di A1 viene da cinque indici, non
+da venti. Debiti per Matteo invariati (primitiva comune in `motore/core`; riga della Checklist 10 sui negativi che
+degenerano).
+
+---
+
 ## 2026-11-22 — I3 passo 2 **chiuso** (sesta passata: PASSA CON RISERVE); sessione registrata; 0 trial
 
 Sesta passata del gatekeeper sul passo 2 (commit `7259c62`): **PASSA CON RISERVE**. N2 gira dopo i soli conteggi; il
