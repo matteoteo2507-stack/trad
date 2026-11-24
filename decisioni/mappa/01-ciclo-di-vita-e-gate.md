@@ -130,7 +130,9 @@ righe 3-8). Il documento nasce il **04/08/2026**, dopo mesi in cui il loop girav
     perdita, benchmark e potenza, con la classe dichiarata ("nessuna" per una misura di rischio; "chi paga" solo per
     un premio); (3) bozza di pre-registrazione e G1. Fra un passo e l'altro decide Matteo.
   - *"Stessa grandezza" in due letture* (§3): per **ingresso** (cosa legge l'indicatore) e per **bersaglio** (cosa
-    prevede); se divergono decide Matteo. *Grandezze composte*: un confronto appartiene alla famiglia della parte che
+    prevede); se divergono decide Matteo. Lo stesso quando **la teoria** e la grandezza danno esiti diversi (stessa
+    teoria, proprieta' prevista diversa): primo caso il GEX, in `volatilita` con parentela verso H1, senza valere come
+    evidenza per riaprirla (DECISIONS 2026-11-24 (7)). *Grandezze composte*: un confronto appartiene alla famiglia della parte che
     cambia, con l'altra parte come **ingresso fisso** dichiarato prima (covarianza = correlazione × volatilita').
   - *Bersaglio diverso dalla varianza*: misura, perdita e benchmark li decide Matteo al passo 2; restano i principi di G1-G3.
   - *Ingresso fisso da un'altra famiglia*: nessun risultato per modello dell'altra famiglia sui dati del suo test;

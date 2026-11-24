@@ -262,14 +262,27 @@ La regressione lineare come **metro** (per esempio Mincer-Zarnowitz) va nel modu
 
 **I1, opzioni come lente (dal 24/11, DECISIONS 2026-11-24 (3)).** Le opzioni non si tradano: si leggono. Due
 concorrenti dell'EWMA da dichiarare nella pre-registrazione del ridisegno, prima dei dati:
-- **volatilita' implicita** (VIX su SPX500; VXN e GVZ da cercare per NAS100 e oro): la previsione del mercato batte
+- **volatilita' implicita** (VIX, **solo SPX500**, DECISIONS 2026-11-24 (7)): la previsione del mercato batte
   l'EWMA sulla varianza realizzata?
-- **segno della gamma dei dealer** (GEX SqueezeMetrics, giornaliera dal 2011, un solo scaricamento manuale fuori da
-  git): con gamma positiva la varianza realizzata del giorno dopo e' piu' bassa? Il segno e' **ipotizzato** dal
-  fornitore (dealer lunghi di call, corti di put), non osservato.
+- **segno della gamma dei dealer** (GEX SqueezeMetrics, giornaliera dal 2011, solo SPX500, fuori da git): con gamma
+  positiva la varianza realizzata del giorno dopo e' piu' bassa? Il segno e' **ipotizzato** dal fornitore (dealer
+  lunghi di call, corti di put), non osservato. Testabile solo con istantanee periodiche datate compatibili coi
+  termini, o un permesso scritto (DECISIONS 2026-11-24 (7)).
+
+**Passo 1 chiuso il 24/11** ([referto](../magazzino/registro/referti/grandezze_volatilita_ridisegno_2026-11-24.md)):
+entrambi sottofamiglie di `volatilita`; il GEX ha parentela con H1 e con l'ORB e non vale come evidenza per riaprirli.
+Prossimo: passo 2 (proprieta' e potenza).
 
 Esclusi: i livelli delle opzioni come segnali di trade (stesso schema di I5, storico a pagamento, H1 CLOSED). La
 teoria di Black-Scholes e simili si distilla **mirata** a queste due domande, non per intero.
+
+In coda (Matteo, 24/11; la pre-registrazione del ridisegno si scrive subito, perche' i dati futuri si accumulano solo
+dalla sua data): (a) distillare la teoria mirata (delta hedging, gamma, costruzione del VIX), dopo il commit di I3 sui
+dati; (b) **divieto**, valido fino alla pre-registrazione: nessun confronto VIX o GEX contro EWMA sui dati di sviluppo
+prima di aver dichiarato i candidati (sarebbe una scelta dopo l'esito, S6 e P6 (3)). **Unica eccezione**: la sola
+dispersione HAC del differenziale per la potenza, dopo il commit di tutte le scelte, con una guardia che non stampi
+media e segno (vincolo 5 del referto del passo 1). Un confronto completo sui dati di sviluppo fatto **dopo** la
+pre-registrazione e' solo esplorativo (P1-P2) e non puo' informare le rifiniture dei round 2-3 (P4).
 
 ---
 

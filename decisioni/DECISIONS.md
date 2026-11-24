@@ -11,6 +11,38 @@
 
 ---
 
+## 2026-11-24 (7) — Ridisegno di `volatilita`, passo 1: VIX e GEX **sottofamiglie di `volatilita`**, solo SPX500; la lettura del bersaglio prevale sulla teoria per il GEX; 0 trial
+
+Passo 1 del §8ter per il ridisegno ([referto](../magazzino/registro/referti/grandezze_volatilita_ridisegno_2026-11-24.md)).
+Prima passata del gatekeeper: **BLOCCA**, un bloccante e nove riserve applicate nel referto. Decisioni prese insieme
+(raccomandate da Claude), gratis per P6 (1): nessun dato gia' visto le riguarda, salvo D2 (sotto).
+
+- **D0 — il GEX in `volatilita`, non riapertura di H1** (bloccante B1). Per il GEX due regole del §3 divergevano:
+  "stessa grandezza" (bersaglio = varianza) lo porta in `volatilita`; "stessa teoria" (DECISIONS 2026-10-25 (8)) ne
+  farebbe un trial di `momentum_ultima_mezzora` (H1, CLOSED il 12/10), che poggia sulle stesse coperture di gamma.
+  **Prevale il bersaglio**: la teoria e' la stessa ma la proprieta' prevista e' diversa (H1 il segno del rendimento a
+  fine giornata, il GEX la varianza del giorno dopo), e un esito sull'una non dice niente sull'altra. La parentela
+  `parente` verso `momentum_ultima_mezzora` (e verso `opening_range`, per l'ipotesi di Siento in F1) si dichiara a mano
+  nella pre-registrazione e nel campo `parentela`: `--check` non lo impone. Precisazione della regola, solo per questo
+  caso: **stessa teoria, proprieta' prevista diversa = parentela, non stessa famiglia**; un caso nuovo si decide qui.
+  Puntatore nel LIFECYCLE §3 (riga della teoria), "primo caso", come per l'ADX. **Nell'altra direzione** (riserva R2
+  della seconda passata): un esito del GEX dentro `volatilita` **non** e' evidenza esterna (§7) per riaprire
+  `momentum_ultima_mezzora` o `opening_range`; H1 o l'ORB condizionati al segno del GEX sono un **filtro su una famiglia
+  CLOSED**, cioe' una riapertura di quella famiglia sul binario `strategie`, non un trial di `volatilita`.
+- **D1 — VIX e GEX sono sottofamiglie** del ridisegno di `volatilita` (S6: proposte dopo gli esiti delle altre, si
+  contano e si testano su dati futuri). **Il GEX e' ammesso ma non ancora testabile**: supera il "solo scaricamento
+  manuale" della voce (3) di oggi solo per il periodo forward, dove servono istantanee periodiche datate (sha256, data
+  di scarico, confronto sui giorni in comune) compatibili coi termini, o un permesso scritto del fornitore. Si decide al
+  passo 2, **prima** di assegnare al GEX una quota; senza, il GEX esce dal ridisegno.
+- **D2 — solo SPX500** per entrambi (il GEX esiste solo per l'S&P 500; per il VIX la potenza coppia per coppia,
+  lezione del 20/11). Proposta dopo aver visto le perdite di sviluppo della famiglia: si dichiara nella
+  pre-registrazione.
+
+Prossimo: seconda passata del gatekeeper sul referto, poi il passo 2 (proprieta' e potenza: VIX grezzo o ricalibrato,
+orizzonti, quote dai nodi riservati, istantanee e licenza del GEX, ordine della stima di potenza).
+
+---
+
 ## 2026-11-24 (6) — I3: nona passata applicata nel referto; codice sintetico aggiornato (30 test); prova del positivo a h = 5 pronta; 0 trial
 
 Applicate nel [referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), prima del commit di
