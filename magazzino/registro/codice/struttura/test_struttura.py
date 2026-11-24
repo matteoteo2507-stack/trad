@@ -325,3 +325,55 @@ def test_orizzonte_senza_campione_decade():
     assert out["orizzonti_decaduti"] == [] and out["esito"] == "RIFIUTA per misura"
     out = S.riassumi(_righe(10, lambda i: nan, lambda i: nan))
     assert out["orizzonti_decaduti"] == [1, 5] and out["esito"] == "GUASTO"
+
+
+def test_ingresso_fisso_su_tutta_la_serie():
+    """ewma_rv coincide su tutta la serie con la ricorsione del pacchetto, a parita' di avvio (riserva R9 della nona)."""
+    sys.path.insert(0, str(ROOT / "uscita/volatilita_ewma/v1"))
+    import volatilita_ewma as P  # noqa: E402
+
+    x = np.random.default_rng(15).standard_normal(500) ** 2
+    v = np.ones(500, bool)
+    v[[100, 250, 251]] = False
+    s = M.ewma_rv(x, v)
+    atteso = np.full(500, np.nan)
+    prec = np.mean(x[:50])
+    atteso[49] = prec
+    for t in range(50, 500):
+        if v[t]:
+            prec = P.LAMBDA * prec + (1.0 - P.LAMBDA) * x[t]
+        atteso[t] = prec
+    assert np.array_equal(np.isnan(s), np.isnan(atteso))
+    assert np.array_equal(s[49:], atteso[49:])
+
+
+def test_delta_su_caso_noto():
+    """δ = (media d_difetti − media d_sincrono) / (sd_HAC(d_sincrono)/√n_h), sull'intersezione delle origini."""
+    rng = np.random.default_rng(16)
+    o_s = np.arange(100, 400)
+    d_s = rng.standard_normal(300)
+    o_d = np.arange(150, 400)                                   # il gemello con difetti perde 50 origini
+    d_d = d_s[50:] - 0.2
+    atteso = (d_d.mean() - d_s[50:].mean()) / (V.sd_hac(d_s[50:], 4) / np.sqrt(S.N_H))
+    assert np.isclose(S.delta((o_d, d_d), (o_s, d_s), 1), atteso)
+    assert S.delta((o_d, d_d), (o_s, d_s), 1) < 0
+    assert np.isnan(S.delta((o_d[:40], d_d[:40]), (o_s, d_s), 1))
+
+
+def test_mancanti_per_ora_frazionari_con_seduta_mancante():
+    T, N = 6000, 1
+    d = S.nessun_difetto(T, N)
+    d["p_giorno"][:] = 0.10
+    d["p_ora"][:, 5, 0] = 0.30
+    X = np.zeros((T, 27, N))
+    Y = S.applica_difetti(X, np.random.default_rng(17), d)
+    presenti = ~np.isnan(Y[:, :, 0]).all(axis=1)
+    assert abs((~presenti).mean() - 0.10) < 0.015
+    assert abs(np.isnan(Y[presenti, 5, 0]).mean() - 0.30) < 0.02       # contata sulle sole sedute presenti
+    assert not np.isnan(Y[presenti][:, [4, 6], 0]).any()
+
+
+def test_durata_catena_si_ferma_su_nan():
+    assert S.durata_catena(np.array([np.nan]), p0=np.array([0.0]))[0] == 1.0
+    with pytest.raises(ValueError):
+        S.durata_catena(np.array([np.nan]), p0=np.array([0.05]))

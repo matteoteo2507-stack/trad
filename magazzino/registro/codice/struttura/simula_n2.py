@@ -75,14 +75,19 @@ def rendimenti_veri(T: int, rng: np.random.Generator, Rb: np.ndarray, a: float =
     return {"X": X, "eig_min": eig_min}
 
 
-def durata_catena(L_contata: np.ndarray, n: int = N_PREZZI - 1) -> np.ndarray:
+def durata_catena(L_contata: np.ndarray, p0=None, n: int = N_PREZZI - 1) -> np.ndarray:
     """Durata media della catena che riproduce la durata **contata** nei dati (serie di nulli troncate a inizio e fine
     seduta): con catena stazionaria su n rendimenti, L_contata = n / (1 + (n − 1)/L), quindi L = (n − 1)/(n/L_contata − 1).
-    Si ferma se L_contata >= n (conteggi incoerenti)."""
+    Dove p0 = 0 (nessun nullo, durata non definita) vale 1. Si ferma se una durata con p0 > 0 non e' finita o sta fuori
+    da [1, n) (conteggi incoerenti; riserva R10 della nona passata)."""
     Lc = np.asarray(L_contata, float)
-    if np.any(Lc >= n) or np.any(Lc < 1.0):
-        raise ValueError("durata contata fuori da [1, %d)" % n)
-    return (n - 1) / (n / Lc - 1.0)
+    serve = np.ones(Lc.shape, bool) if p0 is None else np.asarray(p0, float) > 0
+    Lv = Lc[serve]
+    if not np.all(np.isfinite(Lv)) or np.any(Lv >= n) or np.any(Lv < 1.0):
+        raise ValueError("durata contata non finita o fuori da [1, %d)" % n)
+    out = np.ones(Lc.shape)
+    out[serve] = (n - 1) / (n / Lv - 1.0)
+    return out
 
 
 def prob_fermo(p0: np.ndarray, L: np.ndarray) -> np.ndarray:
@@ -157,7 +162,7 @@ def delta(dd: tuple, ds: tuple, h: int, n_h: int = N_H) -> float:
     (od, d_d), (os_, d_s) = dd, ds
     comuni, i_d, i_s = np.intersect1d(od, os_, return_indices=True)
     if len(comuni) < MIN_ORIGINI:
-        return float("nan")          # campione insufficiente: la replica conta come GUASTO (riassumi)
+        return float("nan")          # campione insufficiente a questo orizzonte (riassumi: l'orizzonte puo' decadere)
     x_d, x_s = d_d[i_d], d_s[i_s]
     es = V.sd_hac(x_s, V.ritardi_hac(h)) / np.sqrt(n_h)
     return float((x_d.mean() - x_s.mean()) / es)

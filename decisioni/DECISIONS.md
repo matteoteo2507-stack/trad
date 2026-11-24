@@ -11,6 +11,23 @@
 
 ---
 
+## 2026-11-24 (6) — I3: nona passata applicata nel referto; codice sintetico aggiornato (30 test); prova del positivo a h = 5 pronta; 0 trial
+
+Applicate nel [referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), prima del commit di
+congelamento (gratis per P6 del §8ter, punto 1), le scelte della voce (5) e le riserve della nona passata:
+- **B1**: verifica del generatore per celle strumento × anno **e per anno sull'esclusione per unione**, p bilaterale
+  binomiale sotto 0,05 / numero di celle, anni sotto 60 sedute uniti al vicino;
+- **B2**: positivo a h = 5 con un solo tentativo (14.500 sedute, seme 20261130); se non scatta, h = 5 esce da I3;
+- **R5**: correzioni del generatore (3) seduta mancante per tutti e (4) quota giornaliera di nulli dall'istogramma,
+  solo dai conteggi;
+- riserve: limite del positivo (R1), origine con 1 + h sedute (R3), **chiusure anticipate tolte dall'indice delle
+  sedute** (R4: proposta di Claude, rivedibile gratis finche' non c'e' il commit), rollover e pause su entrambe le
+  griglie (R6), decadenza sui dati veri (R7), regola dei semi (R8), 4 test nuovi (R9), pulizia e versioni negli esiti
+  (R10).
+Prossimo: commit, prova del positivo a h = 5, decima passata del gatekeeper; solo dopo la parte del commit (1) sui dati.
+
+---
+
 ## 2026-11-24 (5) — I3: scelte prese insieme sulla nona passata (verifica corretta per le celle, prova del positivo a h = 5, difetti comuni nella verifica); 0 trial
 
 Prese insieme, gratis per P6 del §8ter (prima del commit di congelamento), sui bloccanti e su R5 della nona passata

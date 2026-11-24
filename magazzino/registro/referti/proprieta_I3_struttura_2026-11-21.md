@@ -55,7 +55,9 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   ±2; *fino al 23/11 un ritardo, ½*) **su tutta la matrice, diagonale compresa**: toglie parte dell'effetto Epps delle quotazioni non sincrone e garantisce una matrice
   semidefinita positiva. Dopo la correzione resta un Epps residuo, uguale per tutte le previsioni: il bersaglio e'
   l'attesa di **questo** stimatore, non la correlazione vera, e va detto.
-- **Giorni**: le sedute piene del calendario XNYS. Le **chiusure anticipate** (13:00) sono escluse e si contano. Un
+- **Giorni**: le sedute piene del calendario XNYS. Le **chiusure anticipate** (13:00) **non sono sedute della misura**:
+  si tolgono dall'indice delle sedute (si contano), quindi EWMA, fattore di scala, finestre e orizzonte 5 le saltano
+  senza interrompersi (le "5 sedute successive" sono le 5 sedute piene successive; riserva R4 della nona passata). Un
   giorno entra solo se **tutti** gli N strumenti hanno almeno il 90% dei 26 rendimenti a 15 minuti attesi: si esclude l'unione dei
   giorni mancanti, e si riporta per anno e per strumento quanti giorni esclude (controllo di selezione, come la
   volatilita': per ogni giorno escluso si riporta il rendimento assoluto della seduta contro la mediana, per vedere se le
@@ -65,13 +67,15 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   solo nei prodotti, non e' un rendimento nullo: la quota si conta prima di mettere gli zeri, cosi' un buco non pesa due
   volte) (un prezzo fermo spinge la correlazione verso zero). La quota per strumento e per
   anno si misura nel controllo di struttura, prima di ogni statistica.
-- **Rollover** dei CFD su futures (BUND, USTBOND, COPPER, NATGAS, WTI): il rendimento a 30 minuti che attraversa
-  l'ora di un cambio di contratto si toglie **nel loader**, una volta sola, con le date del calendario del fornitore.
+- **Rollover** dei CFD su futures (BUND, USTBOND, COPPER, NATGAS, WTI): il rendimento che attraversa l'ora di un cambio
+  di contratto si toglie **nel loader**, una volta sola, **su entrambe le griglie** (il rendimento a 15 minuti che conta
+  per la validita' e il rendimento a 30 minuti che lo contiene, che conta per la misura; riserva R6 della nona), con le date del calendario del fornitore.
   Se il calendario non si trova si assume che il cambio avvenga **alla riapertura serale**, fuori dalla seduta USA,
   come verificato per il WTI di Dukascopy (DECISIONS 2026-11-13, salti alla riapertura del giorno 19): lo strumento
   resta, l'ipotesi e' dichiarata, e il controllo di struttura riporta per ogni strumento dove cadono le pause di
   quotazione (solo orari, nessun rendimento). **Se una pausa o una riapertura cade dentro W**, ogni giorno si toglie il
-  rendimento a 30 minuti che la attraversa (vale come mancante); lo strumento resta se rispetta le soglie (DECISIONS (7)).
+  rendimento che la attraversa su entrambe le griglie (vale come mancante: il quarto d'ora nella validita' e nei
+  conteggi, la mezz'ora nella misura); lo strumento resta se rispetta le soglie (DECISIONS (7)).
 - **DAX**: entra solo se il controllo di struttura mostra barre nel 90% delle sedute per tutta la finestra (dopo le
   11:30 di New York e' fuori dalla seduta cash di Francoforte); altrimenti resta fuori.
 - **Strumento fuori**: se nello sviluppo i suoi giorni mancanti (meno del 90% dei rendimenti, o oltre il 25% di
@@ -294,17 +298,27 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   n/(1 + (n − 1)/L); per L = 3 vale circa 2,8, e il test sintetico la ritrova); se L̃ >= 26 il codice si ferma. *Aggiunto il 23/11: prima la catena usava
   la durata contata come se fosse la sua, e i fermi simulati risultavano piu' corti di quelli veri.* Le estrazioni per ora sono
   indipendenti fra loro, quindi i buchi di piu' ore consecutive non si riproducono: per questo il generatore si
-  **verifica** sui soli conteggi prima di N2 (bloccante B1 dell'ottava passata): per strumento e per anno, la quota
-  q̂ di sedute che il generatore fa escludere (meno del 90% dei rendimenti o oltre il 25% di nulli) su 200 anni
-  simulati deve stare entro max(2 punti; 25% di q; 3·√(q(1 − q)/n_anno)) dalla quota vera q del controllo di
-  struttura, con n_anno le sedute di quell'anno (il terzo termine assorbe il rumore di campionamento della quota vera:
-  con ~245 sedute un generatore perfetto usciva per caso dalla tolleranza in una cella su 10-19). La verifica gira in
+  **verifica** sui soli conteggi prima di N2 (bloccante B1 dell'ottava passata; regola corretta dopo la nona,
+  DECISIONS 2026-11-24 (5)). **Celle**: (a) per strumento e per anno, le sedute che il generatore fa escludere a quello
+  strumento (meno del 90% dei rendimenti o oltre il 25% di nulli); (b) **per anno, le sedute escluse per unione**
+  (almeno uno strumento escluso: riserva R5 della nona, perche' il campione dipende dai difetti comuni fra strumenti e
+  da come i nulli si concentrano nei giorni). Per ogni cella q̂ e' la quota simulata su 200 anni e k il conteggio vero
+  su n_anno sedute: la cella **fallisce** se il p bilaterale binomiale di k sotto Bin(n_anno; q̂) scende sotto
+  **0,05 / numero di celle** (con circa 102 + 6 celle: circa 4,6·10⁻⁴), cosi' un generatore giusto fa fallire una corsa
+  per caso circa il 5% delle volte invece del 27-35% della regola precedente (calcolo del gatekeeper alla nona). Un
+  anno con **meno di 60 sedute** (anni parziali, all'inizio e alla fine dello sviluppo) **si unisce all'anno vicino**
+  prima di contare. *Fino al 24/11 la tolleranza era max(2 punti; 25% di q; 3·√(q(1 − q)/n_anno)) per cella, senza
+  correzione per il numero di celle: errore della proposta dell'ottava passata.* La verifica gira in
   uno script a se', **prima** di simulare qualunque replica: se e' GUASTO lo script si ferma e l'unica uscita e' la
   verifica (un test lo controlla), quindi nessun δ e' visto prima di correggere il generatore. **Correzioni ammesse
   del generatore, in quest'ordine**, ognuna una deviazione P5 (P6 punto 2) e seguita da una nuova verifica: (1) i
   prezzi mancanti per ora estratti a blocchi, con la durata media delle serie di prezzi mancanti consecutivi contata
   come quella dei nulli; (2) la seduta mancante per intero estratta insieme per gli strumenti con lo stesso calendario
-  europeo (DAX, BUND). Se dopo le due la verifica fallisce ancora, N2 e' GUASTO e si torna al passo 2. Resta gratis
+  europeo (DAX, BUND); (3) una **seduta mancante per tutti** gli strumenti, con probabilita' per anno dai conteggi
+  (sedute senza alcun prezzo in nessuno strumento); (4) la **quota giornaliera di nulli** estratta per ogni
+  strumento-giorno dall'**istogramma dei conteggi** di nulli per seduta, per strumento e per anno, al posto della quota
+  fissa p0 (la catena usa quel giorno la quota estratta; riserva R5 della nona). Tutte e quattro si prendono **solo dai
+  conteggi**. Se dopo le quattro la verifica fallisce ancora, N2 e' GUASTO e si torna al passo 2. Resta gratis
   solo la correzione di un errore di codice (il generatore non fa cio' che il testo dice). Il rollover dentro W non si simula: per la regola del §3 cade alla
   riapertura serale; se il controllo trova pause dentro W, il punto 3 le contiene gia'.
 - **Universo e sedute simulate** (riserva R5 della settima): l'universo e' quello fissato dal controllo di struttura
@@ -318,7 +332,11 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   difetti. Dentro un flusso le estrazioni seguono le sedute in ordine di data e, in ogni seduta, gli strumenti
   nell'ordine del §7. Un seme diverso per ognuna delle due prove prima del commit (sotto): **20261128** per la verifica
   del processo, **20261129** per il controllo positivo (*20261125 e 20261126 sono stati usati il 23/11 con la griglia
-  a 30 minuti: un seme gia' usato non si riusa*).
+  a 30 minuti: un seme gia' usato non si riusa*). **Regola dei semi** (riserva R8 della nona): ogni configurazione
+  provata ha il suo seme fisso, mai riusato per un'altra configurazione; una **rilettura** degli stessi risultati dopo
+  un cambio di regola che non tocca la simulazione **riusa** il seme (cosi' l'esito non cambia per caso; e' quello che
+  e' stato fatto il 24/11 per la regola dell'orizzonte che decade, file `..._2026-11-24b.json`). Prova del positivo a
+  h = 5: seme **20261130**.
 - **Previsioni confrontate**: EWMA (benchmark) contro **costante**, che **decide**, e contro **persistenza**, che si
   calcola e si riporta ma **non decide** (Matteo, 23/11: con t ≈ 95 nella prova del gatekeeper nessun difetto plausibile
   vi si vede), con le regole e le finestre del §6.
@@ -363,6 +381,16 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
     (*la rampa fino al 30% su 7 strumenti e, il 23/11, lo stesso 5% sulla griglia a 30 minuti svuotavano il campione:
     sezioni "Prove sintetiche" e "Prove prima del commit"*), la regola deve scattare (mediana di δ sotto −0,5 per la costante in almeno un orizzonte); con probabilita' di difetto zero δ deve
     valere esattamente 0. Se il difetto non fa scattare la regola, la regola non va e si torna al testo.
+    **Limite dichiarato** (riserva R1 della nona): il difetto "5% su tutti i 17" e' stato scelto fra righe delle prove
+    sintetiche di cui si sapeva gia' che facevano scattare la regola: dimostra che N2 vede un difetto **pesante**, non
+    uno lieve (col 5% su 7 strumenti, nella configurazione del 23/11, δ ≈ −0,4, sotto la soglia).
+  - **controllo positivo a h = 5** (bloccante B2 della nona; DECISIONS 2026-11-24 (5)): nella configurazione congelata
+    il positivo non e' mai stato visto scattare a h = 5 (campione insufficiente in 500 repliche su 500). **Un solo
+    tentativo**, regola scritta ora: stesso difetto, serie di **14.500 sedute** (10 × 1.450), 500 repliche, seme
+    **20261130**, script `prova_positivo_h5.py`, commit prima della corsa. **Scatta** se h = 5 **non decade** e la
+    mediana di δ per la costante a h = 5 e' sotto −0,5. **Se non scatta, h = 5 esce da I3**: I3 lavora solo a una
+    seduta, e N2, la potenza e il pacchetto non hanno piu' l'orizzonte 5. Nessun secondo tentativo, nessun altro
+    difetto o lunghezza.
 - **Conseguenze, scritte ora**:
   - **RIFIUTA per misura** (regola di δ): la misura e' distorta (Epps residuo, buchi o la loro variazione negli anni);
     il test non va avanti e si torna al passo 2 (punto 2 di P6, deviazione, 0 trial). **Rimedi ammessi, elencati ora**
@@ -380,8 +408,10 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   - **orizzonte senza campione** (decisione presa insieme il 24/11, DECISIONS 2026-11-24 (2)): un orizzonte con
     campione insufficiente in **piu' della meta'** delle repliche **decade**: esce da I3 (la misura manca, la pipeline
     non e' guasta), e regola di δ e guardia valgono sugli orizzonti rimasti, con la mediana sulle repliche che hanno
-    campione. Vale anche sui dati veri: un orizzonte con meno di 50 origini comuni nello sviluppo, dopo il controllo di
-    struttura (soli conteggi), esce da I3 prima della potenza. Il pacchetto dira' allora solo cio' che resta (per
+    campione. Vale anche sui dati veri (riserva R7 della nona): un orizzonte esce da I3 se **decade in N2 oppure** se, sui
+    conteggi veri (controllo di struttura, solo maschere di validita', nessun rendimento), ha **meno di 50 origini**
+    valide nell'intervallo della potenza (§10: dalla prima origine con tutte le finestre al 2024-11-08), con
+    l'origine definita come nel §10 (1 + h sedute valide); la decisione si prende prima della potenza. Il pacchetto dira' allora solo cio' che resta (per
     esempio "previsione a una seduta");
   - nessuno dei tre: si calcola la potenza sugli orizzonti rimasti.
 - Dopo il passo 3, N2 si **ripete** sui candidati insieme a N1 e al positivo; le conseguenze di quelle uscite sono fra
@@ -427,7 +457,10 @@ piu' tardi fra gli inizi M5, da leggere sui file). In sedute dall'inizio comune,
 - il DCC richiede 500 Σ: prima previsione intorno alla seduta 1.050, cioe' intorno al 2023.
 La potenza EWMA contro costante usa quindi le origini dalla seduta ~600 (meta' 2021 circa) al 2024-11-08, circa 850
 sedute; il DCC nello sviluppo ne ha circa 450. Nessuna finestra incompleta: un'origine senza tutte le sue finestre non
-entra.
+entra. **Origine valida** (riserva R3 della nona; `previsioni.py`, funzione `differenziali`): la seduta t dell'origine
+e le h sedute del bersaglio (t + 1 ... t + h) devono essere tutte pronte, quindi **1 + h sedute valide**, oltre a tutte
+le previsioni definite; la persistenza usa la Σ di t, e la stessa regola vale per costante ed EWMA perche' tutte le
+previsioni si confrontano sulle stesse origini.
 
 **Cosa riporta** (Matteo): **solo la deviazione HAC** del differenziale di perdita fra EWMA e correlazione costante,
 per orizzonte, **senza media ne' segno**: cosi' nessun numero dice quale modello vince, e i candidati si possono ancora
@@ -470,7 +503,10 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    sola deviazione; gli errori riportano data e tipo, non valori. Non si ripete l'abitudine della volatilita' di salvare
    le perdite in cache;
 5. **uscita del controllo di struttura**: solo conteggi per strumento e per anno (sviluppo e blocco separati), le
-   quantita' per il G9 del §3 dal solo sviluppo, orari delle pause, copertura del DAX, regola del 10%; **nessuna RV,
+   quantita' per il G9 del §3 dal solo sviluppo, orari delle pause, copertura del DAX, regola del 10%; per la
+   verifica del generatore (§9): le sedute escluse per strumento e anno, le sedute escluse per unione per anno, le
+   sedute senza prezzi per tutti gli strumenti per anno, e l'**istogramma del numero di nulli per seduta** per
+   strumento e anno (solo conteggi); **nessuna RV,
    nessuna media di rendimenti, nessun livello di prezzo**; il controllo di selezione solo sullo sviluppo, con la data
    limite del punto 3; chiavi d'uscita ammesse come al punto 4;
 6. **N2** (riserva R6): parte solo se il controllo di struttura e gli hash degli 8 sono committati; legge **solo** il
@@ -495,7 +531,13 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    a 15 minuti e misura sui 13 a 30 minuti; le due prove prima del commit del §9 (verifica del processo, seme
    20261128; controllo positivo, seme 20261129); Q_t ha diagonale 1 e autovalore minimo ≥ 0,143·λ_min(R̄) in ogni
    seduta; R̄ a blocchi coi valori del §9; il generatore riproduce in media le probabilita' in ingresso (sedute
-   mancanti, prezzi mancanti per ora, quota e durata dei fermi); stesso seme, stesso risultato.
+   mancanti, prezzi mancanti per ora anche frazionari insieme alle sedute mancanti, quota e durata dei fermi); δ su un
+   caso noto; l'ingresso fisso uguale alla ricorsione del pacchetto su tutta la serie; `durata_catena` che si ferma su
+   una durata non finita con p0 > 0; stesso seme, stesso risultato (tutti presenti dal 24/11, 30 test). **Da scrivere
+   col commit (1)**: "verifica del generatore GUASTO → nessuna replica simulata", la regola per cella con la
+   correzione e l'unione degli anni corti, le correzioni (3) e (4) del generatore, le chiusure anticipate tolte
+   dall'indice, rollover e pause su entrambe le griglie. Ogni esito salvato riporta le versioni di Python, numpy e
+   scipy (riserva R10).
 
 La **mappa inversa** fra correlazione vera e misurata, chiesta dalla sesta passata, non serve piu' col processo del
 23/11 (§9) e non si scrive.
@@ -800,3 +842,10 @@ chiavi a runtime, positivo a h = 5 secondo B2); potenza con data limite 2024-11-
 Debito (decide Matteo): primitive comuni in `motore/core` per tolleranza per cella con correzione, chiavi d'uscita a
 runtime e data limite; due righe per la Checklist 10 ("ogni orizzonte che decide ha il suo positivo nella configurazione
 congelata"; "una tolleranza per cella si corregge per il numero di celle").
+
+**Applicata il 24/11** (prima del commit di congelamento, gratis per P6 punto 1): B1 → §9, celle con correzione per il
+loro numero e anni corti uniti; B2 → §9, un solo tentativo del positivo a h = 5 con la regola scritta prima; R1 → §9,
+limite del positivo; R2 → corretta in DECISIONS 2026-11-24 (4); R3 → §10 (origine con 1 + h sedute); R4 → §3
+(chiusure anticipate fuori dall'indice); R5 → §9 e requisito 5 (unione per anno, correzioni 3 e 4, istogramma); R6 →
+§3 (entrambe le griglie); R7 → §9; R8 → §9 (regola dei semi); R9 → requisito 7 e 4 test nuovi (30 verdi); R10 →
+commento e `durata_catena` in `simula_n2.py`, versioni negli esiti, righe di `_modifiche.md`.
