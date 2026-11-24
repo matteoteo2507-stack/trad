@@ -742,3 +742,61 @@ nessun orizzonte decaduto); **controllo positivo: scatta** ("RIFIUTA per misura"
 insufficiente in 500 repliche su 500), a h = 1 mediana di δ −2,44 (11 repliche su 500 senza campione). Le due prove
 prima del commit di congelamento sono **chiuse**; prossimo: revisione del gatekeeper su testo e codice sintetico, poi
 la parte del commit (1) sui dati (scaricatore, loader, guardie, controllo di struttura, verifica del generatore, potenza).
+
+## Nona passata del gatekeeper (2026-11-24, commit `f916dcc`): BLOCCA per la parte sui dati
+
+Revisione con `git diff dba01af f916dcc`, codice estratto dal commit: **26 test verdi**; nessun dato letto, 0 trial.
+Testo e codice sintetico **reggono**: processo, generatore, due griglie, Bartlett, fattore di scala, riscaldamento, δ
+sull'intersezione delle origini, guardia, differenziale di Stein, `sd_hac` e uscite ammesse fanno cio' che il testo dice.
+Le scelte prese dopo gli esiti sintetici sono coerenti col punto 1 di P6 del §8ter (gratis, prima del commit, su numeri
+inventati, nessuna tocca τ o δ), **salvo il controllo positivo** (R1, B2). Il commit (1) sui dati **non si scrive** prima
+di chiudere:
+
+**Bloccanti**
+- **B1, tolleranza della verifica del generatore** (§9): la regola per cella (strumento × anno, circa 102 celle) non e'
+  corretta per il numero di celle: con un generatore perfetto almeno una cella esce per caso nel 27-35% delle corse
+  (calcolo binomiale esatto del gatekeeper; anche con Bonferroni sulla normale 6-51% con q piccolo e anni parziali).
+  Errore della tolleranza proposta dal gatekeeper all'ottava passata. Proposta: una cella fallisce se il p bilaterale
+  binomiale del conteggio vero sotto Bin(n_anno; q̂), con q̂ dai 200 anni simulati, scende sotto 0,05 / numero di celle;
+  regola per le celle sotto ~60 sedute (unite all'anno vicino o escluse).
+- **B2, nessun controllo positivo a h = 5** (§9): nella configurazione congelata il positivo scatta solo a h = 1
+  (mediana di δ −2,44); a h = 5 il campione e' insufficiente in 500 repliche su 500. I δ a h = 5 sotto soglia della
+  tabella del 23/11 venivano da un'altra configurazione (validita' sui 30 minuti). Opzioni: (a) un positivo a h = 5 con
+  lo stesso difetto (5% su 17, L = 3), lunghezza T fissata ora (per esempio 10 × 1.450), un tentativo, seme nuovo; se non
+  scatta h = 5 esce da I3; (b) senza prova: h = 5 entra in N2 solo con un positivo che scatta, altrimenti esce.
+
+**Riserve**
+- R1: il positivo "5% su 17" e' stato scelto fra righe di cui si sapeva che scattavano: dimostra solo un difetto pesante
+  (col 5% su 7 δ ≈ −0,4); va scritto nel §9.
+- R2: DECISIONS 2026-11-24 dice che le prove sintetiche passavano con la misura a 30 minuti nella configurazione
+  congelata: falso (la validita' era sui 30 minuti); correzione in una voce nuova; la giustificazione della misura e'
+  **non riverificata** nella configurazione congelata.
+- R3: `previsioni.py:105` esclude anche le origini col giorno t escluso (servono 1 + h sedute valide): va scritto nel §3
+  e nel §10, o tolto per costante ed EWMA.
+- R4: chiusure anticipate: riga tolta dall'indice delle sedute o giorno escluso che rompe la finestra? Va scritto.
+- R5: la verifica del generatore guarda solo le quote per strumento; il campione dipende dall'esclusione per unione
+  (difetti comuni fra strumenti) e da come i nulli si concentrano nei giorni. Proposte: quota di unione per anno nella
+  verifica; correzione (3) "seduta mancante per tutti"; correzione (4) quota giornaliera di nulli dall'istogramma dei
+  conteggi (chiave ammessa nel requisito 5).
+- R6: rollover e pause sulla griglia a 15 minuti (oggi scritto solo per i 30).
+- R7: "meno di 50 origini comuni nello sviluppo" sui dati veri: definizione di origine (R3), intervallo (quello della
+  potenza), e un orizzonte esce se decade in N2 **o** sui conteggi veri.
+- R8: regola dei semi: "seme fisso per configurazione; una rilettura dopo un cambio di regola riusa il seme".
+- R9: test mancanti al punto 7: δ su un caso noto; "verifica GUASTO, nessuna replica"; `p_ora` frazionario con
+  `p_giorno`; ingresso fisso confrontato con `ewma_rv` del pacchetto su tutta la serie (oggi per transitivita' e solo
+  l'ultimo elemento).
+- R10: pulizia: commento vecchio a `simula_n2.py:160`; `durata_catena` NaN con p0 > 0 deve fermarsi nel commit (1); riga
+  del 23/11 in `_modifiche.md` con file cancellati e "23 test"; due griglie e decadenza senza riga propria in
+  `_modifiche.md`; versioni di numpy e scipy negli esiti.
+
+**Per il codice del commit (1)**, dopo B1-B2 e R3-R7: scaricatore e loader con fine al 2026-11-10; fuso una volta sola
+col controllo contro il doppio; griglia di 27 prezzi; chiusure anticipate (R4); rollover e pause su entrambe le griglie
+(R6); controllo di struttura con chiavi ammesse (q per cella, quota di unione, istogramma dei nulli se si adotta R5,
+p_giorno, p_ora, p0, L̃); verifica del generatore come script a se' che si ferma prima delle repliche (regola B1);
+wrapper di N2 (date XNYS reali, `durata_catena` che si ferma su NaN, universo dal controllo, seme 20261123, guardia sulle
+chiavi a runtime, positivo a h = 5 secondo B2); potenza con data limite 2024-11-08 alla lettura e decadenza (R7);
+`trial_ledger --check` come guardia.
+
+Debito (decide Matteo): primitive comuni in `motore/core` per tolleranza per cella con correzione, chiavi d'uscita a
+runtime e data limite; due righe per la Checklist 10 ("ogni orizzonte che decide ha il suo positivo nella configurazione
+congelata"; "una tolleranza per cella si corregge per il numero di celle").

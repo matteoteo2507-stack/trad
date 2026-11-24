@@ -11,6 +11,22 @@
 
 ---
 
+## 2026-11-24 (4) — I3: nona passata del gatekeeper **BLOCCA** la parte sui dati (tolleranza per cella, nessun positivo a h = 5); 0 trial
+
+Nona passata su testo e codice sintetico (commit `f916dcc`, 26 test verdi): testo e codice reggono, ma il commit (1) sui
+dati non si scrive prima di chiudere due bloccanti: **B1** la tolleranza della verifica del generatore, valutata su circa
+102 celle strumento × anno senza correzione, fa uscire una cella per caso nel 27-35% delle corse (errore della proposta
+del gatekeeper all'ottava passata); **B2** nella configurazione congelata il controllo positivo non e' mai stato visto
+scattare a h = 5 (campione insufficiente in 500 repliche su 500). Dieci riserve, fra cui: il positivo e' stato scelto
+fra righe di cui si sapeva che scattavano (R1); la frase della voce 2026-11-24 sulle prove sintetiche che "passavano"
+con la misura a 30 minuti e' **falsa** per la configurazione congelata, dove la validita' sta sui 15 minuti: la
+giustificazione della misura e' **non riverificata** (R2, questa voce la corregge); origine valida con 1 + h sedute non
+dichiarata (R3); chiusure anticipate (R4); difetti comuni fra strumenti nella verifica (R5). Dettaglio e proposte nel
+[referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), sezione "Nona passata". Le scelte per B1,
+B2 e R5 si prendono insieme (gratis per P6 del §8ter: prima del commit di congelamento).
+
+---
+
 ## 2026-11-24 (2) — I3: un **orizzonte senza campione decade** (non e' un guasto); 0 trial
 
 Seconda volta delle prove prima del commit (commit `bffefae`, due griglie, semi 20261128 e 20261129): verifica del
