@@ -80,7 +80,7 @@ def test_bartlett_uno_e_due_ritardi_a_mano():
     G2 = x[2:].T @ x[:-2]
     assert np.allclose(M.bartlett(x, 1), G0 + 0.5 * (G1 + G1.T))
     assert np.allclose(M.bartlett(x, 2), G0 + 2 / 3 * (G1 + G1.T) + 1 / 3 * (G2 + G2.T))
-    assert M.RITARDI == 2 and M.N_PREZZI == 14
+    assert M.RITARDI == 2 and M.PASSO_MISURA == 2 and M.N_PREZZI == 27
 
 
 def test_ewma_ricorsione_del_pacchetto():
@@ -119,7 +119,7 @@ def test_ewma_tiene_il_valore_nelle_sedute_non_valide():
 def test_fattore_scala_su_processo_esatto():
     """Volatilita' costante: la diagonale media dei z vale circa 1 dopo il riscaldamento."""
     rng = np.random.default_rng(4)
-    X = S.rendimenti_veri(900, rng, S.r_bar())["X"][:, ::S.PASSO_MISURA]
+    X = S.rendimenti_veri(900, rng, S.r_bar())["X"]
     m = M.matrici(X)
     diag = np.einsum("tii->ti", m["Sigma"][m["pronto"]])
     assert abs(diag.mean() - 1.0) < 0.05
@@ -127,7 +127,7 @@ def test_fattore_scala_su_processo_esatto():
 
 def test_riscaldamento():
     rng = np.random.default_rng(5)
-    X = S.rendimenti_veri(700, rng, S.r_bar())["X"][:, ::S.PASSO_MISURA]
+    X = S.rendimenti_veri(700, rng, S.r_bar())["X"]
     m = M.matrici(X)
     assert np.flatnonzero(m["pronto"])[0] == 550             # 50 di avvio + 500 del fattore di scala
     prev = V.tutte(m)
@@ -158,7 +158,7 @@ def test_stein_differenziale_uguale_alla_differenza_delle_perdite():
 
 def test_previsioni_definite_a_diagonale_uno():
     rng = np.random.default_rng(7)
-    X = S.rendimenti_veri(1200, rng, S.r_bar())["X"][:, ::S.PASSO_MISURA]
+    X = S.rendimenti_veri(1200, rng, S.r_bar())["X"]
     m = M.matrici(X)
     for nome, H in V.tutte(m).items():
         ok = np.isfinite(H).all(axis=(1, 2))
@@ -216,7 +216,7 @@ def test_processo_diagonale_e_limite():
 
 def test_gemelli_senza_difetti_coincidono_e_delta_zero():
     T = 700
-    X = S.rendimenti_veri(T, np.random.default_rng(10), S.r_bar())["X"][:, ::S.PASSO_MISURA]
+    X = S.rendimenti_veri(T, np.random.default_rng(10), S.r_bar())["X"]
     Y = S.applica_difetti(X, np.random.default_rng(11), S.nessun_difetto(T, 17))
     assert np.array_equal(X, Y)
     _, _, ds = S.misura_e_differenziali(X)
@@ -230,7 +230,7 @@ def test_catena_dei_fermi_riproduce_quota_e_durata():
     d = S.nessun_difetto(T, N)
     d["p0"][:] = 0.10
     d["L"][:] = S.durata_catena(3.0)                             # durata della catena che da' 3 come durata contata
-    X = np.cumsum(np.random.default_rng(12).standard_normal((T, 14, N)), axis=1)
+    X = np.cumsum(np.random.default_rng(12).standard_normal((T, 27, N)), axis=1)
     X[:, 0] = 0.0
     Y = S.applica_difetti(X, np.random.default_rng(13), d)
     r, _ = M.rendimenti(Y)
@@ -260,12 +260,12 @@ def test_mancanti_per_ora_e_seduta():
     T, N = 3000, 2
     d = S.nessun_difetto(T, N)
     d["p_giorno"][:, 0] = 0.05
-    d["p_ora"][:, 13, 1] = 1.0
-    X = np.zeros((T, 14, N))
+    d["p_ora"][:, 26, 1] = 1.0
+    X = np.zeros((T, 27, N))
     Y = S.applica_difetti(X, np.random.default_rng(14), d)
     manca_giorno = np.isnan(Y[:, :, 0]).all(axis=1)
     assert abs(manca_giorno.mean() - 0.05) < 0.015
-    assert np.isnan(Y[:, 13, 1]).all() and not np.isnan(Y[:, :13, 1]).any()
+    assert np.isnan(Y[:, 26, 1]).all() and not np.isnan(Y[:, :26, 1]).any()
 
 
 def test_stesso_seme_stesso_risultato():
@@ -294,4 +294,17 @@ def test_soglia_guardia_dipende_dalle_repliche():
 def test_controllo_positivo_dichiarato():
     d = S.difetto_positivo(100)
     assert (d["p0"] == 0.05).all() and (d["L"] == 3.0).all()
-    assert not d["p_giorno"].any() and not d["p_ora"].any() and d["p_ora"].shape[1] == 14
+    assert not d["p_giorno"].any() and not d["p_ora"].any() and d["p_ora"].shape[1] == 27
+
+
+def test_validita_sui_quindici_minuti_misura_sui_trenta():
+    """Un prezzo mancante a un quarto d'ora dispari toglie 2 rendimenti su 26 (resta valido, 24 >= 23,4) e nessun
+    rendimento a 30 minuti; uno a un orario pari toglie 2 rendimenti a 30 minuti ma la seduta resta valida."""
+    P, _ = _griglia(T=2, N=2)
+    P[0, 5, 0] = np.nan
+    P[1, 6, 0] = np.nan
+    m = M.matrici(P, passo=2)
+    assert m["valido_i"].all()
+    r30, oss30 = M.rendimenti(P, 2)
+    assert oss30[0].all()
+    assert not oss30[1, 2, 0] and not oss30[1, 3, 0] and oss30[1, 4, 0]

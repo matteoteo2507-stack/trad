@@ -11,6 +11,24 @@
 
 ---
 
+## 2026-11-24 — I3: **due griglie**, validita' e difetti sui 15 minuti, misura sui 30; semi nuovi per le prove; 0 trial
+
+Le due prove prima del commit di congelamento del 23/11 (commit `083db54`, 500 repliche, dati sintetici): **verifica
+del processo passata** (0 rifiuti su 500 nel gemello sincrono); **controllo positivo GUASTO**, campione svuotato in 500
+repliche su 500. Con tutto a 30 minuti (13 rendimenti) un solo prezzo mancante supera la soglia del 90% e 4 nulli quella
+del 25%, e l'esclusione per unione su 17 strumenti fa cadere quasi ogni seduta. Il difetto del controllo positivo
+l'aveva tarato Claude su prove con fermi generati sui quarti d'ora: errore di Claude
+([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), "Prove prima del commit").
+
+**Decisione presa insieme** (raccomandata da Claude; gratis, P6 del §8ter punto 1): **validita' dello strumento-giorno,
+conteggi e generatore dei difetti restano sulla griglia a 15 minuti** (90% e 25% sui 26 rendimenti, regole del 21/11);
+**solo la misura** (RV, D, s, Σ) usa un prezzo su due, **30 minuti con Bartlett a 2 ritardi**. E' il disegno delle prove
+sintetiche in cui la misura a 30 minuti passava. Controllo positivo: 5% fisso su tutti i 17, catena di 3 quarti d'ora.
+**Semi nuovi** per le due prove (20261128 e 20261129): quelli del 23/11 sono gia' stati usati. Gli esiti del 23/11
+restano nel loro file.
+
+---
+
 ## 2026-11-23 (4) — I3: misura a **30 minuti con Bartlett a 2 ritardi**, scelta prima di ogni dato dopo le prove sintetiche dei rimedi; ottava passata applicata; 0 trial
 
 **Ottava passata del gatekeeper (commit `dba01af`): BLOCCA**, 1 bloccante (la verifica del generatore usciva nella

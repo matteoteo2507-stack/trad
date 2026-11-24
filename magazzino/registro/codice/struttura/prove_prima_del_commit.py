@@ -1,12 +1,16 @@
 """Le due prove di N2 prima del commit di congelamento (referto §9), su soli dati sintetici. 0 trial.
 
-1. Verifica del processo (seme 20261125): con 1.450 sedute e la pipeline intera, il gemello sincrono deve avere al
+Semi nuovi dal 24/11: 20261125 e 20261126 sono stati usati il 23/11 con difetti e validita' sulla griglia a 30
+minuti (esito nel referto).
+
+1. Verifica del processo (seme 20261128): con 1.450 sedute e la pipeline intera, il gemello sincrono deve avere al
    massimo 25 repliche su 500 che rifiutano nella guardia, in entrambi gli orizzonti. Se no, (a, b) passa al tentativo
    successivo, in ordine fisso: (0,06; 0,93) -> (0,06; 0,90) -> (0,04; 0,94); al massimo tre.
-2. Controllo positivo (seme 20261126): 5% fisso di prezzi fermi su tutti i 17 strumenti, durata della catena 3
-   mezz'ore; la regola deve scattare (mediana di δ per la costante sotto −0,5 in almeno un orizzonte).
+2. Controllo positivo (seme 20261129): 5% fisso di prezzi fermi su tutti i 17 strumenti, durata della catena 3
+   quarti d'ora sulla griglia a 15 minuti; la regola deve scattare (mediana di δ per la costante sotto −0,5 in
+   almeno un orizzonte).
 
-Uscita: `esiti/prove_prima_del_commit.json` (quantili di δ, rifiuti della guardia, esiti). Si rifiuta di partire se
+Uscita: `esiti/prove_prima_del_commit_2026-11-24.json` (quantili di δ, rifiuti della guardia, esiti). Si rifiuta di partire se
 la cartella non e' committata e di riscrivere un esito esistente.
 
 python magazzino/registro/codice/struttura/prove_prima_del_commit.py
@@ -40,7 +44,7 @@ def commit_pulito() -> str:
 
 
 def main():
-    dest = QUI / "esiti" / "prove_prima_del_commit.json"
+    dest = QUI / "esiti" / "prove_prima_del_commit_2026-11-24.json"
     if dest.exists():
         raise SystemExit("%s esiste: non si riscrive" % dest.name)
     out = {"commit": commit_pulito(), "T": T, "repliche": S.REPLICHE, "verifica": [], "positivo": None}

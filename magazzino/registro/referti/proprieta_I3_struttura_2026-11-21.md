@@ -39,11 +39,16 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
 - **Finestra comune W**: seduta USA, 9:30-16:00 New York, secondo il calendario di borsa di New York (XNYS). Le barre
   Dukascopy (bid, ora d'inizio in UTC) si convertono all'ora di New York col fuso, quindi i cambi d'ora europei e
   americani non spostano la finestra; DAX e BUND, quotati su orari europei, si leggono comunque in ora di New York.
-- **Rendimenti a 30 minuti** (13 per seduta piena; *fino al 23/11 erano 15 minuti, 26 per seduta: cambiato prima di
-  ogni dato dopo le prove sintetiche dei rimedi, sezione in fondo, DECISIONS 2026-11-23 (4)*), log del prezzo bid: il
-  primo prezzo e' l'**open della barra M5 delle 9:30**, poi la **chiusura della barra M5 che finisce a ogni mezz'ora**
-  (quella che inizia alle :25 e alle :55), fino alla chiusura della barra delle 15:55: 14 prezzi. Un prezzo mancante
-  rende mancanti i due rendimenti adiacenti (nessun rendimento su 60 minuti). **Un rendimento mancante vale zero in tutti i prodotti** (decisione del 21/11,
+- **Due griglie** (DECISIONS 2026-11-23 (4) e 2026-11-24, prese insieme prima di ogni dato dopo le prove sintetiche,
+  sezioni in fondo). **Griglia a 15 minuti**, per validita', conteggi e generatore dei difetti: il primo prezzo e'
+  l'**open della barra M5 delle 9:30**, poi la **chiusura della barra M5 che finisce a ogni quarto d'ora** (quella che
+  inizia alle :10, :25, :40, :55), fino alla chiusura della barra delle 15:55: 27 prezzi, 26 rendimenti. **Misura** (RV,
+  D, s, Σ): **rendimenti a 30 minuti**, un prezzo su due della stessa griglia (14 prezzi: le barre che iniziano alle
+  :25 e alle :55), 13 rendimenti per seduta piena. Un prezzo mancante rende mancanti i due rendimenti adiacenti della
+  sua griglia (un prezzo a un quarto d'ora dispari non tocca i rendimenti a 30 minuti). *Fino al 23/11 la misura era a
+  15 minuti; il 23/11 tutto era passato a 30 minuti, ma con 13 rendimenti la soglia del 90% (un solo prezzo mancante
+  basta a superarla) e quella del 25% di nulli svuotavano il campione: controllo positivo GUASTO in 500 repliche su
+  500.* **Un rendimento mancante vale zero in tutti i prodotti** (decisione del 21/11,
   DECISIONS (7)): la matrice di Bartlett resta semidefinita positiva per costruzione anche con buchi; la diagonale un po'
   piu' bassa la assorbe il fattore di scala, uguale per tutte le previsioni.
 - **Correzione per due ritardi** con **pesi di Bartlett** (2/3 sui prodotti incrociati a ritardo ±1, 1/3 a ritardo
@@ -51,11 +56,11 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   semidefinita positiva. Dopo la correzione resta un Epps residuo, uguale per tutte le previsioni: il bersaglio e'
   l'attesa di **questo** stimatore, non la correlazione vera, e va detto.
 - **Giorni**: le sedute piene del calendario XNYS. Le **chiusure anticipate** (13:00) sono escluse e si contano. Un
-  giorno entra solo se **tutti** gli N strumenti hanno almeno il 90% dei 13 rendimenti attesi (cioe' 12): si esclude l'unione dei
+  giorno entra solo se **tutti** gli N strumenti hanno almeno il 90% dei 26 rendimenti a 15 minuti attesi: si esclude l'unione dei
   giorni mancanti, e si riporta per anno e per strumento quanti giorni esclude (controllo di selezione, come la
   volatilita': per ogni giorno escluso si riporta il rendimento assoluto della seduta contro la mediana, per vedere se le
   esclusioni coincidono con i giorni estremi).
-- **Quotazioni ferme**: un rendimento a 30 minuti **osservato** ed esattamente nullo si conta; uno strumento-giorno con
+- **Quotazioni ferme**: un rendimento a 15 minuti **osservato** ed esattamente nullo si conta; uno strumento-giorno con
   piu' del 25% di rendimenti nulli **fra quelli osservati** conta come mancante (un rendimento mancante, che vale zero
   solo nei prodotti, non e' un rendimento nullo: la quota si conta prima di mettere gli zeri, cosi' un buco non pesa due
   volte) (un prezzo fermo spinge la correlazione verso zero). La quota per strumento e per
@@ -75,7 +80,7 @@ Tutte le scelte qui sotto sono **fissate ora**, prima di ogni dato; il costo di 
   tutti).
 - **Calendario**: XNYS di `exchange_calendars`, versione registrata nelle guardie (come la volatilita').
 - **Controllo di struttura**: conteggi su sviluppo e blocco. Per il G9 (§9, N2) si prendono **solo dallo sviluppo**,
-  per strumento e per anno: sedute mancanti per intero, prezzi mancanti per ciascuno dei 14 orari della seduta, quota
+  per strumento e per anno: sedute mancanti per intero, prezzi mancanti per ciascuno dei 27 orari della seduta, quota
   di rendimenti nulli **fra quelli osservati** e lunghezza media delle serie di rendimenti nulli consecutivi. Nessuna
   RV, nessuna media di rendimenti, nessun livello di prezzo. Il controllo di selezione (rendimento assoluto dei giorni
   esclusi contro la mediana) si fa **solo sullo sviluppo**, con la data limite 2024-11-08 applicata alla lettura come
@@ -266,8 +271,8 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   correlazione vera e la misura gli si applica sopra) e non si calcola.
 - **Quotazioni non sincrone e buchi** (riserva R2 della sesta passata, precisata con R3, R4 e R8 della settima), tutti
   dai **soli conteggi dello sviluppo**, per strumento e per anno, presi **prima delle esclusioni**, generati sui
-  **prezzi della misura** (14 per seduta: l'open delle 9:30 e le 13 chiusure delle mezz'ore; il processo vero vive
-  sui 26 quarti d'ora e la misura ne prende uno su due) e passati alla misura vera (prezzo
+  **prezzi della griglia a 15 minuti** (27 per seduta, come il processo vero; la misura ne prende poi uno su due) e
+  passati alla misura vera (prezzo
   mancante → due rendimenti mancanti, mancante = zero, soglie del 90% e del 25%, esclusione per unione), in quest'ordine:
   1. **seduta mancante per intero**: probabilita' che la seduta non abbia alcun prezzo in W (per esempio i festivi
      europei di DAX e BUND); estratta indipendente per strumento;
@@ -279,14 +284,14 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
      lunghezza media delle serie di rendimenti nulli consecutivi. Se p_u > 1 il codice si ferma (conteggi incoerenti).
      Un prezzo fermo ripete l'ultimo prezzo: il rendimento accumulato compare all'aggiornamento successivo (e' il
      meccanismo dell'Epps);
-  3. **prezzo mancante per ora del giorno**, nelle sedute presenti: per ciascuno dei 14 orari, la probabilita' che il
+  3. **prezzo mancante per ora del giorno**, nelle sedute presenti: per ciascuno dei 27 orari, la probabilita' che il
      prezzo manchi, contata **sulle sole sedute presenti** (una seduta mancante per intero non conta due volte, come gli
      zeri nella quarta passata); riproduce le pause a ora fissa e il DAX dopo le 11:30 di New York. Un mancante cancella
      il prezzo anche se la catena lo dava fermo.
   **Come si contano nei dati veri**: una serie di rendimenti nulli consecutivi si interrompe a un rendimento mancante e
   si tronca a inizio e a fine seduta; il troncamento accorcia la durata contata L̃. Per riprodurla, la catena usa
-  L = (n − 1)/(n/L̃ − 1), con n = 13 rendimenti (con catena stazionaria la durata contata e' n/(1 + (n − 1)/L); per L = 3
-  vale 2,6, e il test sintetico la ritrova); se L̃ >= 13 il codice si ferma. *Aggiunto il 23/11: prima la catena usava
+  L = (n − 1)/(n/L̃ − 1), con n = 26 rendimenti a 15 minuti (con catena stazionaria la durata contata e'
+  n/(1 + (n − 1)/L); per L = 3 vale circa 2,8, e il test sintetico la ritrova); se L̃ >= 26 il codice si ferma. *Aggiunto il 23/11: prima la catena usava
   la durata contata come se fosse la sua, e i fermi simulati risultavano piu' corti di quelli veri.* Le estrazioni per ora sono
   indipendenti fra loro, quindi i buchi di piu' ore consecutive non si riproducono: per questo il generatore si
   **verifica** sui soli conteggi prima di N2 (bloccante B1 dell'ottava passata): per strumento e per anno, la quota
@@ -311,8 +316,9 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
 - **Seme e flussi** (riserva R6 della settima): seme **20261123**; `SeedSequence(20261123).spawn(500)` da' una
   sottosequenza per replica, in ordine; ognuna fa `spawn(2)`: il primo flusso genera i rendimenti veri, il secondo i
   difetti. Dentro un flusso le estrazioni seguono le sedute in ordine di data e, in ogni seduta, gli strumenti
-  nell'ordine del §7. Un seme diverso per ognuna delle due prove prima del commit (sotto): **20261125** per la verifica
-  del processo, **20261126** per il controllo positivo.
+  nell'ordine del §7. Un seme diverso per ognuna delle due prove prima del commit (sotto): **20261128** per la verifica
+  del processo, **20261129** per il controllo positivo (*20261125 e 20261126 sono stati usati il 23/11 con la griglia
+  a 30 minuti: un seme gia' usato non si riusa*).
 - **Previsioni confrontate**: EWMA (benchmark) contro **costante**, che **decide**, e contro **persistenza**, che si
   calcola e si riporta ma **non decide** (Matteo, 23/11: con t ≈ 95 nella prova del gatekeeper nessun difetto plausibile
   vi si vede), con le regole e le finestre del §6.
@@ -347,15 +353,15 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   **GUASTO** (non "passa") e si cerca l'errore.
 - **Due prove prima del commit di congelamento** (test sintetici, nessun dato, P6 punto 1), con 1.450 sedute (circa lo
   sviluppo comune atteso dal 2019), la pipeline intera e 500 repliche:
-  - **verifica del processo** (seme 20261125): il gemello sincrono deve avere **al massimo 25 repliche su 500** (5%)
+  - **verifica del processo** (seme 20261128): il gemello sincrono deve avere **al massimo 25 repliche su 500** (5%)
     che rifiutano nella guardia sopra, in entrambi gli orizzonti (margine sotto la soglia di 35). Se non ci sta, (a, b)
     si cambia **una volta per tentativo, in quest'ordine fisso**: (0,06; 0,93) → (0,06; 0,90) → (0,04; 0,94); al
     massimo questi tre; se nessuno passa si torna al testo. Un cambio e' gratis (P6 punto 1: dati sintetici, prima del
     commit) solo a queste condizioni, e si registra in DECISIONS;
-  - **controllo positivo di N2** (seme 20261126): con un difetto dichiarato ora, **quota di prezzi fermi fissa del 5%
-    su tutti i 17 strumenti, durata media L = 3 mezz'ore, nessun altro difetto** (sulla griglia della misura; *fino al
-    23/11 era una rampa fino al 30% su 7 strumenti, che con le esclusioni svuota il campione: sezione "Prove
-    sintetiche"*), la regola deve scattare (mediana di δ sotto −0,5 per la costante in almeno un orizzonte); con probabilita' di difetto zero δ deve
+  - **controllo positivo di N2** (seme 20261129): con un difetto dichiarato ora, **quota di prezzi fermi fissa del 5%
+    su tutti i 17 strumenti, catena di durata L = 3 quarti d'ora sulla griglia a 15 minuti, nessun altro difetto**
+    (*la rampa fino al 30% su 7 strumenti e, il 23/11, lo stesso 5% sulla griglia a 30 minuti svuotavano il campione:
+    sezioni "Prove sintetiche" e "Prove prima del commit"*), la regola deve scattare (mediana di δ sotto −0,5 per la costante in almeno un orizzonte); con probabilita' di difetto zero δ deve
     valere esattamente 0. Se il difetto non fa scattare la regola, la regola non va e si torna al testo.
 - **Conseguenze, scritte ora**:
   - **RIFIUTA per misura** (regola di δ): la misura e' distorta (Epps residuo, buchi o la loro variazione negli anni);
@@ -478,8 +484,10 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    bit alla formula del pacchetto (importata); deviazione di Newey-West identica a `volatilita/potenza.py:sd_newey_west`;
    le guardie di data e di campi; **per N2**: con probabilita' di difetto zero i due gemelli coincidono bit per bit, δ
    vale 0 e la diagonale media del bersaglio e' vicina a 1; la catena dei prezzi fermi riparte a ogni seduta, l'open non
-   e' mai fermo, p_u > 1 ferma il codice; i mancanti per ora contati sulle sole sedute presenti; le due prove prima del
-   commit del §9 (verifica del processo, seme 20261125; controllo positivo, seme 20261126); Q_t ha diagonale 1 e autovalore minimo ≥ 0,143·λ_min(R̄) in ogni
+   e' mai fermo nel prezzo (lo stato parte dalla distribuzione stazionaria), p_u > 1 ferma il codice; la durata della
+   catena riproduce quella contata; i mancanti per ora contati sulle sole sedute presenti; validita' sui 26 rendimenti
+   a 15 minuti e misura sui 13 a 30 minuti; le due prove prima del commit del §9 (verifica del processo, seme
+   20261128; controllo positivo, seme 20261129); Q_t ha diagonale 1 e autovalore minimo ≥ 0,143·λ_min(R̄) in ogni
    seduta; R̄ a blocchi coi valori del §9; il generatore riproduce in media le probabilita' in ingresso (sedute
    mancanti, prezzi mancanti per ora, quota e durata dei fermi); stesso seme, stesso risultato.
 

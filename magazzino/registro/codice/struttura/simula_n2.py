@@ -22,15 +22,14 @@ BLOCCHI = {("SPX500", "NAS100", "DOW", "RUSSELL", "DAX"): 0.791,     # A1 §4, i
            ("EURUSD", "USDJPY", "GBPUSD", "AUDUSD"): 0.050}             # A1 §4, cross FX
 FONDO = 0.112                                                           # A1 §8, tutte le coppie dei futures
 A, B = 0.06, 0.93
-N_ORARI = 27          # griglia del processo vero: 26 quarti d'ora
+N_ORARI = 27          # griglia a 15 minuti: processo vero, difetti, conteggi e validita' (24/11)
 N_REND = 26
-PASSO_MISURA = 2      # la misura prende un prezzo su due: 14 prezzi, 13 rendimenti a 30 minuti (23/11)
-N_PREZZI = 14
+N_PREZZI = 27         # la misura (misura.matrici) prende poi un prezzo su due: 13 rendimenti a 30 minuti
 N_H = 247              # sedute piene XNYS 2024-11-11 -> 2025-11-10 (referto §9)
 TAU = 0.5
 SEME = 20261123
-SEME_VERIFICA = 20261125
-SEME_POSITIVO = 20261126
+SEME_VERIFICA = 20261128   # 20261125 e 20261126 usati il 23/11 con la griglia a 30 minuti (esito nel referto)
+SEME_POSITIVO = 20261129
 REPLICHE = 500
 SOGLIA_GUARDIA = 35    # quantile al 97,5% di Bin(500; 0,05)
 
@@ -42,7 +41,7 @@ def soglia_guardia(repliche: int) -> int:
 EIG_MIN = 1e-10
 MIN_ORIGINI = 50
 POSITIVO_STRUMENTI = ("EURUSD", "USDJPY", "GBPUSD", "AUDUSD", "XAUUSD", "XAGUSD", "BUND")   # prove del 23/11
-POSITIVO_QUOTA = 0.05     # controllo positivo dal 23/11: 5% fisso su tutti i 17, L = 3 mezz'ore
+POSITIVO_QUOTA = 0.05     # controllo positivo dal 24/11: 5% fisso su tutti i 17, catena di durata 3 quarti d'ora
 POSITIVO_L = 3.0
 
 
@@ -125,8 +124,8 @@ def nessun_difetto(T: int, N: int) -> dict:
 
 
 def difetto_positivo(T: int, universo=UNIVERSO, quota: float = POSITIVO_QUOTA, L: float = POSITIVO_L) -> dict:
-    """Controllo positivo del §9 (dal 23/11): quota fissa di prezzi fermi su tutti gli strumenti, durata media L sulla
-    griglia della misura, nessun altro difetto."""
+    """Controllo positivo del §9 (dal 24/11): quota fissa di prezzi fermi su tutti gli strumenti, catena di durata L
+    quarti d'ora sulla griglia a 15 minuti, nessun altro difetto."""
     d = nessun_difetto(T, len(universo))
     d["p0"][:] = quota
     d["L"][:] = L
@@ -144,7 +143,7 @@ def matrici_non_valide(m: dict, prev: dict, eig_q: np.ndarray) -> int:
 
 
 def misura_e_differenziali(P: np.ndarray, ritardi: int = M.RITARDI, colonne=None):
-    """`P` sulla griglia della misura (14 prezzi)."""
+    """`P` sulla griglia a 15 minuti (27 prezzi); la misura ne prende uno su due."""
     if colonne is not None:
         P = P[:, :, colonne]
     m = M.matrici(P, ritardi=ritardi)
@@ -179,7 +178,7 @@ def replica(args) -> dict:
     s_veri, s_dif = figlio.spawn(2)
     Rb = r_bar(universo)
     vero = rendimenti_veri(T, np.random.default_rng(s_veri), Rb, a, b)
-    X = vero["X"][:, ::PASSO_MISURA]                     # griglia della misura: i difetti si applicano qui
+    X = vero["X"]                                        # griglia a 15 minuti: i difetti si applicano qui
     Y = applica_difetti(X, np.random.default_rng(s_dif), difetti)
     m_s, p_s, d_s = misura_e_differenziali(X, ritardi, colonne)
     m_d, p_d, d_d = misura_e_differenziali(Y, ritardi, colonne)

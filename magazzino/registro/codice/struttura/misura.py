@@ -4,13 +4,15 @@ Funzioni pure su array, usate dal simulatore di N2 e (dal commit (1)) dal loader
 chiama decide cosa esce (guardia "nessun canale", requisiti del commit (1) punto 4).
 
 Convenzioni (referto §3, §4):
-- `P[t, k, i]`: log-prezzo della seduta t, orario k della griglia della misura, strumento i; NaN = prezzo mancante.
-  Dal 23/11 la misura e' a **30 minuti** (14 prezzi: l'open delle 9:30 e le 13 chiusure delle mezz'ore) con
-  **Bartlett a 2 ritardi** (DECISIONS 2026-11-23 (4)); `passo` sottocampiona una griglia piu' fine se serve.
+- `P[t, k, i]`: log-prezzo della seduta t, orario k della **griglia a 15 minuti** (27 prezzi: l'open delle 9:30 e le
+  26 chiusure dei quarti d'ora), strumento i; NaN = prezzo mancante.
+- **due griglie** (DECISIONS 2026-11-23 (4) e 2026-11-24): la **validita'** dello strumento-giorno si giudica sui 26
+  rendimenti a 15 minuti; la **misura** (RV, D, s, Σ) usa un prezzo su due (`passo` = 2: 14 prezzi, 13 rendimenti a
+  30 minuti) con **Bartlett a 2 ritardi**.
 - rendimento = differenza di log-prezzi adiacenti; un prezzo mancante rende mancanti i due rendimenti adiacenti;
   **mancante = zero** nei prodotti.
-- strumento-giorno valido: almeno il 90% dei rendimenti attesi osservati e al massimo il 25% di nulli **fra gli
-  osservati**; giorno comune valido: tutti gli strumenti validi (esclusione per unione).
+- strumento-giorno valido: almeno il 90% dei 26 rendimenti a 15 minuti osservati e al massimo il 25% di nulli **fra
+  gli osservati**; giorno comune valido: tutti gli strumenti validi (esclusione per unione).
 - Bartlett con `ritardi` ritardi (2 di base): pesi 1 − l/(ritardi + 1), su tutta la matrice;
   semidefinita positiva per costruzione (Newey-West), anche con gli zeri.
 - ingresso fisso: σ̂² = EWMA 0,94 della RV sulle sedute valide **dello strumento**, avvio dalla media delle prime 50 RV
@@ -29,7 +31,8 @@ FINESTRA_S = 500
 SOGLIA_OSSERVATI = 0.90
 SOGLIA_NULLI = 0.25
 RITARDI = 2
-N_PREZZI = 14
+PASSO_MISURA = 2
+N_PREZZI = 27
 
 
 def rendimenti(P: np.ndarray, passo: int = 1) -> tuple[np.ndarray, np.ndarray]:
@@ -93,10 +96,12 @@ def fattore_scala(D: np.ndarray, s2: np.ndarray, valido: np.ndarray, finestra: i
     return out
 
 
-def matrici(P: np.ndarray, passo: int = 1, ritardi: int = RITARDI) -> dict:
-    """Σ per seduta (NaN dove non definita) e maschere. Restituisce solo oggetti in memoria."""
+def matrici(P: np.ndarray, passo: int = PASSO_MISURA, ritardi: int = RITARDI) -> dict:
+    """Σ per seduta (NaN dove non definita) e maschere. Validita' sulla griglia data, misura su un prezzo ogni `passo`.
+    Restituisce solo oggetti in memoria."""
+    r_fine, oss_fine = rendimenti(P, 1)
+    valido_i = validi_strumento(r_fine, oss_fine)
     r, oss = rendimenti(P, passo)
-    valido_i = validi_strumento(r, oss)
     r0 = np.where(oss, r, 0.0)
     T, K, N = r0.shape
     rv = np.einsum("tki,tki->ti", r0, r0)
