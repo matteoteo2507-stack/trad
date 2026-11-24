@@ -44,6 +44,42 @@ B2 e R5 si prendono insieme (gratis per P6 del §8ter: prima del commit di conge
 
 ---
 
+## 2026-11-24 (3) — Opzioni come **lente** sui mercati che tradiamo: entrano in I1 come previsori di volatilita'; i livelli delle opzioni no; 0 trial
+
+**Origine.** Idea di Matteo dopo un'intervista (Words of Rizdom, ex market maker di opzioni; trascrizione nell'hub,
+`knowledge/raw/yt/words-of-rizdom/`, scheda in `knowledge/sources/yt/`): usare il materiale sulle opzioni, finora
+evitato perche' non le tradiamo, per **leggere** i mercati che tradiamo. Prese insieme (raccomandate da Claude),
+rivedibili gratis finche' i dati del ridisegno della volatilita' non sono visti.
+
+**La tesi, corretta.** Non "gli istituzionali muovono il mercato con le opzioni": i **dealer** coprono per obbligo
+le opzioni che vendono, e il loro posizionamento in gamma **amplifica o smorza** un movimento, senza dargli una
+direzione (lo dice la fonte stessa, 0:18:42). Stato: `quarantena`. La fonte vale **una** conferma, allineata con chi
+vende i livelli, senza numeri, con errori tecnici (0:13:47, "la gamma e' il decadimento").
+
+**Decisioni.**
+1. **Due lenti entrano in [backlog §I1](BACKLOG_RICERCA.md) come concorrenti dell'EWMA nel ridisegno**: la
+   volatilita' implicita (VIX, gia' in casa D1 1990 → 2026) e il **segno della gamma dei dealer** (proprieta': con
+   gamma positiva la varianza realizzata del giorno dopo e' piu' bassa). Sono predittori nuovi: si dichiarano nella
+   pre-registrazione del ridisegno, **prima** dei dati, e passano dal gatekeeper; l'holdout sigillato dal 2024-11-11
+   resta escluso (§7.7/§8).
+2. **I livelli delle opzioni (call wall, put wall, volatility trigger) come segnali di trade: no, oggi.** Storico a
+   pagamento; e' di nuovo "il prezzo reagisce a un livello" ([I5](BACKLOG_RICERCA.md), 384 trial, nessuna reazione
+   oltre il caso); il meccanismo delle coperture vicino alla chiusura e' gia' CLOSED in H1 (2026-10-12 (2)).
+   Meccanismo diverso dai livelli di prezzo, quindi formalmente una famiglia nuova: riapre solo con dati di
+   posizionamento e scheda scritta.
+3. **Fonte del segno della gamma, verificata il 24/11:** SqueezeMetrics pubblica un CSV giornaliero `date,price,dix,gex`
+   dal 2011-05-02 (letto fino al 2014-01-10; ultima data non confermata), raggiungibile senza login. I termini d'uso
+   **vietano il prelievo sistematico** e non danno licenza: un solo scaricamento manuale, fuori da git (repo
+   pubblico), e nessuna ridistribuzione nei pacchetti ai soci senza permesso scritto.
+
+**Il punto debole, da dire nella pre-registrazione.** La GEX non osserva il posizionamento dei dealer: lo
+**ipotizza**. Il white paper SqueezeMetrics (dicembre 2017) assume dealer **lunghi di call e corti di put**,
+giustificandolo "in modo circolare" con gli effetti della GEX stessa; la fonte dell'intervista assume dealer **corti**
+sulle call ai "call wall" (0:17:39). Due convenzioni opposte sullo stesso libro: misurano la nostra ignoranza
+([[feedback_convenzioni_implicite]]). Il test misura la **previsione** della serie pubblicata, non il meccanismo.
+
+---
+
 ## 2026-11-24 (2) — I3: un **orizzonte senza campione decade** (non e' un guasto); 0 trial
 
 Seconda volta delle prove prima del commit (commit `bffefae`, due griglie, semi 20261128 e 20261129): verifica del

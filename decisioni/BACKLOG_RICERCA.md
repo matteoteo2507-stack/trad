@@ -260,6 +260,17 @@ bottiglia sono **i passi 1 e 2**: famiglia e spread. Costano poco e decidono se 
 
 La regressione lineare come **metro** (per esempio Mincer-Zarnowitz) va nel modulo 04, non in un pacchetto.
 
+**I1, opzioni come lente (dal 24/11, DECISIONS 2026-11-24 (3)).** Le opzioni non si tradano: si leggono. Due
+concorrenti dell'EWMA da dichiarare nella pre-registrazione del ridisegno, prima dei dati:
+- **volatilita' implicita** (VIX su SPX500; VXN e GVZ da cercare per NAS100 e oro): la previsione del mercato batte
+  l'EWMA sulla varianza realizzata?
+- **segno della gamma dei dealer** (GEX SqueezeMetrics, giornaliera dal 2011, un solo scaricamento manuale fuori da
+  git): con gamma positiva la varianza realizzata del giorno dopo e' piu' bassa? Il segno e' **ipotizzato** dal
+  fornitore (dealer lunghi di call, corti di put), non osservato.
+
+Esclusi: i livelli delle opzioni come segnali di trade (stesso schema di I5, storico a pagamento, H1 CLOSED). La
+teoria di Black-Scholes e simili si distilla **mirata** a queste due domande, non per intero.
+
 ---
 
 ## E — DEBITO DI PROTOCOLLO — ✅ E1-E6 **estinte il 2026-09-19**; ✅ **E7 decisa e chiusa il 2026-11-04**
