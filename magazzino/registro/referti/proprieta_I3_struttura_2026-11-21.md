@@ -735,3 +735,10 @@ semi 20261128 e 20261129, soli dati sintetici.
 con prezzi fermi diffusi l'orizzonte 5 non si misura, e lo stesso puo' succedere sui dati veri. Il controllo positivo
 non si ridefinisce di nuovo finche' Matteo non decide come trattare un orizzonte senza campione (scelta di disegno,
 gratis prima del commit): ridefinirlo fino a che passa adatterebbe il controllo al suo esito.
+
+**Dopo la regola dell'orizzonte senza campione** (DECISIONS 2026-11-24 (2); stesso script e stessi semi, esito in
+`esiti/prove_prima_del_commit_2026-11-24b.json`, commit `cced8e9`): **verifica del processo passata** (0 rifiuti su 500,
+nessun orizzonte decaduto); **controllo positivo: scatta** ("RIFIUTA per misura"): l'orizzonte 5 decade (campione
+insufficiente in 500 repliche su 500), a h = 1 mediana di δ −2,44 (11 repliche su 500 senza campione). Le due prove
+prima del commit di congelamento sono **chiuse**; prossimo: revisione del gatekeeper su testo e codice sintetico, poi
+la parte del commit (1) sui dati (scaricatore, loader, guardie, controllo di struttura, verifica del generatore, potenza).
