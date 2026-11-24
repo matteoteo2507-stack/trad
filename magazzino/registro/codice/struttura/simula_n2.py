@@ -211,14 +211,21 @@ def esegui(T: int, difetti: dict, seme: int, repliche: int = REPLICHE, a: float 
 QUANTILI = (0.05, 0.25, 0.5, 0.75, 0.95)
 
 
+def _mediana_decisione(righe: list, h: int) -> float:
+    """Mediana di δ per la costante con le repliche senza campione contate come −∞ (sotto qualunque −τ)."""
+    x = np.array([r[("delta", "costante", h)] for r in righe], float)
+    return float(np.median(np.where(np.isfinite(x), x, -np.inf)))
+
+
 def riassumi(righe: list) -> dict:
     """Solo le chiavi ammesse: quantili di δ, campioni insufficienti, orizzonti decaduti, rifiuti della guardia, matrici
     non valide, esito.
 
     Orizzonte senza campione (decisione del 24/11): un orizzonte con meno di MIN_ORIGINI origini comuni ai due gemelli
     in **piu' della meta'** delle repliche **decade** (esce da I3: la misura manca, la pipeline non e' guasta); la regola
-    di δ e la guardia valgono sugli orizzonti rimasti, con la mediana sulle repliche con campione. Se decadono tutti gli
-    orizzonti, N2 e' GUASTO."""
+    di δ e la guardia valgono sugli orizzonti rimasti. Per la **decisione** una replica senza campione in un orizzonte
+    rimasto conta come δ sotto −τ (lato prudente, riserva 1 della decima passata, 24/11); i quantili riportati restano
+    quelli delle repliche con campione. Se decadono tutti gli orizzonti, N2 e' GUASTO."""
     n = len(righe)
     out = {"repliche": n, "non_valide": int(sum(r["non_valide"] for r in righe))}
     decaduti = []
@@ -240,7 +247,7 @@ def riassumi(righe: list) -> dict:
     if (out["non_valide"] > 0 or not rimasti
             or any(out["guardia_rifiuti_h%d" % h] > soglia_guardia(n) for h in rimasti)):
         out["esito"] = "GUASTO"
-    elif min(out["delta_costante_h%d" % h][2] for h in rimasti) < -TAU:
+    elif min(_mediana_decisione(righe, h) for h in rimasti) < -TAU:
         out["esito"] = "RIFIUTA per misura"
     else:
         out["esito"] = "PASSA"

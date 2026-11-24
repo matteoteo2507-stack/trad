@@ -377,3 +377,14 @@ def test_durata_catena_si_ferma_su_nan():
     assert S.durata_catena(np.array([np.nan]), p0=np.array([0.0]))[0] == 1.0
     with pytest.raises(ValueError):
         S.durata_catena(np.array([np.nan]), p0=np.array([0.05]))
+
+
+def test_repliche_senza_campione_contano_sotto_tau():
+    """Riserva 1 della decima: 5 repliche su 10 senza campione a h5 (l'orizzonte resta) e le altre a −0,2: con la
+    mediana sulle sole repliche con campione sarebbe PASSA; contandole come sotto −τ e' RIFIUTA."""
+    nan = float("nan")
+    out = S.riassumi(_righe(10, lambda i: 0.1, lambda i: nan if i < 5 else -0.2))
+    assert out["orizzonti_decaduti"] == [] and out["delta_costante_h5"][2] == -0.2
+    assert out["esito"] == "RIFIUTA per misura"
+    out = S.riassumi(_righe(10, lambda i: 0.1, lambda i: nan if i < 4 else -0.2))
+    assert out["esito"] == "PASSA"
