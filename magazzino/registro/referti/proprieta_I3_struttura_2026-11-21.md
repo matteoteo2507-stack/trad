@@ -713,3 +713,19 @@ unione sono **fragili**: una quota di prezzi fermi diffusa svuota il campione pr
 stesso potrebbe succedere sui dati veri. **Aperto, da decidere con Matteo prima del commit (1)** (gratis, P6 punto 1):
 il controllo positivo (un difetto che lasci campione) e se la regola dei nulli e l'esclusione per unione vadano
 riviste per la misura a 30 minuti.
+
+## Prove prima del commit, seconda volta (24/11, due griglie)
+
+Stesso script, esito in `esiti/prove_prima_del_commit_2026-11-24.json` (commit `bffefae`), 1.450 sedute, 500 repliche,
+semi 20261128 e 20261129, soli dati sintetici.
+- **Verifica del processo**: **passa al primo tentativo**, (a, b) = (0,06; 0,93): 0 rifiuti su 500 a h = 1 e a h = 5;
+  matrici non valide 0.
+- **Controllo positivo** (5% fisso di prezzi fermi su tutti i 17, catena di 3 quarti d'ora): a **h = 1 la regola
+  scatta** (mediana di δ per la costante −2,44; quantili 5% e 95%: −5,26 e −0,02); a **h = 5 il campione e'
+  insufficiente in 500 repliche su 500**: con l'esclusione per unione cade una quota di sedute tale che quasi nessuna
+  finestra di cinque sedute consecutive resta intera. Per la regola scritta l'esito e' **GUASTO**.
+
+**Lettura.** La regola su δ puo' rifiutare (h = 1). Il limite e' il bersaglio a 5 sedute con l'esclusione per unione:
+con prezzi fermi diffusi l'orizzonte 5 non si misura, e lo stesso puo' succedere sui dati veri. Il controllo positivo
+non si ridefinisce di nuovo finche' Matteo non decide come trattare un orizzonte senza campione (scelta di disegno,
+gratis prima del commit): ridefinirlo fino a che passa adatterebbe il controllo al suo esito.
