@@ -278,7 +278,8 @@ def test_stesso_seme_stesso_risultato():
 def test_uscita_solo_chiavi_ammesse():
     T = 720
     out = S.esegui(T, S.nessun_difetto(T, 17), 7, repliche=2)
-    ammesse = {"repliche", "non_valide", "campione_insufficiente", "esito", "guardia_rifiuti_h1", "guardia_rifiuti_h5"}
+    ammesse = {"repliche", "non_valide", "campione_insufficiente_h1", "campione_insufficiente_h5", "orizzonti_decaduti",
+               "esito", "guardia_rifiuti_h1", "guardia_rifiuti_h5"}
     ammesse |= {"delta_%s_h%d" % (n, h) for n in ("costante", "persistenza") for h in (1, 5)}
     assert set(out) == ammesse
 
@@ -286,9 +287,7 @@ def test_uscita_solo_chiavi_ammesse():
 def test_soglia_guardia_dipende_dalle_repliche():
     assert S.soglia_guardia(500) == S.SOGLIA_GUARDIA == 35
     assert S.soglia_guardia(60) == 7
-    righe = [{"non_valide": 0, ("guardia", 1): i < 12, ("guardia", 5): False,
-              **{("delta", n, h): 0.0 for n in ("costante", "persistenza") for h in (1, 5)}} for i in range(60)]
-    assert S.riassumi(righe)["esito"] == "GUASTO"
+    assert S.riassumi(_righe(60, lambda i: 0.0, lambda i: 0.0, guardia1=12))["esito"] == "GUASTO"
 
 
 def test_controllo_positivo_dichiarato():
@@ -308,3 +307,21 @@ def test_validita_sui_quindici_minuti_misura_sui_trenta():
     r30, oss30 = M.rendimenti(P, 2)
     assert oss30[0].all()
     assert not oss30[1, 2, 0] and not oss30[1, 3, 0] and oss30[1, 4, 0]
+
+
+def _righe(n, d1, d5, guardia1=0):
+    return [{"non_valide": 0, ("guardia", 1): i < guardia1, ("guardia", 5): False,
+             ("delta", "costante", 1): d1(i), ("delta", "costante", 5): d5(i),
+             ("delta", "persistenza", 1): 0.0, ("delta", "persistenza", 5): 0.0} for i in range(n)]
+
+
+def test_orizzonte_senza_campione_decade():
+    nan = float("nan")
+    out = S.riassumi(_righe(10, lambda i: -2.0, lambda i: nan))          # h5 vuoto ovunque: decade, decide h1
+    assert out["orizzonti_decaduti"] == [5] and out["esito"] == "RIFIUTA per misura"
+    out = S.riassumi(_righe(10, lambda i: 0.1, lambda i: nan if i < 6 else -3.0))
+    assert out["orizzonti_decaduti"] == [5] and out["esito"] == "PASSA"
+    out = S.riassumi(_righe(10, lambda i: 0.1, lambda i: nan if i < 5 else -3.0))   # meta' esatta: resta
+    assert out["orizzonti_decaduti"] == [] and out["esito"] == "RIFIUTA per misura"
+    out = S.riassumi(_righe(10, lambda i: nan, lambda i: nan))
+    assert out["orizzonti_decaduti"] == [1, 5] and out["esito"] == "GUASTO"

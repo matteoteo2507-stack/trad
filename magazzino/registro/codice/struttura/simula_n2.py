@@ -207,23 +207,35 @@ QUANTILI = (0.05, 0.25, 0.5, 0.75, 0.95)
 
 
 def riassumi(righe: list) -> dict:
-    """Solo le chiavi ammesse: quantili di δ, rifiuti della guardia, matrici non valide, esito."""
-    out = {"repliche": len(righe), "non_valide": int(sum(r["non_valide"] for r in righe))}
-    insufficienti = 0
+    """Solo le chiavi ammesse: quantili di δ, campioni insufficienti, orizzonti decaduti, rifiuti della guardia, matrici
+    non valide, esito.
+
+    Orizzonte senza campione (decisione del 24/11): un orizzonte con meno di MIN_ORIGINI origini comuni ai due gemelli
+    in **piu' della meta'** delle repliche **decade** (esce da I3: la misura manca, la pipeline non e' guasta); la regola
+    di δ e la guardia valgono sugli orizzonti rimasti, con la mediana sulle repliche con campione. Se decadono tutti gli
+    orizzonti, N2 e' GUASTO."""
+    n = len(righe)
+    out = {"repliche": n, "non_valide": int(sum(r["non_valide"] for r in righe))}
+    decaduti = []
+    for h in V.ORIZZONTI:
+        x = np.array([r[("delta", "costante", h)] for r in righe])
+        out["campione_insufficiente_h%d" % h] = int(np.sum(~np.isfinite(x)))
+        if out["campione_insufficiente_h%d" % h] * 2 > n:
+            decaduti.append(h)
+    out["orizzonti_decaduti"] = decaduti
     for nome in ("costante", "persistenza"):
         for h in V.ORIZZONTI:
             x = np.array([r[("delta", nome, h)] for r in righe])
-            insufficienti = max(insufficienti, int(np.sum(~np.isfinite(x))))
             x = x[np.isfinite(x)]
             out["delta_%s_h%d" % (nome, h)] = ([round(float(q), 3) for q in np.quantile(x, QUANTILI)]
                                               if len(x) else None)
-    out["campione_insufficiente"] = insufficienti
     for h in V.ORIZZONTI:
         out["guardia_rifiuti_h%d" % h] = int(sum(r[("guardia", h)] for r in righe))
-    mediane = [out["delta_costante_h%d" % h][2] if out["delta_costante_h%d" % h] else np.nan for h in V.ORIZZONTI]
-    if out["non_valide"] > 0 or insufficienti > 0 or any(out["guardia_rifiuti_h%d" % h] > soglia_guardia(len(righe)) for h in V.ORIZZONTI):
+    rimasti = [h for h in V.ORIZZONTI if h not in decaduti]
+    if (out["non_valide"] > 0 or not rimasti
+            or any(out["guardia_rifiuti_h%d" % h] > soglia_guardia(n) for h in rimasti)):
         out["esito"] = "GUASTO"
-    elif min(mediane) < -TAU:
+    elif min(out["delta_costante_h%d" % h][2] for h in rimasti) < -TAU:
         out["esito"] = "RIFIUTA per misura"
     else:
         out["esito"] = "PASSA"

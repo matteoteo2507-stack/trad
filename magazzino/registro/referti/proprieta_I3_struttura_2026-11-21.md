@@ -329,7 +329,7 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   sincrono / √n_h),
   con medie e deviazione calcolate sull'**intersezione delle origini valide** dei due gemelli (il gemello con difetti
   perde sedute per l'esclusione per unione: riserva R6 dell'ottava passata); una replica con meno di 50 origini comuni
-  conta come campione insufficiente e rende N2 GUASTO,
+  a un orizzonte ha a quell'orizzonte un **campione insufficiente**,
   con deviazione HAC centrata a max(h − 1, 4) ritardi e **n_h = 247**, le sedute piene XNYS dal 2024-11-11 al 2025-11-10
   (un anno, dal solo calendario: 250 sedute meno 3 chiusure anticipate; unita' di misura, non una scelta dell'holdout).
   δ e' in unita' di **errore standard** di un anno (sd/√247): l'MDE vale 2,486 di queste unita' (riserva R1
@@ -375,9 +375,15 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
     misura intraday sui CFD Dukascopy non basta, I3 si ferma al passo 2 e si torna a Matteo (dati di borsa sincroni,
     backlog §G, o famiglia chiusa per misura). Piu' ritardi di Bartlett non sono un rimedio: a 30 minuti con 3 o 4
     ritardi la guardia del gemello sincrono si rompe (sezione "Prove sintetiche");
-  - **GUASTO** (guardia sul processo, generatore fuori tolleranza o matrici non valide): N2 non passa; si cerca
-    l'errore o si torna al passo 2 per il processo (punto 2 di P6);
-  - nessuno dei due: si calcola la potenza.
+  - **GUASTO** (guardia sul processo, generatore fuori tolleranza, matrici non valide, o tutti e due gli orizzonti
+    decaduti): N2 non passa; si cerca l'errore o si torna al passo 2 per il processo (punto 2 di P6);
+  - **orizzonte senza campione** (decisione presa insieme il 24/11, DECISIONS 2026-11-24 (2)): un orizzonte con
+    campione insufficiente in **piu' della meta'** delle repliche **decade**: esce da I3 (la misura manca, la pipeline
+    non e' guasta), e regola di δ e guardia valgono sugli orizzonti rimasti, con la mediana sulle repliche che hanno
+    campione. Vale anche sui dati veri: un orizzonte con meno di 50 origini comuni nello sviluppo, dopo il controllo di
+    struttura (soli conteggi), esce da I3 prima della potenza. Il pacchetto dira' allora solo cio' che resta (per
+    esempio "previsione a una seduta");
+  - nessuno dei tre: si calcola la potenza sugli orizzonti rimasti.
 - Dopo il passo 3, N2 si **ripete** sui candidati insieme a N1 e al positivo; le conseguenze di quelle uscite sono fra
   le scelte rinviate (statuto) e si scrivono nel commit del passo 3, prima che giri qualunque configurazione del G9.
   Nella ripetizione la guardia sul gemello sincrono **non si trasferisce cosi' com'e'**: il processo torna verso R̄,
@@ -471,8 +477,8 @@ Il gatekeeper rivede il diff del commit prima di ogni corsa. Il commit contiene:
    file dei conteggi del controllo di struttura (guardia sui percorsi: nessun CSV di prezzi aperto, un test lo
    verifica); chiavi d'uscita ammesse: commit, versioni, seme, numero di repliche e di sedute, n_h, esito della verifica
    del generatore per strumento e anno, per confronto e orizzonte i **quantili di δ** (5, 25, 50, 75, 95%) e il numero
-   di repliche che rifiutano nella guardia sul gemello sincrono, soglie, esito (PASSA, RIFIUTA per misura, GUASTO),
-   numero di matrici non valide; una chiave in piu' ferma lo script. Su nessun canale: differenziali, perdite, t, p
+   di repliche che rifiutano nella guardia sul gemello sincrono, per orizzonte le repliche con campione insufficiente,
+   gli orizzonti decaduti, soglie, esito (PASSA, RIFIUTA per misura, GUASTO), numero di matrici non valide; una chiave in piu' ferma lo script. Su nessun canale: differenziali, perdite, t, p
    delle singole repliche, matrici. I quantili di δ sono differenziali **simulati** su un processo inventato: lo statuto
    non cambia;
 7. **test su dati sintetici**, verdi: prezzi e griglia; fuso applicato una volta nel loader e protetto dal doppio, anche

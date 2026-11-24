@@ -10,7 +10,7 @@ minuti (esito nel referto).
    quarti d'ora sulla griglia a 15 minuti; la regola deve scattare (mediana di δ per la costante sotto −0,5 in
    almeno un orizzonte).
 
-Uscita: `esiti/prove_prima_del_commit_2026-11-24.json` (quantili di δ, rifiuti della guardia, esiti). Si rifiuta di partire se
+Uscita: `esiti/prove_prima_del_commit_2026-11-24b.json` (dopo la regola dell'orizzonte senza campione) (quantili di δ, rifiuti della guardia, esiti). Si rifiuta di partire se
 la cartella non e' committata e di riscrivere un esito esistente.
 
 python magazzino/registro/codice/struttura/prove_prima_del_commit.py
@@ -44,7 +44,7 @@ def commit_pulito() -> str:
 
 
 def main():
-    dest = QUI / "esiti" / "prove_prima_del_commit_2026-11-24.json"
+    dest = QUI / "esiti" / "prove_prima_del_commit_2026-11-24b.json"
     if dest.exists():
         raise SystemExit("%s esiste: non si riscrive" % dest.name)
     out = {"commit": commit_pulito(), "T": T, "repliche": S.REPLICHE, "verifica": [], "positivo": None}
@@ -54,7 +54,7 @@ def main():
         ok = all(r["guardia_rifiuti_h%d" % h] <= MARGINE for h in (1, 5)) and r["esito"] != "GUASTO"
         out["verifica"].append({"a": a, "b": b, "guardia_rifiuti_h1": r["guardia_rifiuti_h1"],
                                 "guardia_rifiuti_h5": r["guardia_rifiuti_h5"], "non_valide": r["non_valide"],
-                                "campione_insufficiente": r["campione_insufficiente"], "passa": ok})
+                                "orizzonti_decaduti": r["orizzonti_decaduti"], "passa": ok})
         print("verifica", a, b, "passa" if ok else "non passa", flush=True)
         if ok:
             scelto = (a, b)

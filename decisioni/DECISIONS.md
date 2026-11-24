@@ -11,6 +11,22 @@
 
 ---
 
+## 2026-11-24 (2) — I3: un **orizzonte senza campione decade** (non e' un guasto); 0 trial
+
+Seconda volta delle prove prima del commit (commit `bffefae`, due griglie, semi 20261128 e 20261129): verifica del
+processo **passata** (0 rifiuti su 500); controllo positivo: la regola su δ **scatta a 1 seduta** (mediana −2,44), ma a
+5 sedute il campione e' insufficiente in **500 repliche su 500**: con prezzi fermi diffusi l'esclusione per unione non
+lascia quasi nessuna finestra di cinque sedute intere. Per la regola scritta, GUASTO.
+
+**Decisione presa insieme** (raccomandata da Claude; gratis, P6 del §8ter punto 1; presa dopo aver visto il GUASTO del
+controllo positivo, sintetico, e dichiarata come tale): un orizzonte con campione insufficiente in piu' della meta'
+delle repliche **decade ed esce da I3**; N2 decide sugli orizzonti rimasti; se decadono tutti, GUASTO. Sui dati veri un
+orizzonte con meno di 50 origini comuni nello sviluppo esce dopo i conteggi, prima della potenza. Alternative scartate:
+ridefinire di nuovo il controllo positivo (sarebbe adattarlo al suo esito) e un bersaglio a 5 sedute sulle sole valide
+(definizione meno pulita, altra prova).
+
+---
+
 ## 2026-11-24 — I3: **due griglie**, validita' e difetti sui 15 minuti, misura sui 30; semi nuovi per le prove; 0 trial
 
 Le due prove prima del commit di congelamento del 23/11 (commit `083db54`, 500 repliche, dati sintetici): **verifica
