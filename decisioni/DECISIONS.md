@@ -11,6 +11,25 @@
 
 ---
 
+## 2026-11-24 (8) — I3: positivo a h = 5 **scatta** (h = 5 resta); decima passata **PASSA CON RISERVE**, riserve applicate; 0 trial
+
+**Prova del positivo a h = 5** (un solo tentativo, regola scritta prima; commit `b2c29c8`, 14.500 sedute, 500
+repliche, seme 20261130): **scatta**, mediana di δ per la costante −3,79 a h = 5, nessuna replica senza campione,
+guardia 0 su 500: **h = 5 resta in I3**, soggetto alla decadenza sullo sviluppo vero
+([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), "Prova del controllo positivo a h = 5").
+
+**Decima passata del gatekeeper (commit `d97f47b`): PASSA CON RISERVE**, 0 bloccanti; B1, B2 e R1-R10 della nona
+chiusi; la scelta sulle chiusure anticipate (fuori dall'indice) e' coerente con la misura. Otto riserve di testo,
+applicate: regole delle correzioni (3) e (4) del generatore, probabilita' condizionate per non contare due volte le
+sedute mancanti, chiavi del requisito 5 per le correzioni (1) e (2), §3 allineato al §10, versioni dell'esito del
+24/11, "5 sedute" piene nel pacchetto, cella unita degli anni corti. **Scelta presa insieme sulla riserva 1**: in un
+orizzonte che resta, una replica senza campione conta come δ sotto −τ (lato prudente). 31 test.
+
+**Prossimo**: il codice del commit (1) sui dati, coi requisiti del referto, poi la passata del gatekeeper sul codice;
+nessun download prima della conferma di Matteo.
+
+---
+
 ## 2026-11-24 (7) — Ridisegno di `volatilita`, passo 1: VIX e GEX **sottofamiglie di `volatilita`**, solo SPX500; la lettura del bersaglio prevale sulla teoria per il GEX; 0 trial
 
 Passo 1 del §8ter per il ridisegno ([referto](../magazzino/registro/referti/grandezze_volatilita_ridisegno_2026-11-24.md)).
@@ -40,25 +59,6 @@ Prima passata del gatekeeper: **BLOCCA**, un bloccante e nove riserve applicate 
 
 Prossimo: seconda passata del gatekeeper sul referto, poi il passo 2 (proprieta' e potenza: VIX grezzo o ricalibrato,
 orizzonti, quote dai nodi riservati, istantanee e licenza del GEX, ordine della stima di potenza).
-
----
-
-## 2026-11-24 (7) — I3: positivo a h = 5 **scatta** (h = 5 resta); decima passata **PASSA CON RISERVE**, riserve applicate; 0 trial
-
-**Prova del positivo a h = 5** (un solo tentativo, regola scritta prima; commit `b2c29c8`, 14.500 sedute, 500
-repliche, seme 20261130): **scatta**, mediana di δ per la costante −3,79 a h = 5, nessuna replica senza campione,
-guardia 0 su 500: **h = 5 resta in I3**, soggetto alla decadenza sullo sviluppo vero
-([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), "Prova del controllo positivo a h = 5").
-
-**Decima passata del gatekeeper (commit `d97f47b`): PASSA CON RISERVE**, 0 bloccanti; B1, B2 e R1-R10 della nona
-chiusi; la scelta sulle chiusure anticipate (fuori dall'indice) e' coerente con la misura. Otto riserve di testo,
-applicate: regole delle correzioni (3) e (4) del generatore, probabilita' condizionate per non contare due volte le
-sedute mancanti, chiavi del requisito 5 per le correzioni (1) e (2), §3 allineato al §10, versioni dell'esito del
-24/11, "5 sedute" piene nel pacchetto, cella unita degli anni corti. **Scelta presa insieme sulla riserva 1**: in un
-orizzonte che resta, una replica senza campione conta come δ sotto −τ (lato prudente). 31 test.
-
-**Prossimo**: il codice del commit (1) sui dati, coi requisiti del referto, poi la passata del gatekeeper sul codice;
-nessun download prima della conferma di Matteo.
 
 ---
 
