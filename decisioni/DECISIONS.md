@@ -158,6 +158,24 @@ degenerano).
 
 ---
 
+## 2026-11-23 — Strategie dei soci in `esercizio/motore_profitto/`; un solo ingresso per il materiale; 0 trial
+
+**Decisioni di Matteo (23/11).**
+1. Le strategie che i soci hanno testato e tengono accese sulle prop entrano in `esercizio/`, nella cartella
+   [`motore_profitto/`](../esercizio/motore_profitto/README.md). Il pacchetto contiene l'EA MT5 `PortafoglioIntraday` e
+   i bot NinjaTrader sui futures. La regola 3 di [`esercizio/README.md`](../esercizio/README.md) ora ammette il
+   verdetto dei soci, scritto come tale: `trad` non l'ha verificato, coerente con la divisione dei ruoli del 09/11.
+2. Sul suo conto prop CFD (2-Step 15k, MT5) Matteo usa solo l'EA MT5, con il preset BIL riscalato a 15k
+   (`BIL_FN15K`). I bot NinjaTrader leggono il volume dei futures e il cuscinetto ha il drawdown del conto futures
+   scritto nel codice. EA acceso il 23/11, settimana di prova a PC acceso, poi VPS. La scelta di accendere e' di
+   Matteo, sull'EV dei payout.
+3. `entrata/`, cartella d'arrivo creata per necessita' e fuori da git, e' **cancellata**. Il materiale entra solo da
+   [`Da distillare/`](Da%20distillare/README.md). Il suo protocollo non copriva questo caso. Ora ha tre aggiunte: una
+   riga per i pacchetti operativi dei soci; il codice si confronta con un diff e i binari non si tengono; si può usare
+   un file prima di smistarlo.
+
+---
+
 ## 2026-11-22 — I3 passo 2 **chiuso** (sesta passata: PASSA CON RISERVE); sessione registrata; 0 trial
 
 Sesta passata del gatekeeper sul passo 2 (commit `7259c62`): **PASSA CON RISERVE**. N2 gira dopo i soli conteggi; il

@@ -14,6 +14,9 @@ dominio**.
 25/10/2026). Ogni sessione che la trova piena smista ciò che riesce, di Matteo o di Claude, anche se il materiale l'ha
 portato qualcun altro.
 
+Un file si può **usare prima di smistarlo** (per esempio installare un EA dei soci il giorno in cui arriva). In quel
+caso lo smistamento si chiude nella stessa sessione, oppure si scrive dove si è arrivati (Matteo, 23/11).
+
 Un lavoro di smistamento che si chiude in più sessioni (per tempo o per limite di token) **non è una violazione**. Chi
 si ferma a metà scrive dove è arrivato, come per ogni lavoro interrotto; il file resta qui finché lo smistamento non è
 finito. Un file che non si sa dove mettere non resta qui: si chiede a Matteo nella stessa sessione.
@@ -41,7 +44,10 @@ versionabile solo dopo lo smistamento, nella sua cartella e con le regole di que
 4. **Registrarlo** nel registro indicato dalla tabella. Un file spostato senza riga di registro è materiale che
    nessuno ritroverà.
 5. **Se sostituisce un file più vecchio** (un export aggiornato), il vecchio si toglie solo dopo aver verificato che
-   il nuovo lo contiene tutto.
+   il nuovo lo contiene tutto. **Per il codice** vince la versione con il contenuto più recente, stabilita con un
+   `diff`, non la data d'arrivo: il 23/11 un pacchetto arrivato due giorni dopo conteneva un file più vecchio. Un
+   binario compilato (`.ex5`, `.dll`) non si tiene se c'è il sorgente, perché non si può verificare da cosa è stato
+   compilato.
 6. **Se uno script legge quel file da un percorso fisso**, si aggiorna il percorso nello stesso momento.
 
 ## Dove va cosa
@@ -49,6 +55,7 @@ versionabile solo dopo lo smistamento, nella sua cartella e con le regole di que
 | Che cos'è | Dove va | Dove si registra |
 |---|---|---|
 | Fonte da cui imparare: PDF, trascrizione di un video, appunti, report di ricerca, codice di un indicatore o di un EA di terzi | [`magazzino/fonti/sorgenti/`](../../magazzino/fonti/sorgenti/) | riga in [`_INTAKE.md`](../_INTAKE.md), stato `grezzo` |
+| Pacchetto operativo dei soci: strategie che fanno già girare (codice, preset, istruzioni), da installare e non da valutare | `esercizio/<pacchetto>/`, con un README che dice "verdetto dei soci, non verificato da `trad`" e la configurazione per conto (esempio: [`esercizio/motore_profitto/`](../../esercizio/motore_profitto/README.md)) | riga in [`esercizio/README.md`](../../esercizio/README.md) e voce in [`DECISIONS.md`](../DECISIONS.md); niente nomi né percorsi personali prima di git |
 | Strategia da valutare | la fonte in `_sorgenti/`, la scheda in [`magazzino/registro/documenti/strategie_candidate/`](../../magazzino/registro/documenti/strategie_candidate/) | riga in `_INTAKE.md` |
 | Materiale portato dai soci: export Telegram, export di conti, schermate | [`magazzino/fonti/materiale_socio/`](../../magazzino/fonti/materiale_socio/)`<fonte>_<tipo>_<periodo>/` (fuori da git) | tabella di [`magazzino/fonti/materiale_socio/README.md`](../../magazzino/fonti/materiale_socio/README.md); anche `_INTAKE.md` se è una fonte di segnali |
 | Export del canale del mentore | `_export_telegram/` (nome fisso, fuori da git) | controllo di copertura con `magazzino/registro/codice/mentor_signals/coverage.py` |

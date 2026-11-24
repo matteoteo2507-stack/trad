@@ -118,3 +118,6 @@ esercizio/signal_copier/VPS_COPIER_SETUP.md
 # Export Telegram/MT5 portati dal socio (chat, conti): dati, non codice. Tracciati solo i .md alla radice.
 /magazzino/fonti/materiale_socio/*/
 magazzino/registro/codice/forexgump/signals.csv
+
+# Configurazione del guardiano Telegram (token e chat): MAI su git
+esercizio/motore_profitto/guardiano_telegram/config.json

@@ -1,0 +1,22 @@
+MOTORE PROFITTO - pacchetto per il conto MT5 di un socio (22/11/2026)
+Codice completo, versioni attualmente in uso.
+
+=== NinjaTrader 8 (conto FundedNext Futures Rapid Daily 25k) ===
+Copiare i file nelle stesse cartelle in Documenti\NinjaTrader 8\bin\Custom\ e compilare (F5 nel NinjaScript Editor).
+
+Strategies\OroOrderFlowNT.cs      GC 5m, Tick Replay. GROSSI (scambi grossi netti z 2,5, filtro POC, 2R, aggiunta a +1R)
+                                  + FADE range apertura 09:30 con filtro volatilita (terzo alto ultimi 120 gg = salta).
+                                  Rischio 0,75%, dopo 2 perdite di fila (anche di SPINTA) rischio x0,5, stop giorno 490.
+Strategies\OroSpintaNT.cs         GC 5m. SPINTA: scambi grossi z 2,75, stop a meta, target 4R, uscita 60 min, 1 al giorno.
+Strategies\PortafoglioIntradayNT.cs  Regole intraday (3 NAS prima ora, 6 S&P NR-ORB, 7 NAS NR-ORB, 8 petrolio NR-ORB Londra)
+                                  + news oro stop-and-reverse su NFP. Sulla prop: gruppo C = "1", news = "1", stop 490.
+AddOns\CuscinettoMP.cs            Modulo comune: rischio x clip((saldo - limite)/1000; 0,35; 1), limite = min(picco-1000; 25100).
+Indicators\*.cs                   Solo grafica (nessun ordine): footprint, bolle scambi grossi, zone, monitor e radar segnali.
+news_eventi.csv                   Calendario news usato dalla regola news.
+
+=== MetaTrader 5 ===
+Experts\PortafoglioIntraday.mq5/.ex5  EA portafoglio intraday su CFD, versione corretta 20/11
+                                      (fix: il petrolio entrava sul CFD sbagliato). Va in MQL5\Experts.
+Presets\PortafoglioIntraday_*.set     Impostazioni: F25K = FTMO 25k, P25K = PU Prime 25k, BIL = versione bilanciata.
+
+Note: i simboli nei set sono quelli del broker (.cash = FTMO). Prima di usarli su un conto controllare i nomi dei simboli.
