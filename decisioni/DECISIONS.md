@@ -11,6 +11,23 @@
 
 ---
 
+## 2026-11-24 (5) — I3: scelte prese insieme sulla nona passata (verifica corretta per le celle, prova del positivo a h = 5, difetti comuni nella verifica); 0 trial
+
+Prese insieme, gratis per P6 del §8ter (prima del commit di congelamento), sui bloccanti e su R5 della nona passata
+(voce sotto):
+1. **B1**: nella verifica del generatore una cella strumento × anno fallisce se il p bilaterale binomiale del conteggio
+   vero, sotto Bin(n_anno; q̂) con q̂ dai 200 anni simulati, scende sotto **0,05 / numero di celle**; le celle con meno di
+   circa 60 sedute (anni parziali) si **uniscono all'anno vicino**.
+2. **B2**: una **prova del controllo positivo a h = 5** con lo stesso difetto (5% su 17, L = 3), su una serie piu' lunga
+   fissata prima della corsa (per esempio 10 × 1.450 sedute), **un solo tentativo**, seme nuovo; se non scatta, **h = 5
+   esce da I3**.
+3. **R5**: nella verifica la **quota di esclusione per unione per anno**; due correzioni ammesse in piu': **seduta
+   mancante per tutti** e **quota giornaliera di nulli** dall'istogramma dei conteggi per strumento e anno (solo
+   conteggi, nuova chiave ammessa nel requisito 5).
+Da applicare al referto (§9 e requisiti) con le riserve R1, R3-R10, prima del codice del commit (1) e della prova a h = 5.
+
+---
+
 ## 2026-11-24 (4) — I3: nona passata del gatekeeper **BLOCCA** la parte sui dati (tolleranza per cella, nessun positivo a h = 5); 0 trial
 
 Nona passata su testo e codice sintetico (commit `f916dcc`, 26 test verdi): testo e codice reggono, ma il commit (1) sui
