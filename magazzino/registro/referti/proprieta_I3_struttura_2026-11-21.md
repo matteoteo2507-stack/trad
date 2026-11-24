@@ -849,3 +849,13 @@ limite del positivo; R2 → corretta in DECISIONS 2026-11-24 (4); R3 → §10 (o
 (chiusure anticipate fuori dall'indice); R5 → §9 e requisito 5 (unione per anno, correzioni 3 e 4, istogramma); R6 →
 §3 (entrambe le griglie); R7 → §9; R8 → §9 (regola dei semi); R9 → requisito 7 e 4 test nuovi (30 verdi); R10 →
 commento e `durata_catena` in `simula_n2.py`, versioni negli esiti, righe di `_modifiche.md`.
+
+## Prova del controllo positivo a h = 5 (24/11, un solo tentativo)
+
+Script `magazzino/registro/codice/struttura/prova_positivo_h5.py`, esito `esiti/prova_positivo_h5_2026-11-24.json`
+(commit `b2c29c8`, Python 3.12.10, numpy 2.4.4, scipy 1.17.1), regola scritta prima nel §9: 5% fisso di prezzi fermi
+su tutti i 17, catena di 3 quarti d'ora, **14.500 sedute**, 500 repliche, seme 20261130, soli dati sintetici.
+**Scatta: h = 5 resta in I3.** Nessun orizzonte decaduto (0 repliche senza campione a h = 1 e a h = 5); mediana di δ per
+la costante **−3,79 a h = 5** (quantili 5% e 95%: −5,96 e −1,72) e −2,28 a h = 1; guardia del gemello sincrono 0 su 500
+in entrambi gli orizzonti; matrici non valide 0. Lettura: con abbastanza sedute N2 vede un difetto pesante anche a 5
+sedute; sullo sviluppo vero (circa 1.450 sedute) h = 5 resta soggetto alla regola della decadenza (§9, R7).
