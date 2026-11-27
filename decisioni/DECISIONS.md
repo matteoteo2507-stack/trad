@@ -11,6 +11,19 @@
 
 ---
 
+## 2026-11-27 (5) — I3: fonti verificate sul testo; nessuna smentisce le scelte della potenza; 0 trial
+
+Passo (2) del §10, prima del download ([`esiti/verifica_fonti.md`](../magazzino/registro/codice/struttura/esiti/verifica_fonti.md)),
+sui testi di Laurent-Rombouts-Violante (CIRANO 2009s-45), Patton-Sheppard (OMI 02/07) ed Engle-Sheppard (NBER 8554).
+Stein e Frobenius conservano l'ordinamento con un proxy **condizionatamente** non distorto (verificato): per I3
+l'ordinamento vale rispetto all'attesa dello stimatore, col limite del §4 gia' misurato da N1. La maggiore potenza della
+QLIKE e' mostrata solo nel caso univariato: **non dimostrata** nel multivariato, quindi Stein resta per la consistenza,
+non per la potenza. Le fonti non trattano previsioni di correlazione: costruzione nostra, dichiarata. Per il DCC il §6
+usa la prima approssimazione di Engle-Sheppard, che consigliano la seconda: scelta da fare insieme al passo 3. Nessun
+cambio prima del download; stop qui fino al via di Matteo.
+
+---
+
 ## 2026-11-27 (4) — I3: confermati l'orario di pausa e il taglio dei 9 file all'11/11; 0 trial
 
 Prese insieme (raccomandate da Claude), prima di ogni dato, sui due punti aperti della voce 2026-11-27:

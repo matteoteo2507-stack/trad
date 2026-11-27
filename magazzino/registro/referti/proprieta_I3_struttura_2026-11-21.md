@@ -165,6 +165,14 @@ l'ordinamento; (b) quale non distorsione chiede il teorema (la non distorsione *
 prevede: qui la correlazione, resa vera in media dal fattore di scala, non giorno per giorno: se il teorema la chiede
 giorno per giorno va detto e deciso); (c) se il "QLIKE piu' potente" di Patton-Sheppard vale nel caso multivariato.
 Una perdita non si cambia dopo un esito (G2).
+**Verificate sul testo il 27/11** ([`esiti/verifica_fonti.md`](../codice/struttura/esiti/verifica_fonti.md)): (a) Stein e
+Frobenius conservano l'ordinamento (LRV tabella 1 e proposizione 1; PS eq. 50): verificato; (b) la non distorsione
+richiesta e' **condizionata**, giorno per giorno: l'ordinamento vale rispetto all'attesa del nostro stimatore, e il
+limite della scala in media resta quello del §4, misurato da N1; (c) "QLIKE piu' potente" e' mostrato solo su
+simulazioni **univariate**: nel caso multivariato e' non dimostrato, e Stein resta scelta per la consistenza; sulle
+correlazioni le fonti non dicono nulla (costruzione nostra), e la nota 9 di PS conferma il caveat del bersaglio
+alternativo. Previsione del DCC a piu' passi (§6): la formula del §6 e' la prima approssimazione di Engle-Sheppard, che
+preferiscono la seconda (R in avanti): scelta al passo 3.
 
 ## 6. Benchmark (Matteo: EWMA 0,94)
 
