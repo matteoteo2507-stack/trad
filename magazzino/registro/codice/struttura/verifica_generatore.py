@@ -119,13 +119,14 @@ def main() -> None:
         corr = tuple(int(x) for x in sys.argv[sys.argv.index("--correzioni") + 1].split(","))
     g = G.verifica(dati=False)
     G.richiedi("controllo_struttura.json")
+    G.catena_guasta([corr[:k] for k in range(len(corr))], nome_esito)
     if not G.HASH_I3.exists() or G._sporchi([str(G.HASH_I3)]):
         raise G.GuardiaFallita("hash degli 8 nuovi mancanti o non committati")
     conteggi = json.loads((G.ESITI / "controllo_struttura.json").read_text(encoding="utf-8"))
     out = {"commit": g["commit"], "versioni": g["versioni"], **verifica(conteggi, corr)}
     G.controlla_chiavi(out, CHIAVI)
     dest = G.scrivi_esito(nome_esito(corr), out)
-    print("scritto", dest.relative_to(G.ROOT), "|", out["esito"], "| celle fallite", len(out["fallite"]))
+    print("scritto", dest.name, "|", out["esito"], "| celle fallite", len(out["fallite"]))
 
 
 if __name__ == "__main__":

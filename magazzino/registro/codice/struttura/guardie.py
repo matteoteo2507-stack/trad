@@ -177,10 +177,25 @@ def protetto(funzione):
 
 
 def controlla_chiavi(uscita: dict, ammesse: set, percorso: str = "") -> None:
-    """Ferma lo script se l'uscita ha una chiave non ammessa (a ogni livello dei dizionari)."""
+    """Ferma lo script se l'uscita ha una chiave non ammessa **a questo livello**: ogni script controlla i suoi
+    sottodizionari con il loro insieme di chiavi (riserva R9 dell'undicesima)."""
     extra = set(uscita) - ammesse
     if extra:
         raise GuardiaFallita("chiavi non ammesse in uscita%s: %s" % (percorso, sorted(map(str, extra))))
+
+
+def leggi_esito(nome: str) -> dict:
+    return json.loads((ESITI / nome).read_text(encoding="utf-8"))
+
+
+def catena_guasta(prefissi, nome_esito) -> None:
+    """Bloccante B1 dell'undicesima: una configurazione corretta del generatore si usa solo se **ogni** configurazione
+    precedente della catena ha una verifica committata con esito GUASTO."""
+    for p in prefissi:
+        nome = nome_esito(p)
+        richiedi(nome)
+        if leggi_esito(nome).get("esito") != "GUASTO":
+            raise GuardiaFallita("%s non e' GUASTO: la correzione successiva non si applica" % nome)
 
 
 def scrivi_esito(nome: str, uscita: dict) -> Path:

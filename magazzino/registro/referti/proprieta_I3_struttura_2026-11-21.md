@@ -336,7 +336,10 @@ senza buchi ne' Bartlett). Riserva del gatekeeper: "un negativo con un processo 
   Limite dichiarato: la correzione per il numero di celle vale per sedute indipendenti; esclusioni raggruppate nel
   tempo (mesi di feed difettoso) rendono la verifica piu' severa del 5% dichiarato. Se dopo le quattro la verifica fallisce ancora, N2 e' GUASTO e si torna al passo 2. Resta gratis
   solo la correzione di un errore di codice (il generatore non fa cio' che il testo dice). Il rollover dentro W non si simula: per la regola del §3 cade alla
-  riapertura serale; se il controllo trova pause dentro W, il punto 3 le contiene gia'.
+  riapertura serale. Le pause dentro W (orari di pausa, sezione "Codice del commit (1) sui dati") tolgono un
+  rendimento anche quando i suoi estremi esistono: il generatore le riproduce con la probabilita' **condizionata** agli
+  estremi presenti (`p_interrotti`; *fino al 27/11 qui si diceva che il punto 3 le conteneva gia': non e' cosi',
+  perche' il punto 3 toglie prezzi, non rendimenti; riserva R1 dell'undicesima passata*).
 - **Universo e sedute simulate** (riserva R5 della settima): l'universo e' quello fissato dal controllo di struttura
   vero (DAX e regola del 10% decisi li'); **nelle repliche la regola del 10% non si riapplica**, cosi' i due gemelli
   hanno lo stesso universo. Le sedute simulate sono le **date XNYS reali dello sviluppo comune**, con le chiusure
@@ -915,9 +918,11 @@ taglio, fuso una volta sola, sedute piene, griglia di 27 prezzi, orari di pausa,
 `controllo_struttura.py` (solo conteggi, sviluppo e blocco separati, DAX, regola del 10%, selezione con la data limite,
 origini dalle maschere), `difetti.py` (parametri del generatore dai conteggi, correzioni (1)-(4) con le probabilita'
 condizionate), `verifica_generatore.py` (celle con correzione, anni corti uniti, nessuna replica di N2), `n2.py`,
-`potenza.py`; test sintetici in `test_dati.py` (29) oltre ai 31 di `test_struttura.py`: **60 verdi**. Ordine di corsa:
-download degli 8 e `dati.py --registra` (commit) → `controllo_struttura.py` (commit) → `verifica_generatore.py`
-(commit) → `n2.py` (commit) → verifica delle fonti (`esiti/verifica_fonti.md`, commit) → `potenza.py`.
+`potenza.py`; test sintetici in `test_dati.py` (29) oltre ai 31 di `test_struttura.py`: **60 verdi**. Ordine di corsa,
+**quello del §10** (riserva R11 dell'undicesima): verifica delle fonti sul testo (`esiti/verifica_fonti.md`, commit)
+→ download degli 8 e `dati.py --registra` (commit) → `controllo_struttura.py` (commit) → `verifica_generatore.py`
+(commit) → `n2.py` (commit) → `potenza.py`. Le guardie impongono le fonti solo prima della potenza; il §10 le mette
+prima del download, e si segue il §10.
 
 **Punti nuovi, scritti qui prima di ogni dato** (gratis per P6 del §8ter, punto 1):
 - **i 9 M5 della volatilita' arrivano all'11/11** (ultima barra 2026-11-11 21:10-22:05 UTC, letta solo la data): non
@@ -935,3 +940,41 @@ download degli 8 e `dati.py --registra` (commit) → `controllo_struttura.py` (c
   da un test);
 - N2 esclude dalla decisione gli orizzonti gia' decaduti sui conteggi veri; gli esiti di verifica e N2 portano nel nome
   le correzioni del generatore usate (`_c0`, `_c1`, ...), ciascuna col suo seme (20261140-20261144 per la verifica).
+
+## Undicesima passata del gatekeeper (27/11, codice del commit (1), commit `f62267a`): BLOCCA
+
+60 test verdi rilanciati, `trial_ledger --check` a 0, versioni e codici Dukascopy verificati; nessuno script principale
+lanciato, nessun dato letto, 0 trial. **Bloccanti**: **B1** le correzioni del generatore e il file di N2 si potevano
+scegliere dopo aver visto δ (verifica con correzioni senza una base GUASTO, piu' N2, potenza con `--n2` da riga di
+comando); **B2** la correzione (1) non riproduceva `p_ora` per orario (catena omogenea con probabilita' che cambiano da
+orario a orario; prova del gatekeeper: 0,22-0,30 contro 0,30 atteso, 0,16 contro 0,02 dopo) e andava in errore con un
+orario di pausa; la durata dei mancanti non era corretta per il troncamento. **Riserve**: R1 intervalli interrotti
+contati due volte; R2 barre assenti per orario mancanti nei conteggi; R3 sedute mancanti per tutti e DAX-BUND contate
+sui 17 e non sull'universo; R4 selezione con pause diverse dal controllo e un solo conteggio su tutti gli anni; R5
+universo non nell'ordine del §7; R6 stesso seme per tutte le configurazioni di N2; R7 nessuna guardia a runtime contro
+i CSV in N2; R8 scaricatore senza guardie e con anni in errore non decisi; R9 tre docstring false e chiavi controllate
+a un solo livello; R10 scelte non scritte; R11 due ordini per la verifica delle fonti; R12 potenza con l'universo dei
+conteggi invece che dell'N2.
+
+**Applicate il 27/11** (gratis, P6 punto 1):
+- **B1**: `guardie.catena_guasta`: una configurazione corretta si usa solo se ogni configurazione precedente ha una
+  verifica committata GUASTO (in `verifica_generatore`, `n2` e `potenza`); un solo N2 (rifiuto se ne esiste gia' uno);
+  la potenza usa l'unico `n2_c*.json` e controlla che le sue correzioni siano la prima verifica che passa;
+- **B2**: `simula_n2.catena_mancanti`: catena **non omogenea** con marginale p_ora esatta per orario e durata L dove i
+  vincoli lo consentono; L dalla durata contata con la correzione del troncamento su 27 prezzi; test con un orario al
+  90% e quattro al 30%;
+- R1 intervalli interrotti contati solo con gli estremi presenti, probabilita' condizionata nel generatore, §9
+  allineato; R2 chiave `barre_assenti_per_orario` (78) nella cella; R3 conteggi sull'universo; R4 selezione con le
+  pause del controllo, per strumento e per anno, mediana dello stesso strumento e anno, esclusioni dello strumento (non
+  per unione), solo conteggi, nessun errore standard; R5 universo nell'ordine del §7; R6 semi di N2 per configurazione
+  (20261123 la base, 20261145-20261148 le corrette); R7 in N2 `dati.leggi_barre` sostituita da una funzione che si
+  ferma; R8 scaricatore **riscritto** (non importato) con guardie in testa, commit e versioni in `hash_dati.json`, tre
+  tentativi per anno e poi strumento fermo (un anno vuoto prima della quotazione non e' un errore); R9 docstring
+  corrette, sottodizionari controllati ciascuno col suo insieme di chiavi; R11 vale l'ordine del §10; R12 la potenza
+  prende l'universo dell'N2.
+- **R10, scelte scritte qui**: celle dell'istogramma dei nulli = `rint(26·quota)` (la soglia del 25% si conserva: 0,25
+  nella cella 6, ogni quota sopra nella 7 o oltre, verificato dal gatekeeper); anni corti: il primo si unisce al
+  successivo, gli altri al precedente; orari di pausa per anno solare, contando le presenze di tutte le sedute
+  dell'anno (comprese quelle del blocco nel 2024: solo presenze); l'inizio comune non si ricalcola se lo strumento piu'
+  tardo esce.
+Test: 74 verdi (`test_struttura.py` 31, `test_dati.py` 29, `test_dati_undicesima.py` 14).

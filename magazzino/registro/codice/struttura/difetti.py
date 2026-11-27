@@ -5,7 +5,11 @@
 sceglie la cella):
 - `p_giorno` = sedute senza prezzi / sedute; `p_ora[k]` = prezzi mancanti all'orario k / sedute presenti;
 - `p0` = nulli / osservati; `L` = `durata_catena(L̃, p0)` (la durata della catena che riproduce quella contata);
-- `p_interrotti[j]` = intervalli interrotti all'orario j / sedute presenti, solo se ce n'e' almeno uno;
+- `p_interrotti[j]` = intervalli interrotti con gli estremi presenti / sedute con gli estremi presenti (probabilita'
+  **condizionata**: un intervallo con un estremo mancante e' gia' mancante; riserva R1 dell'undicesima), solo se ce
+  n'e' almeno uno;
+- (1) `L_mancanti` = durata della catena che riproduce la durata **contata** delle serie di prezzi mancanti, corretta
+  per il troncamento su 27 prezzi come per i nulli (bloccante B2 dell'undicesima);
 - correzioni (1)-(4), solo se elencate in `correzioni` e **in quest'ordine** (un prefisso di 1, 2, 3, 4): (1)
   `L_mancanti`; (2) DAX e BUND mancanti insieme; (3) seduta mancante per tutti; (4) quota giornaliera di nulli
   dall'istogramma. Con (2) e (3) `p_giorno` diventa **condizionata** (una seduta mancante si conta una volta).
@@ -67,8 +71,11 @@ def da_conteggi(conteggi: dict, universo, anni: np.ndarray, correzioni=()) -> di
             d["p0"][righe, i] = p0
             d["L"][righe, i] = S.durata_catena(np.array([_num(x["durata_media_nulli"], np.nan)]),
                                                p0=np.array([p0]))[0]
-            interr[righe, :, i] = np.asarray(x["intervalli_interrotti_per_orario"], float) / pres
-            Lm[righe, i] = _num(x["durata_media_mancanti"], 1.0)
+            den = np.maximum(np.asarray(x["intervalli_con_estremi_presenti_per_orario"], float), 1.0)
+            interr[righe, :, i] = np.asarray(x["intervalli_interrotti_per_orario"], float) / den
+            q_manc = sum(x["prezzi_mancanti_per_orario"]) / (S.N_PREZZI * pres)
+            Lm[righe, i] = S.durata_catena(np.array([_num(x["durata_media_mancanti"], np.nan)]),
+                                           p0=np.array([q_manc]), n=S.N_PREZZI)[0]
     if interr.any():
         d["p_interrotti"] = interr
     if 1 in c:

@@ -7,7 +7,7 @@ il differenziale di Stein EWMA − costante e ne riporta **solo la deviazione HA
 ritardi: nessuna media, nessun segno, nessuna perdita, nessuna matrice. La serie dei differenziali vive solo dentro
 `deviazioni` e non esce. MDE = fattore × deviazione / √n per n = sedute di 1 e 2 anni di holdout dal solo calendario.
 
-python magazzino/registro/codice/struttura/potenza.py [--n2 n2_c0.json]   -> esiti/potenza.json
+python magazzino/registro/codice/struttura/potenza.py   -> esiti/potenza.json (usa l'unico esiti/n2_c*.json)
 """
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ import dati as D  # noqa: E402
 import guardie as G  # noqa: E402
 import misura as M  # noqa: E402
 import previsioni as V  # noqa: E402
+import verifica_generatore as VG  # noqa: E402
 
 ESITO = "potenza.json"
 V_MIN_ORIGINI = 50     # come simula_n2.MIN_ORIGINI e la decadenza sui conteggi
@@ -74,10 +75,20 @@ def sedute_holdout() -> dict:
     return {"1": int(len(uno)), "2": int(len(due))}
 
 
-def calcola(conteggi: dict, orizzonti) -> dict:
+def unico_n2() -> str:
+    """Bloccante B1 dell'undicesima: la potenza usa l'unico N2 che esiste, non uno scelto da riga di comando."""
+    trovati = sorted(p.name for p in G.ESITI.glob("n2_c*.json"))
+    if len(trovati) != 1:
+        raise G.GuardiaFallita("serve esattamente un N2, trovati %d" % len(trovati))
+    return trovati[0]
+
+
+def calcola(conteggi: dict, orizzonti, universo=None) -> dict:
+    """`universo`: quello dell'N2 che ha passato (riserva R12: dopo un'uscita di strumento non coincide coi
+    conteggi)."""
     from motore.core.verifiche import fattore_potenza
 
-    universo = list(conteggi["universo"])
+    universo = list(conteggi["universo"] if universo is None else universo)
     giorni, _ = D.sedute(conteggi["inizio_comune"], conteggi["fine_sviluppo"])
     controlla_data(giorni)
     P = np.full((len(giorni), D.N_PREZZI, len(universo)), np.nan)
@@ -103,8 +114,8 @@ def calcola(conteggi: dict, orizzonti) -> dict:
 
 
 def main() -> None:
-    nome_n2 = sys.argv[sys.argv.index("--n2") + 1] if "--n2" in sys.argv else "n2_c0.json"
     g = G.verifica()
+    nome_n2 = unico_n2()
     G.richiedi("verifica_fonti.md", "controllo_struttura.json", nome_n2)
     if G._sporchi([str(G.HASH_I3)]):
         raise G.GuardiaFallita("hash degli 8 nuovi non committati")
@@ -114,10 +125,15 @@ def main() -> None:
     conteggi = json.loads((G.ESITI / "controllo_struttura.json").read_text(encoding="utf-8"))
     decaduti = set(conteggi["orizzonti_decaduti"]) | set(n2["risultato"]["orizzonti_decaduti"])
     orizzonti = [h for h in V.ORIZZONTI if h not in decaduti]
-    out = {"commit": g["commit"], "versioni": g["versioni"], "sha256": g["sha256"], **calcola(conteggi, orizzonti)}
+    corr = tuple(n2["correzioni"])
+    G.catena_guasta([corr[:k] for k in range(len(corr))], VG.nome_esito)
+    if G.leggi_esito(VG.nome_esito(corr)).get("esito") != "PASSA":
+        raise G.GuardiaFallita("la verifica delle correzioni di N2 non e' PASSA")
+    out = {"commit": g["commit"], "versioni": g["versioni"], "sha256": g["sha256"],
+           **calcola(conteggi, orizzonti, universo=n2["universo"])}
     G.controlla_chiavi(out, CHIAVI)
     dest = G.scrivi_esito(ESITO, out)
-    print("scritto", dest.relative_to(G.ROOT), "| orizzonti", orizzonti)
+    print("scritto", dest.name, "| orizzonti", orizzonti)
 
 
 if __name__ == "__main__":

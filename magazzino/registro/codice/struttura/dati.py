@@ -1,12 +1,15 @@
 """Dati di I3: scaricatore degli 8 strumenti nuovi, loader, sedute e griglia di 27 prezzi (referto §3, §7, §10). 0 trial.
 
-- **Scaricatore** (`python dati.py --scarica`): gli 8 strumenti nuovi da Dukascopy M5, lato bid, come
-  `volatilita/scarica_dukascopy.py` (stessa libreria e stesso formato), ma con **date fisse**: dal 2012-01-01 al
+- **Scaricatore** (`python dati.py --scarica`): gli 8 strumenti nuovi da Dukascopy M5, lato bid. **Riscritto**, non
+  importato, da `volatilita/scarica_dukascopy.py` (stessa libreria e stesso formato; quello usa la data di oggi e salta
+  gli anni in errore): **date fisse**, guardie in testa, e un anno che va in errore si riprova 3 volte e poi **ferma lo
+  strumento** (nessun buco silenzioso; un anno vuoto prima della quotazione non e' un errore). Date: dal 2012-01-01 al
   2026-11-11 00:00 UTC escluso, quindi l'ultima barra e' del 2026-11-10. Scrive in `motore/data/prezzi/struttura_m5/`
   (fuori da git) e **rifiuta se il file esiste**. Stampa solo il numero di barre per anno. Poi
   `python dati.py --registra` scrive una volta sola `hash_dati.json` (sha256 e byte; rifiuta se esiste).
 - **Loader**: legge fino a `TAGLIO_UTC` escluso, fermandosi al primo blocco oltre (i 9 file della volatilita' arrivano
-  all'11/11: le barre dell'11 non entrano mai in memoria); la potenza e il controllo di selezione passano
+  all'11/11: le barre dell'11 stanno nell'ultimo blocco letto, vengono scartate subito e non entrano in nessun oggetto
+  restituito); la potenza e il controllo di selezione passano
   `fino_a = TAGLIO_SVILUPPO_UTC` (sedute fino al 2024-11-08).
 - **Fuso**: `a_new_york` aggiunge una colonna con l'ora di New York una volta sola e si ferma se e' gia' stata
   aggiunta (una correzione, un proprietario).
@@ -61,6 +64,15 @@ def codici() -> dict:
             "NATGAS": ins.INSTRUMENT_CMD_ENERGY_GAS_CMD_USD, "BTCUSD": ins.INSTRUMENT_VCCY_BTC_USD}
 
 
+def _fetch(dk, codice, da, a, nome, anno, tentativi: int = 3):
+    for k in range(tentativi):
+        try:
+            return dk.fetch(codice, dk.INTERVAL_MIN_5, dk.OFFER_SIDE_BID, da, a)
+        except Exception as e:  # noqa: BLE001
+            print("  %s %d: tentativo %d fallito (%s)" % (nome, anno, k + 1, type(e).__name__), flush=True)
+    raise G.GuardiaFallita("%s %d: scarico fallito dopo %d tentativi, strumento fermo" % (nome, anno, tentativi))
+
+
 def scarica(nome: str) -> None:
     import dukascopy_python as dk
 
@@ -72,7 +84,7 @@ def scarica(nome: str) -> None:
     for anno in range(INIZIO_SCARICO.year, FINE_SCARICO.year + 1):
         da = dt.datetime(anno, 1, 1, tzinfo=dt.timezone.utc)
         a = min(dt.datetime(anno + 1, 1, 1, tzinfo=dt.timezone.utc), FINE_SCARICO)
-        df = dk.fetch(codici()[nome], dk.INTERVAL_MIN_5, dk.OFFER_SIDE_BID, da, a)
+        df = _fetch(dk, codici()[nome], da, a, nome, anno)
         n = 0 if df is None else len(df)
         print("  %s %d: %d barre" % (nome, anno, n), flush=True)
         if n:
@@ -94,9 +106,10 @@ def registra() -> None:
     """Registra sha256 e byte degli 8 nuovi, una volta sola, dopo aver controllato l'ultima data di ogni file."""
     if G.HASH_I3.exists():
         raise G.GuardiaFallita("%s esiste: non si riscrive" % G.HASH_I3.name)
+    g = G.verifica(dati=False)
     righe = {"nota": "sha256 e byte degli 8 strumenti nuovi di I3, registrati una volta sola dopo lo scarico "
                      "(referto del passo 2, requisiti del commit (1), punto 2).",
-             "percorsi": {}, "byte": {}, "sha256": {}}
+             "commit": g["commit"], "versioni": g["versioni"], "percorsi": {}, "byte": {}, "sha256": {}}
     for n in G.NUOVI:
         p = ROOT / G.DATI[n]
         if G.ultima_data(p) > G.ULTIMO_GIORNO_NUOVI:
@@ -212,7 +225,9 @@ if __name__ == "__main__":
         for n in nomi:
             if n not in G.NUOVI:
                 raise SystemExit("%s non e' fra gli 8 nuovi" % n)
-            scarica(n)
+        G.protetto(lambda: G.verifica(dati=False))
+        for n in nomi:
+            G.protetto(lambda n=n: scarica(n))
     elif "--registra" in sys.argv:
         G.protetto(registra)
         print("registrato", G.HASH_I3.relative_to(ROOT))

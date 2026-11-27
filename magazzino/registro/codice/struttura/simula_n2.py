@@ -28,6 +28,7 @@ N_PREZZI = 27         # la misura (misura.matrici) prende poi un prezzo su due: 
 N_H = 247              # sedute piene XNYS 2024-11-11 -> 2025-11-10 (referto §9)
 TAU = 0.5
 SEME = 20261123
+SEMI_N2 = {(): 20261123, (1,): 20261145, (1, 2): 20261146, (1, 2, 3): 20261147, (1, 2, 3, 4): 20261148}
 SEME_VERIFICA = 20261128   # 20261125 e 20261126 usati il 23/11 con la griglia a 30 minuti (esito nel referto)
 SEME_POSITIVO = 20261129
 REPLICHE = 500
@@ -99,14 +100,32 @@ def prob_fermo(p0: np.ndarray, L: np.ndarray) -> np.ndarray:
     return pu
 
 
+def catena_mancanti(p_ora: np.ndarray, L: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Correzione (1): catena **non omogenea** dei prezzi mancanti che riproduce esattamente la probabilita' p_ora[k]
+    di ogni orario (bloccante B2 dell'undicesima passata). Con π_k = p_ora[k]:
+    resta_k = 1 − 1/L, ristretta a [max(0, 1 − (1 − π_k)/π_{k−1}), min(1, π_k/π_{k−1})] (cosi' la probabilita'
+    d'ingresso sta in [0, 1]); entra_k = (π_k − π_{k−1}·resta_k)/(1 − π_{k−1}). La durata media vale L dove i vincoli non
+    mordono; dove mordono (orari di pausa, π vicino a 1) prevale la marginale. Restituisce (entra, resta) [t, k, i]."""
+    pi = np.clip(np.asarray(p_ora, float), 0.0, 1.0)
+    Lb = np.maximum(np.asarray(L, float), 1.0)[:, None, :]
+    prec = np.concatenate([np.zeros_like(pi[:, :1]), pi[:, :-1]], axis=1)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        lo = np.where(prec > 0, np.maximum(0.0, 1.0 - (1.0 - pi) / prec), 0.0)
+        hi = np.where(prec > 0, np.minimum(1.0, pi / prec), 0.0)
+        resta = np.clip(1.0 - 1.0 / Lb, lo, hi)
+        entra = np.where(prec < 1.0, (pi - prec * resta) / np.maximum(1.0 - prec, 1e-300), 0.0)
+    entra = np.clip(entra, 0.0, 1.0)
+    return entra, resta
+
+
 def applica_difetti(X: np.ndarray, rng: np.random.Generator, difetti: dict) -> np.ndarray:
     """Prezzi osservati. `difetti`: p_giorno[t, i], p0[t, i], L[t, i], p_ora[t, k, i] (k = 0..26).
     Ordine: seduta mancante, prezzi fermi (catena che riparte ogni seduta dalla sua distribuzione stazionaria: lo stato
     dell'open si estrae con probabilita' p0, ma il prezzo dell'open e' sempre quello vero), mancanti per ora.
 
     Correzioni ammesse del generatore (referto §9), attive solo se la chiave c'e' (la configurazione base non cambia):
-    (1) `L_mancanti[t, i]`: i mancanti per ora a blocchi (catena con probabilita' stazionaria p_ora per orario e durata
-        media L_mancanti); (2) `coppia` = (i, j) e `p_insieme[t]`: seduta mancante insieme per i due strumenti; (3)
+    (1) `L_mancanti[t, i]`: i mancanti per ora a blocchi (`catena_mancanti`: marginale p_ora esatta per orario,
+        durata media L_mancanti dove i vincoli lo consentono); (2) `coppia` = (i, j) e `p_insieme[t]`: seduta mancante insieme per i due strumenti; (3)
         `p_tutti[t]`: seduta mancante per tutti; (4) `quote` = (valori[a, i, b], cdf[a, i, b], anno[t]): quota
         giornaliera di nulli estratta per strumento-giorno; sopra il 25% lo strumento-giorno e' escluso subito (seduta
         vuota), sotto la catena usa quella quota. Con (2) e (3) `p_giorno` dev'essere gia' la probabilita'
@@ -118,12 +137,7 @@ def applica_difetti(X: np.ndarray, rng: np.random.Generator, difetti: dict) -> n
     resta = np.where(difetti["p0"] > 0, 1.0 - 1.0 / L, 0.0)
     c1, c2, c3, c4 = ("L_mancanti" in difetti, "coppia" in difetti, "p_tutti" in difetti, "quote" in difetti)
     if c1:
-        Lm = np.maximum(difetti["L_mancanti"], 1.0)
-        po = difetti["p_ora"]
-        entra = np.where(po > 0, po / (Lm[:, None, :] * np.maximum(1.0 - po, 1e-12)), 0.0)
-        if np.any(entra > 1.0):
-            raise ValueError("conteggi incoerenti: ingresso nei mancanti > 1")
-        resta_m = np.where(po > 0, 1.0 - 1.0 / Lm[:, None, :], 0.0)
+        ent_m, res_m = catena_mancanti(difetti["p_ora"], difetti["L_mancanti"])
     Y = np.empty_like(X)
     for t in range(T):
         u_tutti = rng.random() if c3 else 1.0
@@ -154,7 +168,7 @@ def applica_difetti(X: np.ndarray, rng: np.random.Generator, difetti: dict) -> n
             mm = np.zeros((K, N), bool)
             mm[0] = manca
             for k in range(1, K):
-                manca = np.where(manca, u_ora[k] < resta_m[t, k], u_ora[k] < entra[t, k])
+                manca = np.where(manca, u_ora[k] < res_m[t, k], u_ora[k] < ent_m[t, k])
                 mm[k] = manca
             y[mm] = np.nan
         else:

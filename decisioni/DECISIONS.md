@@ -40,6 +40,20 @@ numeri gia' visti, 0 trial). Prossimo: referto del passo 2 con le scelte tecnich
 
 ---
 
+## 2026-11-27 (2) — I3: undicesima passata sul codice **BLOCCA**, bloccanti e riserve applicati; 74 test; 0 trial
+
+Passata del gatekeeper sul codice del commit (1) (`f62267a`): **BLOCCA**, 2 bloccanti e 12 riserve. B1: le correzioni
+del generatore e il file di N2 si potevano scegliere dopo aver visto δ; B2: la correzione (1) del generatore non
+riproduceva i mancanti per orario. Applicati tutti, con i test chiesti
+([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), "Undicesima passata"): catena delle
+correzioni solo dopo un GUASTO, un solo N2, catena dei mancanti non omogenea, intervalli interrotti condizionati,
+conteggi sull'universo, selezione per strumento e anno, ordine del §7, semi di N2 per configurazione, guardia contro i
+CSV in N2, scaricatore con guardie e tre tentativi, ordine del §10 (fonti prima del download). Restano da confermare
+con Matteo i due punti della voce sotto (orario di pausa, 9 file all'11/11). Prossimo: passata del gatekeeper sulle
+correzioni; poi verifica delle fonti e, con la conferma di Matteo, il download.
+
+---
+
 ## 2026-11-27 — I3: codice del commit (1) sui dati scritto, **non eseguito**; due punti di misura nuovi da confermare; 0 trial
 
 Codice della parte sui dati di I3 coi requisiti del commit (1) del
