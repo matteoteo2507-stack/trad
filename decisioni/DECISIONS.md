@@ -11,6 +11,18 @@
 
 ---
 
+## 2026-11-27 (4) — I3: confermati l'orario di pausa e il taglio dei 9 file all'11/11; 0 trial
+
+Prese insieme (raccomandate da Claude), prima di ogni dato, sui due punti aperti della voce 2026-11-27:
+1. **orario di pausa** = barra M5 della seduta assente in **piu' della meta'** delle sedute presenti dello strumento
+   in quell'anno (`dati.orari_di_pausa`); il controllo di struttura riporta le assenze di tutte le 78 barre, cosi' si
+   vede quanto pesa la soglia. Cambiarla dopo il controllo di struttura e' una deviazione P5;
+2. i **9 M5 della volatilita'** (ultima barra dell'11/11) restano quelli registrati e si **tagliano alla lettura** a
+   2026-11-11 00:00 UTC; la regola "ultima data ≤ 2026-11-10" vale per gli 8 nuovi.
+Prossimo: verifica delle fonti sul testo (ordine del §10), poi stop prima del download.
+
+---
+
 ## 2026-11-27 (3) — I3: undicesima passata sul codice **BLOCCA**, bloccanti e riserve applicati; 74 test; 0 trial
 
 Passata del gatekeeper sul codice del commit (1) (`f62267a`): **BLOCCA**, 2 bloccanti e 12 riserve. B1: le correzioni
