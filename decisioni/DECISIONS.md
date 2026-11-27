@@ -11,6 +11,25 @@
 
 ---
 
+## 2026-11-27 (3) — I3: undicesima passata sul codice **BLOCCA**, bloccanti e riserve applicati; 74 test; 0 trial
+
+Passata del gatekeeper sul codice del commit (1) (`f62267a`): **BLOCCA**, 2 bloccanti e 12 riserve. B1: le correzioni
+del generatore e il file di N2 si potevano scegliere dopo aver visto δ; B2: la correzione (1) del generatore non
+riproduceva i mancanti per orario. Applicati tutti, con i test chiesti
+([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), "Undicesima passata"): catena delle
+correzioni solo dopo un GUASTO, un solo N2, catena dei mancanti non omogenea, intervalli interrotti condizionati,
+conteggi sull'universo, selezione per strumento e anno, ordine del §7, semi di N2 per configurazione, guardia contro i
+CSV in N2, scaricatore con guardie e tre tentativi, ordine del §10 (fonti prima del download). Restano da confermare
+con Matteo i due punti della voce sotto (orario di pausa, 9 file all'11/11). Prossimo: passata del gatekeeper sulle
+correzioni; poi verifica delle fonti e, con la conferma di Matteo, il download.
+
+**Dodicesima passata (commit `d4f978a`): PASSA CON RISERVE**, 0 bloccanti; le sei riserve sono applicate (limite della
+correzione (1) dichiarato, prudente; guardie sulla storia degli esiti e sul codice invariato fra verifica, N2 e
+potenza; fonti prima del download; anno vuoto che ferma lo scarico; etichetta di questa voce; R12 senza effetto). 77
+test. *Etichetta corretta il 27/11: era "(2)", gia' usata dalla voce della volatilita'.*
+
+---
+
 ## 2026-11-27 (2) — Ridisegno di `volatilita`, passo 2: le sette decisioni (periodo sigillato come sola stima, quote, VIX in due forme, h = 1, GEX condizionato, due anni); 0 trial
 
 Consultazione di metodo del gatekeeper ([referto del passo 2](../magazzino/registro/referti/proprieta_volatilita_ridisegno_2026-11-27.md));
@@ -37,20 +56,6 @@ budget, metodo); 4 e 5 sono **prese insieme** (P6 del §8ter: la 4 non e' gratis
 
 Anche: il descrittivo del premio (asimmetria e curtosi) si ricalcola con uno script versionato prima del 13/12 (stessi
 numeri gia' visti, 0 trial). Prossimo: referto del passo 2 con le scelte tecniche, commit di congelamento.
-
----
-
-## 2026-11-27 (2) — I3: undicesima passata sul codice **BLOCCA**, bloccanti e riserve applicati; 74 test; 0 trial
-
-Passata del gatekeeper sul codice del commit (1) (`f62267a`): **BLOCCA**, 2 bloccanti e 12 riserve. B1: le correzioni
-del generatore e il file di N2 si potevano scegliere dopo aver visto δ; B2: la correzione (1) del generatore non
-riproduceva i mancanti per orario. Applicati tutti, con i test chiesti
-([referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md), "Undicesima passata"): catena delle
-correzioni solo dopo un GUASTO, un solo N2, catena dei mancanti non omogenea, intervalli interrotti condizionati,
-conteggi sull'universo, selezione per strumento e anno, ordine del §7, semi di N2 per configurazione, guardia contro i
-CSV in N2, scaricatore con guardie e tre tentativi, ordine del §10 (fonti prima del download). Restano da confermare
-con Matteo i due punti della voce sotto (orario di pausa, 9 file all'11/11). Prossimo: passata del gatekeeper sulle
-correzioni; poi verifica delle fonti e, con la conferma di Matteo, il download.
 
 ---
 

@@ -89,6 +89,8 @@ def scarica(nome: str) -> None:
         print("  %s %d: %d barre" % (nome, anno, n), flush=True)
         if n:
             pezzi.append(df)
+        elif pezzi:
+            raise G.GuardiaFallita("%s %d: anno vuoto dopo l'inizio della quotazione, strumento fermo" % (nome, anno))
     if not pezzi:
         raise G.GuardiaFallita("%s: nessun dato" % nome)
     tutto = pd.concat(pezzi)
@@ -225,7 +227,7 @@ if __name__ == "__main__":
         for n in nomi:
             if n not in G.NUOVI:
                 raise SystemExit("%s non e' fra gli 8 nuovi" % n)
-        G.protetto(lambda: G.verifica(dati=False))
+        G.protetto(lambda: (G.verifica(dati=False), G.richiedi("verifica_fonti.md")))   # §10: fonti prima
         for n in nomi:
             G.protetto(lambda n=n: scarica(n))
     elif "--registra" in sys.argv:

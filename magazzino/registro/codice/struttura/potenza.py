@@ -127,8 +127,11 @@ def main() -> None:
     orizzonti = [h for h in V.ORIZZONTI if h not in decaduti]
     corr = tuple(n2["correzioni"])
     G.catena_guasta([corr[:k] for k in range(len(corr))], VG.nome_esito)
-    if G.leggi_esito(VG.nome_esito(corr)).get("esito") != "PASSA":
+    ver = G.leggi_esito(VG.nome_esito(corr))
+    if ver.get("esito") != "PASSA":
         raise G.GuardiaFallita("la verifica delle correzioni di N2 non e' PASSA")
+    G.storia_pulita("verifica_fonti.md", "controllo_struttura.json", VG.nome_esito(corr), nome_n2)
+    G.codice_invariato_da(ver["commit"])
     out = {"commit": g["commit"], "versioni": g["versioni"], "sha256": g["sha256"],
            **calcola(conteggi, orizzonti, universo=n2["universo"])}
     G.controlla_chiavi(out, CHIAVI)

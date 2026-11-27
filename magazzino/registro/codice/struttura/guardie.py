@@ -188,6 +188,28 @@ def leggi_esito(nome: str) -> dict:
     return json.loads((ESITI / nome).read_text(encoding="utf-8"))
 
 
+def storia_pulita(*esiti: str) -> None:
+    """Riserva R2 della dodicesima: nessun file di `esiti/` e' mai stato cancellato in git, e ogni esito richiesto e'
+    stato aggiunto una volta sola (un esito committato non si toglie e non si riscrive)."""
+    rel = ESITI.relative_to(ROOT).as_posix()
+    cancellati = _git("log", "--diff-filter=D", "--name-only", "--format=", "--", rel).strip()
+    if cancellati:
+        raise GuardiaFallita("esiti cancellati nella storia git: %s" % cancellati.split())
+    for e in esiti:
+        aggiunte = _git("log", "--diff-filter=A", "--format=%H", "--", "%s/%s" % (rel, e)).split()
+        if len(aggiunte) != 1:
+            raise GuardiaFallita("%s aggiunto %d volte nella storia git" % (e, len(aggiunte)))
+
+
+def codice_invariato_da(commit: str) -> None:
+    """Riserva R2 della dodicesima: il codice di I3 non e' cambiato dal commit di un esito precedente (semi, anni
+    simulati, τ, regole), cosi' N2 e la potenza girano con lo stesso codice della verifica."""
+    rel = QUI.relative_to(ROOT).as_posix()
+    cambiati = _git("diff", "--name-only", commit, "HEAD", "--", "%s/*.py" % rel).split()
+    if cambiati:
+        raise GuardiaFallita("codice di I3 cambiato dal commit %s: %s" % (commit[:7], cambiati))
+
+
 def catena_guasta(prefissi, nome_esito) -> None:
     """Bloccante B1 dell'undicesima: una configurazione corretta del generatore si usa solo se **ogni** configurazione
     precedente della catena ha una verifica committata con esito GUASTO."""

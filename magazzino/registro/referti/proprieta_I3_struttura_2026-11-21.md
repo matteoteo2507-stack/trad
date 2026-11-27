@@ -978,3 +978,22 @@ conteggi invece che dell'N2.
   dell'anno (comprese quelle del blocco nel 2024: solo presenze); l'inizio comune non si ricalcola se lo strumento piu'
   tardo esce.
 Test: 74 verdi (`test_struttura.py` 31, `test_dati.py` 29, `test_dati_undicesima.py` 14).
+
+## Dodicesima passata del gatekeeper (27/11, commit `d4f978a`): PASSA CON RISERVE
+
+0 bloccanti; B1, B2 e R1-R12 dell'undicesima chiusi; 74 test verdi; la catena non omogenea riproduce `p_ora` per
+orario anche sopra 0,5 (errore sotto 0,006 su 8 profili, prova del gatekeeper su numeri inventati) e i vincoli su
+resta/entra sono corretti. Riserve, applicate lo stesso giorno:
+1. **limite dichiarato della correzione (1)**: la catena dei mancanti non e' condizionata alla seduta presente, mentre
+   `p_ora` e la durata contata vengono dalle sole sedute con almeno un prezzo; con blocchi lunghi nascono sedute vuote in
+   piu' (prova del gatekeeper: +2,4% con quota 0,30 e durata 8, +13% con durata 15) e la durata contata si accorcia
+   (8 → 7,5; 15 → 11). La direzione e' **prudente** (piu' esclusioni: verso GUASTO e verso "RIFIUTA per misura", mai un
+   falso PASSA); test della durata riprodotta entro il 20% su un profilo omogeneo;
+2. **storia degli esiti**: le guardie controllano che nessun esito sia mai stato cancellato in git e che ogni esito
+   richiesto sia stato aggiunto una volta sola; N2 e la potenza si fermano se il codice di I3 e' cambiato dal commit
+   della verifica del generatore (`guardie.storia_pulita`, `guardie.codice_invariato_da`);
+3. lo scaricatore chiede la verifica delle fonti committata (ordine del §10);
+4. un anno vuoto dopo l'inizio della quotazione ferma lo strumento;
+5. la voce DECISIONS di I3 del 27/11 diventa (3) (l'etichetta (2) era gia' della volatilita');
+6. la correzione R12 (universo dall'N2) oggi non cambia nessun numero: l'universo di N2 e' quello dei conteggi.
+Test: 77 verdi.

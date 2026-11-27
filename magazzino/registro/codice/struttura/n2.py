@@ -75,6 +75,8 @@ def main() -> None:
     ver = json.loads((G.ESITI / nome_ver).read_text(encoding="utf-8"))
     if ver["esito"] != "PASSA":
         raise G.GuardiaFallita("verifica del generatore %s: %s, N2 non parte" % (nome_ver, ver["esito"]))
+    G.storia_pulita("controllo_struttura.json", nome_ver)
+    G.codice_invariato_da(ver["commit"])
     conteggi = json.loads((G.ESITI / "controllo_struttura.json").read_text(encoding="utf-8"))
     out = {"commit": g["commit"], "versioni": g["versioni"], **esegui(conteggi, corr, processi=os.cpu_count())}
     G.controlla_chiavi(out, CHIAVI)

@@ -239,3 +239,66 @@ def test_scaricatore_e_registro_non_riscrivono(tmp_path, monkeypatch):
     monkeypatch.setattr(G, "HASH_I3", tmp_path / "h.json")
     with pytest.raises(G.GuardiaFallita):
         D.registra()
+
+
+# ---------------------------------------------------------------- dodicesima passata
+
+def test_durata_dei_mancanti_riprodotta_su_profilo_omogeneo():
+    """Riserva R1 della dodicesima: su un profilo omogeneo la durata contata dei mancanti si riproduce entro il 20%
+    (limite dichiarato nel §9: la catena non e' condizionata alla seduta presente)."""
+    T, N = 20000, 1
+    p, Lc = 0.10, 3.0
+    d = S.nessun_difetto(T, N)
+    d["p_ora"][:] = p
+    d["L_mancanti"] = np.full((T, N), S.durata_catena(np.array([Lc]), p0=np.array([p]), n=27)[0])
+    X = np.cumsum(np.random.default_rng(13).standard_normal((T, 27, N)), axis=1)
+    Y = S.applica_difetti(X, np.random.default_rng(14), d)
+    m = np.isnan(Y[:, :, 0])
+    m = m[~m.all(axis=1)]
+    serie = []
+    for riga in m:
+        n = 0
+        for v in riga:
+            if v:
+                n += 1
+            elif n:
+                serie.append(n)
+                n = 0
+        if n:
+            serie.append(n)
+    assert abs(np.mean(serie) / Lc - 1) < 0.20
+
+
+def test_storia_e_codice(monkeypatch):
+    monkeypatch.setattr(G, "_git", lambda *a: "esiti/x.json\n" if "--diff-filter=D" in a else "")
+    with pytest.raises(G.GuardiaFallita):
+        G.storia_pulita()
+    monkeypatch.setattr(G, "_git", lambda *a: "" if "--diff-filter=D" in a else "a\nb\n")
+    with pytest.raises(G.GuardiaFallita):                             # aggiunto due volte
+        G.storia_pulita("n2_c0.json")
+    monkeypatch.setattr(G, "_git", lambda *a: "" if "--diff-filter=D" in a else "a\n")
+    G.storia_pulita("n2_c0.json")
+    monkeypatch.setattr(G, "_git", lambda *a: "magazzino/registro/codice/struttura/simula_n2.py\n")
+    with pytest.raises(G.GuardiaFallita):
+        G.codice_invariato_da("abcdef0")
+
+
+def test_anno_vuoto_dopo_la_quotazione_ferma(tmp_path, monkeypatch):
+    import types
+
+    finto = types.ModuleType("dukascopy_python")
+    finto.INTERVAL_MIN_5, finto.OFFER_SIDE_BID = "m5", "bid"
+
+    def fetch(codice, intervallo, lato, da, a):
+        if da.year in (2012, 2014):
+            return pd.DataFrame({"open": [1.0], "close": [1.0]}, index=pd.DatetimeIndex([da.replace(tzinfo=None)]))
+        return pd.DataFrame()
+
+    finto.fetch = fetch
+    monkeypatch.setitem(sys.modules, "dukascopy_python", finto)
+    monkeypatch.setattr(D, "codici", lambda: {"BUND": "x"})
+    monkeypatch.setattr(D, "ROOT", tmp_path)
+    monkeypatch.setitem(G.DATI, "BUND", "BUND_M5.csv")
+    with pytest.raises(G.GuardiaFallita):
+        D.scarica("BUND")
+    assert not (tmp_path / "BUND_M5.csv").exists()
