@@ -904,3 +904,34 @@ Riserve, tutte applicate il 24/11:
 Il gatekeeper ha elencato cosa deve sapere il codice del commit (1) sui dati (scaricatore, loader, griglia, chiusure
 anticipate, rollover e pause, controllo di struttura, verifica del generatore, wrapper di N2, potenza, guardie): coincide
 coi requisiti del commit (1) e col §9.
+
+## Codice del commit (1) sui dati (27/11)
+
+Scritto in `magazzino/registro/codice/struttura/` coi requisiti del commit (1) e l'elenco della decima passata;
+**non ancora eseguito** su nessun dato (nessun download, nessun file di prezzi letto): `guardie.py` (percorsi protetti,
+versioni, sha256 e byte, contatore, ordine dei passi, esiti scritti una volta, errori senza valori, chiavi ammesse),
+`dati.py` (scaricatore con date fisse e fine al 2026-11-11 00:00 UTC escluso, registrazione degli hash, loader col
+taglio, fuso una volta sola, sedute piene, griglia di 27 prezzi, orari di pausa, intervalli interrotti),
+`controllo_struttura.py` (solo conteggi, sviluppo e blocco separati, DAX, regola del 10%, selezione con la data limite,
+origini dalle maschere), `difetti.py` (parametri del generatore dai conteggi, correzioni (1)-(4) con le probabilita'
+condizionate), `verifica_generatore.py` (celle con correzione, anni corti uniti, nessuna replica di N2), `n2.py`,
+`potenza.py`; test sintetici in `test_dati.py` (29) oltre ai 31 di `test_struttura.py`: **60 verdi**. Ordine di corsa:
+download degli 8 e `dati.py --registra` (commit) → `controllo_struttura.py` (commit) → `verifica_generatore.py`
+(commit) → `n2.py` (commit) → verifica delle fonti (`esiti/verifica_fonti.md`, commit) → `potenza.py`.
+
+**Punti nuovi, scritti qui prima di ogni dato** (gratis per P6 del §8ter, punto 1):
+- **i 9 M5 della volatilita' arrivano all'11/11** (ultima barra 2026-11-11 21:10-22:05 UTC, letta solo la data): non
+  si riscaricano (hash registrati), e il loader li taglia alla lettura a `TAGLIO_UTC` = 2026-11-11 00:00 UTC; la regola
+  "ultima data ≤ 2026-11-10" del requisito 2 vale per gli 8 nuovi, controllata dalle guardie;
+- **orario di pausa** (proposta di Claude, da confermare con Matteo): una barra M5 della seduta e' un orario di pausa
+  di uno strumento in un anno se manca in **piu' della meta'** delle sedute presenti di quell'anno; il §3 diceva di
+  togliere il rendimento che attraversa una pausa senza definire una pausa. Un intervallo a 15 minuti e' interrotto se
+  una sua barra interna manca in un orario di pausa, o se contiene un rollover dentro la seduta (calendario del
+  fornitore assente: oggi nessun rollover si toglie, per l'ipotesi del §3);
+- il controllo di struttura conta anche gli **intervalli interrotti per orario**, e il generatore li riproduce (solo se
+  ce n'e' almeno uno), cosi' la verifica confronta cose uguali; chiave aggiunta alla cella;
+- **inizio comune**: la prima seduta in cui tutti i 17 hanno almeno un prezzo nella seduta, calcolata una volta;
+- la potenza si **ferma** se un orizzonte rimasto ha meno di 50 origini (prima dava una deviazione non definita: trovato
+  da un test);
+- N2 esclude dalla decisione gli orizzonti gia' decaduti sui conteggi veri; gli esiti di verifica e N2 portano nel nome
+  le correzioni del generatore usate (`_c0`, `_c1`, ...), ciascuna col suo seme (20261140-20261144 per la verifica).

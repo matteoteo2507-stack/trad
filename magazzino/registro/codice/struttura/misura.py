@@ -35,11 +35,24 @@ PASSO_MISURA = 2
 N_PREZZI = 27
 
 
-def rendimenti(P: np.ndarray, passo: int = 1) -> tuple[np.ndarray, np.ndarray]:
-    """(r, osservato): r[t, j, i] con NaN dove manca; `osservato` booleano."""
+def rendimenti(P: np.ndarray, passo: int = 1, interrotti: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """(r, osservato): r[t, j, i] con NaN dove manca; `osservato` booleano.
+
+    `interrotti[t, j, i]` (26 intervalli a 15 minuti): intervalli attraversati da una pausa o da un rollover, che
+    valgono come mancanti (referto §3). E' l'unico punto dove si applicano: sulla griglia a 15 minuti l'intervallo
+    stesso, su quella a 30 minuti ogni rendimento che ne contiene uno."""
     Q = P[:, ::passo, :]
     r = np.diff(Q, axis=1)
-    return r, np.isfinite(r)
+    oss = np.isfinite(r)
+    if interrotti is not None:
+        it = np.asarray(interrotti, bool)
+        if it.shape[1] != P.shape[1] - 1:
+            raise ValueError("interrotti: servono %d intervalli a 15 minuti" % (P.shape[1] - 1))
+        if passo > 1:
+            T, K, N = it.shape
+            it = it[:, :K - K % passo].reshape(T, K // passo, passo, N).any(axis=2)
+        oss = oss & ~it[:, :oss.shape[1]]
+    return np.where(oss, r, np.nan), oss
 
 
 def validi_strumento(r: np.ndarray, oss: np.ndarray) -> np.ndarray:
@@ -96,12 +109,13 @@ def fattore_scala(D: np.ndarray, s2: np.ndarray, valido: np.ndarray, finestra: i
     return out
 
 
-def matrici(P: np.ndarray, passo: int = PASSO_MISURA, ritardi: int = RITARDI) -> dict:
+def matrici(P: np.ndarray, passo: int = PASSO_MISURA, ritardi: int = RITARDI,
+            interrotti: np.ndarray | None = None) -> dict:
     """Σ per seduta (NaN dove non definita) e maschere. Validita' sulla griglia data, misura su un prezzo ogni `passo`.
     Restituisce solo oggetti in memoria."""
-    r_fine, oss_fine = rendimenti(P, 1)
+    r_fine, oss_fine = rendimenti(P, 1, interrotti)
     valido_i = validi_strumento(r_fine, oss_fine)
-    r, oss = rendimenti(P, passo)
+    r, oss = rendimenti(P, passo, interrotti)
     r0 = np.where(oss, r, 0.0)
     T, K, N = r0.shape
     rv = np.einsum("tki,tki->ti", r0, r0)

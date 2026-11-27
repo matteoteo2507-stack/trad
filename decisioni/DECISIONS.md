@@ -11,6 +11,22 @@
 
 ---
 
+## 2026-11-27 — I3: codice del commit (1) sui dati scritto, **non eseguito**; due punti di misura nuovi da confermare; 0 trial
+
+Codice della parte sui dati di I3 coi requisiti del commit (1) del
+[referto](../magazzino/registro/referti/proprieta_I3_struttura_2026-11-21.md) (sezione "Codice del commit (1) sui
+dati"): guardie, scaricatore con date fisse, loader, controllo di struttura a soli conteggi, parametri del generatore
+dai conteggi, verifica del generatore, N2 e potenza; 60 test sintetici verdi. Nessun download, nessun file di prezzi
+letto. Trovato da un test e corretto: senza origini la potenza dava una deviazione non definita invece di fermarsi.
+
+**Da confermare insieme** (gratis, prima di ogni dato): (1) **orario di pausa** = barra assente in piu' della meta' delle
+sedute presenti dell'anno (il §3 non definiva una pausa; proposta di Claude); (2) i 9 M5 della volatilita' arrivano
+all'11/11 e si tagliano alla lettura, mentre la regola "ultima data ≤ 2026-11-10" vale per gli 8 nuovi.
+
+Prossimo: passata del gatekeeper sul codice; poi, con la conferma di Matteo, il download degli 8 strumenti.
+
+---
+
 ## 2026-11-24 (8) — I3: positivo a h = 5 **scatta** (h = 5 resta); decima passata **PASSA CON RISERVE**, riserve applicate; 0 trial
 
 **Prova del positivo a h = 5** (un solo tentativo, regola scritta prima; commit `b2c29c8`, 14.500 sedute, 500

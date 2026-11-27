@@ -116,3 +116,34 @@ def sd_hac(x: np.ndarray, ritardi: int) -> float:
     for k in range(1, ritardi + 1):
         s += 2 * (1 - k / (ritardi + 1)) * np.sum(x[k:] * x[:-k]) / n
     return float(np.sqrt(s))
+
+
+def origini_da_maschere(valido_i: np.ndarray) -> dict:
+    """Origini valide per orizzonte (EWMA contro costante) dalle sole maschere di validita' per strumento, senza
+    rendimenti (riserva R7 della nona passata: un orizzonte decade sui conteggi veri prima della potenza).
+
+    Ripercorre la stessa catena di `misura.matrici` e di `differenziali` con matrici fittizie (identita', varianze 1):
+    quali sedute sono pronte, quando EWMA e costante esistono, quali origini hanno 1 + h sedute valide. Un test la
+    confronta con la pipeline intera. Restituisce {h: indici delle origini}."""
+    v = np.asarray(valido_i, bool)
+    T, N = v.shape
+    uno = np.ones(T)
+    s2 = np.column_stack([M.ewma_rv(uno, v[:, i]) for i in range(N)])
+    s = np.column_stack([M.fattore_scala(uno, s2[:, i], v[:, i]) for i in range(N)])
+    scala = np.full((T, N), np.nan)
+    scala[1:] = s2[:-1] * s[:-1]
+    comune = v.all(axis=1)
+    pronto = comune & np.isfinite(scala).all(axis=1)
+    I = np.eye(N)
+    Sigma = np.full((T, N, N), np.nan)
+    Sigma[pronto] = I
+    R = np.full((T, N, N), np.nan)
+    R[comune] = I
+    m = {"Sigma": Sigma, "pronto": pronto, "comune": comune, "correl_grezza": R}
+    prev = {"ewma": ewma_q(Sigma, pronto), "costante": costante(R, comune)}
+    out = {}
+    for h in ORIZZONTI:
+        _, ok = bersagli(Sigma, pronto, h)
+        valide = ok & pronto & np.isfinite(prev["costante"]).all(axis=(1, 2)) & np.isfinite(prev["ewma"]).all(axis=(1, 2))
+        out[h] = np.flatnonzero(valide)
+    return out

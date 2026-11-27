@@ -102,23 +102,69 @@ def prob_fermo(p0: np.ndarray, L: np.ndarray) -> np.ndarray:
 def applica_difetti(X: np.ndarray, rng: np.random.Generator, difetti: dict) -> np.ndarray:
     """Prezzi osservati. `difetti`: p_giorno[t, i], p0[t, i], L[t, i], p_ora[t, k, i] (k = 0..26).
     Ordine: seduta mancante, prezzi fermi (catena che riparte ogni seduta dalla sua distribuzione stazionaria: lo stato
-    dell'open si estrae con probabilita' p0, ma il prezzo dell'open e' sempre quello vero), mancanti per ora. Ogni
-    seduta estrae sempre gli stessi tre blocchi di numeri, cosi' il flusso non dipende dai valori."""
+    dell'open si estrae con probabilita' p0, ma il prezzo dell'open e' sempre quello vero), mancanti per ora.
+
+    Correzioni ammesse del generatore (referto §9), attive solo se la chiave c'e' (la configurazione base non cambia):
+    (1) `L_mancanti[t, i]`: i mancanti per ora a blocchi (catena con probabilita' stazionaria p_ora per orario e durata
+        media L_mancanti); (2) `coppia` = (i, j) e `p_insieme[t]`: seduta mancante insieme per i due strumenti; (3)
+        `p_tutti[t]`: seduta mancante per tutti; (4) `quote` = (valori[a, i, b], cdf[a, i, b], anno[t]): quota
+        giornaliera di nulli estratta per strumento-giorno; sopra il 25% lo strumento-giorno e' escluso subito (seduta
+        vuota), sotto la catena usa quella quota. Con (2) e (3) `p_giorno` dev'essere gia' la probabilita'
+        **condizionata** (una seduta mancante, un proprietario). Ogni seduta estrae sempre lo stesso numero di blocchi
+        di numeri per una data configurazione, cosi' il flusso non dipende dai valori."""
     T, K, N = X.shape
-    pu = prob_fermo(difetti["p0"], difetti["L"])
-    resta = np.where(difetti["p0"] > 0, 1.0 - 1.0 / np.maximum(difetti["L"], 1.0), 0.0)
+    pu_base = prob_fermo(difetti["p0"], difetti["L"])
+    L = np.maximum(difetti["L"], 1.0)
+    resta = np.where(difetti["p0"] > 0, 1.0 - 1.0 / L, 0.0)
+    c1, c2, c3, c4 = ("L_mancanti" in difetti, "coppia" in difetti, "p_tutti" in difetti, "quote" in difetti)
+    if c1:
+        Lm = np.maximum(difetti["L_mancanti"], 1.0)
+        po = difetti["p_ora"]
+        entra = np.where(po > 0, po / (Lm[:, None, :] * np.maximum(1.0 - po, 1e-12)), 0.0)
+        if np.any(entra > 1.0):
+            raise ValueError("conteggi incoerenti: ingresso nei mancanti > 1")
+        resta_m = np.where(po > 0, 1.0 - 1.0 / Lm[:, None, :], 0.0)
     Y = np.empty_like(X)
     for t in range(T):
+        u_tutti = rng.random() if c3 else 1.0
+        u_ins = rng.random() if c2 else 1.0
         u_giorno = rng.random(N)
+        u_q = rng.random(N) if c4 else None
         u_fermo = rng.random((K, N))
         u_ora = rng.random((K, N))
+        p0, pu, re_ = difetti["p0"][t], pu_base[t], resta[t]
+        escluso = np.zeros(N, bool)
+        if c4:
+            valori, cdf, anno = difetti["quote"]
+            a = anno[t]
+            idx = np.array([np.searchsorted(cdf[a, i], u_q[i], side="left") for i in range(N)])
+            idx = np.minimum(idx, cdf.shape[2] - 1)
+            q = valori[a, np.arange(N), idx]
+            escluso = q > 0.25
+            p0 = np.where(escluso, 0.0, q)
+            pu = prob_fermo(p0, L[t])
+            re_ = np.where(p0 > 0, 1.0 - 1.0 / L[t], 0.0)
         y = X[t].copy()
-        fermo = u_fermo[0] < difetti["p0"][t]          # stato dell'open dalla distribuzione stazionaria
+        fermo = u_fermo[0] < p0
         for k in range(1, K):
-            fermo = np.where(fermo, u_fermo[k] < resta[t], u_fermo[k] < pu[t])
+            fermo = np.where(fermo, u_fermo[k] < re_, u_fermo[k] < pu)
             y[k] = np.where(fermo, y[k - 1], X[t, k])
-        y[u_ora < difetti["p_ora"][t]] = np.nan
-        y[:, u_giorno < difetti["p_giorno"][t]] = np.nan
+        if c1:
+            manca = u_ora[0] < difetti["p_ora"][t, 0]
+            mm = np.zeros((K, N), bool)
+            mm[0] = manca
+            for k in range(1, K):
+                manca = np.where(manca, u_ora[k] < resta_m[t, k], u_ora[k] < entra[t, k])
+                mm[k] = manca
+            y[mm] = np.nan
+        else:
+            y[u_ora < difetti["p_ora"][t]] = np.nan
+        vuoto = (u_giorno < difetti["p_giorno"][t]) | escluso
+        if c2 and u_ins < difetti["p_insieme"][t]:
+            vuoto[list(difetti["coppia"])] = True
+        if c3 and u_tutti < difetti["p_tutti"][t]:
+            vuoto[:] = True
+        y[:, vuoto] = np.nan
         Y[t] = y
     return Y
 
@@ -147,11 +193,22 @@ def matrici_non_valide(m: dict, prev: dict, eig_q: np.ndarray) -> int:
     return n
 
 
-def misura_e_differenziali(P: np.ndarray, ritardi: int = M.RITARDI, colonne=None):
+def estrai_interrotti(rng: np.random.Generator, difetti: dict):
+    """Intervalli a 15 minuti interrotti da una pausa (stessa regola dei dati veri, `dati.interrotti`), estratti con
+    probabilita' `p_interrotti[t, j, i]` dopo tutti i prezzi; None se la chiave manca (nessuna estrazione: la
+    configurazione senza pause non cambia)."""
+    if "p_interrotti" not in difetti:
+        return None
+    p = difetti["p_interrotti"]
+    return rng.random(p.shape) < p
+
+
+def misura_e_differenziali(P: np.ndarray, ritardi: int = M.RITARDI, colonne=None, interrotti=None):
     """`P` sulla griglia a 15 minuti (27 prezzi); la misura ne prende uno su due."""
     if colonne is not None:
         P = P[:, :, colonne]
-    m = M.matrici(P, ritardi=ritardi)
+        interrotti = None if interrotti is None else interrotti[:, :, colonne]
+    m = M.matrici(P, ritardi=ritardi, interrotti=interrotti)
     prev = V.tutte(m)
     return m, prev, V.differenziali(m, prev)
 
@@ -184,9 +241,11 @@ def replica(args) -> dict:
     Rb = r_bar(universo)
     vero = rendimenti_veri(T, np.random.default_rng(s_veri), Rb, a, b)
     X = vero["X"]                                        # griglia a 15 minuti: i difetti si applicano qui
-    Y = applica_difetti(X, np.random.default_rng(s_dif), difetti)
+    rng_d = np.random.default_rng(s_dif)
+    Y = applica_difetti(X, rng_d, difetti)
+    it = estrai_interrotti(rng_d, difetti)
     m_s, p_s, d_s = misura_e_differenziali(X, ritardi, colonne)
-    m_d, p_d, d_d = misura_e_differenziali(Y, ritardi, colonne)
+    m_d, p_d, d_d = misura_e_differenziali(Y, ritardi, colonne, interrotti=it)
     out = {"non_valide": matrici_non_valide(m_s, p_s, vero["eig_min"]) + matrici_non_valide(m_d, p_d, vero["eig_min"])}
     for (nome, h) in d_s:
         out[("delta", nome, h)] = delta(d_d[(nome, h)], d_s[(nome, h)], h)
@@ -196,7 +255,7 @@ def replica(args) -> dict:
 
 
 def esegui(T: int, difetti: dict, seme: int, repliche: int = REPLICHE, a: float = A, b: float = B,
-           ritardi: int = M.RITARDI, colonne=None, universo=UNIVERSO, processi: int = 1) -> dict:
+           ritardi: int = M.RITARDI, colonne=None, universo=UNIVERSO, processi: int = 1, esclusi=()) -> dict:
     figli = np.random.SeedSequence(seme).spawn(repliche)
     compiti = [(f, T, difetti, a, b, ritardi, colonne, universo) for f in figli]
     if processi > 1:
@@ -205,7 +264,7 @@ def esegui(T: int, difetti: dict, seme: int, repliche: int = REPLICHE, a: float 
             righe = list(ex.map(replica, compiti, chunksize=4))
     else:
         righe = [replica(c) for c in compiti]
-    return riassumi(righe)
+    return riassumi(righe, esclusi)
 
 
 QUANTILI = (0.05, 0.25, 0.5, 0.75, 0.95)
@@ -217,7 +276,7 @@ def _mediana_decisione(righe: list, h: int) -> float:
     return float(np.median(np.where(np.isfinite(x), x, -np.inf)))
 
 
-def riassumi(righe: list) -> dict:
+def riassumi(righe: list, esclusi=()) -> dict:
     """Solo le chiavi ammesse: quantili di δ, campioni insufficienti, orizzonti decaduti, rifiuti della guardia, matrici
     non valide, esito.
 
@@ -243,7 +302,7 @@ def riassumi(righe: list) -> dict:
                                               if len(x) else None)
     for h in V.ORIZZONTI:
         out["guardia_rifiuti_h%d" % h] = int(sum(r[("guardia", h)] for r in righe))
-    rimasti = [h for h in V.ORIZZONTI if h not in decaduti]
+    rimasti = [h for h in V.ORIZZONTI if h not in decaduti and h not in esclusi]   # esclusi: decaduti sui conteggi veri
     if (out["non_valide"] > 0 or not rimasti
             or any(out["guardia_rifiuti_h%d" % h] > soglia_guardia(n) for h in rimasti)):
         out["esito"] = "GUASTO"
