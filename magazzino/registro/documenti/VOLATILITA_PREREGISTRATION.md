@@ -730,3 +730,13 @@ La scelta "GJR sugli indici" esce ai soci come opzione esplorativa nel pacchetto
 P1-P2), 10 serie gia' contate fra le 54 GARCH, nessun trial in piu'. Il codice del pacchetto riproduce `modelli.py` sui
 nove strumenti di sviluppo ([`esiti/pacchetto_ewma_v1.json`](../codice/volatilita/esiti/pacchetto_ewma_v1.json),
 script `verifica_pacchetto.py`). Trial: 126, invariati.
+
+### 2026-11-27 — Orario del VIX: il premio del §3 conteneva 15 minuti di look-ahead; nessun effetto sugli esiti
+
+Trovato nel passo 2 del ridisegno ([referto](../referti/proprieta_volatilita_ridisegno_2026-11-27.md), D9, confermato
+dal gatekeeper). Il VIX di chiusura e' fissato alle 16:15 New York (13:15 nelle sedute ridotte); il giorno XNYS del §3
+chiude con la barra delle 15:55, cioe' alle 16:00. Nel premio del §3 la RV su (t, t + 30 giorni] parte dalle 16:00 e
+IV_t alle 16:15: i 15 minuti dopo le 16:00 stanno nella RV e sono gia' nel VIX. **Nessun effetto sugli esiti**: il nodo
+del premio e' uscito il 13/11 prima di ogni test, e l'unico uso della serie e' la forma (asimmetria e curtosi,
+`esiti/descrittivo_premio.json`), su cui 15 minuti in una somma di circa 21 giorni sono trascurabili. Il ridisegno non
+usa piu' il VIX di t per bersagli che partono alle 16:00 di t. 0 trial.

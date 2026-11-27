@@ -120,7 +120,7 @@ testabile solo con le istantanee del vincolo 4 (o un permesso scritto), da decid
 
 1. **Quote** (R5). Le riserve sono legate per scritto al test forward **di ciascun nodo** (pre-registrazione §11, 20/11).
    Il passo 2 dice da quale nodo vengono le quote di A e B, e che quel nodo rinuncia in tutto o in parte al suo test.
-2. **VIX nel giorno G1** (R7). Il VIX chiude alle 16:15 ET, prima delle 17:00 che chiudono il giorno: si usa per t+1.
+2. **VIX nel giorno G1** (R7). ⚠️ *Superato il 27/11:* ~~Il VIX chiude alle 16:15 ET, prima delle 17:00 che chiudono il giorno: si usa per t+1.~~ Il giorno XNYS dell'SPX500 chiude alle 16:00: il VIX delle 16:15 e' un look-ahead (D9 del [passo 2](proprieta_volatilita_ridisegno_2026-11-27.md)).
    Da fissare: giorni con barra del CFD e senza VIX (festivi CBOE, mezze giornate); weekend quando si riporta la varianza
    a 30 giorni di calendario a 1 o 5 giorni di borsa; una scala con parametri si stima solo su finestra passata mobile,
    come c_t (pre-registrazione §3). **VIX grezzo o ricalibrato** non e' una scelta gratis: asimmetria e curtosi del premio
