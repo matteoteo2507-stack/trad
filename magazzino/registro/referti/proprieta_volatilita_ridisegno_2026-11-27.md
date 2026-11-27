@@ -8,8 +8,9 @@ stato: quarantena
 # Ridisegno di `volatilita` — passo 2, punto di partenza
 
 Passo 2 della procedura del [LIFECYCLE §8ter](../../../motore/metodo/STRATEGY_LIFECYCLE.md), dopo il
-[passo 1](grandezze_volatilita_ridisegno_2026-11-24.md) (DECISIONS 2026-11-24 (7)). **Stato: aperto, nessuna scelta
-presa.** Qui c'e' l'esito della consultazione di metodo chiesta da Matteo al gatekeeper il 27/11 (sola lettura, 0
+[passo 1](grandezze_volatilita_ridisegno_2026-11-24.md) (DECISIONS 2026-11-24 (7)). **Stato: aperto. Le sette decisioni della tabella sotto sono prese il 27/11, tutte
+sull'opzione piu' sicura ([DECISIONS 2026-11-27 (2)](../../../decisioni/DECISIONS.md)), con GEX a scadenza
+2027-01-31; restano le scelte tecniche.** Qui c'e' l'esito della consultazione di metodo chiesta da Matteo al gatekeeper il 27/11 (sola lettura, 0
 trial), per non perderlo fra una sessione e l'altra; il referto vero del passo 2 si scrive sopra questo, con le
 decisioni.
 

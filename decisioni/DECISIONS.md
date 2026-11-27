@@ -11,6 +11,35 @@
 
 ---
 
+## 2026-11-27 (2) — Ridisegno di `volatilita`, passo 2: le sette decisioni (periodo sigillato come sola stima, quote, VIX in due forme, h = 1, GEX condizionato, due anni); 0 trial
+
+Consultazione di metodo del gatekeeper ([referto del passo 2](../magazzino/registro/referti/proprieta_volatilita_ridisegno_2026-11-27.md));
+Matteo conferma tutte le raccomandazioni di Claude. Le prime tre e la 6-7 sono **decisioni di Matteo** (protezione,
+budget, metodo); 4 e 5 sono **prese insieme** (P6 del §8ter: la 4 non e' gratis, e' informata dal descrittivo del premio).
+
+1. **Il blocco sigillato 2024-11-11 → 2026-11-10 si legge solo come ingresso di stima** delle finestre mobili del
+   forward (EWMA, c_t, ricalibrazione del VIX): nessuna perdita, nessun fattore o statistica stampati, guardia nel
+   codice. Non e' un'apertura dell'holdout della pre-registrazione del 13/11, che resta senza uso come verdetto.
+   Regola di protezione nuova, primo caso; precedente: I3 legge il blocco dichiarandolo.
+2. **La potenza si stima sul differenziale vero VIX contro EWMA** sui dati di sviluppo, **contando i trial** delle
+   varianti calcolate (C1; 2 serie con un orizzonte), dopo il commit di congelamento e con una guardia su media e
+   segno. Prima, il controllo di dimensione (bootstrap del differenziale riportato a media zero, lunghezza del forward,
+   criterio <= 2 × quota).
+3. **Quote: VIX 1,25% (dal nodo del premio), GEX 1,25% (dal nodo HMM), GARCH 2,5%.** HMM e premio **rinunciano** al
+   loro test forward. Famiglia al 5%. Se il GEX esce, la sua quota resta riservata e non passa al VIX.
+4. **VIX grezzo e ricalibrato insieme nello SPA studentizzato**; ricalibrazione a un parametro (ΣRV/ΣIV) su 1.000
+   giorni, come c_t; dichiarata come informata da asimmetria e curtosi del premio (13/11). a + b·IV escluso.
+5. **Un solo orizzonte, h = 1** giorno di borsa.
+6. **GEX condizionato**: disegno congelato nella pre-registrazione, attivazione con un'aggiunta datata prima di
+   raccogliere i dati, **scadenza 2027-01-31** per un permesso scritto del fornitore (lo chiede Matteo), senza il quale
+   esce.
+7. **Forward di due anni** dall'approvazione della pre-registrazione, MDE ex ante ed ex post, nessuna estensione.
+
+Anche: il descrittivo del premio (asimmetria e curtosi) si ricalcola con uno script versionato prima del 13/12 (stessi
+numeri gia' visti, 0 trial). Prossimo: referto del passo 2 con le scelte tecniche, commit di congelamento.
+
+---
+
 ## 2026-11-27 — I3: codice del commit (1) sui dati scritto, **non eseguito**; due punti di misura nuovi da confermare; 0 trial
 
 Codice della parte sui dati di I3 coi requisiti del commit (1) del
